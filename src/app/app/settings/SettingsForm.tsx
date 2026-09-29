@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsForm({ business, tiers }: { business: Record<string, string>; tiers: Record<string, number> }) {
   const router = useRouter();
-  const [b, setB] = useState({ name: "", tagline: "", location: "", contact_phone: "", contact_email: "", ...business });
+  const [b, setB] = useState({ name: "", tagline: "", location: "", contact_phone: "", contact_email: "", photo_bg: "#ffffff", ...business });
   const [t, setT] = useState({ full_service: 40, full_service_under_50: 50, drop_off: 30, self_listed: 15, ...tiers });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -38,6 +38,15 @@ export default function SettingsForm({ business, tiers }: { business: Record<str
         <div><label className="label">Location (city shown to buyers)</label><input className="input" value={b.location} onChange={(e) => setB({ ...b, location: e.target.value })} /></div>
         <div><label className="label">Contact phone (for texts)</label><input className="input" type="tel" value={b.contact_phone} onChange={(e) => setB({ ...b, contact_phone: e.target.value })} /></div>
         <div><label className="label">Contact email</label><input className="input" type="email" value={b.contact_email} onChange={(e) => setB({ ...b, contact_email: e.target.value })} /></div>
+        <div>
+          <label className="label">Photo background (used when cleaning up photos)</label>
+          <div className="flex gap-2 items-center">
+            <input type="color" className="w-14 h-12 rounded" value={b.photo_bg || "#ffffff"} onChange={(e) => setB({ ...b, photo_bg: e.target.value })} />
+            <input className="input" value={b.photo_bg || "#ffffff"} onChange={(e) => setB({ ...b, photo_bg: e.target.value })} />
+            {[["#ffffff", "White"], ["#f4f4f2", "Off-white"], ["#e9ecef", "Light gray"]].map(([c, l]) => <button key={c} type="button" className="pill" onClick={() => setB({ ...b, photo_bg: c })}>{l}</button>)}
+          </div>
+          <p className="text-xs muted mt-1">Keep it light. Marketplaces and buyers trust a clean, plain background.</p>
+        </div>
       </section>
       <section className="card p-4 space-y-3">
         <h2 className="font-semibold">Commission tiers</h2>

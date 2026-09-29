@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Category, Item, ItemPhoto, Location, Profile, Tier } from "@/lib/types";
 import { CONDITION_LABELS, TIER_LABELS } from "@/lib/types";
+import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/photo";
+import { useEffect } from "react";
 
 interface Props {
   mode: "new" | "edit";
@@ -14,6 +16,7 @@ interface Props {
   item?: Item;
   photos?: ItemPhoto[];
   defaultLocationId?: string;
+  photoBg?: string;
 }
 
 type Draft = {
@@ -48,17 +51,7 @@ type Draft = {
 
 type LocalPhoto = { id: string; file?: File; url: string; storage_path?: string; uploading?: boolean };
 
-async function compressImage(file: File, maxSide = 1600, quality = 0.82): Promise<Blob> {
-  const bmp = await createImageBitmap(file);
-  const scale = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(bmp.width * scale);
-  canvas.height = Math.round(bmp.height * scale);
-  canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
-  return new Promise((res) => canvas.toBlob((b) => res(b!), "image/jpeg", quality));
-}
-
-export default function ItemForm({ mode, profile, categories, locations, item, photos: initialPhotos, defaultLocationId }: Props) {
+export default function ItemForm({ mode, profile, categories, locations, item, photos: initialPhotos, defaultLocationId, photoBg = "#ffffff" }: Props) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const staff = profile.role === "admin" || profile.role === "staff";
@@ -72,6 +65,8 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState<"photos" | "details">(mode === "edit" ? "details" : "photos");
+  const [clean, setClean] = useState(mode === "new");
+  useEffect(() => { if (clean) preloadBackgroundModel(); }, [clean]);
 
   const [d, setD] = useState<Draft>({
     title: item?.title || "",
@@ -113,7 +108,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       const preview = URL.createObjectURL(file);
       setPhotos((p) => [...p, { id: tempId, file, url: preview, uploading: true }]);
       try {
-        const blob = await compressImage(file);
+        const blob = clean ? (await cleanBackground(file, photoBg)).blob : await compressImage(file);
         const path = `${profile.id}/${Date.now()}-${tempId}.jpg`;
         const { error: upErr } = await supabase.storage.from("item-photos").upload(path, blob, { contentType: "image/jpeg", upsert: false });
         if (upErr) throw upErr;
@@ -303,6 +298,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
           </button>
         </div>
         <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+        <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos</label>
 
         {step === "photos" && (
           <>
