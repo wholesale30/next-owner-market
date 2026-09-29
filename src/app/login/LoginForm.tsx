@@ -33,7 +33,7 @@ export default function LoginForm() {
       <form onSubmit={submit} className="card w-full max-w-sm p-6 space-y-4">
         <div>
           <h1 className="text-2xl font-bold">Sign in</h1>
-          <p className="muted text-sm">Next Owner Market</p>
+          <p className="muted text-sm">{params.get("confirmed") ? "Email confirmed. Sign in below." : "Next Owner Market"}</p>
         </div>
         <div>
           <label className="label">Email</label>

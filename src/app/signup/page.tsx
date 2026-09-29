@@ -22,7 +22,7 @@ function SignupForm() {
     const { error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      options: { data: { full_name: form.full_name, phone: form.phone, role: buyer ? "buyer" : "consignor" } },
+      options: { emailRedirectTo: `${window.location.origin}/login?confirmed=1${next ? `&next=${encodeURIComponent(next)}` : ""}`, data: { full_name: form.full_name, phone: form.phone, role: buyer ? "buyer" : "consignor" } },
     });
     setBusy(false);
     if (error) return setError(error.message);
