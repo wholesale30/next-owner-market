@@ -49,7 +49,7 @@ Sign in at **nextownermarket.com/login**. New accounts are ready the moment you 
 - **Get new-arrival alerts** — a name/email/phone box near the bottom. One tap subscribes.
 
 ### 3.2 Item page (nextownermarket.com/item/SKU)
-- Photo gallery (swipe), price, condition, brand/model, specs, full description, bin location (staff only).
+- Photo and video gallery (swipe; ▶ thumbnails are videos), price, condition, brand/model, specs, full description, bin location (staff only).
 - **💬 Message about this** — Facebook-style message. Shopper enters name and phone or email plus their question. It goes straight to the staff Inbox; if they have a buyer account the reply also shows in their account.
 - **Text about this / Email** — one-tap direct contact using the business phone/email from Settings.
 - **♡ Save** — buyer accounts only.
@@ -89,7 +89,8 @@ Add one item by hand.
 2. **Clean background** checkbox — cuts the item out onto the plain background color from Settings. The first use downloads a ~40 MB model once; after that it's instant and free.
 3. **✨ Write it with AI** — the AI reads the photos and fills in: title, description, brand, model, category, condition, specs, tags, price and price range, "worth listing?", and any recall/prohibited-item warning.
 4. Edit anything, set the bin code, quantity, cost (what you paid), consignor and tier if applicable.
-5. **Save** → item goes to Review (or straight to active if you choose).
+5. **Video (optional)** — **🎬 Upload a clip** (up to 50 MB, about a minute from a phone) or paste a **YouTube / Facebook / Vimeo link**. A clip of the item working sells faster. Videos play right in the photo gallery on the public page.
+6. **Save** → item goes to Review (or straight to active if you choose).
 
 ### 4.3 📷 Snap mode (/app/snap) — the fast lane
 Built for working a pallet.

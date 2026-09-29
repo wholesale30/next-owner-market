@@ -3,7 +3,8 @@
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { Category, Item, ItemPhoto, Location, Profile, Tier } from "@/lib/types";
+import { embedFor } from "@/lib/video";
+import type { Category, Item, ItemPhoto, ItemVideo, Location, Profile, Tier } from "@/lib/types";
 import { CONDITION_LABELS, TIER_LABELS } from "@/lib/types";
 import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/photo";
 import { useEffect } from "react";
@@ -15,6 +16,7 @@ interface Props {
   locations: Location[];
   item?: Item;
   photos?: ItemPhoto[];
+  videos?: ItemVideo[];
   defaultLocationId?: string;
   photoBg?: string;
 }
@@ -49,9 +51,10 @@ type Draft = {
   warning: string | null;
 };
 
+type LocalVideo = { id: string; kind: "upload" | "link"; url: string; storage_path?: string | null; uploading?: boolean };
 type LocalPhoto = { id: string; file?: File; url: string; storage_path?: string; uploading?: boolean };
 
-export default function ItemForm({ mode, profile, categories, locations, item, photos: initialPhotos, defaultLocationId, photoBg = "#ffffff" }: Props) {
+export default function ItemForm({ mode, profile, categories, locations, item, photos: initialPhotos, videos: initialVideos, defaultLocationId, photoBg = "#ffffff" }: Props) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const staff = profile.role === "admin" || profile.role === "staff";
@@ -65,6 +68,9 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   const [aiBusy, setAiBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [videos, setVideos] = useState<LocalVideo[]>((initialVideos || []).map((v) => ({ id: v.id, kind: v.kind, url: v.url, storage_path: v.storage_path })));
+  const [videoLink, setVideoLink] = useState("");
+  const videoRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<"photos" | "details">(mode === "edit" ? "details" : "photos");
   const [clean, setClean] = useState(mode === "new");
   useEffect(() => { if (clean) preloadBackgroundModel(); }, [clean]);
@@ -120,6 +126,38 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         setPhotos((p) => p.filter((x) => x.id !== tempId));
       }
     }
+  }
+
+  // ---------- videos ----------
+  async function addVideo(files: FileList | null) {
+    const file = files?.[0];
+    if (!file) return;
+    setError(null);
+    if (file.size > 50 * 1024 * 1024) return setError("Video is over 50 MB. Keep clips under about 60 seconds, or paste a YouTube link instead.");
+    const tempId = crypto.randomUUID();
+    setVideos((v) => [...v, { id: tempId, kind: "upload", url: URL.createObjectURL(file), uploading: true }]);
+    try {
+      const ext = (file.name.split(".").pop() || "mp4").toLowerCase();
+      const path = `${profile.id}/video-${Date.now()}-${tempId}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("item-photos").upload(path, file, { contentType: file.type || "video/mp4", upsert: false });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("item-photos").getPublicUrl(path);
+      setVideos((v) => v.map((x) => (x.id === tempId ? { ...x, url: data.publicUrl, storage_path: path, uploading: false } : x)));
+    } catch (e) {
+      setError(`Video upload failed: ${e instanceof Error ? e.message : String(e)}`);
+      setVideos((v) => v.filter((x) => x.id !== tempId));
+    }
+  }
+  function addVideoLink() {
+    const url = videoLink.trim();
+    if (!url) return;
+    if (!embedFor(url)) return setError("That link isn't a video we can show. YouTube, Facebook, Vimeo, or a direct .mp4 link work.");
+    setError(null);
+    setVideos((v) => [...v, { id: crypto.randomUUID(), kind: "link", url, storage_path: null }]);
+    setVideoLink("");
+  }
+  function removeVideo(id: string) {
+    setVideos((v) => v.filter((x) => x.id !== id));
   }
 
   function removePhoto(id: string) {
@@ -261,6 +299,21 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         if (phErr) throw phErr;
       }
 
+      // sync videos
+      const keepV = videos.filter((v) => !v.uploading);
+      const existingV = new Set((initialVideos || []).map((v) => v.id));
+      const removedV = (initialVideos || []).filter((v) => !keepV.some((k) => k.id === v.id));
+      if (removedV.length) {
+        await supabase.from("item_videos").delete().in("id", removedV.map((v) => v.id));
+        const paths = removedV.map((v) => v.storage_path).filter((x): x is string => !!x);
+        if (paths.length) await supabase.storage.from("item-photos").remove(paths);
+      }
+      const vUpserts = keepV.map((v, i) => ({ ...(existingV.has(v.id) ? { id: v.id } : {}), item_id: itemId!, kind: v.kind, url: v.url, storage_path: v.storage_path || null, sort_order: i }));
+      if (vUpserts.length) {
+        const { error: vErr } = await supabase.from("item_videos").upsert(vUpserts);
+        if (vErr) throw vErr;
+      }
+
       router.push(`/app/items/${itemId}`);
       router.refresh();
     } catch (e) {
@@ -269,7 +322,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     }
   }
 
-  const uploading = photos.some((p) => p.uploading);
+  const uploading = photos.some((p) => p.uploading) || videos.some((v) => v.uploading);
   const topCats = categories.filter((c) => !c.parent_id);
   const childCats = (pid: string) => categories.filter((c) => c.parent_id === pid);
 
@@ -305,6 +358,26 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos</label>
+
+        <div className="space-y-2">
+          <h2 className="font-semibold">Video {videos.length ? `(${videos.length})` : ""} <span className="muted font-normal text-xs">optional; a clip of it working sells faster</span></h2>
+          {videos.map((v) => (
+            <div key={v.id} className="card p-2 flex items-center gap-2 text-sm">
+              <span className="text-xl">🎬</span>
+              <span className="truncate flex-1">{v.kind === "link" ? v.url : v.uploading ? "Uploading…" : "Uploaded clip"}</span>
+              <button type="button" onClick={() => removeVideo(v.id)} className="pill" aria-label="Remove video">×</button>
+            </div>
+          ))}
+          <div className="grid grid-cols-2 gap-2">
+            <button type="button" className="btn btn-secondary" onClick={() => videoRef.current?.click()}>🎬 Upload a clip</button>
+            <div className="flex gap-1">
+              <input className="input" placeholder="Paste YouTube/FB link" value={videoLink} onChange={(e) => setVideoLink(e.target.value)} />
+              <button type="button" className="btn btn-secondary" onClick={addVideoLink}>Add</button>
+            </div>
+          </div>
+          <p className="text-[11px] muted">Clips up to 50 MB (about a minute from a phone). Longer videos: upload to YouTube and paste the link.</p>
+          <input ref={videoRef} type="file" accept="video/*" className="hidden" onChange={(e) => { addVideo(e.target.files); e.target.value = ""; }} />
+        </div>
 
         {step === "photos" && (
           <>

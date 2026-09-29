@@ -49,6 +49,8 @@ export interface Location {
   sorted: boolean;
 }
 
+export interface ItemVideo { id: string; item_id: string; kind: "upload" | "link"; url: string; storage_path: string | null; sort_order: number }
+
 export interface ItemPhoto {
   id: string;
   item_id: string;
@@ -93,6 +95,7 @@ export interface Item {
   created_at: string;
   updated_at: string;
   item_photos?: ItemPhoto[];
+  item_videos?: ItemVideo[];
   categories?: Pick<Category, "name" | "slug"> | null;
   locations?: Pick<Location, "code"> | null;
   profiles?: Pick<Profile, "full_name" | "business_name"> | null;

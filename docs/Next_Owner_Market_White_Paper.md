@@ -93,6 +93,7 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - Facebook-style **Message about this** on every item page (name + phone/email + question; no account needed). Staff **Inbox** with unread badge, threads, canned replies, one-tap Text/Email, close/reopen. Logged-in buyers see replies under My account → Messages.
 - **Subscribers**: one list of every email/phone that touches the business (store sign-up box, messages, account sign-ups, wanted requests, pickups), with source counts and CSV export for Mailchimp/Gmail/texting blasts.
 - **Sign-up** creates accounts server-side, already confirmed, and signs the person straight in. No confirmation email, no Supabase Site URL/redirect settings involved.
+- **Videos** on listings: uploaded clips (≤50 MB, stored in the `item-photos` bucket) or pasted YouTube/Facebook/Vimeo links; table `item_videos` (migration 004); play in the public gallery.
 - **Photos**: gallery/file upload is the first option on every photo screen; camera is second.
 
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.

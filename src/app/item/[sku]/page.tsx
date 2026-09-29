@@ -18,7 +18,7 @@ async function load(sku: string) {
   const supabase = await createClient();
   await supabase.rpc("close_ended_auctions");
   const [{ data: item }, { data: biz }] = await Promise.all([
-    supabase.from("items").select("*, item_photos(*), categories(name, slug), auctions(*)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
+    supabase.from("items").select("*, item_photos(*), item_videos(*), categories(name, slug), auctions(*)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
@@ -61,7 +61,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <main className="max-w-3xl mx-auto p-4 space-y-4 pb-28">
         <Link href="/" className="text-sm muted">← All items</Link>
-        <PhotoGallery photos={photos.map((p) => p.url)} alt={item.title} />
+        <PhotoGallery media={[...photos.map((p) => ({ type: "photo" as const, url: p.url })), ...[...(item.item_videos || [])].sort((a, b) => a.sort_order - b.sort_order).map((v) => ({ type: "video" as const, url: v.url }))]} alt={item.title} />
         <div>
           <h1 className="text-2xl font-bold leading-tight">{item.title}</h1>
           <p className="text-3xl font-extrabold mt-1">{money(item.price)}</p>
