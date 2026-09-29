@@ -1,6 +1,6 @@
 # Next Owner Market — Complete Build Record & Recovery Guide
 
-*Prepared September 29, 2026. Keep this with the source-code zip in the OneDrive folder. Together they are everything needed to rebuild the whole system from nothing.*
+*Prepared September 29, 2026; updated the same evening with messaging, subscriber list, instant sign-up, and gallery upload. Keep this with the source-code zip in the OneDrive folder. Together they are everything needed to rebuild the whole system from nothing.*
 
 ---
 
@@ -89,6 +89,12 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - Pickup scheduling: staff open time slots; buyers request a slot from the item page; staff confirm/complete/no-show.
 - Auctions: start from any item (starting bid, days, reserve, buy-now); live countdown, minimum-increment rules, 2-minute anti-snipe extension, buy-now, live updates; buyers bid with a free account; winner contacted for payment/pickup (no in-app payments yet).
 
+**Messaging & customer list (added later the same day)**
+- Facebook-style **Message about this** on every item page (name + phone/email + question; no account needed). Staff **Inbox** with unread badge, threads, canned replies, one-tap Text/Email, close/reopen. Logged-in buyers see replies under My account → Messages.
+- **Subscribers**: one list of every email/phone that touches the business (store sign-up box, messages, account sign-ups, wanted requests, pickups), with source counts and CSV export for Mailchimp/Gmail/texting blasts.
+- **Sign-up** creates accounts server-side, already confirmed, and signs the person straight in. No confirmation email, no Supabase Site URL/redirect settings involved.
+- **Photos**: gallery/file upload is the first option on every photo screen; camera is second.
+
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
 
 ## 6. Decisions and why
@@ -104,11 +110,11 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 
 ## 7. Database (Supabase) — the tables
 
-All created by `supabase/schema.sql` then `supabase/schema_stage2.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
+All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
 
 profiles · categories · locations (bins) · items · item_photos · lots · lot_members · listings (per-platform tracking) · sales (commission and consignor_due computed) · payouts · payout_sales · sourcing_requests · saved_searches · favorites · notifications · auctions · bids · pickup_slots · pickups · activity_log · settings
 
-Functions/triggers: `handle_new_user` (auto-profile; first user = admin), `items_search_update` (full-text search), `touch_updated_at`, `is_staff`, `notify_saved_search_matches`, `on_item_activated` (fires alerts + matches Wanted requests), `place_bid` (all bidding rules in the DB), `close_ended_auctions`. Storage bucket `item-photos` (public read, signed-in upload). Realtime enabled on `auctions`.
+Functions/triggers: `handle_new_user` (auto-profile; first user = admin), `items_search_update` (full-text search), `touch_updated_at`, `is_staff`, `notify_saved_search_matches`, `on_item_activated` (fires alerts + matches Wanted requests), `place_bid` (all bidding rules in the DB), `close_ended_auctions`. Storage bucket `item-photos` (public read, signed-in upload). Realtime enabled on `auctions` and `conversations`. Migration 003 adds `subscribers`, `conversations`, `messages`, and RPCs `subscribe`, `start_conversation`, `reply_conversation`, `staff_reply`, plus auto-subscribe triggers.
 
 ## 8. Rebuild from nothing (about 30 minutes)
 
@@ -123,7 +129,7 @@ Functions/triggers: `handle_new_user` (auto-profile; first user = admin), `items
    revoke execute on function public.is_staff() from anon, public;
    revoke execute on function public.place_bid(uuid, numeric) from anon, public;
    ```
-   Authentication → Providers → Email: turn off "Confirm email" if you want instant sign-ins. Copy Project URL, publishable key, secret key.
+   Then run `supabase/migrations/003_messaging_and_subscribers.sql`. No Auth settings need changing (sign-up is handled server-side). Copy Project URL, publishable key, secret key.
 2. **Anthropic**: console.anthropic.com → API key, add credit.
 3. **GitHub**: create repo `next-owner-market`; unzip the source and push it (or upload). In Claude, connect GitHub (github.com/apps/claude → install on wholesale30) so Claude can push changes.
 4. **Vercel**: Add New Project → import the GitHub repo → add the environment variables above → Deploy. Settings → Domains → add `nextownermarket.com` and `www.nextownermarket.com`.
@@ -151,4 +157,5 @@ Stripe payments and buyer checkout · shipping labels · eBay direct posting/del
 - `next-owner-market-source.zip` — the complete source code (also on GitHub). Contains `supabase/schema.sql`, `supabase/schema_stage2.sql`, `SETUP.md`, `README.md`.
 - `Next_Owner_Market_White_Paper.docx` — this document.
 - `Next_Owner_Market_Marketing_Plan.docx` — the launch and growth plan.
+- `Next_Owner_Market_User_Guide.docx` — the feature book / instruction manual for showing to buyers, consignors, and partners.
 - Related earlier work: `Record_and_Turntable_Refurbish.md` (restoration checklist), `Facebook_Group_Handoff.md`.
