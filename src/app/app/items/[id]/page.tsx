@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
-import { money, commissionFor, DEFAULT_TIERS, facebookCopy, offerUpCopy, ebayCopy, craigslistCopy } from "@/lib/listing";
+import { money, commissionFor, DEFAULT_TIERS, facebookCopy, offerUpCopy, ebayCopy, craigslistCopy, etsyCopy, poshmarkCopy, vintedCopy, mercariCopy, depopCopy } from "@/lib/listing";
 import { STATUS_LABELS, CONDITION_LABELS, TIER_LABELS, type Item } from "@/lib/types";
 import ItemActions from "./ItemActions";
 import CopyBlock from "./CopyBlock";
@@ -81,9 +81,14 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
             <CopyBlock label="OfferUp" text={offerUpCopy(copyInput)} title={it.title} />
             <CopyBlock label="eBay" text={ebayCopy(copyInput)} />
             <CopyBlock label="Craigslist" text={craigslistCopy(copyInput)} />
+            <CopyBlock label="Mercari" text={mercariCopy(copyInput)} />
+            <CopyBlock label="Poshmark" text={poshmarkCopy(copyInput)} />
+            <CopyBlock label="Vinted" text={vintedCopy(copyInput)} />
+            <CopyBlock label="Depop" text={depopCopy(copyInput)} />
+            <CopyBlock label="Etsy (vintage / handmade only)" text={etsyCopy(copyInput)} />
           </>
         ) : (
-          <div className="card p-3 text-sm">Ready-to-paste versions for Facebook Marketplace, OfferUp, eBay, and Craigslist are a <b>Pro</b> feature. <Link href="/app/money" className="underline">Upgrade</Link>.</div>
+          <div className="card p-3 text-sm">Ready-to-paste versions for Facebook Marketplace, OfferUp, eBay, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy are a <b>Pro</b> feature. <Link href="/app/money" className="underline">Upgrade</Link>.</div>
         )}
         <div className="card p-3 text-sm">
           <p className="label">Storefront link</p>

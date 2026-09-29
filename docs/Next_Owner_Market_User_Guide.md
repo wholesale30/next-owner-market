@@ -39,7 +39,7 @@ Sign in at **nextownermarket.com/login**. New accounts are ready the moment you 
 |---|---|---|
 | Live listings in the store | 10 (5 and $500 total until your first 3 sales) | Unlimited |
 | AI writes the listing from photos | 3 to try | Unlimited |
-| Ready-to-paste text for Facebook Marketplace, eBay, OfferUp, Craigslist | — | ✔ |
+| Ready-to-paste text for Facebook, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy | — | ✔ |
 | Video on listings | — | ✔ |
 | Sell through the store with card checkout | ✔ | ✔ |
 
@@ -128,7 +128,7 @@ Everything the AI or a consignor produced, waiting for a human eye. Open, check 
 
 ### 4.5 The item page (/app/items/ID)
 Everything about one item:
-- **Copy blocks** — 📘 Facebook, 🟢 OfferUp, 🟡 eBay, 📋 Craigslist. Tap to copy the platform-formatted listing; paste it into the app. (Facebook offers no posting API; copy-paste is the only allowed path. eBay direct posting is on the roadmap.)
+- **Copy blocks** — Facebook Marketplace/Group, OfferUp, eBay, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy (vintage/handmade only). Each is formatted to that site's rules (title length, tags, hashtags). Tap to copy, open the app, paste. Only eBay and Etsy offer posting APIs; the rest allow no automation, so copy-paste is the only safe path. eBay direct posting is on the roadmap.
 - **✅ Approve & list · Unlist · Hold / Release hold · Archive**
 - **💰 Mark sold** — sold for, shipping charged, platform fees, channel (Facebook, store, eBay, cash walk-in…), paid by, buyer name and contact. Commission and consignor payout are calculated automatically. **Undo sale** relists it.
 - **📦 Mark shipped**

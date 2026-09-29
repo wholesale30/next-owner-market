@@ -91,3 +91,35 @@ export function ebayCopy(input: ListingCopyInput) {
 export function craigslistCopy(input: ListingCopyInput) {
   return `${input.item.title}\n\n${baseBody(input)}`;
 }
+
+/** Etsy: 140-char title, 13 tags max (20 chars each). Only handmade, vintage (20+ yrs), or craft supplies are allowed. */
+export function etsyCopy(input: ListingCopyInput) {
+  const { item } = input;
+  const tags = Array.from(new Set([...(item.tags || []), item.brand || "", item.model || ""].filter(Boolean).map((t) => t.slice(0, 20)))).slice(0, 13);
+  return `TITLE (140 char max):\n${item.title.slice(0, 140)}\n\nDESCRIPTION:\n${baseBody(input)}\n\nTAGS (up to 13):\n${tags.join(", ")}\n\nNote: Etsy allows only handmade, vintage (20+ years old), or craft supplies. Pick "Vintage" and the decade when listing.`;
+}
+
+/** Poshmark: 80-char title, fashion/home. Buyers expect a short blurb; Poshmark takes 20% (or $2.95 under $15). */
+export function poshmarkCopy(input: ListingCopyInput) {
+  const { item } = input;
+  return `TITLE (80 char max):\n${item.title.slice(0, 80)}\n\nDESCRIPTION:\n${baseBody(input)}\n\nTip: price about 20% above your bottom line; Poshmark buyers always send offers.`;
+}
+
+/** Vinted: 100-char title; no fees to the seller (buyer pays protection fee). Clothing, accessories, home, electronics. */
+export function vintedCopy(input: ListingCopyInput) {
+  const { item } = input;
+  return `TITLE (100 char max):\n${item.title.slice(0, 100)}\n\nDESCRIPTION:\n${baseBody(input)}\n\nHashtags:\n${(item.tags || []).slice(0, 5).map((t) => "#" + t.replace(/\s+/g, "")).join(" ")}`;
+}
+
+/** Mercari: 80-char title, 1,000-char description. */
+export function mercariCopy(input: ListingCopyInput) {
+  const { item } = input;
+  return `TITLE (80 char max):\n${item.title.slice(0, 80)}\n\nDESCRIPTION (1000 char max):\n${baseBody(input).slice(0, 1000)}`;
+}
+
+/** Depop: short, casual, hashtags matter. */
+export function depopCopy(input: ListingCopyInput) {
+  const { item } = input;
+  const tags = (item.tags || []).slice(0, 5).map((t) => "#" + t.replace(/\s+/g, ""));
+  return `${item.title}\n\n${item.description.trim().slice(0, 600)}\n\n${item.condition ? CONDITION_LABELS[item.condition] + ". " : ""}${item.shipping_ok ? "Ships fast." : "Local pickup."}\n\n${tags.join(" ")}`;
+}
