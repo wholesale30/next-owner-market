@@ -42,6 +42,7 @@ SUPABASE_SERVICE_ROLE_KEY       (secret key)
 ANTHROPIC_API_KEY               (Anthropic key)
 NEXT_PUBLIC_SITE_URL            https://nextownermarket.com
 CRON_SECRET                     (any long random string)
+STRIPE_SECRET_KEY               (Stripe secret key, sk_live_… or sk_test_…)
 optional: CLAUDE_MODEL, CLAUDE_GROUP_MODEL, RESEND_API_KEY, EMAIL_FROM,
           TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
 ```
@@ -96,6 +97,16 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - **Videos** on listings: uploaded clips (≤50 MB, stored in the `item-photos` bucket) or pasted YouTube/Facebook/Vimeo links; table `item_videos` (migration 004); play in the public gallery.
 - **Photos**: gallery/file upload is the first option on every photo screen; camera is second.
 
+**Checkout, payouts, plans, trust (migration 005, added the same evening)**
+- **Buy now** on every active fixed-price item → Stripe Checkout (card / Apple Pay / Google Pay). Funds are held on the platform balance ("separate charges and transfers"). `orders` table tracks status: pending_payment → paid → released / refunded / disputed / cancelled.
+- **Pickup**: 6-digit `pickup_code` shown to the buyer; seller enters it (`/api/orders/release`) → transfer to seller's Stripe Express account (`stripe_account_id`), `sales` row written by trigger `on_order_released`, item marked sold, seller `completed_sales` incremented. Unpicked-up orders auto-refund after 7 days (cron).
+- **Ship**: seller adds tracking (`/api/orders/ship`), marks delivered → `release_after` = +3 days (cron auto-releases) or buyer taps "I received it" (`/api/orders/delivered`).
+- **Refund/cancel** before hand-off (`/api/orders/refund`); **disputes** freeze funds (`disputes`, `dispute_messages`); staff resolve at /app/disputes (`/api/orders/resolve`).
+- **Seller onboarding**: Stripe Connect Express (`/api/stripe/connect`); `stripe_payouts_ready` set by `account.updated` webhook. Platform-owned items (admin/staff) need no transfer.
+- **Pro plan** $15/mo via Stripe subscription (`/api/stripe/subscribe`, portal at `/api/stripe/portal`); `profiles.plan`. Free users get `ai_credits` = 3 (spent server-side by `spend_ai_credit()`); copy-paste blocks, video, and unlimited listings are Pro. Enforced in DB triggers (`items_trust_guard`, `videos_plan_guard`) and API routes, not just UI.
+- **Trust**: `strip_contact()` removes phones/emails/payment handles from non-staff listings; new-seller caps (5 listings / $500 until 3 completed sales); free cap 10 live; `suspended` flag; `ratings` table with `rating_avg`/`rating_count` on profiles.
+- **Admin one-tap setup** (`/api/stripe/setup`, button on Money): creates the webhook endpoint (`/api/stripe/webhook`) and the Pro price; secrets stored in `settings.stripe`. Needs env `STRIPE_SECRET_KEY`. Connect must be enabled once in the Stripe dashboard (Connect → Get started).
+
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
 
 ## 6. Decisions and why
@@ -104,14 +115,14 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - **Hosting**: Vercel + Supabase, both free to start, scale to ~$20–25/mo each. No WordPress, no traditional hosting. The domain points straight at Vercel.
 - **Photos on plain <img>** rather than Vercel Image Optimization (metered). Supabase serves photos directly.
 - **Plain white/light background** for all photos, same for all consignors (consistency, marketplace trust, no "official-looking" scam listings).
-- **Money stays outside the app for now** (cash, Zelle, etc.); the app tracks who is owed what. Payments (Stripe), shipping labels, and a store-listed native app are later stages and plug into the existing tables without a rebuild.
+- **Money**: store sales run through Stripe with held funds (see Checkout above). Cash/Facebook sales are still recorded by hand and consignors paid from Money → Mark paid. Shipping labels and a store-listed native app are later stages.
 - **AI models**: `claude-sonnet-5-5` for listing writing and photo grouping (override with env vars). Cost is pennies per item.
 - **Cron** is daily because Vercel's free plan limits cron frequency.
 - **eBay direct posting** is possible later (eBay has an API); Facebook is not.
 
 ## 7. Database (Supabase) — the tables
 
-All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
+All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql`, `004_item_videos.sql`, `005_checkout_trust.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
 
 profiles · categories · locations (bins) · items · item_photos · lots · lot_members · listings (per-platform tracking) · sales (commission and consignor_due computed) · payouts · payout_sales · sourcing_requests · saved_searches · favorites · notifications · auctions · bids · pickup_slots · pickups · activity_log · settings
 
@@ -151,7 +162,7 @@ Functions/triggers: `handle_new_user` (auto-profile; first user = admin), `items
 
 ## 10. Roadmap (already designed for, tables exist)
 
-Stripe payments and buyer checkout · shipping labels · eBay direct posting/delisting · email/text sending (add Resend/Twilio keys) · Facebook Page auto-posting (Meta developer app + Page token; Marketplace/Groups stay copy-paste) · reseller/lot-buyer tier with early access · referral credits · personal-shopper matching · reviews and seller ratings · native app store version · licensing the software to other surplus dealers.
+Shipping labels · eBay direct posting/delisting · email/text sending (add Resend/Twilio keys) · Facebook Page auto-posting (Meta developer app + Page token; Marketplace/Groups stay copy-paste) · reseller/lot-buyer tier with early access · referral credits · personal-shopper matching · native app store version · licensing the software to other surplus dealers.
 
 ## 11. Files in the OneDrive folder
 

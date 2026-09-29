@@ -33,6 +33,18 @@ It runs in any phone browser (Chrome, Safari, Samsung Internet). Add it to your 
 
 Sign in at **nextownermarket.com/login**. New accounts are ready the moment you create them (no confirmation email).
 
+### Free vs Pro (for sellers)
+
+| | Free | Pro ($15/month) |
+|---|---|---|
+| Live listings in the store | 10 (5 and $500 total until your first 3 sales) | Unlimited |
+| AI writes the listing from photos | 3 to try | Unlimited |
+| Ready-to-paste text for Facebook Marketplace, eBay, OfferUp, Craigslist | — | ✔ |
+| Video on listings | — | ✔ |
+| Sell through the store with card checkout | ✔ | ✔ |
+
+Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts → Upgrade to Pro**; cancel any time from the same page.
+
 ---
 
 ## Part 3 · The public store (what shoppers see)
@@ -50,6 +62,7 @@ Sign in at **nextownermarket.com/login**. New accounts are ready the moment you 
 
 ### 3.2 Item page (nextownermarket.com/item/SKU)
 - Photo and video gallery (swipe; ▶ thumbnails are videos), price, condition, brand/model, specs, full description, bin location (staff only).
+- **🛒 Buy now** — pay by card, Apple Pay, or Google Pay. Choose **Pickup** or **Ship** (if the seller offers it). The money is held, not paid to the seller, until you have the item (see 3.6).
 - **💬 Message about this** — Facebook-style message. Shopper enters name and phone or email plus their question. It goes straight to the staff Inbox; if they have a buyer account the reply also shows in their account.
 - **Text about this / Email** — one-tap direct contact using the business phone/email from Settings.
 - **♡ Save** — buyer accounts only.
@@ -60,11 +73,21 @@ Sign in at **nextownermarket.com/login**. New accounts are ready the moment you 
 ### 3.3 "I'm looking for something" (nextownermarket.com/looking-for)
 A sourcing request form: what you want, top budget, how far you'll drive, OK to ship, and how to reach you. Requests go to the staff **Wanted** list. When a matching item is listed later, the system flags the match automatically.
 
+### 3.6 How buying works (held payment)
+1. Tap **Buy now**, pay on the secure checkout page.
+2. **Pickup:** your order page shows a **6-digit code**. Meet the seller, check the item, then read them the code. They enter it and the payment is released. Don't give the code until the item is in your hands. If pickup never happens, you're refunded automatically after 7 days.
+   **Shipping:** the seller adds tracking. When it arrives, tap **I received it** (or it releases on its own 3 days after delivery).
+3. Something wrong? Tap **Report a problem** on the order. The money stays frozen until staff decide: refund you, or pay the seller.
+4. After it's done, rate the seller (and they rate you). Ratings show on every listing.
+
+Card payments are processed by Stripe; the store never sees your card number.
+
 ### 3.4 Sign up (nextownermarket.com/signup)
 - **Buyer account** — name, email, phone, password. Instantly active.
 - **Consignor account** — same form via "Sell with us". Instantly active, but items only go live after staff approval.
 
 ### 3.5 My account (nextownermarket.com/account)
+- **My orders** — every purchase, with the pickup code, tracking, and the buttons above.
 - **Messages** — every conversation you've started, with replies.
 - **Alerts** — create a saved search ("Technics turntable under $300", any category). When a matching item goes live you're notified here and, once email/text sending is switched on, by email or text.
 - **My bids** — every auction you've bid on: winning / outbid / won / lost.
@@ -74,7 +97,7 @@ A sourcing request form: what you want, top budget, how far you'll drive, OK to 
 
 ## Part 4 · The staff app (nextownermarket.com/app)
 
-Sign in as staff and you land on the staff app. The top bar scrolls sideways on a phone: **Inventory · + Add · 📷 Snap · 💬 Inbox · Review · Wanted · Pickups · Bins · Money · People**, plus **Settings** for the admin.
+Sign in as staff and you land on the staff app. The top bar scrolls sideways on a phone: **Inventory · + Add · 📷 Snap · 💬 Inbox · 🛒 Orders · Review · Wanted · Pickups · Bins · Money · People**, plus **Settings** for the admin.
 
 ### 4.1 Inventory (/app)
 The master list of every item.
@@ -125,6 +148,15 @@ Every message from every item page and general question, newest first, with an u
 - **Close / Reopen** threads. Filter Open / All.
 - **📧 List** — jumps to the subscriber list.
 
+### 4.7b 🛒 Orders (/app/orders) and Problems (/app/disputes)
+Every store purchase. Open orders are highlighted.
+- **Pickup orders:** at hand-off, open the order and enter the buyer's 6-digit code → **Release**. Done; the sale is recorded under Money automatically and the item is marked sold.
+- **Shipping orders:** add carrier and tracking number → **Save tracking**. When delivered, tap **Mark delivered**; money releases 3 days later unless the buyer reports a problem.
+- **Cancel & refund** any paid order before hand-off (item damaged, can't find it).
+- **Problems:** buyer or seller reports go here. Read both sides, then **Refund buyer** or **Pay seller**, with a note both can see.
+
+Consignors see only their own orders and enter codes for their own hand-offs.
+
 ### 4.8 Wanted (/app/requests)
 All "looking for" requests: what, budget, distance, contact, status (open → searching → matched → fulfilled). Text or email the person from the row. Carry this list when you buy pallets. Automatic matches show when a fitting item is listed.
 
@@ -138,7 +170,8 @@ Every Gaylord, pallet, shelf, or bin code with item counts. Mark a bin **sorted*
 - **This month:** sold total and your take (after cost, fees, shipping).
 - **All time** totals.
 - **Sales log** — every sale with channel, fees, commission, consignor due.
-- **Consignor balances** — who is owed what; **Mark paid** records a payout in one tap.
+- **Consignor balances** — who is owed what for sales made outside the store (cash, Facebook); **Mark paid** records a payout in one tap. Store sales pay consignors automatically through Stripe and need nothing here.
+- **Payments (admin)** — one-tap Stripe setup and status check.
 - **⬇ CSV** — sales, items, or subscribers. Tax-ready columns: date, SKU, sale price, cost, shipping, fees, commission, consignor due, channel, payment method.
 
 ### 4.12 People (/app/people)
@@ -158,7 +191,9 @@ Business name, tagline, city, contact phone and email (used by the Text/Email bu
 2. Staff approve the account (People → Approve) and set the tier.
 3. Consignor taps **+ Add**, uploads photos, lets the AI write it, submits.
 4. Staff review and approve; the item goes live in the store and can be copy-posted to Facebook, OfferUp, eBay, Craigslist.
-5. When it sells, the app computes the split and shows the consignor's balance under **Payouts**. Staff pay (cash, Zelle, etc.) and tap **Mark paid**.
+5. **Set up payouts** (Payouts page, 2 minutes, done with Stripe: name, address, bank account; we never see them). Until this is done, listings show without a Buy button.
+6. When a buyer pays in the store, the money is held. At pickup the consignor enters the buyer's code (or ships with tracking). The consignor's share, minus commission, lands in their bank in about 2 business days. Nothing to invoice, nothing to chase.
+7. Sales made outside the store (cash at the warehouse, Facebook) are still recorded by staff and paid from **Money → Mark paid**.
 
 **Commission** is charged on the sale price only, never on shipping:
 
@@ -190,6 +225,17 @@ Rates are editable in Settings, per consignor, and per item.
 
 ---
 
+## Part 6b · Trust and safety (how we keep fraud out)
+
+- **Verified sellers only.** Nobody can sell through checkout without passing Stripe's identity and bank verification.
+- **Held payment.** Buyers never pay a stranger directly; sellers never hand over an item to someone who hasn't paid.
+- **New-seller limits.** 5 live listings and $500 total until 3 sales are completed.
+- **Contact info is removed from listings** (phone numbers, emails, "Venmo me") so every deal is protected by checkout. Staff listings are exempt.
+- **Ratings both ways** after every completed order.
+- **Problem reports** freeze the money; staff decide.
+- **Prohibited-item screening** by the AI on every listing (recalls, weapons, counterfeits).
+- **Suspend** any account from People; suspended sellers can't list or sell.
+
 ## Part 7 · Sharing the store
 
 - Store: **https://nextownermarket.com**
@@ -207,9 +253,9 @@ Post the store link in your Facebook group's description and pinned post. Every 
 - eBay direct listing and delisting
 - Facebook Page auto-posting (Marketplace and Groups will stay copy-paste; Facebook allows nothing else)
 - Email and text sending switched on (alerts, pickup confirmations, message replies)
-- In-app payments (Stripe) and shipping labels
+- Shipping labels bought in the app
 - Label-printer presets (DYMO LabelWriter and others)
-- Referral credits, reseller early-access tier, seller ratings
+- Referral credits, reseller early-access tier
 - App-store version
 - Licensing the platform to other surplus dealers
 
