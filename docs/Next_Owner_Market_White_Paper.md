@@ -1,0 +1,154 @@
+# Next Owner Market — Complete Build Record & Recovery Guide
+
+*Prepared September 29, 2026. Keep this with the source-code zip in the OneDrive folder. Together they are everything needed to rebuild the whole system from nothing.*
+
+---
+
+## 1. What this is
+
+Next Owner Market (nextownermarket.com) is a phone-first web app for a surplus resale business: inventory, AI-written listings, consignment, a public storefront, auctions, pickups, buyer alerts, and clean books. Built in one day, September 29, 2026, in a conversation with Claude. Owner: Shayne Snavely (shayne.snavely@gmail.com), GitHub `wholesale30`.
+
+Business context that shaped it: 30 years in surplus, restarting after 4–5 years out. 25,000 sq ft warehouse ($1,000/mo) with 300+ Gaylord boxes of paid-for inventory (audio gear, tools, kitchen, electronics, lamps, vintage, and more). Goals: sell fast, sell other people's goods on consignment at a strong commission, grow into a national marketplace, and keep clean records for taxes.
+
+## 2. Live addresses
+
+| What | Address |
+|---|---|
+| Store (public) | https://nextownermarket.com (also next-owner-market.vercel.app) |
+| Staff / consignor sign-in | https://nextownermarket.com/login |
+| Consignor sign-up | https://nextownermarket.com/signup |
+| Buyer sign-up | https://nextownermarket.com/signup?buyer=1 |
+| Source code | https://github.com/wholesale30/next-owner-market (private) |
+
+## 3. The accounts (all free tier)
+
+| Service | Purpose | Where | Identifier |
+|---|---|---|---|
+| GoDaddy | Domain nextownermarket.com (1 yr, $12.99, no protection) | godaddy.com | DNS: A `@` → 76.76.21.21; CNAME `www` → cname.vercel-dns.com |
+| GitHub | Source code storage | github.com | user `wholesale30`, repo `next-owner-market` |
+| Vercel | Runs the app (hosting, SSL, cron) | vercel.com (signed in with GitHub) | project `next-owner-market`, id `prj_VzFBDFjx5WS6ShwiQaiaQrxv08Ed`, team `team_VPppcRNIAlkJ0VhxfpgHfNad` |
+| Supabase | Database, photo storage, logins | supabase.com | project ref `efikjdiamqzqnbifauke`, URL https://efikjdiamqzqnbifauke.supabase.co, region ca-central-1 |
+| Anthropic | AI listing writer & photo sorter | console.anthropic.com | pay-as-you-go API key (~1–3¢ per item) |
+| Claude (Anthropic) | Where the code gets written/changed | claude.ai, project "Warehouse items", GitHub connected | — |
+
+**Secrets** (never paste into a public place): Supabase publishable key `sb_publishable_…`, Supabase secret key `sb_secret_…`, Anthropic key `sk-ant-…`, CRON_SECRET. All are stored in Vercel → Project → Settings → Environment Variables. If lost, each can be regenerated in its own dashboard and pasted back into Vercel; nothing else changes.
+
+Environment variables the app reads:
+
+```
+NEXT_PUBLIC_SUPABASE_URL        https://efikjdiamqzqnbifauke.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY   (publishable key)
+SUPABASE_SERVICE_ROLE_KEY       (secret key)
+ANTHROPIC_API_KEY               (Anthropic key)
+NEXT_PUBLIC_SITE_URL            https://nextownermarket.com
+CRON_SECRET                     (any long random string)
+optional: CLAUDE_MODEL, CLAUDE_GROUP_MODEL, RESEND_API_KEY, EMAIL_FROM,
+          TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
+```
+
+## 4. How the pieces fit
+
+```
+Phone / browser
+   │
+   ▼
+Vercel (Next.js 16 app, React 19, Tailwind 4)        ← code from GitHub main branch
+   │  • storefront, staff app, API routes
+   │  • daily cron → /api/notify/send
+   ├──► Supabase Postgres  (all data, row-level security by role)
+   ├──► Supabase Storage   (bucket "item-photos", public read)
+   ├──► Supabase Auth      (email + password logins; first user ever = admin)
+   └──► Anthropic API      (photo → listing; batch photo → item groups)
+Background removal runs in the browser (on-device model, @imgly/background-removal); no per-photo cost.
+```
+
+## 5. Everything the app does (as of this record)
+
+**Inventory & listing**
+- Add item: photos → AI writes title, description, brand/model, category, condition, specs, tags, price range, "worth listing?" and recall/prohibited warning. Approve or edit, then list.
+- Snap mode: shoot one item after another (Next item), or **Dump a batch** of up to 40 photos and the AI sorts them into items (split/merge to correct). Finish creates every draft, cleans backgrounds, writes every listing, and sends them to Review.
+- Background cleanup: item cut out and placed on a plain background (color set in Settings, white default). Falls back to the original photo if the model can't find a subject.
+- Bins / pallet mode: every item carries a bin/gaylord/shelf code; bins can be marked sorted with notes; per-bin counts.
+- Bulk actions: select many → List, Make lot, Move bin, Print tags, Unlist, Archive.
+- Lots: selected items become one listing; members reserved under it.
+- QR tags: small (thermal label), 4×2, or 4×6 hang tag with description; scan opens the item page. Single or bulk.
+- Copy-paste listings for Facebook Marketplace/Group, OfferUp, eBay, Craigslist. (Facebook has no posting API; Groups API was removed April 2024. Copy-paste is the only allowed path.)
+- Stale flag on anything listed 30+ days.
+- Statuses: draft → pending_review → active → reserved → sold → shipped; returned; archived.
+
+**Consignment**
+- Tiers and commission (on sale price only, never shipping): full service 40% (50% under $50), drop-off 30%, self-listed 15%. Per-consignor and per-item overrides. All editable in Settings.
+- Consignors sign up, are approved by admin, add items (with photos and AI listing), see only their own items/sales/payouts. Items go live only after staff approval (Review queue).
+- Money page: sales log, this-month sold and your take (after cost, fees, shipping), all-time, consignor balances, one-tap "Mark paid" payouts, CSV export of sales or items.
+
+**Storefront & buyers**
+- Public, searchable store with category pills (22 top categories + audio/tools/kitchen subcategories, editable in DB), sort by newest/price, per-item pages with Google Product markup (SEO), "Text about this"/"Email" buttons (uses the phone/email in Settings), share-ready links.
+- Buyer accounts: save items (♡), saved-search alerts ("alert me when a Technics turntable shows up"), bid history, notifications.
+- Alerts are queued automatically by a database trigger when a matching item goes active; they show in the buyer's account immediately and are emailed/texted once Resend/Twilio keys are added (cron runs daily; can be made more frequent on a paid Vercel plan).
+- "Looking for something?" sourcing form → staff **Wanted** list (open/searching/matched/fulfilled; auto-matched when a matching item is listed).
+- Pickup scheduling: staff open time slots; buyers request a slot from the item page; staff confirm/complete/no-show.
+- Auctions: start from any item (starting bid, days, reserve, buy-now); live countdown, minimum-increment rules, 2-minute anti-snipe extension, buy-now, live updates; buyers bid with a free account; winner contacted for payment/pickup (no in-app payments yet).
+
+**Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
+
+## 6. Decisions and why
+
+- **Name**: "Next Owner Market" (plain nextowner.com is a used-car dealer in Alabama; unrelated business). Tagline: *Find its next owner.*
+- **Hosting**: Vercel + Supabase, both free to start, scale to ~$20–25/mo each. No WordPress, no traditional hosting. The domain points straight at Vercel.
+- **Photos on plain <img>** rather than Vercel Image Optimization (metered). Supabase serves photos directly.
+- **Plain white/light background** for all photos, same for all consignors (consistency, marketplace trust, no "official-looking" scam listings).
+- **Money stays outside the app for now** (cash, Zelle, etc.); the app tracks who is owed what. Payments (Stripe), shipping labels, and a store-listed native app are later stages and plug into the existing tables without a rebuild.
+- **AI models**: `claude-sonnet-5-5` for listing writing and photo grouping (override with env vars). Cost is pennies per item.
+- **Cron** is daily because Vercel's free plan limits cron frequency.
+- **eBay direct posting** is possible later (eBay has an API); Facebook is not.
+
+## 7. Database (Supabase) — the tables
+
+All created by `supabase/schema.sql` then `supabase/schema_stage2.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
+
+profiles · categories · locations (bins) · items · item_photos · lots · lot_members · listings (per-platform tracking) · sales (commission and consignor_due computed) · payouts · payout_sales · sourcing_requests · saved_searches · favorites · notifications · auctions · bids · pickup_slots · pickups · activity_log · settings
+
+Functions/triggers: `handle_new_user` (auto-profile; first user = admin), `items_search_update` (full-text search), `touch_updated_at`, `is_staff`, `notify_saved_search_matches`, `on_item_activated` (fires alerts + matches Wanted requests), `place_bid` (all bidding rules in the DB), `close_ended_auctions`. Storage bucket `item-photos` (public read, signed-in upload). Realtime enabled on `auctions`.
+
+## 8. Rebuild from nothing (about 30 minutes)
+
+1. **Supabase**: New project → SQL Editor → run `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then:
+   ```sql
+   alter function public.items_search_update() set search_path = public;
+   alter function public.touch_updated_at() set search_path = public;
+   revoke execute on function public.handle_new_user() from anon, authenticated, public;
+   revoke execute on function public.on_item_activated() from anon, authenticated, public;
+   revoke execute on function public.notify_saved_search_matches(uuid) from anon, authenticated, public;
+   revoke execute on function public.current_role_name() from anon, public;
+   revoke execute on function public.is_staff() from anon, public;
+   revoke execute on function public.place_bid(uuid, numeric) from anon, public;
+   ```
+   Authentication → Providers → Email: turn off "Confirm email" if you want instant sign-ins. Copy Project URL, publishable key, secret key.
+2. **Anthropic**: console.anthropic.com → API key, add credit.
+3. **GitHub**: create repo `next-owner-market`; unzip the source and push it (or upload). In Claude, connect GitHub (github.com/apps/claude → install on wholesale30) so Claude can push changes.
+4. **Vercel**: Add New Project → import the GitHub repo → add the environment variables above → Deploy. Settings → Domains → add `nextownermarket.com` and `www.nextownermarket.com`.
+5. **GoDaddy** DNS: A `@` → 76.76.21.21; CNAME `www` → cname.vercel-dns.com.
+6. Open the site → Staff sign in → Create account (first account = admin) → People → Settings: business name, city, phone, photo background, commission tiers.
+7. Restoring data: Supabase keeps backups on paid plans; on the free plan, use Money → CSV regularly, and Supabase → Database → Backups when available. Photos live in the Storage bucket.
+
+## 9. Day-to-day operations
+
+- **List stuff**: 📷 Snap → Dump a batch (or Shoot) → Finish → Review → Approve. Print tags. Copy the Facebook text from the item page and paste it into Marketplace and the group.
+- **Sell**: item page → Mark sold → record price, channel, payment method, buyer. Consignor payout appears under Money.
+- **Consignors**: People → tap → Approve; set tier/commission. Their items come to Review.
+- **Helpers**: People → tap → role = staff.
+- **Buyers wanting something**: Wanted tab; text or email them from the row; carry the list when buying pallets.
+- **Auctions**: item page → Start an auction. Ends on its own; winner shows on their account page and in bids.
+- **Pickups**: Pickups tab → open a day → buyers pick slots from item pages → confirm.
+- **Changes to the app**: ask Claude in the "Warehouse items" project; it pushes to GitHub and deploys (or click Redeploy in Vercel).
+
+## 10. Roadmap (already designed for, tables exist)
+
+Stripe payments and buyer checkout · shipping labels · eBay direct posting/delisting · email/text sending (add Resend/Twilio keys) · Facebook Page auto-posting (Meta developer app + Page token; Marketplace/Groups stay copy-paste) · reseller/lot-buyer tier with early access · referral credits · personal-shopper matching · reviews and seller ratings · native app store version · licensing the software to other surplus dealers.
+
+## 11. Files in the OneDrive folder
+
+- `next-owner-market-source.zip` — the complete source code (also on GitHub). Contains `supabase/schema.sql`, `supabase/schema_stage2.sql`, `SETUP.md`, `README.md`.
+- `Next_Owner_Market_White_Paper.docx` — this document.
+- `Next_Owner_Market_Marketing_Plan.docx` — the launch and growth plan.
+- Related earlier work: `Record_and_Turntable_Refurbish.md` (restoration checklist), `Facebook_Group_Handoff.md`.
