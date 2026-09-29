@@ -56,6 +56,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   const supabase = useMemo(() => createClient(), []);
   const staff = profile.role === "admin" || profile.role === "staff";
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
   const [photos, setPhotos] = useState<LocalPhoto[]>(
     (initialPhotos || []).map((p) => ({ id: p.id, url: p.url, storage_path: p.storage_path }))
@@ -292,12 +293,17 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
               <button type="button" onClick={() => removePhoto(p.id)} className="absolute right-1 top-1 w-7 h-7 rounded-full text-white text-sm" style={{ background: "rgba(0,0,0,.6)" }} aria-label="Remove">×</button>
             </div>
           ))}
-          <button type="button" onClick={() => fileRef.current?.click()} className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-sm font-semibold" style={{ borderColor: "var(--line)" }}>
+          <button type="button" onClick={() => fileRef.current?.click()} className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-sm font-semibold" style={{ borderColor: "var(--brand)" }}>
+            <span className="text-2xl">🖼</span>
+            Upload photos
+          </button>
+          <button type="button" onClick={() => cameraRef.current?.click()} className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-sm font-semibold" style={{ borderColor: "var(--line)" }}>
             <span className="text-2xl">📷</span>
-            Add photo
+            Take a photo
           </button>
         </div>
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+        <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+        <input ref={cameraRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos</label>
 
         {step === "photos" && (

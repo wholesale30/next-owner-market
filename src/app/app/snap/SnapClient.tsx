@@ -20,6 +20,7 @@ const newGroup = (shots: Shot[] = []): Group => ({ id: crypto.randomUUID(), shot
 export default function SnapClient({ userId, bins, photoBg }: { userId: string; bins: { id: string; code: string }[]; photoBg: string }) {
   const supabase = useMemo(() => createClient(), []);
   const shootRef = useRef<HTMLInputElement>(null);
+  const uploadRef = useRef<HTMLInputElement>(null);
   const dumpRef = useRef<HTMLInputElement>(null);
   const [groups, setGroups] = useState<Group[]>([newGroup()]);
   const [bin, setBin] = useState("");
@@ -166,10 +167,12 @@ export default function SnapClient({ userId, bins, photoBg }: { userId: string; 
       </div>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean backgrounds (cuts the item out onto a plain background; first use downloads ~40MB once)</label>
 
+      <button type="button" className="btn btn-primary w-full" disabled={busy} onClick={() => uploadRef.current?.click()}>🖼 Upload photos from gallery</button>
       <div className="grid grid-cols-2 gap-2">
-        <button type="button" className="btn btn-primary" disabled={busy} onClick={() => shootRef.current?.click()}>📷 Shoot this item</button>
-        <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => dumpRef.current?.click()}>{sorting ? "Sorting…" : "🗂 Dump a batch"}</button>
+        <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => shootRef.current?.click()}>📷 Take a photo</button>
+        <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => dumpRef.current?.click()}>{sorting ? "Sorting…" : "🗂 Dump a batch (AI sorts)"}</button>
       </div>
+      <input ref={uploadRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addToCurrent(e.target.files); e.target.value = ""; }} />
       <input ref={shootRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addToCurrent(e.target.files); e.target.value = ""; }} />
       <input ref={dumpRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { dump(e.target.files); e.target.value = ""; }} />
 
