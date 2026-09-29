@@ -9,11 +9,14 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   if (profile.role === "buyer") redirect("/account");
   const staff = profile.role === "admin" || profile.role === "staff";
   let unread = 0;
+  const supabase = await createClient();
   if (staff) {
-    const supabase = await createClient();
     const { count } = await supabase.from("conversations").select("id", { count: "exact", head: true }).eq("unread_for_staff", true).neq("status", "closed");
     unread = count || 0;
   }
+  let oq = supabase.from("orders").select("id", { count: "exact", head: true }).in("status", ["paid", "disputed"]);
+  if (!staff) oq = oq.eq("seller_id", profile.id);
+  const openOrders = (await oq).count || 0;
 
   const nav = staff
     ? [
@@ -21,6 +24,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/items/new", label: "+ Add" },
         { href: "/app/snap", label: "📷 Snap" },
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
+        { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
         { href: "/app/review", label: "Review" },
         { href: "/app/requests", label: "Wanted" },
         { href: "/app/pickups", label: "Pickups" },
@@ -31,6 +35,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     : [
         { href: "/app", label: "My items" },
         { href: "/app/items/new", label: "+ Add" },
+        { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
         { href: "/app/money", label: "Payouts" },
       ];
 

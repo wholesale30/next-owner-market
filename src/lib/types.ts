@@ -31,6 +31,16 @@ export interface Profile {
   default_commission_pct: number | null;
   default_tier: Tier | null;
   referral_code: string;
+  stripe_account_id?: string | null;
+  stripe_payouts_ready?: boolean;
+  stripe_customer_id?: string | null;
+  plan?: "free" | "pro";
+  plan_renews_at?: string | null;
+  completed_sales?: number;
+  rating_avg?: number | null;
+  rating_count?: number;
+  suspended?: boolean;
+  ai_credits?: number;
 }
 
 export interface Category {
@@ -87,6 +97,7 @@ export interface Item {
   serviced: boolean;
   service_notes: string | null;
   shipping_ok: boolean;
+  shipping_price?: number;
   local_pickup_ok: boolean;
   weight_lbs: number | null;
   ai_generated: boolean;
@@ -126,3 +137,12 @@ export const TIER_LABELS: Record<Tier, string> = {
   drop_off: "Drop-off consignment",
   self_listed: "Self-listed consignment",
 };
+
+export type OrderStatus = "pending_payment" | "paid" | "released" | "refunded" | "disputed" | "cancelled";
+export interface Order {
+  id: string; item_id: string; buyer_id: string; seller_id: string; fulfillment: "pickup" | "ship";
+  amount: number; shipping: number; total: number; commission_pct: number; commission_amount: number; seller_due: number;
+  status: OrderStatus; pickup_code: string; tracking_carrier: string | null; tracking_number: string | null;
+  shipped_at: string | null; delivered_at: string | null; release_after: string | null; expires_at: string | null;
+  paid_at: string | null; released_at: string | null; refunded_at: string | null; buyer_note: string | null; created_at: string;
+}

@@ -1,0 +1,149 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { money } from "@/lib/listing";
+import type { Order } from "@/lib/types";
+
+type O = Order & {
+  items: { sku: string; title: string; item_photos: { url: string; is_primary: boolean }[] } | null;
+  profiles: { role: string; full_name: string | null; business_name: string | null } | null;
+  disputes: { status: string; reason: string; resolution_note: string | null }[] | null;
+  ratings: { rater_id: string; stars: number }[] | null;
+};
+
+const STATUS: Record<string, string> = { pending_payment: "Awaiting payment", paid: "Paid • money held", released: "Complete • seller paid", refunded: "Refunded", disputed: "Problem reported • on hold", cancelled: "Cancelled" };
+
+export default function OrderClient({ order, role, meId, justPaid, business }: { order: O; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; contact_phone?: string } }) {
+  const router = useRouter();
+  const supabase = createClient();
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [track, setTrack] = useState({ carrier: order.tracking_carrier || "", number: order.tracking_number || "" });
+  const [problem, setProblem] = useState("");
+  const [showProblem, setShowProblem] = useState(false);
+  const [stars, setStars] = useState(0);
+  const [comment, setComment] = useState("");
+  const photo = order.items?.item_photos?.find((p) => p.is_primary)?.url || order.items?.item_photos?.[0]?.url;
+  const dispute = order.disputes?.[0];
+  const myRating = order.ratings?.find((r) => r.rater_id === meId);
+  const isBuyer = role === "buyer";
+  const platformSeller = order.profiles?.role === "admin" || order.profiles?.role === "staff";
+
+  // If they just came back from Stripe and the webhook hasn't landed yet, poll a few times.
+  useEffect(() => {
+    if (!justPaid || order.status !== "pending_payment") return;
+    let n = 0;
+    const t = setInterval(() => { n++; router.refresh(); if (n > 10) clearInterval(t); }, 2000);
+    return () => clearInterval(t);
+  }, [justPaid, order.status, router]);
+
+  async function post(url: string, body: Record<string, unknown>) {
+    setBusy(true); setErr(null);
+    const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = (await r.json()) as { error?: string };
+    setBusy(false);
+    if (!r.ok) return setErr(j.error || "Something went wrong");
+    router.refresh();
+  }
+  async function rate() {
+    if (!stars) return;
+    const ratee = isBuyer ? order.seller_id : order.buyer_id;
+    const { error } = await supabase.from("ratings").insert({ order_id: order.id, rater_id: meId, ratee_id: ratee, stars, comment: comment || null });
+    if (error) return setErr(error.message);
+    router.refresh();
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="card p-3 flex gap-3 items-center">
+        <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{photo && <img src={photo} alt="" className="w-full h-full object-cover" />}</div>
+        <div className="min-w-0 flex-1">
+          <Link href={`/item/${order.items?.sku}`} className="font-semibold truncate block">{order.items?.title}</Link>
+          <p className="text-sm">{money(order.total)}{order.shipping > 0 ? ` (incl. ${money(order.shipping)} shipping)` : ""} • {order.fulfillment === "ship" ? "Shipping" : "Local pickup"}</p>
+          <p className="text-sm font-semibold">{STATUS[order.status]}</p>
+        </div>
+      </div>
+
+      {order.status === "pending_payment" && <div className="card p-4 text-sm">{justPaid ? "Confirming your payment…" : "Payment wasn't completed. Go back to the item to try again."}</div>}
+
+      {order.status === "paid" && order.fulfillment === "pickup" && isBuyer && (
+        <div className="card p-4 space-y-2 text-center">
+          <p className="text-sm muted">Show this code at pickup. The seller enters it and your payment is released.</p>
+          <p className="text-4xl font-extrabold tracking-[.3em]">{order.pickup_code}</p>
+          <p className="text-sm">{business.location ? `Pickup: ${business.location}` : "The seller will message you with the pickup spot."}{business.contact_phone && platformSeller ? ` • ${business.contact_phone}` : ""}</p>
+          <p className="text-xs muted">Don&apos;t share this code until you have the item in hand. Not picked up within 7 days = automatic refund.</p>
+        </div>
+      )}
+
+      {order.status === "paid" && order.fulfillment === "pickup" && !isBuyer && (
+        <div className="card p-4 space-y-2">
+          <p className="text-sm font-semibold">Handing it over? Enter the buyer&apos;s 6-digit code to get paid.</p>
+          <div className="flex gap-2">
+            <input className="input text-2xl tracking-[.3em] text-center" inputMode="numeric" maxLength={6} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} placeholder="000000" />
+            <button className="btn btn-primary" disabled={busy || code.length !== 6} onClick={() => post("/api/orders/release", { orderId: order.id, code })}>Release</button>
+          </div>
+          <p className="text-xs muted">You get {money(order.seller_due)} in your bank within 2 business days.</p>
+        </div>
+      )}
+
+      {order.status === "paid" && order.fulfillment === "ship" && (
+        <div className="card p-4 space-y-2 text-sm">
+          {order.tracking_number ? (
+            <p><b>Shipped</b> • {order.tracking_carrier} {order.tracking_number}{order.delivered_at ? ` • delivered ${new Date(order.delivered_at).toLocaleDateString()}` : ""}</p>
+          ) : (
+            <p className="muted">{isBuyer ? "Waiting for the seller to ship." : "Ship it and add tracking below."}</p>
+          )}
+          {!isBuyer && (
+            <div className="flex gap-2 flex-wrap">
+              <input className="input flex-1" placeholder="Carrier (USPS, UPS…)" value={track.carrier} onChange={(e) => setTrack({ ...track, carrier: e.target.value })} />
+              <input className="input flex-1" placeholder="Tracking number" value={track.number} onChange={(e) => setTrack({ ...track, number: e.target.value })} />
+              <button className="btn btn-secondary" disabled={busy || !track.number} onClick={() => post("/api/orders/ship", { orderId: order.id, carrier: track.carrier, number: track.number })}>Save tracking</button>
+              {order.tracking_number && !order.delivered_at && <button className="btn btn-secondary" disabled={busy} onClick={() => post("/api/orders/ship", { orderId: order.id, delivered: true })}>Mark delivered</button>}
+            </div>
+          )}
+          {isBuyer && order.tracking_number && <button className="btn btn-primary w-full" disabled={busy} onClick={() => post("/api/orders/delivered", { orderId: order.id })}>✅ I received it, release payment</button>}
+          {order.release_after && <p className="text-xs muted">Payment releases automatically on {new Date(order.release_after).toLocaleDateString()} unless a problem is reported.</p>}
+        </div>
+      )}
+
+      {order.status === "paid" && (
+        <div className="flex gap-2 flex-wrap">
+          {!order.shipped_at && <button className="btn btn-secondary" disabled={busy} onClick={() => { if (confirm("Cancel this order and refund the buyer in full?")) post("/api/orders/refund", { orderId: order.id }); }}>Cancel & refund</button>}
+          <button className="btn btn-secondary" onClick={() => setShowProblem(!showProblem)}>⚠ Report a problem</button>
+        </div>
+      )}
+      {showProblem && order.status === "paid" && (
+        <div className="card p-3 space-y-2">
+          <textarea className="input" rows={3} placeholder="What went wrong? Be specific; staff will read this." value={problem} onChange={(e) => setProblem(e.target.value)} />
+          <button className="btn btn-primary" disabled={busy || !problem.trim()} onClick={() => post("/api/orders/dispute", { orderId: order.id, reason: problem })}>Send to staff</button>
+          <p className="text-xs muted">The money stays on hold until staff decide. Most problems are sorted in a day.</p>
+        </div>
+      )}
+
+      {dispute && (
+        <div className="card p-3 text-sm space-y-1">
+          <p className="font-semibold">Problem report: {dispute.status.replace("_", " ")}</p>
+          <p>{dispute.reason}</p>
+          {dispute.resolution_note && <p className="muted">Staff: {dispute.resolution_note}</p>}
+        </div>
+      )}
+
+      {order.status === "released" && !myRating && role !== "staff" && (
+        <div className="card p-3 space-y-2">
+          <p className="font-semibold text-sm">How did it go with the {isBuyer ? "seller" : "buyer"}?</p>
+          <div className="flex gap-1 text-3xl">{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" onClick={() => setStars(n)} aria-label={`${n} stars`}>{n <= stars ? "★" : "☆"}</button>)}</div>
+          <input className="input" placeholder="Optional comment" value={comment} onChange={(e) => setComment(e.target.value)} />
+          <button className="btn btn-primary" disabled={!stars} onClick={rate}>Submit rating</button>
+        </div>
+      )}
+      {myRating && <p className="text-sm muted">You rated this {myRating.stars}★. Thanks.</p>}
+
+      {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}
+      <p className="text-[11px] muted">Order {order.id.slice(0, 8)} • {new Date(order.created_at).toLocaleString()}</p>
+    </div>
+  );
+}

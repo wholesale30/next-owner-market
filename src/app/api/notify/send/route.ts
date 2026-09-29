@@ -13,6 +13,16 @@ export async function GET(req: Request) {
   const admin = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   await admin.rpc("close_ended_auctions");
 
+  // Held-money timers: auto-release delivered orders after the 3-day window; auto-refund pickup orders nobody completed.
+  if (process.env.STRIPE_SECRET_KEY) {
+    const { releaseOrder, refundOrder } = await import("@/lib/orders");
+    const nowIso = new Date().toISOString();
+    const { data: toRelease } = await admin.from("orders").select("id").eq("status", "paid").lt("release_after", nowIso).limit(50);
+    for (const o of toRelease || []) { try { await releaseOrder(o.id); } catch (e) { console.error("auto-release", o.id, e); } }
+    const { data: toRefund } = await admin.from("orders").select("id").eq("status", "paid").eq("fulfillment", "pickup").lt("expires_at", nowIso).limit(50);
+    for (const o of toRefund || []) { try { await refundOrder(o.id); } catch (e) { console.error("auto-refund", o.id, e); } }
+  }
+
   const { data: queue } = await admin.from("notifications").select("*").is("sent_at", null).limit(100);
   const { data: biz } = await admin.from("settings").select("value").eq("key", "business").maybeSingle();
   const business = (biz?.value as { name?: string; contact_email?: string }) || {};

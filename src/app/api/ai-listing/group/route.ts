@@ -12,6 +12,10 @@ export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+  {
+    const { data: me } = await supabase.from("profiles").select("role, plan").eq("id", user.id).single();
+    if (!me || (me.role !== "admin" && me.role !== "staff" && me.plan !== "pro")) return NextResponse.json({ error: "Batch sorting is a Pro feature.", upgrade: true }, { status: 402 });
+  }
   if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "ANTHROPIC_API_KEY is not set" }, { status: 500 });
 
   const { photoUrls } = (await req.json()) as { photoUrls: string[] };

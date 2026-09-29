@@ -2,6 +2,11 @@ import Link from "next/link";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
 import PayoutButton from "./PayoutButton";
+import PayoutSetup from "../PayoutSetup";
+import ProBanner from "../ProBanner";
+import StripeSetup from "./StripeSetup";
+import { stripeReady } from "@/lib/stripe";
+import { Suspense } from "react";
 
 export const metadata = { title: "Money" };
 
@@ -25,6 +30,12 @@ export default async function MoneyPage() {
   const profile = (await getProfile())!;
   const staff = profile.role === "admin" || profile.role === "staff";
   const supabase = await createClient();
+  const [{ data: plansRow }, { data: stripeRow }] = await Promise.all([
+    supabase.from("settings").select("value").eq("key", "plans").maybeSingle(),
+    staff ? supabase.from("settings").select("value").eq("key", "stripe").maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+  const plans = (plansRow?.value as { pro_monthly: number; pro_features: string[] }) || { pro_monthly: 15, pro_features: [] };
+  const stripeCfg = (stripeRow?.value as { webhook_secret?: string; connect_enabled?: boolean }) || {};
 
   const { data: salesRaw } = await supabase
     .from("sales")
@@ -65,6 +76,9 @@ export default async function MoneyPage() {
         <h1 className="text-2xl font-bold">{staff ? "Money" : "Payouts"}</h1>
         {staff && <a href="/api/export?what=sales" className="btn btn-secondary">⬇ CSV</a>}
       </div>
+      {!staff && stripeReady() && <Suspense><PayoutSetup ready={!!profile.stripe_payouts_ready} hasAccount={!!profile.stripe_account_id} /></Suspense>}
+      {!staff && profile.plan !== "pro" && stripeReady() && <ProBanner credits={profile.ai_credits ?? 0} price={plans.pro_monthly} features={plans.pro_features} />}
+      {profile.role === "admin" && <StripeSetup ready={stripeReady()} configured={!!stripeCfg.webhook_secret} connect={!!stripeCfg.connect_enabled} />}
 
       {staff && (
         <div className="grid grid-cols-2 gap-2">

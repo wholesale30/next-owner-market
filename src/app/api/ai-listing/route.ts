@@ -16,6 +16,11 @@ export async function POST(req: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+  {
+    const { admin } = await import("@/lib/stripe");
+    const { data: ok } = await admin().rpc("spend_ai_credit", { p_profile: user.id });
+    if (!ok) return NextResponse.json({ error: "You've used your free AI listings. Upgrade to Pro for unlimited.", upgrade: true }, { status: 402 });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ error: "ANTHROPIC_API_KEY is not set" }, { status: 500 });

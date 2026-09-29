@@ -45,6 +45,7 @@ type Draft = {
   serviced: boolean;
   service_notes: string;
   shipping_ok: boolean;
+  shipping_price: string;
   local_pickup_ok: boolean;
   weight_lbs: string;
   worth_listing: boolean | null;
@@ -70,6 +71,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   const [error, setError] = useState<string | null>(null);
   const [videos, setVideos] = useState<LocalVideo[]>((initialVideos || []).map((v) => ({ id: v.id, kind: v.kind, url: v.url, storage_path: v.storage_path })));
   const [videoLink, setVideoLink] = useState("");
+  const isPro = profile.role === "admin" || profile.role === "staff" || profile.plan === "pro";
   const videoRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<"photos" | "details">(mode === "edit" ? "details" : "photos");
   const [clean, setClean] = useState(mode === "new");
@@ -99,6 +101,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     serviced: item?.serviced ?? false,
     service_notes: item?.service_notes || "",
     shipping_ok: item?.shipping_ok ?? false,
+    shipping_price: item?.shipping_price != null ? String(item.shipping_price) : "0",
     local_pickup_ok: item?.local_pickup_ok ?? true,
     weight_lbs: item?.weight_lbs != null ? String(item.weight_lbs) : "",
     worth_listing: null,
@@ -186,6 +189,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         body: JSON.stringify({ photoUrls: urls, hints, categories: categories.map((c) => ({ id: c.id, name: c.name })) }),
       });
       const json = await res.json();
+      if (res.status === 402) throw new Error(`${json.error} Go to Payouts → Upgrade to Pro.`);
       if (!res.ok) throw new Error(json.error || "AI failed");
       const a = json.draft;
       const mid = a.price_min && a.price_max ? Math.round((Number(a.price_min) + Number(a.price_max)) / 2) : "";
@@ -261,6 +265,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         serviced: d.serviced,
         service_notes: d.service_notes || null,
         shipping_ok: d.shipping_ok,
+        shipping_price: d.shipping_ok && d.shipping_price ? Number(d.shipping_price) : 0,
         local_pickup_ok: d.local_pickup_ok,
         weight_lbs: d.weight_lbs ? Number(d.weight_lbs) : null,
         ai_generated: d.worth_listing !== null || item?.ai_generated || false,
@@ -359,7 +364,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos</label>
 
-        <div className="space-y-2">
+        {isPro && <div className="space-y-2">
           <h2 className="font-semibold">Video {videos.length ? `(${videos.length})` : ""} <span className="muted font-normal text-xs">optional; a clip of it working sells faster</span></h2>
           {videos.map((v) => (
             <div key={v.id} className="card p-2 flex items-center gap-2 text-sm">
@@ -377,7 +382,8 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
           </div>
           <p className="text-[11px] muted">Clips up to 50 MB (about a minute from a phone). Longer videos: upload to YouTube and paste the link.</p>
           <input ref={videoRef} type="file" accept="video/*" className="hidden" onChange={(e) => { addVideo(e.target.files); e.target.value = ""; }} />
-        </div>
+        </div>}
+        {!isPro && <p className="text-xs muted">🎬 Video on listings is a Pro feature. Payouts → Upgrade to Pro.</p>}
 
         {step === "photos" && (
           <>
@@ -477,7 +483,12 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
               <label className="flex items-center gap-2"><input type="checkbox" checked={d.local_pickup_ok} onChange={(e) => set({ local_pickup_ok: e.target.checked })} /> Local pickup</label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={d.shipping_ok} onChange={(e) => set({ shipping_ok: e.target.checked })} /> Will ship</label>
             </div>
-            {d.shipping_ok && <div><label className="label">Weight (lbs)</label><input className="input" type="number" inputMode="decimal" value={d.weight_lbs} onChange={(e) => set({ weight_lbs: e.target.value })} /></div>}
+            {d.shipping_ok && (
+              <div className="grid grid-cols-2 gap-2">
+                <div><label className="label">Shipping charge $</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>
+                <div><label className="label">Weight (lbs)</label><input className="input" type="number" inputMode="decimal" value={d.weight_lbs} onChange={(e) => set({ weight_lbs: e.target.value })} /></div>
+              </div>
+            )}
           </section>
 
           <section className="card p-4 space-y-3">

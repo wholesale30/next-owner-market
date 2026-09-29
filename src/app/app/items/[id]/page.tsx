@@ -74,11 +74,17 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
 
       <section className="space-y-3">
         <h2 className="font-semibold">Copy &amp; paste listings</h2>
-        <p className="text-sm muted">Tap copy, open the app, paste. Save the photos above to your phone first (press and hold).</p>
-        <CopyBlock label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
-        <CopyBlock label="OfferUp" text={offerUpCopy(copyInput)} title={it.title} />
-        <CopyBlock label="eBay" text={ebayCopy(copyInput)} />
-        <CopyBlock label="Craigslist" text={craigslistCopy(copyInput)} />
+        {staff || profile.plan === "pro" ? (
+          <>
+            <p className="text-sm muted">Tap copy, open the app, paste. Save the photos above to your phone first (press and hold).</p>
+            <CopyBlock label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
+            <CopyBlock label="OfferUp" text={offerUpCopy(copyInput)} title={it.title} />
+            <CopyBlock label="eBay" text={ebayCopy(copyInput)} />
+            <CopyBlock label="Craigslist" text={craigslistCopy(copyInput)} />
+          </>
+        ) : (
+          <div className="card p-3 text-sm">Ready-to-paste versions for Facebook Marketplace, OfferUp, eBay, and Craigslist are a <b>Pro</b> feature. <Link href="/app/money" className="underline">Upgrade</Link>.</div>
+        )}
         <div className="card p-3 text-sm">
           <p className="label">Storefront link</p>
           <p className="font-mono break-all">{publicUrl}</p>

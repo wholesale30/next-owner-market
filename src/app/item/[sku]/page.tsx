@@ -6,6 +6,8 @@ import { money } from "@/lib/listing";
 import { CONDITION_LABELS, type Item } from "@/lib/types";
 import StoreHeader from "../../StoreHeader";
 import PhotoGallery from "./PhotoGallery";
+import BuyButton from "./BuyButton";
+import { stripeReady } from "@/lib/stripe";
 import BuyerPanel from "./BuyerPanel";
 import AuctionPanel from "./AuctionPanel";
 import MessageForm from "./MessageForm";
@@ -18,7 +20,7 @@ async function load(sku: string) {
   const supabase = await createClient();
   await supabase.rpc("close_ended_auctions");
   const [{ data: item }, { data: biz }] = await Promise.all([
-    supabase.from("items").select("*, item_photos(*), item_videos(*), categories(name, slug), auctions(*)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
+    supabase.from("items").select("*, item_photos(*), item_videos(*), categories(name, slug), auctions(*), profiles!items_owner_id_fkey(role, stripe_payouts_ready, suspended, rating_avg, rating_count, business_name, full_name)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
@@ -41,6 +43,10 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   const { item, business } = await load(sku);
   if (!item) notFound();
   const auction = Array.isArray(item.auctions) ? item.auctions[0] : item.auctions;
+  const seller = (item as unknown as { profiles: { role: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; business_name: string | null; full_name: string | null } | null }).profiles;
+  const sellerIsPlatform = seller?.role === "admin" || seller?.role === "staff";
+  const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
+  const { data: { user } } = await (await createClient()).auth.getUser();
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
     const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
 
@@ -77,6 +83,12 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
         </div>
 
         {auction && item.sale_type === "auction" && <AuctionPanel auction={auction} sku={item.sku} />}
+        {item.status === "active" && item.sale_type !== "auction" && (
+          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} />
+        )}
+        {seller && !sellerIsPlatform && (
+          <p className="text-xs muted">Sold by {seller.business_name || seller.full_name || "a member"}{seller.rating_count ? ` • ★ ${seller.rating_avg} (${seller.rating_count})` : " • new seller"} • Payment held until hand-off</p>
+        )}
         {item.status !== "sold" && <BuyerPanel itemId={item.id} sku={item.sku} title={item.title} canPickup={item.local_pickup_ok} />}
 
         <div className="card p-4 space-y-3 text-sm">
