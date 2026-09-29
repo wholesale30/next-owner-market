@@ -5,6 +5,7 @@ import { money, commissionFor, DEFAULT_TIERS, facebookCopy, offerUpCopy, ebayCop
 import { STATUS_LABELS, CONDITION_LABELS, TIER_LABELS, type Item } from "@/lib/types";
 import ItemActions from "./ItemActions";
 import CopyBlock from "./CopyBlock";
+import { HOWTO } from "@/lib/howto";
 import AuctionAdmin from "./AuctionAdmin";
 
 interface AuctionRow { id: string; starting_bid: number; reserve_price: number | null; buy_now_price: number | null; current_bid: number | null; starts_at: string; ends_at: string; status: string }
@@ -77,15 +78,15 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
         {staff || profile.plan === "pro" ? (
           <>
             <p className="text-sm muted">Tap copy, open the app, paste. Save the photos above to your phone first (press and hold).</p>
-            <CopyBlock label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
-            <CopyBlock label="OfferUp" text={offerUpCopy(copyInput)} title={it.title} />
-            <CopyBlock label="eBay" text={ebayCopy(copyInput)} />
-            <CopyBlock label="Craigslist" text={craigslistCopy(copyInput)} />
-            <CopyBlock label="Mercari" text={mercariCopy(copyInput)} />
-            <CopyBlock label="Poshmark" text={poshmarkCopy(copyInput)} />
-            <CopyBlock label="Vinted" text={vintedCopy(copyInput)} />
-            <CopyBlock label="Depop" text={depopCopy(copyInput)} />
-            <CopyBlock label="Etsy (vintage / handmade only)" text={etsyCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.facebook} label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.offerup} label="OfferUp" text={offerUpCopy(copyInput)} title={it.title} />
+            <CopyBlock howto={HOWTO.ebay} label="eBay" text={ebayCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.craigslist} label="Craigslist" text={craigslistCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.mercari} label="Mercari" text={mercariCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.poshmark} label="Poshmark" text={poshmarkCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.vinted} label="Vinted" text={vintedCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.depop} label="Depop" text={depopCopy(copyInput)} />
+            <CopyBlock howto={HOWTO.etsy} label="Etsy (vintage / handmade only)" text={etsyCopy(copyInput)} />
           </>
         ) : (
           <div className="card p-3 text-sm">Ready-to-paste versions for Facebook Marketplace, OfferUp, eBay, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy are a <b>Pro</b> feature. <Link href="/app/money" className="underline">Upgrade</Link>.</div>
