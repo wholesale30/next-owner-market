@@ -8,6 +8,7 @@ import StoreHeader from "../../StoreHeader";
 import PhotoGallery from "./PhotoGallery";
 import BuyerPanel from "./BuyerPanel";
 import AuctionPanel from "./AuctionPanel";
+import MessageForm from "./MessageForm";
 
 export const revalidate = 0;
 
@@ -41,8 +42,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   if (!item) notFound();
   const auction = Array.isArray(item.auctions) ? item.auctions[0] : item.auctions;
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
-  const contactSubject = encodeURIComponent(`Interested in ${item.title} (${item.sku})`);
-  const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
+    const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -95,10 +95,9 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
 
         {item.status !== "sold" && (
           <div className="fixed bottom-0 inset-x-0 p-3 border-t" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
-            <div className="max-w-3xl mx-auto flex gap-2">
-              {business.contact_phone && <a href={`sms:${business.contact_phone}?&body=${smsBody}`} className="btn btn-primary flex-1">💬 Text about this</a>}
-              {business.contact_email && <a href={`mailto:${business.contact_email}?subject=${contactSubject}`} className="btn btn-secondary flex-1">✉️ Email</a>}
-              {!business.contact_phone && !business.contact_email && <Link href="/looking-for" className="btn btn-primary flex-1">Ask about this item</Link>}
+            <div className="max-w-3xl mx-auto flex gap-2 items-start">
+              <MessageForm itemId={item.id} title={item.title} />
+              {business.contact_phone && <a href={`sms:${business.contact_phone}?&body=${smsBody}`} className="btn btn-secondary" title="Text us">📱</a>}
             </div>
           </div>
         )}

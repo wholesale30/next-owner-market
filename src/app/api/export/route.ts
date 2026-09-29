@@ -25,6 +25,9 @@ export async function GET(req: Request) {
         commission_pct: s.commission_pct, commission_amount: s.commission_amount, consignor_due: s.consignor_due, channel: s.channel, payment_method: s.payment_method, buyer: s.buyer_name, notes: s.notes,
       };
     });
+  } else if (what === "subscribers") {
+    const { data } = await supabase.from("subscribers").select("name, email, phone, source, interests, created_at, last_seen_at").eq("unsubscribed", false).order("created_at");
+    rows = (data || []).map((r) => ({ ...r, interests: (r.interests || []).join(" ") }));
   } else {
     const { data } = await supabase.from("items").select("sku, title, status, price, cost, quantity, tier, condition, brand, model, created_at, listed_at, sold_at, categories(name), locations(code)").order("created_at");
     rows = (data || []).map((i) => ({ ...i, category: (i.categories as unknown as { name: string } | null)?.name, location: (i.locations as unknown as { code: string } | null)?.code, categories: undefined, locations: undefined }));

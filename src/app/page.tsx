@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
 import type { Item } from "@/lib/types";
 import StoreHeader from "./StoreHeader";
+import SubscribeBox from "./SubscribeBox";
 
 export const revalidate = 60;
 
@@ -92,7 +93,8 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
           })}
         </ul>
 
-        <div className="card p-5 text-center space-y-2 mt-8">
+        <div className="mt-8"><SubscribeBox /></div>
+        <div className="card p-5 text-center space-y-2">
           <h2 className="font-bold text-lg">Looking for something specific?</h2>
           <p className="muted text-sm">We source surplus across the country. Tell us what you want and we&apos;ll hunt it down.</p>
           <Link href="/looking-for" className="btn btn-primary">Tell us what you need</Link>

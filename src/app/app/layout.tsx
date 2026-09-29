@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getProfile } from "@/lib/supabase/server";
+import { createClient, getProfile } from "@/lib/supabase/server";
 import SignOutButton from "./SignOutButton";
 
 export default async function AppLayout({ children }: LayoutProps<"/app">) {
@@ -8,12 +8,19 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   if (!profile) redirect("/login");
   if (profile.role === "buyer") redirect("/account");
   const staff = profile.role === "admin" || profile.role === "staff";
+  let unread = 0;
+  if (staff) {
+    const supabase = await createClient();
+    const { count } = await supabase.from("conversations").select("id", { count: "exact", head: true }).eq("unread_for_staff", true).neq("status", "closed");
+    unread = count || 0;
+  }
 
   const nav = staff
     ? [
         { href: "/app", label: "Inventory" },
         { href: "/app/items/new", label: "+ Add" },
         { href: "/app/snap", label: "📷 Snap" },
+        { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
         { href: "/app/review", label: "Review" },
         { href: "/app/requests", label: "Wanted" },
         { href: "/app/pickups", label: "Pickups" },

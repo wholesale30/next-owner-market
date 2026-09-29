@@ -4,6 +4,7 @@ import { createClient, getProfile } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
 import StoreHeader from "../StoreHeader";
 import AccountClient from "./AccountClient";
+import MyMessages from "./MyMessages";
 
 export const metadata = { title: "My account" };
 
@@ -19,6 +20,8 @@ export default async function AccountPage() {
     supabase.from("bids").select("amount, created_at, auctions(id, current_bid, current_bidder_id, status, ends_at, items(sku, title))").eq("bidder_id", profile.id).order("created_at", { ascending: false }).limit(50),
     supabase.from("notifications").select("subject, body, related_item_id, created_at, items(sku)").eq("profile_id", profile.id).order("created_at", { ascending: false }).limit(20),
   ]);
+  const { data: convos } = await supabase.from("conversations").select("id, subject, status, last_message_at, items(sku, title), messages(id, sender, body, created_at)").eq("buyer_profile_id", profile.id).order("last_message_at", { ascending: false }).limit(20);
+  if (convos?.length) await supabase.from("conversations").update({ unread_for_buyer: false }).eq("buyer_profile_id", profile.id);
   const business = (biz?.value as { name: string; tagline?: string }) || { name: "Next Owner Market" };
   const staff = profile.role !== "buyer";
 
@@ -40,6 +43,7 @@ export default async function AccountPage() {
           {staff && <Link href="/app" className="btn btn-secondary">Go to inventory</Link>}
         </div>
 
+        <MyMessages convos={(convos || []) as never} />
         <AccountClient searches={searches || []} categories={cats || []} />
 
         {notes?.length ? (

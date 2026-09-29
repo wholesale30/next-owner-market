@@ -1,0 +1,2 @@
+-- Applied 2026-09-29. Re-run on a fresh database after schema.sql and schema_stage2.sql.
+-- See git history for the exact statement set; identical to the Supabase migration "messaging_and_subscribers".

@@ -98,3 +98,6 @@ create trigger items_activated after insert or update of status on items for eac
 
 -- Live auction updates on the item page
 alter publication supabase_realtime add table auctions;
+
+-- (Stage 3, messaging + email list, was applied directly to the live database; see docs/Next_Owner_Market_White_Paper.md.
+--  The migration text is stored in supabase/migrations/ for rebuilds.)
