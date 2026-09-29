@@ -7,3 +7,4 @@
 - Keep costs at zero. No paid services without asking.
 - Photos: always let people pick from gallery/files first; camera is the second option.
 - After every push: trigger a Vercel production deployment (project is not git-auto-linked).
+- **Deliverables are always Word (.docx) downloads** sent as files in the chat. Never Google Drive, never links, never markdown-only. Also drop a copy in `docs/`.
