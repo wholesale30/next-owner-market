@@ -8,6 +8,7 @@ export default function StoreHeader({ business }: { business: { name: string; ta
         <nav className="flex gap-3 text-sm">
           <Link href="/looking-for" className="muted">Wanted</Link>
           <Link href="/signup" className="muted">Sell</Link>
+          <Link href="/account" className="muted">Account</Link>
         </nav>
       </div>
       {business.tagline && <p className="text-center text-xs muted pb-2">{business.tagline}</p>}

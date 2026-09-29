@@ -5,6 +5,9 @@ import { money, commissionFor, DEFAULT_TIERS, facebookCopy, offerUpCopy, ebayCop
 import { STATUS_LABELS, CONDITION_LABELS, TIER_LABELS, type Item } from "@/lib/types";
 import ItemActions from "./ItemActions";
 import CopyBlock from "./CopyBlock";
+import AuctionAdmin from "./AuctionAdmin";
+
+interface AuctionRow { id: string; starting_bid: number; reserve_price: number | null; buy_now_price: number | null; current_bid: number | null; starts_at: string; ends_at: string; status: string }
 
 export default async function ItemPage({ params }: PageProps<"/app/items/[id]">) {
   const { id } = await params;
@@ -15,13 +18,13 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
   const [{ data: item }, { data: settingsRows }] = await Promise.all([
     supabase
       .from("items")
-      .select("*, item_photos(*), categories(name, slug), locations(code), profiles!items_owner_id_fkey(full_name, business_name, default_commission_pct, phone, email)")
+      .select("*, item_photos(*), categories(name, slug), locations(code), auctions(*), profiles!items_owner_id_fkey(full_name, business_name, default_commission_pct, phone, email)")
       .eq("id", id)
       .single(),
     supabase.from("settings").select("key, value").in("key", ["business", "commission_tiers"]),
   ]);
   if (!item) notFound();
-  const it = item as unknown as Item & { profiles: { full_name: string; business_name: string; default_commission_pct: number | null; phone: string; email: string } | null };
+  const it = item as unknown as Item & { auctions: AuctionRow[] | AuctionRow | null; profiles: { full_name: string; business_name: string; default_commission_pct: number | null; phone: string; email: string } | null };
   const business = (settingsRows?.find((s) => s.key === "business")?.value as { name: string; location?: string }) || { name: "Next Owner Market" };
   const tiers = (settingsRows?.find((s) => s.key === "commission_tiers")?.value as typeof DEFAULT_TIERS) || DEFAULT_TIERS;
   const photos = [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order);
@@ -59,6 +62,9 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
       </div>
 
       <ItemActions item={{ id: it.id, sku: it.sku, status: it.status, price: it.price, tier: it.tier }} staff={staff} commissionPct={pct} />
+      {staff && (it.status === "active" || it.status === "draft" || it.status === "reserved") && (
+        <AuctionAdmin itemId={it.id} price={it.price} auction={(Array.isArray(it.auctions) ? it.auctions.filter((a) => a.status !== "cancelled")[0] : it.auctions) || null} />
+      )}
 
       <div className="flex gap-2 no-print">
         <Link href={`/app/items/${it.id}/edit`} className="btn btn-secondary flex-1">Edit</Link>

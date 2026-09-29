@@ -15,6 +15,11 @@ Built on Next.js + Supabase + Claude. You own the code and the data.
 - **Wanted / sourcing requests**: "Looking for something?" form feeds a list you carry when buying.
 - **Money**: sales log, your take, consignor balances, mark-paid payouts, CSV export.
 - **Roles**: admin, staff, consignor, buyer. Row-level security in the database.
+- **Snap mode**: shoot 30 items in a row, tap Finish, AI writes all the listings, you approve from Review.
+- **Pallet mode**: bins/gaylords with sorted tracking and per-bin item counts; bulk select to list, move bin, print tags, or **make a lot**.
+- **Auctions**: start one from any item; live countdown, anti-snipe extension, buy-now, reserve; buyers bid with a free account.
+- **Pickups**: open time slots; buyers request a slot from the item page; you confirm.
+- **Buyer accounts**: save items, saved-search alerts (auto-queued when a match is listed; emails/texts send when Resend/Twilio keys are added), bid history.
 - **Built for growth**: tables already exist for auctions, bids, pickup scheduling, saved searches, favorites, notifications, lots/pallets, and per-platform listing tracking.
 
 ## Setup (about 15 minutes)

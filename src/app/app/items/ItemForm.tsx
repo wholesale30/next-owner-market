@@ -13,6 +13,7 @@ interface Props {
   locations: Location[];
   item?: Item;
   photos?: ItemPhoto[];
+  defaultLocationId?: string;
 }
 
 type Draft = {
@@ -57,7 +58,7 @@ async function compressImage(file: File, maxSide = 1600, quality = 0.82): Promis
   return new Promise((res) => canvas.toBlob((b) => res(b!), "image/jpeg", quality));
 }
 
-export default function ItemForm({ mode, profile, categories, locations, item, photos: initialPhotos }: Props) {
+export default function ItemForm({ mode, profile, categories, locations, item, photos: initialPhotos, defaultLocationId }: Props) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const staff = profile.role === "admin" || profile.role === "staff";
@@ -88,7 +89,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     price_note: "",
     cost: item?.cost != null ? String(item.cost) : "",
     quantity: String(item?.quantity ?? 1),
-    location_id: item?.location_id || "",
+    location_id: item?.location_id || defaultLocationId || "",
     location_code: "",
     tier: item?.tier || (staff ? "owned" : profile.default_tier || "drop_off"),
     commission_pct: item?.commission_pct != null ? String(item.commission_pct) : "",

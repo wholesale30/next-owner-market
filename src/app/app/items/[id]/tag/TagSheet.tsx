@@ -28,18 +28,19 @@ const SIZES: Record<Size, { w: string; h: string; label: string; qr: number; des
   large: { w: "4in", h: "6in", label: "Large 4×6 (full tag, hang on item)", qr: 170, desc: 600 },
 };
 
-export default function TagSheet({ tag, size: initial }: { tag: Tag; size: Size }) {
+export default function TagSheet({ tag, tags, size: initial }: { tag?: Tag; tags?: Tag[]; size: Size }) {
+  const all = tags && tags.length ? tags : tag ? [tag] : [];
   const [size, setSize] = useState<Size>(initial);
   const [copies, setCopies] = useState(1);
   const s = SIZES[size];
-  const desc = s.desc ? tag.description.slice(0, s.desc) + (tag.description.length > s.desc ? "…" : "") : "";
+  const descOf = (t: Tag) => (s.desc ? t.description.slice(0, s.desc) + (t.description.length > s.desc ? "…" : "") : "");
 
   return (
     <div className="space-y-4">
       <div className="no-print space-y-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">Print tag</h1>
-          <Link href={`/app/items/${tag.sku}`} className="muted text-sm" onClick={(e) => { e.preventDefault(); history.back(); }}>← Back</Link>
+          <h1 className="text-xl font-bold">Print {all.length > 1 ? `${all.length} tags` : "tag"}</h1>
+          <Link href="/app" className="muted text-sm" onClick={(e) => { e.preventDefault(); history.back(); }}>← Back</Link>
         </div>
         <div className="flex gap-1 overflow-x-auto">
           {(Object.keys(SIZES) as Size[]).map((k) => (
@@ -54,8 +55,8 @@ export default function TagSheet({ tag, size: initial }: { tag: Tag; size: Size 
       </div>
 
       <div className="print-area flex flex-wrap gap-3">
-        {Array.from({ length: copies }).map((_, i) => (
-          <div key={i} className="tag" style={{ width: s.w, height: s.h }}>
+        {all.flatMap((tag) => Array.from({ length: copies }).map((_, i) => (
+          <div key={tag.sku + i} className="tag" style={{ width: s.w, height: s.h }}>
             <div className="tag-inner">
               <div className="tag-qr"><QRCodeSVG value={tag.url} size={s.qr} level="M" includeMargin={false} /></div>
               <div className="tag-text">
@@ -68,12 +69,12 @@ export default function TagSheet({ tag, size: initial }: { tag: Tag; size: Size 
                   {tag.location && <span>BIN {tag.location}</span>}
                 </div>
                 {(tag.tested || tag.serviced) && <div className="tag-badge">{[tag.tested && "TESTED", tag.serviced && "SERVICED"].filter(Boolean).join(" • ")}</div>}
-                {desc && size !== "small" && <div className="tag-desc">{desc}</div>}
+                {descOf(tag) && size !== "small" && <div className="tag-desc">{descOf(tag)}</div>}
                 <div className="tag-biz">{tag.businessName}</div>
               </div>
             </div>
           </div>
-        ))}
+        )))}
       </div>
 
       <style>{`

@@ -3,7 +3,8 @@ import ItemForm from "../ItemForm";
 
 export const metadata = { title: "Add item" };
 
-export default async function NewItemPage() {
+export default async function NewItemPage({ searchParams }: PageProps<"/app/items/new">) {
+  const { bin } = (await searchParams) as { bin?: string };
   const supabase = await createClient();
   const profile = (await getProfile())!;
   const [{ data: categories }, { data: locations }] = await Promise.all([
@@ -16,6 +17,7 @@ export default async function NewItemPage() {
       profile={profile}
       categories={categories || []}
       locations={locations || []}
+      defaultLocationId={bin}
     />
   );
 }

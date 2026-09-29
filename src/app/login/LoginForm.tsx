@@ -21,7 +21,10 @@ export default function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) return setError(error.message);
-    router.push(params.get("next") || "/app");
+    const next = params.get("next");
+    if (next) { router.push(next); router.refresh(); return; }
+    const { data: prof } = await supabase.from("profiles").select("role").eq("id", (await supabase.auth.getUser()).data.user!.id).single();
+    router.push(prof?.role === "buyer" ? "/account" : "/app");
     router.refresh();
   }
 

@@ -8,6 +8,7 @@ You need four free accounts. Do them in this order.
 2. Name: `next-owner-market`. Database password: make one and save it. Region: **East US**.
 3. Wait about a minute for it to start.
 4. Left sidebar → **SQL Editor** → **New query**. Paste the whole contents of `supabase/schema.sql` and click **Run**. You should see "Success".
+   Then **New query** again, paste `supabase/schema_stage2.sql`, **Run**.
 5. Left sidebar → **Authentication** → **Providers** → Email: turn **Confirm email** OFF for now (so you can sign in immediately). Turn it back on later if you want.
 6. **Project Settings** → **API**. Copy these three things:
    - Project URL
@@ -38,6 +39,9 @@ You need four free accounts. Do them in this order.
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role key |
 | `ANTHROPIC_API_KEY` | your Anthropic key |
 | `NEXT_PUBLIC_SITE_URL` | `https://nextownermarket.com` |
+| `CRON_SECRET` | any long random string (protects the alert sender) |
+
+Optional, whenever you want alerts to actually send: `RESEND_API_KEY` (email, free at resend.com) and `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM` (texts, about a penny each). Until then, alerts still queue up and show on the buyer's Account page.
 
 4. Click **Deploy**. About two minutes.
 5. **Settings → Domains** → add `nextownermarket.com`. Vercel shows you two DNS records.

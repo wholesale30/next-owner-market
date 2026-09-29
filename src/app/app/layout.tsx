@@ -6,14 +6,18 @@ import SignOutButton from "./SignOutButton";
 export default async function AppLayout({ children }: LayoutProps<"/app">) {
   const profile = await getProfile();
   if (!profile) redirect("/login");
+  if (profile.role === "buyer") redirect("/account");
   const staff = profile.role === "admin" || profile.role === "staff";
 
   const nav = staff
     ? [
         { href: "/app", label: "Inventory" },
         { href: "/app/items/new", label: "+ Add" },
+        { href: "/app/snap", label: "📷 Snap" },
         { href: "/app/review", label: "Review" },
         { href: "/app/requests", label: "Wanted" },
+        { href: "/app/pickups", label: "Pickups" },
+        { href: "/app/bins", label: "Bins" },
         { href: "/app/money", label: "Money" },
         { href: "/app/people", label: "People" },
       ]

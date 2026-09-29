@@ -6,16 +6,21 @@ import { money } from "@/lib/listing";
 import { CONDITION_LABELS, type Item } from "@/lib/types";
 import StoreHeader from "../../StoreHeader";
 import PhotoGallery from "./PhotoGallery";
+import BuyerPanel from "./BuyerPanel";
+import AuctionPanel from "./AuctionPanel";
 
-export const revalidate = 60;
+export const revalidate = 0;
+
+interface AuctionRow { id: string; starting_bid: number; reserve_price: number | null; buy_now_price: number | null; current_bid: number | null; current_bidder_id: string | null; starts_at: string; ends_at: string; status: string; extend_minutes: number }
 
 async function load(sku: string) {
   const supabase = await createClient();
+  await supabase.rpc("close_ended_auctions");
   const [{ data: item }, { data: biz }] = await Promise.all([
-    supabase.from("items").select("*, item_photos(*), categories(name, slug)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
+    supabase.from("items").select("*, item_photos(*), categories(name, slug), auctions(*)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
-  return { item: item as unknown as Item | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
+  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
 }
 
 export async function generateMetadata({ params }: PageProps<"/item/[sku]">): Promise<Metadata> {
@@ -34,6 +39,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   const { sku } = await params;
   const { item, business } = await load(sku);
   if (!item) notFound();
+  const auction = Array.isArray(item.auctions) ? item.auctions[0] : item.auctions;
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
   const contactSubject = encodeURIComponent(`Interested in ${item.title} (${item.sku})`);
   const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
@@ -69,6 +75,9 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             {item.shipping_ok && <span className="pill">Ships</span>}
           </div>
         </div>
+
+        {auction && item.sale_type === "auction" && <AuctionPanel auction={auction} sku={item.sku} />}
+        {item.status !== "sold" && <BuyerPanel itemId={item.id} sku={item.sku} title={item.title} canPickup={item.local_pickup_ok} />}
 
         <div className="card p-4 space-y-3 text-sm">
           <p className="whitespace-pre-wrap">{item.description}</p>
