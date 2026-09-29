@@ -45,11 +45,12 @@ declare
   is_first boolean;
 begin
   select count(*) = 0 into is_first from profiles;
-  insert into profiles (id, email, full_name, role, approved)
+  insert into profiles (id, email, full_name, phone, role, approved)
   values (
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data->>'full_name', ''),
+    new.raw_user_meta_data->>'phone',
     case when is_first then 'admin'::user_role else coalesce((new.raw_user_meta_data->>'role')::user_role, 'buyer') end,
     is_first
   );
@@ -82,7 +83,9 @@ create table locations (
   kind text not null default 'gaylord', -- gaylord, pallet, shelf, bin, area
   description text,
   sorted boolean not null default false, -- pallet mode: has this box been gone through?
-  created_at timestamptz not null default now()
+  sort_notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 -- ============================================================
@@ -122,13 +125,17 @@ create table items (
   ai_raw jsonb,                                           -- what the AI returned, for reference
   listed_at timestamptz,
   sold_at timestamptz,
-  search tsvector generated always as (
-    to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'') || ' ' || coalesce(brand,'') || ' ' || coalesce(model,'') || ' ' || array_to_string(tags,' '))
-  ) stored,
+  search tsvector,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 create index items_search_idx on items using gin(search);
+create or replace function items_search_update() returns trigger language plpgsql as $$
+begin
+  new.search := to_tsvector('english', coalesce(new.title,'') || ' ' || coalesce(new.description,'') || ' ' || coalesce(new.brand,'') || ' ' || coalesce(new.model,'') || ' ' || array_to_string(new.tags,' '));
+  return new;
+end $$;
+create trigger items_search_trg before insert or update of title, description, brand, model, tags on items for each row execute function items_search_update();
 create index items_status_idx on items(status);
 create index items_owner_idx on items(owner_id);
 create index items_category_idx on items(category_id);
@@ -342,6 +349,7 @@ begin new.updated_at = now(); return new; end $$;
 create trigger items_touch before update on items for each row execute function touch_updated_at();
 create trigger profiles_touch before update on profiles for each row execute function touch_updated_at();
 create trigger requests_touch before update on sourcing_requests for each row execute function touch_updated_at();
+create trigger locations_touch before update on locations for each row execute function touch_updated_at();
 
 -- ============================================================
 -- HELPER: current user's role
@@ -393,7 +401,7 @@ create policy "settings staff write" on settings for all using (is_staff());
 create policy "items public read" on items for select
   using (status in ('active','reserved','sold') or owner_id = auth.uid() or is_staff());
 create policy "items consignor insert" on items for insert
-  with check (is_staff() or (owner_id = auth.uid() and exists (select 1 from profiles where id = auth.uid() and approved)));
+  with check (is_staff() or (owner_id = auth.uid() and exists (select 1 from profiles where id = auth.uid() and role = 'consignor')));
 create policy "items owner update" on items for update
   using (is_staff() or owner_id = auth.uid());
 create policy "items staff delete" on items for delete using (is_staff());

@@ -1,9 +1,6 @@
 -- Stage 2 additions. Run after schema.sql (safe to run once).
 
 -- Bins: items count and "sorted" tracking already exist. Add notes on outcomes per bin.
-alter table locations add column if not exists sort_notes text;
-alter table locations add column if not exists updated_at timestamptz not null default now();
-create trigger locations_touch before update on locations for each row execute function touch_updated_at();
 
 -- Anyone signed-in can create/update their own profile fields; buyers can read business settings (already public).
 
