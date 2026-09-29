@@ -1,0 +1,21 @@
+import { createClient, getProfile } from "@/lib/supabase/server";
+import ItemForm from "../ItemForm";
+
+export const metadata = { title: "Add item" };
+
+export default async function NewItemPage() {
+  const supabase = await createClient();
+  const profile = (await getProfile())!;
+  const [{ data: categories }, { data: locations }] = await Promise.all([
+    supabase.from("categories").select("id, name, parent_id, slug, sort_order").order("sort_order"),
+    supabase.from("locations").select("id, code, kind, description, sorted").order("code"),
+  ]);
+  return (
+    <ItemForm
+      mode="new"
+      profile={profile}
+      categories={categories || []}
+      locations={locations || []}
+    />
+  );
+}

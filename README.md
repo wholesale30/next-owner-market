@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next Owner Market
 
-## Getting Started
+Phone-first inventory, consignment, and storefront app for a surplus business.
+Built on Next.js + Supabase + Claude. You own the code and the data.
 
-First, run the development server:
+## What's in it (today)
+
+- **Add item in under a minute**: snap photos, AI writes title, description, category, condition, specs, tags, and a price range. You approve.
+- **Warehouse locations**: bin / pallet / gaylord codes on every item.
+- **QR tags**: print small, medium, or large tags per item. Scan with any phone to open the item.
+- **Copy-paste listings**: one tap for Facebook, OfferUp, eBay, Craigslist.
+- **Consignment**: tiers (full service 40% / 50% under $50, drop-off 30%, self-listed 15%), per-consignor and per-item overrides, commission on sale price only.
+- **Consignor logins**: they add items, you approve, they see only their own items and payouts.
+- **Public storefront**: searchable, category filters, per-item pages with Google product markup, "text about this" buttons.
+- **Wanted / sourcing requests**: "Looking for something?" form feeds a list you carry when buying.
+- **Money**: sales log, your take, consignor balances, mark-paid payouts, CSV export.
+- **Roles**: admin, staff, consignor, buyer. Row-level security in the database.
+- **Built for growth**: tables already exist for auctions, bids, pickup scheduling, saved searches, favorites, notifications, lots/pallets, and per-platform listing tracking.
+
+## Setup (about 15 minutes)
+
+See `SETUP.md`.
+
+## Run locally
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in your keys
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
