@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const item = c.items as unknown as { sku: string; title: string; price: number } | null;
   const seller = c.profiles as unknown as { role: string; email: string | null; phone: string | null; full_name: string | null; business_name: string | null } | null;
   const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
-  const b = (biz?.value as { name?: string; contact_email?: string }) || {};
+  const b = (biz?.value as { name?: string; contact_email?: string; alert_all_messages?: boolean }) || {};
   const from = process.env.EMAIL_FROM || `${b.name || "Next Owner Market"} <alerts@nextownermarket.com>`;
   const link = item ? `${site()}/item/${item.sku}` : site();
   const isEmail = (s: string | null | undefined) => !!s && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s);
@@ -31,7 +31,8 @@ export async function POST(req: Request) {
     const body = `${c.buyer_name || "A buyer"} wrote about ${about}:\n\n"${last.body}"\n\nReply in the app: ${site()}/app/inbox?c=${c.id}`;
     const sellerIsStaff = seller?.role === "admin" || seller?.role === "staff";
     if (seller && !sellerIsStaff && isEmail(seller.email)) await send(seller.email!, `New message about ${item?.title || "your listing"}`, body);
-    await alertStaff(`Message: ${item?.title || "general"}`, `${c.buyer_name || c.buyer_contact}: ${last.body.slice(0, 120)}`, `/app/inbox?c=${c.id}`);
+    // staff are pinged for their own items and general questions; consignor-item chatter stays in the Inbox unless alert_all_messages is on
+    if (sellerIsStaff || !seller || b.alert_all_messages) await alertStaff(`Message: ${item?.title || "general"}`, `${c.buyer_name || "Buyer"}: ${last.body.slice(0, 120)}`, `/app/inbox?c=${c.id}`);
   } else {
     // staff/seller → buyer
     const who = seller && seller.role !== "admin" && seller.role !== "staff" ? seller.business_name || seller.full_name || "the seller" : b.name || "Next Owner Market";

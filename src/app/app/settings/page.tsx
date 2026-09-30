@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-4">
     <SettingsForm
-      business={(get("business") as Record<string, string>) || {}}
+      business={(get("business") as Record<string, string | boolean>) || {}}
       tiers={(get("commission_tiers") as Record<string, number>) || {}}
     />
     <BackupBox />
