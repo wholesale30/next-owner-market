@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { money } from "@/lib/listing";
 import type { Order } from "@/lib/types";
 import LabelBox from "./LabelBox";
+import ResolveButtons from "@/app/app/disputes/ResolveButtons";
 import PickupPicker from "./PickupPicker";
 
 type O = Order & {
@@ -178,10 +179,17 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
       )}
 
       {dispute && (
-        <div className="card p-3 text-sm space-y-1">
-          <p className="font-semibold">Problem report: {dispute.status.replace("_", " ")}</p>
-          <p>{dispute.reason}</p>
+        <div className="card p-3 text-sm space-y-2" style={dispute.status === "open" ? { borderColor: "var(--danger)" } : undefined}>
+          <p className="font-semibold">{dispute.status === "open" ? "⚠ Problem reported • money on hold" : `Problem ${dispute.status.replace("resolved_", "resolved: ").replace("_", " ")}`}</p>
+          <p>&quot;{dispute.reason}&quot;</p>
           {dispute.resolution_note && <p className="muted">Staff: {dispute.resolution_note}</p>}
+          {dispute.status === "open" && role === "staff" && (
+            <div className="space-y-1">
+              <p className="muted text-xs">Decide it here. Refund cancels the order and puts the item back up; Pay seller completes it.</p>
+              <ResolveButtons orderId={order.id} />
+            </div>
+          )}
+          {dispute.status === "open" && role !== "staff" && <p className="muted text-xs">Pickup and payment are paused until staff decide. Use the message button above if you need to add anything.</p>}
         </div>
       )}
 
