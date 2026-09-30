@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
-import { money } from "@/lib/listing";
-import type { Item } from "@/lib/types";
+import ReviewClient from "./ReviewClient";
 
 export const metadata = { title: "Review queue" };
 
@@ -36,23 +35,7 @@ export default async function ReviewPage() {
         </section>
       ) : null}
 
-      <section className="space-y-2">
-        <h2 className="font-semibold">Items to review ({items?.length || 0})</h2>
-        {!items?.length && <div className="card p-6 text-center muted text-sm">Queue is empty.</div>}
-        {(items as unknown as Item[] | null)?.map((it) => {
-          const photo = [...(it.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary))[0];
-          return (
-            <Link key={it.id} href={`/app/items/${it.id}`} className="card p-3 flex gap-3 items-center">
-              <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{photo && <img src={photo.url} alt="" className="w-full h-full object-cover" />}</div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold truncate">{it.title}</p>
-                <p className="text-sm muted truncate">{it.profiles?.business_name || it.profiles?.full_name} • {it.sku}</p>
-              </div>
-              <p className="font-semibold">{money(it.price)}</p>
-            </Link>
-          );
-        })}
-      </section>
+      <ReviewClient items={(items || []) as never} />
     </div>
   );
 }
