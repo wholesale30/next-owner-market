@@ -36,34 +36,14 @@ export async function GET(req: Request) {
     for (const o of toRefund || []) { try { await refundOrder(o.id); } catch (e) { console.error("auto-refund", o.id, e); } }
   }
 
-  const { data: queue } = await admin.from("notifications").select("*").is("sent_at", null).limit(100);
-  const { data: biz } = await admin.from("settings").select("value").eq("key", "business").maybeSingle();
-  const business = (biz?.value as { name?: string; contact_email?: string }) || {};
-  const site = process.env.NEXT_PUBLIC_SITE_URL || "";
-  let sent = 0, skipped = 0;
+  const { flushNotifications } = await import("@/lib/notify");
+  const result = await flushNotifications(200);
 
-  for (const n of queue || []) {
-    const to = n.contact as string | null;
-    if (!to) { skipped++; continue; }
-    const isPhone = /^[\d\s()+-]{7,}$/.test(to);
-    const link = n.related_item_id ? `${site}/item/${(await admin.from("items").select("sku").eq("id", n.related_item_id).single()).data?.sku}` : site;
-    let ok = false;
-    try {
-      if (isPhone && process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_FROM) {
-        const body = new URLSearchParams({ To: to.replace(/[\s()-]/g, ""), From: process.env.TWILIO_FROM, Body: `${n.body} ${link}` });
-        const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-          method: "POST", headers: { Authorization: "Basic " + Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString("base64"), "Content-Type": "application/x-www-form-urlencoded" }, body,
-        });
-        ok = r.ok;
-      } else if (!isPhone && process.env.RESEND_API_KEY) {
-        const r = await fetch("https://api.resend.com/emails", {
-          method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ from: process.env.EMAIL_FROM || `${business.name || "Next Owner Market"} <onboarding@resend.dev>`, to, subject: n.subject || "Update", html: `<p>${n.body}</p><p><a href="${link}">${link}</a></p>` }),
-        });
-        ok = r.ok;
-      } else { skipped++; continue; }
-    } catch { ok = false; }
-    if (ok) { await admin.from("notifications").update({ sent_at: new Date().toISOString() }).eq("id", n.id); sent++; }
-  }
-  return NextResponse.json({ sent, skipped, queued: queue?.length || 0 });
+  // nightly backup of every table to the private "backups" bucket (keeps 30 days)
+  try {
+    const { runBackup } = await import("@/lib/backup");
+    await runBackup();
+  } catch (e) { console.error("backup", e); }
+
+  return NextResponse.json(result);
 }

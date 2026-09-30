@@ -46,6 +46,7 @@ export default function ItemActions({ item, staff, commissionPct }: Props) {
     const { error } = await supabase.from("items").update(patch).eq("id", item.id);
     setBusy(false);
     if (error) return setErr(error.message);
+    if (status === "active") fetch("/api/notify/flush", { method: "POST" }).catch(() => {});
     router.refresh();
   }
 

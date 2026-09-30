@@ -35,6 +35,7 @@ export default function InventoryList({ items, staff, locations }: { items: Row[
     if (status === "active") patch.listed_at = new Date().toISOString();
     const { error } = await supabase.from("items").update(patch).in("id", ids());
     if (error) throw error;
+    if (status === "active") fetch("/api/notify/flush", { method: "POST" }).catch(() => {});
   });
 
   const moveBin = () => {
