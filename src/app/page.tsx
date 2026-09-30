@@ -1,47 +1,45 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
-import type { Item } from "@/lib/types";
 import StoreHeader from "./StoreHeader";
 import SubscribeBox from "./SubscribeBox";
+import LocationBar from "./LocationBar";
+import { lookupZip } from "@/lib/geo";
 
 export const revalidate = 60;
 
 export default async function StorePage({ searchParams }: PageProps<"/">) {
-  const { q, cat, sort } = (await searchParams) as { q?: string; cat?: string; sort?: string };
+  const sp = (await searchParams) as { q?: string; cat?: string; sort?: string; state?: string; zip?: string; mi?: string };
+  const { q, cat, sort } = sp;
   const supabase = await createClient();
 
-  const [{ data: categories }, { data: biz }] = await Promise.all([
+  const [{ data: categories }, { data: biz }, { data: { user } }] = await Promise.all([
     supabase.from("categories").select("id, name, slug, parent_id").order("sort_order"),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
+    supabase.auth.getUser(),
   ]);
-  const business = (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" };
+  const business = (biz?.value as { name: string; tagline?: string; location?: string; zip?: string; address?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" };
+  // buyer's location: ?zip= wins, then their profile ZIP
+  let zip = (sp.zip || "").trim();
+  if (!zip && user) { const { data: me } = await supabase.from("profiles").select("zip").eq("id", user.id).maybeSingle(); zip = me?.zip || ""; }
+  const here = lookupZip(zip);
+  const mi = sp.mi === "any" ? null : Number(sp.mi || (here ? 100 : 0)) || null;
+  const state = (sp.state || "").toUpperCase().slice(0, 2);
+  const store = lookupZip(business.zip || (business.address || "").match(/\b(\d{5})\b/)?.[1]);
+  const storeState = store?.state || (business.location || "").match(/,\s*([A-Z]{2})/)?.[1] || null;
 
-  let query = supabase
-    .from("items")
-    .select("id, sku, title, price, status, tested, serviced, shipping_ok, local_pickup_ok, listed_at, sold_at, category_id, owner_id, item_photos(url, is_primary, sort_order), categories(name, slug)")
-    .in("status", sort === "sold" ? ["sold", "shipped"] : ["active", "reserved"])
-    .limit(120);
-  if (q) query = query.textSearch("search", q, { type: "websearch" });
-  if (cat) {
-    const c = categories?.find((x) => x.slug === cat);
-    if (c) {
-      const ids = [c.id, ...(categories || []).filter((x) => x.parent_id === c.id).map((x) => x.id)];
-      query = query.in("category_id", ids);
-    }
-  }
-  if (sort === "sold") { const since = new Date(); since.setDate(since.getDate() - 90); query = query.gte("sold_at", since.toISOString()).order("sold_at", { ascending: false }); }
-  else if (sort === "low") query = query.order("price", { ascending: true });
-  else if (sort === "high") query = query.order("price", { ascending: false });
-  else query = query.order("listed_at", { ascending: false, nullsFirst: false });
-
-  const { data: items } = await query;
-
-  const ownerIds = Array.from(new Set((items || []).map((i) => i.owner_id)));
-
-  const { data: sellers } = ownerIds.length ? await supabase.from("seller_public").select("id, role, city, state").in("id", ownerIds) : { data: [] };
-
-  const locOf = (ownerId: string) => { const sp = (sellers || []).find((x) => x.id === ownerId); if (!sp) return ""; if (sp.role === "admin" || sp.role === "staff") return business.location || ""; return [sp.city, sp.state].filter(Boolean).join(", "); };
+  let catIds: string[] | null = null;
+  if (cat) { const c = categories?.find((x) => x.slug === cat); if (c) catIds = [c.id, ...(categories || []).filter((x) => x.parent_id === c.id).map((x) => x.id)]; }
+  const { data: items } = await supabase.rpc("search_items", {
+    p_q: q || null, p_category_ids: catIds, p_state: state || null,
+    p_lat: here?.lat ?? null, p_lng: here?.lng ?? null, p_radius_mi: here ? mi : null,
+    p_sort: sort === "sold" ? "sold" : sort || (here ? "near" : "new"), p_sold: sort === "sold",
+    p_store_lat: store?.lat ?? null, p_store_lng: store?.lng ?? null, p_store_state: storeState, p_limit: 120,
+  });
+  type Row = { id: string; sku: string; title: string; price: number; status: string; tested: boolean; serviced: boolean; shipping_ok: boolean; local_pickup_ok: boolean; owner_id: string; city: string | null; state: string | null; distance_mi: number | null; photo_url: string | null };
+  const rows = (items || []) as Row[];
+  const locOf = (it: Row) => it.state ? [it.city || (it.owner_id && !it.city ? (business.location || "").split(",")[0] : ""), it.state].filter(Boolean).join(", ") : business.location || "";
+  const keep = (extra: Record<string, string>) => { const o: Record<string, string> = {}; for (const [k, v] of Object.entries({ q, cat, sort, state, zip, mi: sp.mi })) if (v) o[k] = String(v); return new URLSearchParams({ ...o, ...extra }).toString(); };
   const topCats = (categories || []).filter((c) => !c.parent_id);
 
   return (
@@ -54,23 +52,25 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
           <button className="btn btn-primary">Search</button>
         </form>
 
+        <LocationBar zip={zip} state={state} mi={sp.mi || (here ? "100" : "any")} here={here ? `${here.city}, ${here.state}` : null} params={{ q: q || "", cat: cat || "", sort: sort || "" }} />
+
         <div className="flex gap-1 overflow-x-auto pb-1">
-          <Link href="/" className={`pill px-3 py-2 whitespace-nowrap ${!cat ? "pill-active" : ""}`}>All</Link>
+          <Link href={`/?${keep({ cat: "" })}`.replace(/cat=&?/, "")} className={`pill px-3 py-2 whitespace-nowrap ${!cat ? "pill-active" : ""}`}>All</Link>
           {topCats.map((c) => (
-            <Link key={c.id} href={`/?cat=${c.slug}${q ? `&q=${encodeURIComponent(q)}` : ""}`} className={`pill px-3 py-2 whitespace-nowrap ${cat === c.slug ? "pill-active" : ""}`}>{c.name}</Link>
+            <Link key={c.id} href={`/?${keep({ cat: c.slug })}`} className={`pill px-3 py-2 whitespace-nowrap ${cat === c.slug ? "pill-active" : ""}`}>{c.name}</Link>
           ))}
         </div>
 
         <div className="flex items-center justify-between text-sm">
-          <span className="muted">{items?.length || 0} items</span>
-          <div className="flex gap-1">
-            {[["new", "Newest"], ["low", "$ low"], ["high", "$ high"], ["sold", "Sold"]].map(([k, l]) => (
-              <Link key={k} href={`/?${new URLSearchParams({ ...(q ? { q } : {}), ...(cat ? { cat } : {}), sort: k }).toString()}`} className={`pill ${(sort || "new") === k ? "pill-active" : ""}`}>{l}</Link>
+          <span className="muted">{rows.length} items{here ? ` near ${here.city}` : state ? ` in ${state}` : ""}</span>
+          <div className="flex gap-1 overflow-x-auto">
+            {[...(here ? [["near", "Nearest"]] : []), ["new", "Newest"], ["low", "$ low"], ["high", "$ high"], ["sold", "Sold"]].map(([k, l]) => (
+              <Link key={k} href={`/?${keep({ sort: k })}`} className={`pill ${(sort || (here ? "near" : "new")) === k ? "pill-active" : ""}`}>{l}</Link>
             ))}
           </div>
         </div>
 
-        {!items?.length && (
+        {!rows.length && (
           <div className="card p-8 text-center space-y-2">
             <p className="font-semibold">Nothing listed here yet.</p>
             <p className="muted text-sm">New items go up every day. Tell us what you&apos;re hunting for and we&apos;ll find it.</p>
@@ -79,8 +79,8 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         )}
 
         <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {(items as unknown as Item[] | null)?.map((it) => {
-            const photo = [...(it.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order)[0];
+          {rows.map((it) => {
+            const photo = it.photo_url ? { url: it.photo_url } : null;
             return (
               <li key={it.id}>
                 <Link href={`/item/${it.sku}`} className="card overflow-hidden block h-full">
@@ -91,7 +91,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
                     <p className="font-bold">{money(it.price)}{it.status === "reserved" && <span className="pill ml-2">On hold</span>}{(it.status === "sold" || it.status === "shipped") && <span className="pill pill-sold ml-2">Sold</span>}</p>
                     <p className="text-sm leading-tight line-clamp-2">{it.title}</p>
                     <p className="text-xs muted">
-                      {[it.local_pickup_ok && locOf(it.owner_id) ? `📍 ${locOf(it.owner_id)}` : null, it.shipping_ok && "Ships", it.tested && "Tested"].filter(Boolean).join(" • ")}
+                      {[locOf(it) ? `📍 ${locOf(it)}${it.distance_mi != null ? ` · ${Math.round(it.distance_mi)} mi` : ""}` : null, it.shipping_ok && "Ships", it.tested && "Tested"].filter(Boolean).join(" • ")}
                     </p>
                   </div>
                 </Link>

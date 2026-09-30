@@ -38,6 +38,7 @@ Sign in at **nextownermarket.com/login**. New accounts are ready the moment you 
 | | Free | Pro ($15/month) |
 |---|---|---|
 | Live listings in the store | 10 (5 and $500 total until your first 3 sales) | Unlimited |
+| Location required to list (city, state, ZIP on Profile) | ✔ | ✔ |
 | AI writes the listing from photos | 3 to try | Unlimited |
 | Ready-to-paste text for Facebook, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy | — | ✔ |
 | Video on listings | — | ✔ |
@@ -52,6 +53,7 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 **Address:** https://nextownermarket.com
 
 ### 3.1 Home page
+- **📍 Location bar** — ZIP and/or state, and a distance (25 / 50 / 100 / 250 miles / anywhere). Pickup-only items show within your distance; items that ship show from anywhere. Buyers with a ZIP on their profile see the store sorted **Nearest** automatically. Every card shows the city, state, and miles from you.
 - **Search bar** — type anything: "turntable", "DeWalt", "lamp". Full-text search across titles, descriptions, brands, and tags.
 - **Category pills** — tap to filter: Audio, Tools, Kitchen, Electronics, Lighting, Furniture, Vintage, and more.
 - **Sort** — newest, price low→high, price high→low, and **Sold**: everything sold in the last 90 days with the final price, like eBay's sold listings. Sold item pages stay up permanently unless staff archive them.

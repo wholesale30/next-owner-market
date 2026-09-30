@@ -13,6 +13,7 @@ export default function PayoutSetup({ ready, hasAccount, address }: { ready: boo
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return;
     const { error } = await sb.from("profiles").update({ address1: addr.address1 || null, address2: addr.address2 || null, city: addr.city || null, state: addr.state || null, zip: addr.zip || null }).eq("id", user.id);
+    if (!error) fetch("/api/geo/sync", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) }).catch(() => {});
     setSaved(error ? error.message : "Saved.");
   }
   const router = useRouter();

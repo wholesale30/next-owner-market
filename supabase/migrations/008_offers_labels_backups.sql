@@ -3,3 +3,4 @@
 -- security_hardening_2: anon cannot call account-only RPCs; trigger functions not callable; strip_contact search_path fixed
 -- pickups_by_order: pickups.order_id/buyer_id; book_pickup(order, slot, note) auto-confirms warehouse slots; pickups public insert removed
 -- profiles_column_lock: authenticated may update only contact columns on profiles; staff changes go through staff_update_profile(uuid, jsonb)
+-- geo_search: profiles.lat/lng, seller_public gains city/state/lat/lng, search_items(...) RPC with state + radius filters; items_trust_guard requires seller ZIP/state to list

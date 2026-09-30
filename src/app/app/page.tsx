@@ -40,7 +40,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
       supabase.from("items").select("id", { count: "exact", head: true }).eq("owner_id", profile.id).neq("status", "archived"),
       supabase.from("items").select("id", { count: "exact", head: true }).eq("owner_id", profile.id).in("status", ["active", "reserved", "sold"]),
     ]);
-    start = <SellerStart approved={!!profile.approved} payoutsReady={!!profile.stripe_payouts_ready} itemCount={total || 0} liveCount={live || 0} refCode={profile.referral_code} refCount={profile.referral_count || 0} credits={profile.pro_credit_months || 0} isPro={profile.plan === "pro"} />;
+    start = <SellerStart approved={!!profile.approved} payoutsReady={!!profile.stripe_payouts_ready} itemCount={total || 0} liveCount={live || 0} refCode={profile.referral_code} refCount={profile.referral_count || 0} credits={profile.pro_credit_months || 0} isPro={profile.plan === "pro"} hasLocation={!!(profile.zip && profile.state)} />;
   }
   return (
     <div className="space-y-4">

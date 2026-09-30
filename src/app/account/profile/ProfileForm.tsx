@@ -20,6 +20,7 @@ export default function ProfileForm({ me }: { me: Me }) {
     e.preventDefault();
     setBusy(true); setMsg(null);
     const { error } = await supabase.from("profiles").update({ full_name: p.full_name || null, phone: p.phone || null, business_name: seller ? p.business_name || null : undefined, city: p.city || null, state: p.state || null, zip: p.zip || null, address1: p.address1 || null, address2: p.address2 || null }).eq("id", me.id);
+    if (!error) await fetch("/api/geo/sync", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) }).catch(() => {});
     setBusy(false);
     setMsg(error ? error.message : "Saved.");
     router.refresh();
@@ -53,7 +54,7 @@ export default function ProfileForm({ me }: { me: Me }) {
         <div className="grid grid-cols-4 gap-2">
           <div className="col-span-2"><label className="label">City</label><input className="input" value={p.city} onChange={(e) => setP({ ...p, city: e.target.value })} /></div>
           <div><label className="label">State</label><input className="input" maxLength={2} value={p.state} onChange={(e) => setP({ ...p, state: e.target.value.toUpperCase() })} /></div>
-          <div><label className="label">ZIP</label><input className="input" maxLength={5} inputMode="numeric" value={p.zip} onChange={(e) => setP({ ...p, zip: e.target.value })} /></div>
+          <div><label className="label">ZIP</label><input className="input" maxLength={5} inputMode="numeric" value={p.zip} onChange={async (e) => { const zip = e.target.value; setP({ ...p, zip }); if (zip.length === 5) { const g = await fetch(`/api/geo?zip=${zip}`).then((r) => r.json()).catch(() => null); if (g?.ok) setP((q) => ({ ...q, zip, city: q.city || g.city, state: q.state || g.state })); } }} /></div>
         </div>
         <p className="text-xs muted">City and state show on your listings so buyers know where pickup is. Everything else stays private.</p>
         {seller && (

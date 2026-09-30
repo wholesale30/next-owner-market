@@ -37,6 +37,7 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
       default_commission_pct: p.default_commission_pct || "", business_name: p.business_name || "", phone: p.phone || "", notes: p.notes || "",
       city: p.city || "", state: p.state || "", zip: p.zip || "", suspended: p.suspended, plan: p.plan, ai_credits: Number(p.ai_credits || 0),
     } });
+    if (!error) fetch("/api/geo/sync", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ profileId: person.id }) }).catch(() => {});
     setBusy(false);
     setMsg(error ? error.message : "Saved.");
     router.refresh();

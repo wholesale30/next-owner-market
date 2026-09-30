@@ -61,7 +61,7 @@ function SignupForm() {
           <div className="col-span-2"><label className="label">City</label><input className="input" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required={!buyer} /></div>
           <div><label className="label">State</label><input className="input" maxLength={2} placeholder="VA" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value.toUpperCase() })} required={!buyer} /></div>
         </div>
-        <div><label className="label">ZIP {buyer ? "(optional, for nearby items)" : ""}</label><input className="input" inputMode="numeric" maxLength={5} value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} /></div>
+        <div><label className="label">ZIP {buyer ? "(optional, for nearby items)" : ""}</label><input className="input" inputMode="numeric" maxLength={5} value={form.zip} onChange={async (e) => { const zip = e.target.value; setForm({ ...form, zip }); if (zip.length === 5) { const g = await fetch(`/api/geo?zip=${zip}`).then((r) => r.json()).catch(() => null); if (g?.ok) setForm((f) => ({ ...f, zip, city: f.city || g.city, state: f.state || g.state })); } }} /></div>
         <div><label className="label">Password</label><input className="input" type="password" minLength={8} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required /></div>
         {error && <p className="text-sm" style={{ color: "var(--danger)" }}>{error}</p>}
         <button className="btn btn-primary w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>

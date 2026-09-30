@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function SellerStart({ approved, payoutsReady, itemCount, liveCount, refCode, refCount, credits, isPro }: { approved: boolean; payoutsReady: boolean; itemCount: number; liveCount: number; refCode: string; refCount: number; credits: number; isPro: boolean }) {
+export default function SellerStart({ approved, payoutsReady, itemCount, liveCount, refCode, refCount, credits, isPro, hasLocation }: { approved: boolean; payoutsReady: boolean; itemCount: number; liveCount: number; refCode: string; refCount: number; credits: number; isPro: boolean; hasLocation: boolean }) {
   const [copied, setCopied] = useState(false);
   const link = `https://nextownermarket.com/signup?ref=${refCode}`;
   const steps = [
     { done: true, label: "Create your account" },
     { done: approved, label: "Get approved (we check every seller; usually same day)" },
+    { done: hasLocation, label: "Add your city, state, and ZIP so buyers see where pickup is", href: "/account/profile" },
     { done: payoutsReady, label: "Set up payouts so buyers can pay you by card", href: "/app/money" },
     { done: itemCount > 0, label: "Add your first item: upload photos, let the AI write it", href: "/app/items/new" },
     { done: liveCount > 0, label: "First listing live in the store" },

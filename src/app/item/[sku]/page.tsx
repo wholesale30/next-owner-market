@@ -9,6 +9,7 @@ import PhotoGallery from "./PhotoGallery";
 import BuyButton from "./BuyButton";
 import OfferButton from "./OfferButton";
 import { stripeReady } from "@/lib/stripe";
+import { lookupZip, milesBetween } from "@/lib/geo";
 import BuyerPanel from "./BuyerPanel";
 import AuctionPanel from "./AuctionPanel";
 import MessageForm from "./MessageForm";
@@ -25,7 +26,7 @@ async function load(sku: string) {
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   const { data: seller } = item ? await supabase.from("seller_public").select("*").eq("id", item.owner_id).maybeSingle() : { data: null };
-  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, seller: seller as { id: string; role: string; display_name: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; completed_sales: number; city: string | null; state: string | null } | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
+  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, seller: seller as { id: string; role: string; display_name: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; completed_sales: number; city: string | null; state: string | null; lat: number | null; lng: number | null } | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
 }
 
 export async function generateMetadata({ params }: PageProps<"/item/[sku]">): Promise<Metadata> {
@@ -47,9 +48,17 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   const auction = Array.isArray(item.auctions) ? item.auctions[0] : item.auctions;
   const sellerIsPlatform = seller?.role === "admin" || seller?.role === "staff";
   const pickupLoc = sellerIsPlatform ? business.location || "" : [seller?.city, seller?.state].filter(Boolean).join(", ");
-  const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
+  let miles: number | null = null;
+  {
+    const { data: me } = user ? await sb.from("profiles").select("zip").eq("id", user.id).maybeSingle() : { data: null };
+    const here = lookupZip(me?.zip);
+    const bz = (business as { zip?: string; address?: string });
+    const there = sellerIsPlatform ? lookupZip(bz.zip || (bz.address || "").match(/\b(\d{5})\b/)?.[1]) : (seller?.lat != null && seller?.lng != null ? { lat: seller.lat, lng: seller.lng } : null);
+    if (here && there) miles = Math.round(milesBetween(here.lat, here.lng, there.lat, there.lng));
+  }
+  const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
   const { data: myOffer } = user ? await sb.from("offers").select("id, amount, counter_amount, status, expires_at").eq("item_id", item.id).eq("buyer_id", user.id).in("status", ["pending", "countered", "accepted"]).order("created_at", { ascending: false }).limit(1).maybeSingle() : { data: null };
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
     const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
@@ -81,7 +90,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             {item.condition && <span className="pill">{CONDITION_LABELS[item.condition]}</span>}
             {item.tested && <span className="pill pill-active">✔ Tested, works</span>}
             {item.serviced && <span className="pill pill-active">✔ Serviced</span>}
-            {item.local_pickup_ok && <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}</span>}
+            {item.local_pickup_ok && <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}{miles != null ? ` · ${miles} mi from you` : ""}</span>}
             {item.shipping_ok && <span className="pill">Ships</span>}
           </div>
         </div>
