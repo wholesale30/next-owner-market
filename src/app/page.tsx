@@ -19,8 +19,8 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
 
   let query = supabase
     .from("items")
-    .select("id, sku, title, price, status, tested, serviced, shipping_ok, local_pickup_ok, listed_at, category_id, owner_id, item_photos(url, is_primary, sort_order), categories(name, slug)")
-    .in("status", ["active", "reserved"])
+    .select("id, sku, title, price, status, tested, serviced, shipping_ok, local_pickup_ok, listed_at, sold_at, category_id, owner_id, item_photos(url, is_primary, sort_order), categories(name, slug)")
+    .in("status", sort === "sold" ? ["sold", "shipped"] : ["active", "reserved"])
     .limit(120);
   if (q) query = query.textSearch("search", q, { type: "websearch" });
   if (cat) {
@@ -30,7 +30,8 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
       query = query.in("category_id", ids);
     }
   }
-  if (sort === "low") query = query.order("price", { ascending: true });
+  if (sort === "sold") query = query.gte("sold_at", new Date(Date.now() - 90 * 86400000).toISOString()).order("sold_at", { ascending: false });
+  else if (sort === "low") query = query.order("price", { ascending: true });
   else if (sort === "high") query = query.order("price", { ascending: false });
   else query = query.order("listed_at", { ascending: false, nullsFirst: false });
 
@@ -63,7 +64,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <div className="flex items-center justify-between text-sm">
           <span className="muted">{items?.length || 0} items</span>
           <div className="flex gap-1">
-            {[["new", "Newest"], ["low", "$ low"], ["high", "$ high"]].map(([k, l]) => (
+            {[["new", "Newest"], ["low", "$ low"], ["high", "$ high"], ["sold", "Sold"]].map(([k, l]) => (
               <Link key={k} href={`/?${new URLSearchParams({ ...(q ? { q } : {}), ...(cat ? { cat } : {}), sort: k }).toString()}`} className={`pill ${(sort || "new") === k ? "pill-active" : ""}`}>{l}</Link>
             ))}
           </div>
@@ -87,7 +88,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
                     {photo && <img src={photo.url} alt={it.title} className="w-full h-full object-cover" loading="lazy" />}
                   </div>
                   <div className="p-2 space-y-1">
-                    <p className="font-bold">{money(it.price)}{it.status === "reserved" && <span className="pill ml-2">On hold</span>}</p>
+                    <p className="font-bold">{money(it.price)}{it.status === "reserved" && <span className="pill ml-2">On hold</span>}{(it.status === "sold" || it.status === "shipped") && <span className="pill pill-sold ml-2">Sold</span>}</p>
                     <p className="text-sm leading-tight line-clamp-2">{it.title}</p>
                     <p className="text-xs muted">
                       {[it.local_pickup_ok && locOf(it.owner_id) ? `📍 ${locOf(it.owner_id)}` : null, it.shipping_ok && "Ships", it.tested && "Tested"].filter(Boolean).join(" • ")}

@@ -54,7 +54,7 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 ### 3.1 Home page
 - **Search bar** — type anything: "turntable", "DeWalt", "lamp". Full-text search across titles, descriptions, brands, and tags.
 - **Category pills** — tap to filter: Audio, Tools, Kitchen, Electronics, Lighting, Furniture, Vintage, and more.
-- **Sort** — newest, price low→high, price high→low.
+- **Sort** — newest, price low→high, price high→low, and **Sold**: everything sold in the last 90 days with the final price, like eBay's sold listings. Sold item pages stay up permanently unless staff archive them.
 - **Item grid** — photo, price, title. Tap any item to open it.
 - **"Looking for something specific?"** — opens the Wanted form (see 3.3).
 - **"Have stuff to sell?"** — opens consignor sign-up.
