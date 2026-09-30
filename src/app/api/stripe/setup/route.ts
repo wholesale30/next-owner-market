@@ -33,6 +33,22 @@ export async function POST() {
     st.pro_price_id = price.id;
   }
 
+  // payment methods: turn on Cash App Pay + Link (+ keep cards) on the default configuration
+  try {
+    const cfgs = await s.paymentMethodConfigurations.list({ limit: 10 });
+    const def = cfgs.data.find((c) => c.is_default) || cfgs.data[0];
+    if (def) {
+      await s.paymentMethodConfigurations.update(def.id, {
+        card: { display_preference: { preference: "on" } },
+        cashapp: { display_preference: { preference: "on" } },
+        link: { display_preference: { preference: "on" } },
+        affirm: { display_preference: { preference: "on" } },
+        klarna: { display_preference: { preference: "on" } },
+      });
+      st.payment_methods = "card, cashapp, link, affirm, klarna, apple/google pay";
+    }
+  } catch (e) { st.payment_methods_error = e instanceof Error ? e.message : String(e); }
+
   // connect check
   try {
     await s.accounts.list({ limit: 1 });
