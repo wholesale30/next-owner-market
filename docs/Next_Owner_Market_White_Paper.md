@@ -43,7 +43,9 @@ ANTHROPIC_API_KEY               (Anthropic key)
 NEXT_PUBLIC_SITE_URL            https://nextownermarket.com
 CRON_SECRET                     (any long random string)
 STRIPE_SECRET_KEY               (Stripe secret key, sk_live_… or sk_test_…)
-optional: CLAUDE_MODEL, CLAUDE_GROUP_MODEL, RESEND_API_KEY, EMAIL_FROM,
+RESEND_API_KEY                  (Resend key; alerts + New Arrivals email)
+EMAIL_FROM                      Next Owner Market <alerts@nextownermarket.com>
+optional: CLAUDE_MODEL, CLAUDE_GROUP_MODEL, STAFF_ALERT_TO,
           TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM
 ```
 
@@ -107,6 +109,12 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - **Trust**: `strip_contact()` removes phones/emails/payment handles from non-staff listings; new-seller caps (5 listings / $500 until 3 completed sales); free cap 10 live; `suspended` flag; `ratings` table with `rating_avg`/`rating_count` on profiles.
 - **Admin one-tap setup** (`/api/stripe/setup`, button on Money): creates the webhook endpoint (`/api/stripe/webhook`) and the Pro price; secrets stored in `settings.stripe`. Needs env `STRIPE_SECRET_KEY`. Connect must be enabled once in the Stripe dashboard (Connect → Get started).
 
+**Alerts, email, growth (later the same evening)**
+- Staff alerts (new seller, paid order, problem report, listing for review) sent instantly by Resend to `settings.business.alert_to` (Verizon text gateway 8047207910@vtext.com + gmail). Nav badges on Inbox, Orders, Review, People.
+- New Arrivals email blast (`/app/blast`, `/api/blast`, Resend batch API, `blasts` table), per-subscriber unsubscribe tokens (`/unsubscribe?t=`).
+- Referral credits: `signup?ref=CODE` → `apply_referral()`; when a referred user goes Pro, `on_pro_upgrade` adds a free month to the referrer (`pro_credit_months`), applied as a 100% Stripe coupon at subscribe or by the daily cron.
+- Seller getting-started checklist and Share link on `/app`; Pro landing page `/pro`; nine marketplace copy blocks (added Mercari, Poshmark, Vinted, Depop, Etsy) each with a plain-language how-to-post guide (`src/lib/howto.ts`).
+
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
 
 ## 6. Decisions and why
@@ -122,7 +130,7 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 
 ## 7. Database (Supabase) — the tables
 
-All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql`, `004_item_videos.sql`, `005_checkout_trust.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
+All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql`, `004_item_videos.sql`, `005_checkout_trust.sql`, `006_referrals_blasts.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
 
 profiles · categories · locations (bins) · items · item_photos · lots · lot_members · listings (per-platform tracking) · sales (commission and consignor_due computed) · payouts · payout_sales · sourcing_requests · saved_searches · favorites · notifications · auctions · bids · pickup_slots · pickups · activity_log · settings
 
@@ -169,5 +177,9 @@ Shipping labels · eBay direct posting/delisting · email/text sending (add Rese
 - `next-owner-market-source.zip` — the complete source code (also on GitHub). Contains `supabase/schema.sql`, `supabase/schema_stage2.sql`, `SETUP.md`, `README.md`.
 - `Next_Owner_Market_White_Paper.docx` — this document.
 - `Next_Owner_Market_Marketing_Plan.docx` — the launch and growth plan.
-- `Next_Owner_Market_User_Guide.docx` — the feature book / instruction manual for showing to buyers, consignors, and partners.
+- `Next_Owner_Market_User_Guide.docx` — the feature book / instruction manual.
+- `Next_Owner_Market_Launch_Kit.docx` — 30-day launch plan.
+- `Next_Owner_Market_Seller_Terms.docx` — terms draft.
+- `Next_Owner_Market_Share_Message.docx` — the announcement message.
+- `Their_Record_Outreach_Plan.docx` — belongs to the Their Record project; stored here too.
 - Related earlier work: `Record_and_Turntable_Refurbish.md` (restoration checklist), `Facebook_Group_Handoff.md`.
