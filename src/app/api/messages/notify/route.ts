@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { textSeller } from "@/lib/sms";
 import { admin, site } from "@/lib/stripe";
 import { alertStaff } from "@/lib/alert";
 
@@ -7,12 +8,12 @@ export async function POST(req: Request) {
   const { conversationId } = (await req.json()) as { conversationId: string };
   if (!conversationId) return NextResponse.json({ error: "no id" }, { status: 400 });
   const db = admin();
-  const { data: c } = await db.from("conversations").select("*, items(sku, title, price), profiles!conversations_seller_profile_id_fkey(role, email, phone, full_name, business_name)").eq("id", conversationId).single();
+  const { data: c } = await db.from("conversations").select("*, items(sku, title, price), profiles!conversations_seller_profile_id_fkey(role, email, phone, full_name, business_name, sms_gateway, alert_messages, alert_orders)").eq("id", conversationId).single();
   if (!c) return NextResponse.json({ error: "not found" }, { status: 404 });
   const { data: last } = await db.from("messages").select("sender, body, created_at").eq("conversation_id", conversationId).order("created_at", { ascending: false }).limit(1).single();
   if (!last) return NextResponse.json({ ok: true });
   const item = c.items as unknown as { sku: string; title: string; price: number } | null;
-  const seller = c.profiles as unknown as { role: string; email: string | null; phone: string | null; full_name: string | null; business_name: string | null } | null;
+  const seller = c.profiles as unknown as { role: string; email: string | null; phone: string | null; full_name: string | null; business_name: string | null; sms_gateway?: string | null; alert_messages?: boolean; alert_orders?: boolean } | null;
   const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
   const b = (biz?.value as { name?: string; contact_email?: string; alert_all_messages?: boolean }) || {};
   const from = process.env.EMAIL_FROM || `${b.name || "Next Owner Market"} <alerts@nextownermarket.com>`;
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
     const body = `${c.buyer_name || "A buyer"} wrote about ${about}:\n\n"${last.body}"\n\nReply in the app: ${site()}/app/inbox?c=${c.id}`;
     const sellerIsStaff = seller?.role === "admin" || seller?.role === "staff";
     if (seller && !sellerIsStaff && isEmail(seller.email)) await send(seller.email!, `New message about ${item?.title || "your listing"}`, body);
+    if (seller && !sellerIsStaff) await textSeller(seller, "message", `NOM: ${c.buyer_name || "A buyer"} asked about ${item?.title || "your listing"}: "${last.body.slice(0, 60)}" Reply: ${site()}/app/inbox`);
     // staff are pinged for their own items and general questions; consignor-item chatter stays in the Inbox unless alert_all_messages is on
     if (sellerIsStaff || !seller || b.alert_all_messages) await alertStaff(`Message: ${item?.title || "general"}`, `${c.buyer_name || "Buyer"}: ${last.body.slice(0, 120)}`, `/app/inbox?c=${c.id}`);
   } else {

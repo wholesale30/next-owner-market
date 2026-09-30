@@ -7,6 +7,7 @@ import { CONDITION_LABELS, type Item } from "@/lib/types";
 import StoreHeader from "../../StoreHeader";
 import PhotoGallery from "./PhotoGallery";
 import BuyButton from "./BuyButton";
+import WatchButton from "./WatchButton";
 import OfferButton from "./OfferButton";
 import { stripeReady } from "@/lib/stripe";
 import { lookupZip, milesBetween } from "@/lib/geo";
@@ -61,6 +62,8 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
     if (here && there) miles = Math.round(milesBetween(here.lat, here.lng, there.lat, there.lng));
   }
   const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
+  const { data: myWatch } = user ? await sb.from("favorites").select("item_id").eq("item_id", item.id).eq("profile_id", user.id).maybeSingle() : { data: null };
+  const watching = !!myWatch;
   const { data: myOffer } = user ? await sb.from("offers").select("id, amount, counter_amount, status, expires_at").eq("item_id", item.id).eq("buyer_id", user.id).in("status", ["pending", "countered", "accepted"]).order("created_at", { ascending: false }).limit(1).maybeSingle() : { data: null };
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
     const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
@@ -85,7 +88,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
         <PhotoGallery media={[...photos.map((p) => ({ type: "photo" as const, url: p.url })), ...[...(item.item_videos || [])].sort((a, b) => a.sort_order - b.sort_order).map((v) => ({ type: "video" as const, url: v.url }))]} alt={item.title} />
         <div>
           <h1 className="text-2xl font-bold leading-tight">{item.title}</h1>
-          <p className="text-3xl font-extrabold mt-1">{money(item.price)}</p>
+          <div className="flex items-center justify-between gap-2 mt-1"><p className="text-3xl font-extrabold">{money(item.price)}</p>{item.status !== "sold" && <WatchButton itemId={item.id} sku={item.sku} price={item.price} signedIn={!!user} watching={watching} saves={Number((item as unknown as { save_count?: number }).save_count || 0)} />}</div>
           <div className="flex flex-wrap gap-1 mt-2">
             {item.status === "sold" && <span className="pill pill-sold">Sold</span>}
             {item.status === "reserved" && <span className="pill">On hold</span>}
@@ -107,7 +110,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
         {seller && !sellerIsPlatform && (
           <p className="text-xs muted">Sold by <Link href={`/seller/${seller.id}`} className="underline">{seller.display_name || "a member"}</Link>{seller.rating_count ? ` • ★ ${seller.rating_avg} (${seller.rating_count})` : " • new seller"}{seller.completed_sales ? ` • ${seller.completed_sales} sales` : ""} • Payment held until hand-off</p>
         )}
-        {item.status !== "sold" && <BuyerPanel itemId={item.id} sku={item.sku} title={item.title} canPickup={item.local_pickup_ok && sellerIsPlatform} />}
+        {item.status !== "sold" && <BuyerPanel sku={item.sku} signedIn={!!user} />}
 
         <div className="card p-4 space-y-3 text-sm">
           <p className="whitespace-pre-wrap">{item.description}</p>

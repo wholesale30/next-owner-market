@@ -8,6 +8,7 @@ import { money } from "@/lib/listing";
 import type { Order } from "@/lib/types";
 import LabelBox from "./LabelBox";
 import ResolveButtons from "@/app/app/disputes/ResolveButtons";
+import SafeSpots from "./SafeSpots";
 import PickupPicker from "./PickupPicker";
 
 type O = Order & {
@@ -19,7 +20,7 @@ type O = Order & {
 
 const STATUS: Record<string, string> = { pending_payment: "Awaiting payment", paid: "Paid • money held", released: "Complete • seller paid", refunded: "Refunded", disputed: "Problem reported • on hold", cancelled: "Cancelled" };
 
-export default function OrderClient({ order, role, meId, justPaid, business, sellerName, sellerLoc, sellerIsPlatform, buyerName, buyerLoc, buyerContact, bookedSlot }: { order: O; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; address?: string; pickup_hours?: string; contact_phone?: string }; sellerName: string; sellerLoc: string; sellerIsPlatform: boolean; buyerName: string; buyerLoc: string; buyerContact: string | null; bookedSlot: { starts_at: string; ends_at: string } | null }) {
+export default function OrderClient({ order, role, meId, justPaid, business, sellerName, sellerLoc, sellerIsPlatform, buyerName, buyerLoc, buyerContact, bookedSlot, sellerZip }: { order: O; sellerZip?: string | null; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; address?: string; pickup_hours?: string; contact_phone?: string }; sellerName: string; sellerLoc: string; sellerIsPlatform: boolean; buyerName: string; buyerLoc: string; buyerContact: string | null; bookedSlot: { starts_at: string; ends_at: string } | null }) {
   const router = useRouter();
   const supabase = createClient();
   const [busy, setBusy] = useState(false);
@@ -124,6 +125,7 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
           <button className="btn btn-primary w-full" disabled={msgBusy} onClick={() => suggestTime()}>Suggest a time</button>
         </div>
       )}
+      {order.status === "paid" && order.fulfillment === "pickup" && sellerZip && <SafeSpots zip={sellerZip} />}
       {order.status === "paid" && order.fulfillment === "pickup" && !isBuyer && bookedSlot && <p className="card p-3 text-sm">📅 Buyer booked pickup: {new Date(bookedSlot.starts_at).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>}
 
       {order.status === "paid" && order.fulfillment === "pickup" && !isBuyer && (

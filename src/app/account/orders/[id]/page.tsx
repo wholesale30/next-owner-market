@@ -34,7 +34,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/ac
       <StoreHeader business={business} signedIn />
       <main className="max-w-3xl mx-auto p-4 space-y-4">
         <Link href={role === "buyer" ? "/account" : "/app/orders"} className="text-sm muted">← {role === "buyer" ? "My account" : "Orders"}</Link>
-        <OrderClient order={enriched as never} role={role} meId={me.id} justPaid={paid === "1"} business={business} sellerName={sellerIsPlatform ? business.name : sellerPub?.display_name || "Seller"} sellerLoc={sellerIsPlatform ? business.location || "" : [sellerPub?.city, sellerPub?.state].filter(Boolean).join(", ")} sellerIsPlatform={sellerIsPlatform} buyerName={buyerPub?.display_name || "Buyer"} buyerLoc={[buyerPub?.city, buyerPub?.state].filter(Boolean).join(", ")} buyerContact={buyerContact ? buyerContact.email || buyerContact.phone || null : null} bookedSlot={bookedSlot} />
+        <OrderClient order={enriched as never} role={role} meId={me.id} justPaid={paid === "1"} business={business} sellerName={sellerIsPlatform ? business.name : sellerPub?.display_name || "Seller"} sellerLoc={sellerIsPlatform ? business.location || "" : [sellerPub?.city, sellerPub?.state].filter(Boolean).join(", ")} sellerIsPlatform={sellerIsPlatform} buyerName={buyerPub?.display_name || "Buyer"} buyerLoc={[buyerPub?.city, buyerPub?.state].filter(Boolean).join(", ")} buyerContact={buyerContact ? buyerContact.email || buyerContact.phone || null : null} bookedSlot={bookedSlot} sellerZip={sellerIsPlatform ? ((business as { zip?: string }).zip || (business.address || "").match(/\b(\d{5})\b/)?.[1] || null) : ((sellerPub as unknown as { zip?: string } | null)?.zip || null)} />
       </main>
     </div>
   );

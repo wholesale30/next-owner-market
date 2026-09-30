@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import UsernameField from "@/components/UsernameField";
 
 function SignupForm() {
   const router = useRouter();
@@ -11,7 +12,7 @@ function SignupForm() {
   const buyer = params.get("buyer") === "1";
   const next = params.get("next") || "";
   const ref = params.get("ref") || "";
-  const [form, setForm] = useState({ full_name: "", email: "", phone: "", password: "", city: "", state: "", zip: "" });
+  const [form, setForm] = useState({ username: "", full_name: "", email: "", phone: "", password: "", city: "", state: "", zip: "" });
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -23,7 +24,7 @@ function SignupForm() {
     const res = await fetch("/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: form.email, password: form.password, full_name: form.full_name, phone: form.phone, role: buyer ? "buyer" : "consignor", ref, city: form.city, state: form.state, zip: form.zip }),
+      body: JSON.stringify({ username: form.username, email: form.email, password: form.password, full_name: form.full_name, phone: form.phone, role: buyer ? "buyer" : "consignor", ref, city: form.city, state: form.state, zip: form.zip }),
     });
     const json = (await res.json()) as { error?: string };
     if (!res.ok) { setBusy(false); return setError(json.error || "Could not create account."); }
@@ -54,7 +55,8 @@ function SignupForm() {
           <h1 className="text-2xl font-bold">{buyer ? "Create a free account" : "Sell with us"}</h1>
           <p className="muted text-sm">{buyer ? "Save items, bid in auctions, and get alerts when what you want shows up." : "Create a consignor account. You list, we sell, you get paid."}</p>
         </div>
-        <div><label className="label">Your name</label><input className="input" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required /></div>
+        <UsernameField value={form.username} onChange={(v) => setForm({ ...form, username: v })} />
+        <div><label className="label">Your name (private; only staff see it)</label><input className="input" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required /></div>
         <div><label className="label">Email</label><input className="input" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required /></div>
         <div><label className="label">Phone</label><input className="input" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
         <div className="grid grid-cols-3 gap-2">

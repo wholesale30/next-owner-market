@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { admin, stripe, stripeSettings } from "@/lib/stripe";
 import { alertStaff } from "@/lib/alert";
+import { textSeller } from "@/lib/sms";
 
 async function sendOrderEmails(orderId: string) {
   if (!process.env.RESEND_API_KEY) return;
@@ -9,8 +10,8 @@ async function sendOrderEmails(orderId: string) {
   const { data: o } = await db.from("orders").select("*, items(sku, title)").eq("id", orderId).single();
   if (!o) return;
   const [{ data: buyer }, { data: seller }, { data: biz }] = await Promise.all([
-    db.from("profiles").select("email, full_name").eq("id", o.buyer_id).single(),
-    db.from("profiles").select("email, full_name, business_name, role, city, state").eq("id", o.seller_id).single(),
+    db.from("profiles").select("email, full_name, username").eq("id", o.buyer_id).single(),
+    db.from("profiles").select("email, full_name, business_name, role, city, state, sms_gateway, alert_orders").eq("id", o.seller_id).single(),
     db.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   const b = (biz?.value as { name?: string; location?: string; address?: string; pickup_hours?: string; contact_phone?: string }) || {};
@@ -27,8 +28,9 @@ async function sendOrderEmails(orderId: string) {
       : `The seller will ship it and add tracking to your order page. Payment releases when you confirm delivery, or 3 days after it's delivered.`;
     await send(buyer.email, `Order confirmed: ${item.title}`, `Thanks${buyer.full_name ? " " + buyer.full_name.split(" ")[0] : ""}. You paid $${Number(o.total).toFixed(2)} for "${item.title}" (${item.sku}).\n\n${where}\n\nYour order: ${link}\nProblem? Use "Report a problem" on that page; your money stays on hold until it's sorted.`);
   }
+  if (seller && !platform) await textSeller(seller, "order", `NOM: You made a sale! @${buyer?.username || "a buyer"} paid $${Number(o.total).toFixed(2)} for "${item.title}". ${link}`);
   if (seller?.email && !platform) {
-    await send(seller.email, `You made a sale: ${item.title}`, `${buyer?.full_name || "A buyer"} paid $${Number(o.total).toFixed(2)} for "${item.title}".\n\n${o.fulfillment === "pickup" ? "Message the buyer with a pickup spot and time. At hand-off, enter their 6-digit code on the order page and your payout ($" + Number(o.seller_due).toFixed(2) + ") goes to your bank in about 2 business days." : "Ship it and add the tracking number on the order page. You're paid ($" + Number(o.seller_due).toFixed(2) + ") when the buyer confirms delivery or 3 days after it arrives."}\n\nOrder: ${link}`);
+    await send(seller.email, `You made a sale: ${item.title}`, `@${buyer?.username || "a buyer"} paid $${Number(o.total).toFixed(2)} for "${item.title}".\n\n${o.fulfillment === "pickup" ? "Message the buyer with a pickup spot and time. At hand-off, enter their 6-digit code on the order page and your payout ($" + Number(o.seller_due).toFixed(2) + ") goes to your bank in about 2 business days." : "Ship it and add the tracking number on the order page. You're paid ($" + Number(o.seller_due).toFixed(2) + ") when the buyer confirms delivery or 3 days after it arrives."}\n\nOrder: ${link}`);
   }
 }
 

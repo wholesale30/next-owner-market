@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { textSeller } from "@/lib/sms";
 import { admin, site } from "@/lib/stripe";
 import { alertStaff } from "@/lib/alert";
 
@@ -9,8 +10,8 @@ export async function POST(req: Request) {
   const { data: o } = await db.from("offers").select("*, items(sku, title, price)").eq("id", offerId).single();
   if (!o) return NextResponse.json({ error: "not found" }, { status: 404 });
   const [{ data: buyer }, { data: seller }, { data: biz }] = await Promise.all([
-    db.from("profiles").select("email, full_name").eq("id", o.buyer_id).single(),
-    db.from("profiles").select("email, full_name, business_name, role").eq("id", o.seller_id).single(),
+    db.from("profiles").select("email, full_name, username").eq("id", o.buyer_id).single(),
+    db.from("profiles").select("email, full_name, business_name, role, sms_gateway, alert_orders").eq("id", o.seller_id).single(),
     db.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   const b = (biz?.value as { name?: string }) || {};
@@ -22,9 +23,10 @@ export async function POST(req: Request) {
   const $ = (n: number | string) => `$${Number(n).toFixed(2)}`;
   if (event === "new" || event === "counter_accepted") {
     const txt = event === "new"
-      ? `${buyer?.full_name || "A buyer"} offered ${$(o.amount)} on "${item.title}" (asking ${$(item.price)}).${o.message ? `\n\n"${o.message}"` : ""}\n\nAccept, decline, or counter: ${site()}/app/offers\nOffers expire in 48 hours.`
-      : `${buyer?.full_name || "The buyer"} accepted your counter of ${$(o.amount)} on "${item.title}". They can now buy at that price for 48 hours.`;
+      ? `@${buyer?.username || "a buyer"} offered ${$(o.amount)} on "${item.title}" (asking ${$(item.price)}).${o.message ? `\n\n"${o.message}"` : ""}\n\nAccept, decline, or counter: ${site()}/app/offers\nOffers expire in 48 hours.`
+      : `@${buyer?.username || "the buyer"} accepted your counter of ${$(o.amount)} on "${item.title}". They can now buy at that price for 48 hours.`;
     if (seller?.email && !platform) await send(seller.email, `${event === "new" ? "Offer" : "Counter accepted"}: ${$(o.amount)} on ${item.title}`, txt);
+    if (seller && !platform) await textSeller(seller, "order", `NOM: ${txt.split("\n")[0]} ${site()}/app/offers`);
     await alertStaff(`${event === "new" ? "Offer" : "Counter accepted"}: ${$(o.amount)} on ${item.title}`, txt.split("\n")[0], "/app/offers");
   } else if (buyer?.email) {
     const txt = event === "accepted" ? `Your offer of ${$(o.amount)} on "${item.title}" was accepted. Buy it at that price within 48 hours: ${link}`

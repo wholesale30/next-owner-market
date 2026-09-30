@@ -38,6 +38,8 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
   });
   type Row = { id: string; sku: string; title: string; price: number; status: string; tested: boolean; serviced: boolean; shipping_ok: boolean; local_pickup_ok: boolean; owner_id: string; city: string | null; state: string | null; distance_mi: number | null; photo_url: string | null; shipping_mode?: string | null };
   const rows = (items || []) as Row[];
+  const { data: reviews } = await supabase.from("ratings").select("stars, comment, created_at, ratee_id").not("comment", "is", null).gte("stars", 4).order("created_at", { ascending: false }).limit(6);
+  const reviewNames = reviews?.length ? (await supabase.from("seller_public").select("id, display_name").in("id", reviews.map((r) => r.ratee_id))).data || [] : [];
   const locOf = (it: Row) => it.state ? [it.city || (it.owner_id && !it.city ? (business.location || "").split(",")[0] : ""), it.state].filter(Boolean).join(", ") : business.location || "";
   const keep = (extra: Record<string, string>) => { const o: Record<string, string> = {}; for (const [k, v] of Object.entries({ q, cat, sort, state, zip, mi: sp.mi })) if (v) o[k] = String(v); return new URLSearchParams({ ...o, ...extra }).toString(); };
   const topCats = (categories || []).filter((c) => !c.parent_id);
@@ -112,7 +114,29 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
           })}
         </ul>
 
-        <div className="mt-8"><SubscribeBox /></div>
+        {reviews && reviews.length >= 2 && (
+          <section className="space-y-2 mt-6">
+            <h2 className="font-bold text-lg">What people are saying</h2>
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {reviews.map((r, i) => (
+                <div key={i} className="card p-3 min-w-[260px] max-w-[300px] text-sm space-y-1">
+                  <p style={{ color: "var(--accent)" }}>{"★".repeat(r.stars)}{"☆".repeat(5 - r.stars)}</p>
+                  <p>&quot;{r.comment}&quot;</p>
+                  <p className="text-xs muted">about @{reviewNames.find((n) => n.id === r.ratee_id)?.display_name || "a member"} · {new Date(r.created_at).toLocaleDateString([], { month: "short", year: "numeric" })}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+        <section className="card p-4 mt-6">
+          <h2 className="font-bold text-lg mb-2">How it works</h2>
+          <div className="grid grid-cols-3 gap-2 text-center text-sm">
+            <div><p className="text-2xl">💳</p><p className="font-semibold">Pay by card</p><p className="muted text-xs">Apple Pay, Google Pay, Cash App, Affirm, Klarna too.</p></div>
+            <div><p className="text-2xl">🔒</p><p className="font-semibold">Money&apos;s held</p><p className="muted text-xs">The seller doesn&apos;t get paid until you have it.</p></div>
+            <div><p className="text-2xl">🤝</p><p className="font-semibold">Pick up or ship</p><p className="muted text-xs">Pickup code or tracked label. Problem? Full refund.</p></div>
+          </div>
+        </section>
+        <div className="mt-4"><SubscribeBox /></div>
         <div className="card p-5 text-center space-y-2">
           <h2 className="font-bold text-lg">Looking for something specific?</h2>
           <p className="muted text-sm">We source surplus across the country. Tell us what you want and we&apos;ll hunt it down.</p>

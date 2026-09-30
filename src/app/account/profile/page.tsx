@@ -17,7 +17,7 @@ export default async function ProfilePage() {
       <StoreHeader business={business} signedIn />
       <main className="max-w-3xl mx-auto p-4 space-y-4">
         <Link href="/account" className="text-sm muted">← My account</Link>
-        <ProfileForm me={{ id: me.id, email: me.email, full_name: me.full_name, phone: me.phone, business_name: me.business_name, city: me.city || "", state: me.state || "", zip: me.zip || "", address1: me.address1 || "", address2: me.address2 || "", role: me.role, referral_code: me.referral_code, plan: me.plan || "free", created_at: me.created_at }} />
+        <ProfileForm me={{ username: (me as unknown as { username?: string | null }).username ?? null, sms_gateway: (me as unknown as { sms_gateway?: string | null }).sms_gateway ?? null, alert_messages: (me as unknown as { alert_messages?: boolean }).alert_messages !== false, alert_orders: (me as unknown as { alert_orders?: boolean }).alert_orders !== false, id: me.id, email: me.email, full_name: me.full_name, phone: me.phone, business_name: me.business_name, city: me.city || "", state: me.state || "", zip: me.zip || "", address1: me.address1 || "", address2: me.address2 || "", role: me.role, referral_code: me.referral_code, plan: me.plan || "free", created_at: me.created_at }} />
       </main>
     </div>
   );

@@ -4,14 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { CARRIERS, smsAddress } from "@/lib/sms";
+import UsernameField from "@/components/UsernameField";
 
-interface Me { id: string; email: string | null; full_name: string | null; phone: string | null; business_name: string | null; city: string; state: string; zip: string; address1: string; address2: string; role: string; referral_code: string; plan: string; created_at: string }
+interface Me { username: string | null; sms_gateway: string | null; alert_messages: boolean; alert_orders: boolean; id: string; email: string | null; full_name: string | null; phone: string | null; business_name: string | null; city: string; state: string; zip: string; address1: string; address2: string; role: string; referral_code: string; plan: string; created_at: string }
 
 export default function ProfileForm({ me }: { me: Me }) {
   const router = useRouter();
   const supabase = createClient();
   const seller = me.role !== "buyer";
-  const [p, setP] = useState({ full_name: me.full_name || "", phone: me.phone || "", business_name: me.business_name || "", city: me.city, state: me.state, zip: me.zip, address1: me.address1, address2: me.address2 });
+  const initialCarrier = CARRIERS.find((c) => me.sms_gateway?.endsWith("@" + c.gateway))?.key || "";
+  const [al, setAl] = useState({ carrier: initialCarrier, on: !!me.sms_gateway, messages: me.alert_messages !== false, orders: me.alert_orders !== false });
+  const [p, setP] = useState({ username: me.username || "", full_name: me.full_name || "", phone: me.phone || "", business_name: me.business_name || "", city: me.city, state: me.state, zip: me.zip, address1: me.address1, address2: me.address2 });
   const [pw, setPw] = useState({ a: "", b: "" });
   const [msg, setMsg] = useState<string | null>(null);
   const [pwMsg, setPwMsg] = useState<string | null>(null);
@@ -19,10 +23,12 @@ export default function ProfileForm({ me }: { me: Me }) {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setMsg(null);
-    const { error } = await supabase.from("profiles").update({ full_name: p.full_name || null, phone: p.phone || null, business_name: seller ? p.business_name || null : undefined, city: p.city || null, state: p.state || null, zip: p.zip || null, address1: p.address1 || null, address2: p.address2 || null }).eq("id", me.id);
+    const gateway = al.on && al.carrier ? smsAddress(p.phone, al.carrier) : null;
+    if (al.on && !gateway) { setBusy(false); return setMsg("For text alerts, enter a 10-digit phone number and pick your carrier."); }
+    const { error } = await supabase.from("profiles").update({ username: p.username || null, full_name: p.full_name || null, phone: p.phone || null, business_name: seller ? p.business_name || null : undefined, city: p.city || null, state: p.state || null, zip: p.zip || null, address1: p.address1 || null, address2: p.address2 || null, sms_gateway: gateway, alert_messages: al.messages, alert_orders: al.orders }).eq("id", me.id);
     if (!error) await fetch("/api/geo/sync", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) }).catch(() => {});
     setBusy(false);
-    setMsg(error ? error.message : "Saved.");
+    setMsg(error ? (/username/i.test(error.message) ? "That username is taken or not allowed." : error.message) : "Saved.");
     router.refresh();
   }
   async function changePw(e: React.FormEvent) {
@@ -47,7 +53,8 @@ export default function ProfileForm({ me }: { me: Me }) {
         </div>
       )}
       <form onSubmit={save} className="card p-4 space-y-3">
-        <div><label className="label">Name</label><input className="input" value={p.full_name} onChange={(e) => setP({ ...p, full_name: e.target.value })} /></div>
+        <UsernameField value={p.username} onChange={(v) => setP({ ...p, username: v })} current={me.username || undefined} />
+        <div><label className="label">Name (private)</label><input className="input" value={p.full_name} onChange={(e) => setP({ ...p, full_name: e.target.value })} /></div>
         {seller && <div><label className="label">Business or shop name (shown to buyers instead of your name)</label><input className="input" value={p.business_name} onChange={(e) => setP({ ...p, business_name: e.target.value })} /></div>}
         <div><label className="label">Email</label><input className="input" value={me.email || ""} disabled /><p className="text-xs muted">To change your email, message us; it&apos;s tied to your sign-in.</p></div>
         <div><label className="label">Phone</label><input className="input" type="tel" value={p.phone} onChange={(e) => setP({ ...p, phone: e.target.value })} /></div>
@@ -57,6 +64,17 @@ export default function ProfileForm({ me }: { me: Me }) {
           <div><label className="label">ZIP</label><input className="input" maxLength={5} inputMode="numeric" value={p.zip} onChange={async (e) => { const zip = e.target.value; setP({ ...p, zip }); if (zip.length === 5) { const g = await fetch(`/api/geo?zip=${zip}`).then((r) => r.json()).catch(() => null); if (g?.ok) setP((q) => ({ ...q, zip, city: q.city || g.city, state: q.state || g.state })); } }} /></div>
         </div>
         <p className="text-xs muted">City and state show on your listings so buyers know where pickup is. Everything else stays private.</p>
+        <div className="card p-3 space-y-2">
+          <label className="flex items-center gap-2 font-semibold"><input type="checkbox" checked={al.on} onChange={(e) => setAl({ ...al, on: e.target.checked })} /> 📱 Text me (free) when something happens</label>
+          {al.on && (
+            <>
+              <div><label className="label">Your phone carrier</label><select className="input" value={al.carrier} onChange={(e) => setAl({ ...al, carrier: e.target.value })}><option value="">Pick one…</option>{CARRIERS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></div>
+              <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={al.messages} onChange={(e) => setAl({ ...al, messages: e.target.checked })} /> New message from a buyer</label>
+              <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={al.orders} onChange={(e) => setAl({ ...al, orders: e.target.checked })} /> Someone bought or made an offer</label>
+              <p className="text-xs muted">Uses the phone number above. Texts come from our alert address; standard message rates from your carrier may apply. You always get email too.</p>
+            </>
+          )}
+        </div>
         {seller && (
           <>
             <div><label className="label">Street address (for shipping labels only; never shown)</label><input className="input" value={p.address1} onChange={(e) => setP({ ...p, address1: e.target.value })} /></div>

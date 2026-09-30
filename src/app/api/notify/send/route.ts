@@ -12,6 +12,7 @@ export async function GET(req: Request) {
   }
   const admin = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   await admin.rpc("close_ended_auctions");
+  await admin.rpc("run_price_drops");
 
   // Held-money timers: auto-release delivered orders after the 3-day window; auto-refund pickup orders nobody completed.
   if (process.env.STRIPE_SECRET_KEY) {
