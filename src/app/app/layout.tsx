@@ -45,6 +45,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/pickups", label: "Pickups" },
         { href: "/app/bins", label: "Bins" },
         { href: "/app/money", label: "Money" },
+        { href: "/app/taxes", label: "📊 Year" },
         { href: "/app/blast", label: "📧 Email" },
         { href: "/app/blog", label: "✍️ Blog" },
         { href: "/app/invites", label: "🎁 Invites" },
@@ -57,6 +58,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
         { href: "/app/offers", label: openOffers ? `💸 Offers (${openOffers})` : "💸 Offers" },
         { href: "/app/money", label: "Payouts" },
+        { href: "/app/taxes", label: "📊 Year" },
       ];
 
   return (

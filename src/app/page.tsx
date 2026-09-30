@@ -153,7 +153,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
           {" • "}<Link href="/login" className="underline">Staff sign in</Link>
-          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
+          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/pile" className="underline">Sort the pile</Link>{" • "}<Link href="/buy-or-pass" className="underline">Buy or pass?</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
         </footer>
       </main>
     </div>

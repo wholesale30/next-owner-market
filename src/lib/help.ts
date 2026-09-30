@@ -10,6 +10,7 @@ export const SCREEN_HINTS: { match: RegExp; text: string; topic?: string }[] = [
   { match: /^\/app\/money/, text: "Where your money goes. Set up payouts once and card payments go straight to your bank.", topic: "payouts" },
   { match: /^\/app\/items\/[^/]+\/edit/, text: "Change anything here. Price, photos, whether you'll ship. Save at the bottom.", topic: "add-item" },
   { match: /^\/app\/items\/[^/]+$/, text: "Your listing. Scroll down for copy-and-paste versions for Facebook, eBay, and the rest, plus a how-to for each one.", topic: "crosspost" },
+  { match: /^\/app\/taxes/, text: "Your year in numbers: sales, fees, costs. Download it for whoever does your taxes. We don't file anything.", topic: "taxes" },
   { match: /^\/app\/settings/, text: "Store settings. Your address, hours, who gets alerts, and fees.", topic: "settings" },
   { match: /^\/app\/review/, text: "New listings and new sellers waiting for your OK. Tap to approve.", topic: "review" },
   { match: /^\/app\/people/, text: "Everyone with an account. Tap a person to approve, change their plan, or pause them." },
@@ -101,6 +102,19 @@ export const TOPICS: HelpTopic[] = [
     "Sellers: list it like anything else, plus year, miles, VIN, and title status. You must have the title in hand. Vehicles are pickup only.",
     "Buyers: under the cap (usually $5,000) you pay the full price by card and it's held like any order. Above it, you put down a small deposit by card that holds it for 7 days; you meet, look it over, pay the balance in cash or cashier's check, and both sign the bill of sale the site prints.",
     "If the sale doesn't happen within 7 days, the deposit comes back to the buyer automatically. Report a problem freezes it like any order.",
+  ] },
+  { id: "taxes", who: "seller", q: "Do I owe taxes on what I sell here?", a: [
+    "We can't tell you that; we're not tax advisers and we don't file anything. What we do: the Year page in your app adds up your sales, fees, shipping, and what you paid for items, so you can hand it to whoever does your taxes.",
+    "General rule of thumb: selling your own used stuff for less than you paid is usually not income. Buying to resell at a profit usually is. Keep receipts.",
+    "Whether a marketplace sends you a 1099-K depends on the year's threshold and your state. Not getting a form doesn't change what's taxable.",
+  ] },
+  { id: "scams", who: "all", q: "How do I spot a scam in a marketplace deal?", a: [
+    "Anyone who wants to move the deal off the site (text me, pay my Venmo, I'll send a courier) is the number one sign. On Next Owner Market every real deal goes through checkout; the money is held, so there's nothing to gain by going around it.",
+    "Overpayment: they send more than the price and ask you to refund the difference. The original payment bounces later. Never refund outside the site.",
+    "Fake payment screenshots or fake payment emails. Only trust what your order page shows.",
+    "Rush and pressure: my mover is coming today, I'm deployed overseas, my nephew will pick it up. Slow down.",
+    "For pickups: meet in public, daylight, at a police safe-exchange spot (we list them on the order). Don't hand over the item until you enter the buyer's code; don't give your code until the item is in your hands.",
+    "If something feels off, use Report a problem on the order. The money freezes and staff look.",
   ] },
   { id: "review", who: "seller", q: "Why does my listing say pending?", a: [
     "We look at every new seller's first listings before they go live. Usually same day. After a few good sales, listings go live immediately.",

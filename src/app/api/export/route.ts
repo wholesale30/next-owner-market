@@ -10,13 +10,19 @@ function csv(rows: Record<string, unknown>[]) {
 
 export async function GET(req: Request) {
   const profile = await getProfile();
-  if (!profile || (profile.role !== "admin" && profile.role !== "staff")) return new NextResponse("Forbidden", { status: 403 });
-  const what = new URL(req.url).searchParams.get("what") || "sales";
+  if (!profile) return new NextResponse("Forbidden", { status: 403 });
+  const staff = profile.role === "admin" || profile.role === "staff";
+  const u = new URL(req.url);
+  const year = u.searchParams.get("year");
+  const what = staff ? u.searchParams.get("what") || "sales" : "sales";
   const supabase = await createClient();
 
   let rows: Record<string, unknown>[] = [];
   if (what === "sales") {
-    const { data } = await supabase.from("sales").select("sold_at, sale_price, shipping_charged, shipping_cost, platform_fees, commission_pct, commission_amount, consignor_due, channel, payment_method, buyer_name, notes, items(sku, title, cost, tier, profiles!items_owner_id_fkey(full_name, business_name))").order("sold_at");
+    let q = supabase.from("sales").select("sold_at, sale_price, shipping_charged, shipping_cost, platform_fees, commission_pct, commission_amount, consignor_due, channel, payment_method, buyer_name, notes, items!inner(sku, title, cost, tier, owner_id, profiles!items_owner_id_fkey(full_name, business_name))").order("sold_at");
+    if (!staff) q = q.eq("items.owner_id", profile.id);
+    if (year && !u.searchParams.get("all")) q = q.gte("sold_at", `${year}-01-01`).lt("sold_at", `${Number(year) + 1}-01-01`);
+    const { data } = await q;
     rows = (data || []).map((s) => {
       const it = s.items as unknown as { sku: string; title: string; cost: number; tier: string; profiles: { full_name: string; business_name: string } | null } | null;
       return {

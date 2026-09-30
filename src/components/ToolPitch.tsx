@@ -22,6 +22,10 @@ export default function ToolPitch({ compact = false }: { compact?: boolean }) {
         <Link href="/pro" className="btn btn-primary flex-1">Try it free: 3 listings</Link>
         <Link href="/worth" className="btn btn-secondary">What&apos;s it worth?</Link>
       </div>
+      <div className="flex gap-2 text-sm">
+        <Link href="/pile" className="pill px-3 py-2 flex-1 text-center">📦 Sort the pile</Link>
+        <Link href="/buy-or-pass" className="pill px-3 py-2 flex-1 text-center">🛒 Buy or pass?</Link>
+      </div>
       <p className="text-xs muted text-center">Then $15/month for unlimited. Cancel any time.</p>
     </section>
   );
