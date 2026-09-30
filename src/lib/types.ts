@@ -41,6 +41,8 @@ export interface Profile {
   rating_count?: number;
   suspended?: boolean;
   ai_credits?: number;
+  pro_credit_months?: number;
+  referral_count?: number;
 }
 
 export interface Category {

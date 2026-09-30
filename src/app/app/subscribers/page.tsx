@@ -17,7 +17,7 @@ export default async function SubscribersPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div><h1 className="text-2xl font-bold">Your list</h1><p className="muted text-sm">{emails} emails • {phones} phones</p></div>
-        <a href="/api/export?what=subscribers" className="btn btn-secondary">⬇ CSV</a>
+        <div className="flex gap-2"><Link href="/app/blast" className="btn btn-primary">📧 New arrivals email</Link><a href="/api/export?what=subscribers" className="btn btn-secondary">⬇ CSV</a></div>
       </div>
       <div className="flex gap-1 flex-wrap text-xs">{Object.entries(bySource).map(([k, v]) => <span key={k} className="pill">{k}: {v}</span>)}</div>
       <p className="text-sm muted">Everyone who messages, requests a pickup, asks for something, signs up, or joins from the store lands here automatically. Export the CSV into Mailchimp, Gmail, or a texting service for a &quot;new arrivals&quot; blast. Never sell or share this list.</p>

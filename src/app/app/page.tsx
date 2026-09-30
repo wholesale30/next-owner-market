@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import type { Item, ItemStatus } from "@/lib/types";
 import InventoryList from "./InventoryList";
+import SellerStart from "./SellerStart";
 
 export const metadata = { title: "Inventory" };
 
@@ -33,8 +34,17 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
   const now = new Date().getTime();
   const [{ data: items, error }, { data: locations }] = await Promise.all([query, staff ? supabase.from("locations").select("id, code").order("code") : Promise.resolve({ data: [] })]);
 
+  let start: React.ReactNode = null;
+  if (!staff) {
+    const [{ count: total }, { count: live }] = await Promise.all([
+      supabase.from("items").select("id", { count: "exact", head: true }).eq("owner_id", profile.id).neq("status", "archived"),
+      supabase.from("items").select("id", { count: "exact", head: true }).eq("owner_id", profile.id).in("status", ["active", "reserved", "sold"]),
+    ]);
+    start = <SellerStart approved={!!profile.approved} payoutsReady={!!profile.stripe_payouts_ready} itemCount={total || 0} liveCount={live || 0} refCode={profile.referral_code} refCount={profile.referral_count || 0} credits={profile.pro_credit_months || 0} isPro={profile.plan === "pro"} />;
+  }
   return (
     <div className="space-y-4">
+      {start}
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-bold">{staff ? "Inventory" : "My items"}</h1>
         <div className="flex gap-2">{staff && <Link href="/app/bins" className="btn btn-secondary">Bins</Link>}<Link href="/app/items/new" className="btn btn-primary">+ Add item</Link></div>

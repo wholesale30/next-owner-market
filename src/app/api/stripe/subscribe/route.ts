@@ -17,8 +17,15 @@ export async function POST() {
     await admin().from("profiles").update({ stripe_customer_id: customer }).eq("id", me.id);
   }
   const back = me.role === "buyer" ? "/account" : "/app";
+  const months = Number(me.pro_credit_months || 0);
+  let discounts: { coupon: string }[] | undefined;
+  if (months > 0) {
+    const c = await s.coupons.create({ percent_off: 100, duration: "repeating", duration_in_months: months, name: `Referral credit: ${months} free month${months > 1 ? "s" : ""}`, max_redemptions: 1 });
+    discounts = [{ coupon: c.id }];
+    await admin().from("profiles").update({ pro_credit_months: 0 }).eq("id", me.id);
+  }
   const session = await s.checkout.sessions.create({
-    mode: "subscription", customer, line_items: [{ price: pro_price_id, quantity: 1 }],
+    mode: "subscription", customer, line_items: [{ price: pro_price_id, quantity: 1 }], ...(discounts ? { discounts } : {}),
     metadata: { profile_id: me.id }, subscription_data: { metadata: { profile_id: me.id } },
     success_url: `${site()}${back}?pro=1`, cancel_url: `${site()}${back}`,
   });

@@ -7,7 +7,7 @@ export default function StoreHeader({ business }: { business: { name: string; ta
         <Link href="/" className="font-bold text-lg">{business.name}</Link>
         <nav className="flex gap-3 text-sm">
           <Link href="/looking-for" className="muted">Wanted</Link>
-          <Link href="/signup" className="muted">Sell</Link>
+          <Link href="/pro" className="muted">Sell</Link>
           <Link href="/account" className="muted">Account</Link>
         </nav>
       </div>

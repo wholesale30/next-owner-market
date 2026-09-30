@@ -10,6 +10,7 @@ function SignupForm() {
   const params = useSearchParams();
   const buyer = params.get("buyer") === "1";
   const next = params.get("next") || "";
+  const ref = params.get("ref") || "";
   const [form, setForm] = useState({ full_name: "", email: "", phone: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -22,7 +23,7 @@ function SignupForm() {
     const res = await fetch("/api/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: form.email, password: form.password, full_name: form.full_name, phone: form.phone, role: buyer ? "buyer" : "consignor" }),
+      body: JSON.stringify({ email: form.email, password: form.password, full_name: form.full_name, phone: form.phone, role: buyer ? "buyer" : "consignor", ref }),
     });
     const json = (await res.json()) as { error?: string };
     if (!res.ok) { setBusy(false); return setError(json.error || "Could not create account."); }

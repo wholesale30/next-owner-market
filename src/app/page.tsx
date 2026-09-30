@@ -102,7 +102,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <div className="card p-5 text-center space-y-2">
           <h2 className="font-bold text-lg">Have stuff to sell?</h2>
           <p className="muted text-sm">We test, photograph, list, and sell it for you. You get paid when it sells.</p>
-          <Link href="/signup" className="btn btn-secondary">Sell with us</Link>
+          <Link href="/pro" className="btn btn-secondary">Sell with us</Link>
         </div>
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
