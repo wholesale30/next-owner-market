@@ -63,6 +63,7 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 ### 3.2 Item page (nextownermarket.com/item/SKU)
 - Photo and video gallery (swipe; ▶ thumbnails are videos), price, condition, brand/model, specs, full description, bin location (staff only).
 - **🛒 Buy now** — pay by card, Apple Pay, or Google Pay. Choose **Pickup** or **Ship** (if the seller offers it). The money is held, not paid to the seller, until you have the item (see 3.6).
+- **💸 Make an offer** — name your price (at least half the asking price). The seller gets 48 hours to accept, decline, or counter; you get an email either way. Accepted offers give you 48 hours to **Buy at that price**. One open offer per item per person.
 - **💬 Message about this** — Facebook-style message. Needs a free account (one tap to create); the message goes out under the account's own email, so nobody can pose as someone else. Replies land in My account → Messages and by email.
 - **Text about this / Email** — one-tap direct contact using the business phone/email from Settings.
 - **♡ Save** — buyer accounts only.
@@ -152,10 +153,13 @@ Every message from every item page and general question, newest first, with an u
 - **Close / Reopen** threads. Filter Open / All.
 - **📧 List** — jumps to the subscriber list.
 
+### 4.7a 💸 Offers (/app/offers)
+Every offer on your items (staff see all). **Accept** (other open offers on that item are declined automatically and the buyer has 48 hours to pay), **Decline**, or type a number and **Counter**. Buyer name, city, and rating show so you know who you're dealing with.
+
 ### 4.7b 🛒 Orders (/app/orders) and Problems (/app/disputes)
 Every store purchase. Open orders are highlighted.
 - **Pickup orders:** the order page shows the buyer's name and city and a **Message the buyer** button (staff also see their contact). Agree a spot and time there. At hand-off, enter the buyer's 6-digit code → **Release**. Done; the sale is recorded under Money automatically and the item is marked sold.
-- **Shipping orders:** add carrier and tracking number → **Save tracking**. When delivered, tap **Mark delivered**; money releases 3 days later unless the buyer reports a problem.
+- **Shipping orders:** **Buy a shipping label here**: pick a box size and weight, get USPS/UPS rates, tap one, print the 4×6 label. The cost comes out of your payout. Or ship it yourself and type the tracking number → **Save tracking**. When delivered, tap **Mark delivered**; money releases 3 days later unless the buyer reports a problem.
 - **Cancel & refund** any paid order before hand-off (item damaged, can't find it).
 - **Problems:** buyer or seller reports go here. Read both sides, then **Refund buyer** or **Pay seller**, with a note both can see.
 
@@ -191,7 +195,7 @@ Pick items (this week's are pre-selected), write a subject and two lines, **Send
 Your email and text list. Counts by source (store box, message, signup, wanted, pickup). Export CSV to Mailchimp, Gmail, or a texting service for a "new arrivals" blast.
 
 ### 4.14 Settings (/app/settings, admin only)
-Business name, tagline, city/state, **pickup address and hours** (shown to buyers only after they pay), contact phone and email (used by the Text/Email buttons), **photo background color** (white default), and the **commission tiers**.
+**Backups** (nightly, kept 30 days, download any to OneDrive) · Business name, tagline, city/state, **pickup address and hours** (shown to buyers only after they pay), contact phone and email (used by the Text/Email buttons), **photo background color** (white default), and the **commission tiers**.
 
 ---
 
@@ -266,13 +270,15 @@ Post the store link in your Facebook group's description and pinned post. Every 
 - eBay direct listing and delisting
 - Facebook Page auto-posting (Marketplace and Groups will stay copy-paste; Facebook allows nothing else)
 - Email and text sending switched on (alerts, pickup confirmations, message replies)
-- Shipping labels bought in the app (Shippo/EasyPost, pay per label; buyer pays shipping at checkout already)
 - Label-printer presets (DYMO LabelWriter and others)
 - Referral credits, reseller early-access tier
 - App-store version
 - Licensing the platform to other surplus dealers
 
 ---
+
+## Part 8b · Legal pages
+**nextownermarket.com/terms** and **/privacy** are live, linked from the store footer, the sign-up form, and the Buy button. Have a lawyer review the terms before heavy promotion.
 
 ## Part 9 · Quick facts
 

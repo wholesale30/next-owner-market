@@ -43,6 +43,7 @@ ANTHROPIC_API_KEY               (Anthropic key)
 NEXT_PUBLIC_SITE_URL            https://nextownermarket.com
 CRON_SECRET                     (any long random string)
 STRIPE_SECRET_KEY               (Stripe secret key, sk_live_… or sk_test_…)
+SHIPPO_API_KEY                  (optional; shipping labels in-app)
 RESEND_API_KEY                  (Resend key; alerts + New Arrivals email)
 EMAIL_FROM                      Next Owner Market <alerts@nextownermarket.com>
 optional: CLAUDE_MODEL, CLAUDE_GROUP_MODEL, STAFF_ALERT_TO,
@@ -115,6 +116,16 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - Referral credits: `signup?ref=CODE` → `apply_referral()`; when a referred user goes Pro, `on_pro_upgrade` adds a free month to the referrer (`pro_credit_months`), applied as a 100% Stripe coupon at subscribe or by the daily cron.
 - Seller getting-started checklist and Share link on `/app`; Pro landing page `/pro`; nine marketplace copy blocks (added Mercari, Poshmark, Vinted, Depop, Etsy) each with a plain-language how-to-post guide (`src/lib/howto.ts`).
 
+**Offers, labels, backups, legal (Sep 30, small hours)**
+- `offers` table + `make_offer` / `respond_offer` / `buyer_offer` RPCs; 48-hour expiry; checkout accepts `offerId` and charges the accepted amount; emails via `/api/offers/notify`; badges on Offers tab.
+- Shipping labels via Shippo (`src/lib/shippo.ts`, `/api/orders/label`; env `SHIPPO_API_KEY`); `orders.label_cost` subtracts from `seller_due`; ship-from address on profiles (`address1/2`) or `settings.business.address` for the store.
+- Nightly JSON backup of every table to the private `backups` bucket (`src/lib/backup.ts`, run by the daily cron), 30-day retention, admin download on Settings.
+- Saved-search alerts flushed the moment a listing goes live (`/api/notify/flush`).
+- `/terms` and `/privacy` pages; footer and consent links.
+- Public `seller_public` view (definer, public columns only) so buyers can see seller name/rating/location without profile access; `/seller/[id]` page.
+- Masked messaging: `buyer_contact` column grants removed from anon/authenticated, `conversation_contact()` staff-only; `scrub_for_conversation()`; messaging requires an account.
+- Database-level test suite run against production (scrub, caps, offers, messaging, order state machine, ratings, refund) — all passing as of Sep 30, 1:40 AM.
+
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
 
 ## 6. Decisions and why
@@ -130,7 +141,7 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 
 ## 7. Database (Supabase) — the tables
 
-All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql`, `004_item_videos.sql`, `005_checkout_trust.sql`, `006_referrals_blasts.sql` (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
+All created by `supabase/schema.sql`, then `supabase/schema_stage2.sql`, then `supabase/migrations/003_messaging_and_subscribers.sql`, `004_item_videos.sql`, `005_checkout_trust.sql`, `006_referrals_blasts.sql`, `007_seller_inbox.sql`, `008_offers_labels_backups.sql` (007/008 are summaries; full bodies are in the applied Supabase migration history) (both in the zip, run in the SQL Editor, in that order), plus a small hardening migration (`alter function … set search_path`, `revoke execute` on internal functions).
 
 profiles · categories · locations (bins) · items · item_photos · lots · lot_members · listings (per-platform tracking) · sales (commission and consignor_due computed) · payouts · payout_sales · sourcing_requests · saved_searches · favorites · notifications · auctions · bids · pickup_slots · pickups · activity_log · settings
 
