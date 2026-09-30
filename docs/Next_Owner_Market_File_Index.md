@@ -19,3 +19,12 @@
 **Secrets are not in any file.** The Stripe secret key, Resend key, Supabase secret key, and Anthropic key live only in Vercel (Project → Settings → Environment Variables). If ever lost, each is regenerated in its own dashboard and pasted back into Vercel; nothing else changes. The Stripe account's 2-step sign-in uses the passkey on the Z Fold 6.
 
 **Live addresses:** store nextownermarket.com · Pro page nextownermarket.com/pro · staff sign-in nextownermarket.com/login · sell sign-up nextownermarket.com/signup · buyer sign-up nextownermarket.com/signup?buyer=1
+
+## Added September 30
+
+| # | File | What it is |
+|---|---|---|
+| 12 | Next_Owner_Market_Tool_Marketing_Plan.docx | Getting sellers on eBay/Poshmark/Mercari/Facebook/Etsy to use the AI tool: per-platform where and what to say, content, creators, search, 60-day cadence |
+| 13 | Next_Owner_Market_Build_Journal.docx | The complete chronological record of the build conversation: every request, every correction, what was built |
+
+User Guide and White Paper were updated the same day (What's New / Sept 30 addendum).
