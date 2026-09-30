@@ -25,7 +25,7 @@ export default function SnapClient({ userId, bins, photoBg }: { userId: string; 
   const [groups, setGroups] = useState<Group[]>([newGroup()]);
   const [bin, setBin] = useState("");
   const [tier, setTier] = useState<"owned" | "full_service" | "drop_off">("owned");
-  const [clean, setClean] = useState(true);
+  const [clean, setClean] = useState(false);
   const [progress, setProgress] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
   const [sorting, setSorting] = useState(false);
@@ -165,7 +165,7 @@ export default function SnapClient({ userId, bins, photoBg }: { userId: string; 
           <option value="drop_off">Consignment (drop-off)</option>
         </select>
       </div>
-      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean backgrounds (cuts the item out onto a plain background; first use downloads ~40MB once)</label>
+      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean backgrounds (cuts the item out onto a plain background; studio look with a soft shadow; first use downloads about 45MB once)</label>
 
       <button type="button" className="btn btn-primary w-full" disabled={busy} onClick={() => uploadRef.current?.click()}>🖼 Upload photos from gallery</button>
       <div className="grid grid-cols-2 gap-2">

@@ -86,7 +86,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   const isPro = profile.role === "admin" || profile.role === "staff" || profile.plan === "pro";
   const videoRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<"photos" | "details">(mode === "edit" ? "details" : "photos");
-  const [clean, setClean] = useState(mode === "new");
+  const [clean, setClean] = useState(false);
   useEffect(() => { if (clean) preloadBackgroundModel(); }, [clean]);
 
   const [d, setD] = useState<Draft>({
@@ -404,7 +404,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         </div>
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
-        <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos</label>
+        <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos (studio look; off = your photo as-is)</label>
 
         {isPro && <div className="space-y-2">
           <h2 className="font-semibold">Video {videos.length ? `(${videos.length})` : ""} <span className="muted font-normal text-xs">optional; a clip of it working sells faster</span></h2>

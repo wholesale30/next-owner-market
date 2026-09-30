@@ -21,7 +21,7 @@ function loadRemover() {
 
 /** Warm the model download early (call on page load when the user has cleanup turned on). */
 export function preloadBackgroundModel() {
-  loadRemover().then((m) => m.preload({ model: "isnet_quint8" })).catch(() => {});
+  loadRemover().then((m) => m.preload({ model: "isnet_fp16" })).catch(() => {});
 }
 
 /**
@@ -32,7 +32,7 @@ export async function cleanBackground(file: Blob, bg = "#ffffff", maxSide = 1600
   const compressed = await compressImage(file, maxSide, 0.9);
   try {
     const { removeBackground } = await loadRemover();
-    const cutout = await removeBackground(compressed, { model: "isnet_quint8", output: { format: "image/png", quality: 0.9 } });
+    const cutout = await removeBackground(compressed, { model: "isnet_fp16", output: { format: "image/png", quality: 0.95 } });
     const bmp = await createImageBitmap(cutout);
     // trim transparent edges so the item fills the frame
     const probe = document.createElement("canvas");
@@ -51,19 +51,40 @@ export async function cleanBackground(file: Blob, bg = "#ffffff", maxSide = 1600
     }
     // if the mask is empty or absurdly small, the model didn't find a subject; keep the original
     if (!found || (maxX - minX) * (maxY - minY) < probe.width * probe.height * 0.02) return { blob: compressed, cleaned: false };
-    const pad = Math.round(Math.max(maxX - minX, maxY - minY) * 0.08);
+    const pad = Math.round(Math.max(maxX - minX, maxY - minY) * 0.12);
     const sx = Math.max(0, minX - pad), sy = Math.max(0, minY - pad);
     const sw = Math.min(probe.width - sx, maxX - minX + pad * 2), sh = Math.min(probe.height - sy, maxY - minY + pad * 2);
     const side = Math.max(sw, sh);
     const out = document.createElement("canvas");
     out.width = side; out.height = side;
     const ctx = out.getContext("2d")!;
-    ctx.fillStyle = bg;
+    // studio backdrop: chosen color, slightly darker toward the bottom edges so it doesn't look like a flat paste
+    const g = ctx.createRadialGradient(side / 2, side * 0.4, side * 0.1, side / 2, side * 0.6, side * 0.9);
+    g.addColorStop(0, bg);
+    g.addColorStop(1, shade(bg, -6));
+    ctx.fillStyle = g;
     ctx.fillRect(0, 0, side, side);
-    ctx.drawImage(probe, sx, sy, sw, sh, (side - sw) / 2, (side - sh) / 2, sw, sh);
+    const dx = (side - sw) / 2, dy = (side - sh) / 2;
+    // soft contact shadow under the item
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.28)";
+    ctx.shadowBlur = Math.round(side * 0.05);
+    ctx.shadowOffsetY = Math.round(side * 0.02);
+    ctx.drawImage(probe, sx, sy, sw, sh, dx, dy, sw, sh);
+    ctx.restore();
+    // draw again without shadow so the item itself stays crisp
+    ctx.drawImage(probe, sx, sy, sw, sh, dx, dy, sw, sh);
     const blob: Blob = await new Promise((res) => out.toBlob((b) => res(b!), "image/jpeg", 0.88));
     return { blob, cleaned: true };
   } catch {
     return { blob: compressed, cleaned: false };
   }
+}
+
+function shade(hex: string, pct: number) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return hex;
+  const n = parseInt(m[1], 16);
+  const f = (c: number) => Math.max(0, Math.min(255, Math.round(c + (255 * pct) / 100)));
+  return `rgb(${f((n >> 16) & 255)}, ${f((n >> 8) & 255)}, ${f(n & 255)})`;
 }
