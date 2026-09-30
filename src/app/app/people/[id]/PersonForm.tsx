@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CompPro from "./CompPro";
 import { createClient } from "@/lib/supabase/client";
 import { money } from "@/lib/listing";
 import { STATUS_LABELS, TIER_LABELS, type Profile, type ItemStatus, type Tier } from "@/lib/types";
@@ -52,6 +53,7 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
         <p className="text-xs muted mt-1">Referral code: <span className="font-mono">{person.referral_code}</span></p>
       </div>
 
+      <CompPro id={person.id} comped={!!(person as unknown as { comped?: boolean }).comped} until={(person as unknown as { comped_until?: string | null }).comped_until ?? null} note={(person as unknown as { comped_note?: string | null }).comped_note ?? null} />
       <div className="card p-4 space-y-3">
         {p.role === "consignor" && !p.approved && (
           <button className="btn btn-primary w-full" disabled={busy} onClick={() => { setP({ ...p, approved: true }); setTimeout(save, 0); }}>✅ Approve this consignor</button>

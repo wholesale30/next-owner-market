@@ -77,7 +77,7 @@ export async function POST(req: Request) {
       const sub = event.data.object;
       const active = sub.status === "active" || sub.status === "trialing";
       const renews = sub.items.data[0]?.current_period_end;
-      await db.from("profiles").update({ plan: active ? "pro" : "free", plan_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("stripe_subscription_id", sub.id);
+      await db.from("profiles").update({ plan: active ? "pro" : "free", plan_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("stripe_subscription_id", sub.id).eq("comped", false);
       break;
     }
     case "charge.refunded": {
