@@ -24,8 +24,8 @@ interface Tag {
 
 const SIZES: Record<Size, { w: string; h: string; label: string; qr: number; desc: number }> = {
   small: { w: "2.25in", h: "1.25in", label: "Small 2¼×1¼ (thermal label)", qr: 78, desc: 0 },
-  medium: { w: "4in", h: "2in", label: "Medium 4×2 (shipping-label printer)", qr: 120, desc: 140 },
-  large: { w: "4in", h: "6in", label: "Large 4×6 (full tag, hang on item)", qr: 170, desc: 600 },
+  medium: { w: "4in", h: "2in", label: "Medium 4×2 (shipping-label printer)", qr: 110, desc: 110 },
+  large: { w: "4in", h: "6in", label: "Large 4×6 (full tag, hang on item)", qr: 150, desc: 520 },
 };
 
 export default function TagSheet({ tag, tags, size: initial }: { tag?: Tag; tags?: Tag[]; size: Size }) {
@@ -81,14 +81,14 @@ export default function TagSheet({ tag, tags, size: initial }: { tag?: Tag; tags
         .tag { background: #fff; color: #000; border: 1px dashed #999; box-sizing: border-box; padding: 0.08in; page-break-inside: avoid; overflow: hidden; }
         .tag-inner { display: flex; gap: 0.1in; height: 100%; }
         .tag-qr { flex: none; display: flex; align-items: flex-start; }
-        .tag-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-family: Arial, Helvetica, sans-serif; }
+        .tag-text { flex: 1; min-width: 0; min-height: 0; height: 100%; display: flex; flex-direction: column; gap: 2px; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
         .tag-sku { font-size: 9pt; font-weight: 700; letter-spacing: .04em; }
         .tag-title { font-size: 10pt; font-weight: 700; line-height: 1.15; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .tag-price { font-size: 16pt; font-weight: 800; }
         .tag-meta { font-size: 8pt; display: flex; flex-wrap: wrap; gap: 0 8px; }
         .tag-badge { font-size: 7.5pt; font-weight: 700; border: 1px solid #000; padding: 1px 4px; align-self: flex-start; border-radius: 3px; }
-        .tag-desc { font-size: 7.5pt; line-height: 1.25; overflow: hidden; }
-        .tag-biz { margin-top: auto; font-size: 7pt; color: #444; }
+        .tag-desc { font-size: 7.5pt; line-height: 1.25; overflow: hidden; flex: 0 1 auto; min-height: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+        .tag-biz { margin-top: auto; flex: none; font-size: 7pt; color: #444; padding-top: 2px; }
         .tag[style*="1.25in"] .tag-title { font-size: 8.5pt; -webkit-line-clamp: 2; }
         .tag[style*="1.25in"] .tag-price { font-size: 12pt; }
         .tag[style*="1.25in"] .tag-biz { display: none; }
@@ -96,7 +96,9 @@ export default function TagSheet({ tag, tags, size: initial }: { tag?: Tag; tags
         .tag[style*="6in"] .tag-title { font-size: 14pt; -webkit-line-clamp: 3; }
         .tag[style*="6in"] .tag-price { font-size: 26pt; }
         .tag[style*="6in"] .tag-meta { justify-content: center; font-size: 10pt; }
-        .tag[style*="6in"] .tag-desc { font-size: 9.5pt; text-align: left; }
+        .tag[style*="6in"] .tag-desc { font-size: 9.5pt; text-align: left; -webkit-line-clamp: 12; }
+        .tag[style*="6in"] .tag-text { height: auto; flex: 1; }
+        .tag[style*="6in"] .tag-inner { height: 100%; }
         .tag[style*="6in"] .tag-badge { align-self: center; font-size: 9pt; }
         @media print {
           @page { margin: 0.2in; }
