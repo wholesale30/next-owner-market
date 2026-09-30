@@ -29,6 +29,7 @@ export default function PostEditor({ post, meId }: { post: P | null; meId: strin
     setBusy(false);
     if (r.error) return setMsg(r.error.message);
     setMsg(publish ? "Published." : "Saved.");
+    if (publish) fetch("/api/indexnow", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ paths: [`/blog/${slug}`] }) }).catch(() => {});
     if (!p.id) router.replace(`/app/blog/${r.data.id}`);
     setP({ ...p, id: r.data.id, slug, published: publish ?? p.published });
     router.refresh();

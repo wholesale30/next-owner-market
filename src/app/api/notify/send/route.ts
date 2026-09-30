@@ -37,6 +37,12 @@ export async function GET(req: Request) {
     for (const o of toRefund || []) { try { await refundOrder(o.id); } catch (e) { console.error("auto-refund", o.id, e); } }
   }
 
+  try {
+    const { indexNow } = await import("@/lib/indexnow");
+    const since = new Date(Date.now() - 86400_000).toISOString();
+    const { data: changed } = await admin.from("items").select("sku").gte("updated_at", since).in("status", ["active", "reserved", "sold"]).limit(2000);
+    await indexNow(["/", "/sitemap.xml", ...(changed || []).map((i) => `/item/${i.sku}`)]);
+  } catch (e) { console.error("indexnow", e); }
   const { flushNotifications } = await import("@/lib/notify");
   const result = await flushNotifications(200);
 

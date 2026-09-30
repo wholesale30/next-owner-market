@@ -355,6 +355,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         if (changes.length) fetch("/api/alert/seller", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ itemId, note: `Our staff edited your listing "${d.title}": ${changes.join(", ")}. This is part of our review so it sells faster; if you disagree, reply and we'll sort it out.` }) }).catch(() => {});
       }
       if (!isPro || profile.role === "consignor") fetch("/api/alert/review", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ itemId }) }).catch(() => {});
+      if (status === "active" && item?.sku) fetch("/api/indexnow", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ paths: [`/item/${item.sku}`] }) }).catch(() => {});
       router.push(`/app/items/${itemId}`);
       router.refresh();
     } catch (e) {
