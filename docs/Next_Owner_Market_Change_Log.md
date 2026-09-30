@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 7:09 PM from the project history (89 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 7:54 PM from the project history (93 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -721,3 +721,29 @@
 - **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_AddOn_Modules_White_Paper.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`
 
 <sub>change id 6a6f47e</sub>
+
+### 19:09 — Regenerated journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+
+<sub>change id ce181f0</sub>
+
+### 19:35 — Regenerated journal/change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+
+<sub>change id 3d073a3</sub>
+
+### 19:53 — Why we built this (/why), Start with one box (/start), rich guides + FAQ markup on Worth/Pile/Buy-or-pass, public What things are worth archive (/valued, opt-in share), links everywhere, sitemap
+
+- **Server routes (API):** `src/app/api/valuations/route.ts`
+- **Public site pages:** `src/app/buy-or-pass/page.tsx`, `src/app/page.tsx`, `src/app/pile/PileClient.tsx`, `src/app/pile/page.tsx`, `src/app/pro/page.tsx`, `src/app/sitemap.ts`, `src/app/start/page.tsx`, `src/app/valued/[slug]/page.tsx`, `src/app/valued/page.tsx`, `src/app/why/page.tsx`, `src/app/worth/WorthClient.tsx`, `src/app/worth/page.tsx`
+- **Shared UI pieces:** `src/components/ShareValuation.tsx`, `src/components/ToolGuide.tsx`, `src/components/ToolPitch.tsx`
+
+<sub>change id 008103b</sub>
+
+### 19:54 — Docs: Mission Statement, User Guide and White Paper updates
+
+- **Documents:** `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`
+
+<sub>change id a325f0d</sub>
