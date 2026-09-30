@@ -106,9 +106,9 @@ Sign in as staff and you land on the staff app. The top bar scrolls sideways on 
 
 ### 4.1 Inventory (/app)
 The master list of every item.
-- Search box and status filter (draft, pending review, active, reserved, sold, shipped, archived).
+- Opens on **Listed** (what's live). Pills switch to **All**, **Drafts** (drafts and items waiting for review), **Sold**. Search box on top.
 - Each row: photo, SKU, title, price, status, bin, days listed. Items listed 30+ days show a **stale** flag so you know what to reprice.
-- **Select mode** — tick several items, then: **List** (make them live), **Make lot** (combine into one listing), **Move bin**, **Print tags**, **Unlist**, **Archive**.
+- **Select mode** — tap the circles (or **select all**), then: **List**, **Make lot**, **Move bin**, **Tags**, **Unlist**, **Archive**, **🗑 Delete** (skips anything that sold). Sellers get select mode on their own items too: Submit for review, Unlist, Archive, Delete.
 - Tap any row to open the item.
 
 ### 4.2 + Add (/app/items/new)
@@ -129,7 +129,7 @@ Built for working a pallet.
 - **Finish** — creates every draft, cleans every background, writes every listing with AI, and sends them all to Review. Walk away; come back to finished listings.
 
 ### 4.4 Review (/app/review)
-Everything the AI or a consignor produced, waiting for a human eye. Open, check the price, tweak, then **✅ Approve & list**. Consignor items always pass through here.
+Everything the AI or a consignor produced, waiting for a human eye. Open one to check it, or tick several (**Select all**) and use the bar: **✅ Approve & list**, **Archive**, **🗑 Delete**. Approved items leave the queue. Consignor items always pass through here.
 
 ### 4.5 The item page (/app/items/ID)
 Everything about one item:

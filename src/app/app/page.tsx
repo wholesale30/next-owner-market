@@ -26,7 +26,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
     .order("created_at", { ascending: false })
     .limit(200);
   if (!staff) query = query.eq("owner_id", profile.id);
-  const filter = STATUS_FILTERS.find((f) => f.key === status);
+  const filter = STATUS_FILTERS.find((f) => f.key === (status || "active"));
   if (filter?.statuses) query = query.in("status", filter.statuses);
   if (q) query = query.textSearch("search", q, { type: "websearch" });
   if (bin) query = query.eq("location_id", bin);
@@ -58,7 +58,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
 
       <div className="flex gap-1 overflow-x-auto">
         {STATUS_FILTERS.map((f) => (
-          <Link key={f.key} href={`/app?status=${f.key}${q ? `&q=${encodeURIComponent(q)}` : ""}`} className={`pill px-3 py-2 whitespace-nowrap ${(status || "all") === f.key ? "pill-active" : ""}`}>
+          <Link key={f.key} href={`/app?status=${f.key}${q ? `&q=${encodeURIComponent(q)}` : ""}`} className={`pill px-3 py-2 whitespace-nowrap ${(status || "active") === f.key ? "pill-active" : ""}`}>
             {f.label}
           </Link>
         ))}

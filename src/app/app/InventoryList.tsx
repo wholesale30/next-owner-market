@@ -38,6 +38,19 @@ export default function InventoryList({ items, staff, locations }: { items: Row[
     if (status === "active") fetch("/api/notify/flush", { method: "POST" }).catch(() => {});
   });
 
+  const bulkDelete = () => {
+    if (!confirm(`Delete ${sel.size} item(s) and their photos for good? Anything that sold is skipped.`)) return;
+    run(async () => {
+      let skipped = 0;
+      for (const id of ids()) {
+        const { data: paths, error } = await supabase.rpc("delete_item", { p_item: id });
+        if (error) { skipped++; continue; }
+        if (paths?.length) await supabase.storage.from("item-photos").remove(paths as string[]);
+      }
+      if (skipped) alert(`${skipped} item(s) have a sale or order and were kept; archive those instead.`);
+    });
+  };
+
   const moveBin = () => {
     const code = prompt("Move to bin code (existing or new):");
     if (!code) return;
@@ -78,21 +91,17 @@ export default function InventoryList({ items, staff, locations }: { items: Row[
 
   return (
     <div className="space-y-2 pb-24">
-      {staff && (
-        <div className="flex justify-between text-xs muted">
-          <span>{selecting ? `${sel.size} selected` : "Tap the circle to select several"}</span>
-          {selecting && <button onClick={() => setSel(new Set())}>clear</button>}
-        </div>
-      )}
+      <div className="flex justify-between text-xs muted">
+        <span>{selecting ? `${sel.size} selected` : "Tap the circle to select several"}</span>
+        <span className="flex gap-2"><button className="underline" onClick={() => setSel(new Set(items.map((i) => i.id)))}>select all</button>{selecting && <button className="underline" onClick={() => setSel(new Set())}>clear</button>}</span>
+      </div>
       <ul className="space-y-2">
         {items.map((it) => {
           const pillClass = it.status === "active" ? "pill-active" : it.status === "sold" || it.status === "shipped" ? "pill-sold" : "pill-draft";
           const on = sel.has(it.id);
           return (
             <li key={it.id} className="card p-3 flex gap-3 items-center" style={on ? { outline: "2px solid var(--brand)" } : undefined}>
-              {staff && (
-                <button onClick={() => toggle(it.id)} aria-label="select" className="w-6 h-6 rounded-full border-2 shrink-0" style={{ borderColor: "var(--brand)", background: on ? "var(--brand)" : "transparent" }} />
-              )}
+              <button onClick={() => toggle(it.id)} aria-label="select" className="w-6 h-6 rounded-full border-2 shrink-0" style={{ borderColor: "var(--brand)", background: on ? "var(--brand)" : "transparent" }} />
               <Link href={`/app/items/${it.id}`} className="flex gap-3 items-center flex-1 min-w-0">
                 <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>
                   {it.photo && <img src={it.photo} alt="" className="w-full h-full object-cover" />}
@@ -112,15 +121,17 @@ export default function InventoryList({ items, staff, locations }: { items: Row[
         })}
       </ul>
 
-      {selecting && staff && (
+      {selecting && (
         <div className="fixed bottom-0 inset-x-0 p-3 border-t no-print" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
           <div className="max-w-3xl mx-auto flex gap-2 overflow-x-auto">
-            <button className="btn btn-primary" disabled={busy} onClick={() => bulkStatus("active")}>List</button>
-            <button className="btn btn-secondary" disabled={busy} onClick={makeLot}>Make lot</button>
-            <button className="btn btn-secondary" disabled={busy} onClick={moveBin}>Move bin</button>
-            <button className="btn btn-secondary" disabled={busy} onClick={() => window.open(`/app/tags?ids=${ids().join(",")}`, "_blank")}>Tags</button>
+            {staff && <button className="btn btn-primary" disabled={busy} onClick={() => bulkStatus("active")}>List</button>}
+            {!staff && <button className="btn btn-primary" disabled={busy} onClick={() => bulkStatus("pending_review")}>Submit for review</button>}
+            {staff && <button className="btn btn-secondary" disabled={busy} onClick={makeLot}>Make lot</button>}
+            {staff && <button className="btn btn-secondary" disabled={busy} onClick={moveBin}>Move bin</button>}
+            {staff && <button className="btn btn-secondary" disabled={busy} onClick={() => window.open(`/app/tags?ids=${ids().join(",")}`, "_blank")}>Tags</button>}
             <button className="btn btn-secondary" disabled={busy} onClick={() => bulkStatus("draft")}>Unlist</button>
-            <button className="btn btn-danger" disabled={busy} onClick={() => confirm(`Archive ${sel.size} items?`) && bulkStatus("archived")}>Archive</button>
+            <button className="btn btn-secondary" disabled={busy} onClick={() => confirm(`Archive ${sel.size} items?`) && bulkStatus("archived")}>Archive</button>
+            <button className="btn btn-danger" disabled={busy} onClick={bulkDelete}>🗑 Delete</button>
           </div>
         </div>
       )}
