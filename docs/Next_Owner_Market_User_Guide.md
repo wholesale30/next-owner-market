@@ -89,7 +89,7 @@ Card payments are processed by Stripe; the store never sees your card number.
 The pitch for sellers: what the tools do, free vs Pro, and a Start free button. "Sell" links across the store go here.
 
 ### 3.4 Sign up (nextownermarket.com/signup)
-- **Buyer account** — name, email, phone, password. Instantly active.
+- **Buyer account** — name, email, phone, password. Instantly active. A buyer can switch to selling any time with **📦 Start selling** on My account or the Pro page; same account, same sign-in, just waits for staff approval before listings go live.
 - **Consignor account** — same form via "Sell with us". Instantly active, but items only go live after staff approval.
 
 ### 3.5 My account (nextownermarket.com/account)

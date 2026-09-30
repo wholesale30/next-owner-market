@@ -5,6 +5,7 @@ import { money } from "@/lib/listing";
 import StoreHeader from "../StoreHeader";
 import AccountClient from "./AccountClient";
 import MyMessages from "./MyMessages";
+import StartSelling from "../StartSelling";
 
 export const metadata = { title: "My account" };
 
@@ -44,7 +45,7 @@ export default async function AccountPage() {
           <div><h1 className="text-2xl font-bold">Hi{profile.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}</h1><p className="muted text-sm">{profile.email}</p></div>
           <div className="flex gap-2">
             <Link href="/account/profile" className="btn btn-secondary">👤 Profile</Link>
-            {profile.role !== "buyer" && <Link href="/app" className="btn btn-secondary">{staff ? "Inventory" : "My listings"}</Link>}
+            {profile.role !== "buyer" ? <Link href="/app" className="btn btn-secondary">{staff ? "Inventory" : "My listings"}</Link> : <StartSelling signedIn role="buyer" className="btn btn-secondary" label="📦 Start selling" />}
           </div>
         </div>
 

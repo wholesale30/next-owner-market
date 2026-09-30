@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import StoreHeader from "../StoreHeader";
+import StartSelling from "../StartSelling";
 
 export const metadata = { title: "Next Owner Pro: photos in, listings out", description: "Upload a pile of photos. The AI sorts them into items, cleans the backgrounds, writes every listing, and gives you ready-to-paste versions for eBay, Facebook, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy. $15/month." };
 
@@ -11,6 +11,8 @@ export default async function ProPage() {
     supabase.from("settings").select("value").eq("key", "plans").maybeSingle(),
   ]);
   const business = (biz?.value as { name: string; tagline?: string }) || { name: "Next Owner Market" };
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: me } = user ? await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle() : { data: null };
   const p = (plans?.value as { pro_monthly: number; pro_features: string[] }) || { pro_monthly: 15, pro_features: [] };
   return (
     <div className="flex-1">
@@ -19,7 +21,7 @@ export default async function ProPage() {
         <section className="text-center space-y-3 pt-4">
           <h1 className="text-3xl font-extrabold leading-tight">Photograph the pile.<br />Get the listings.</h1>
           <p className="text-lg muted">Upload 40 photos of 40 different things. The AI sorts them into items, cuts each one onto a clean background, writes the title, description, specs and price, and hands you ready-to-paste listings for nine marketplaces.</p>
-          <Link href="/signup?next=/app/money" className="btn btn-primary text-lg w-full">Start free: 3 AI listings on us</Link>
+          <StartSelling signedIn={!!user} role={me?.role || null} className="btn btn-primary text-lg w-full" label={me?.role && me.role !== "buyer" ? "Go to my listings" : "Start free: 3 AI listings on us"} />
           <p className="text-xs muted">No card to start. Pro is ${p.pro_monthly}/month, cancel any time.</p>
         </section>
 
@@ -41,7 +43,7 @@ export default async function ProPage() {
           <ul className="text-sm space-y-1"><li>✔ 3 AI-written listings to try it</li><li>✔ 10 live listings in the store</li><li>✔ Card checkout, held payments, QR tags</li><li>✔ Messaging, pickup scheduling</li></ul>
           <div className="flex items-baseline justify-between pt-3 border-t" style={{ borderColor: "var(--line)" }}><p className="font-bold text-lg">Pro</p><p className="font-bold">${p.pro_monthly}/month</p></div>
           <ul className="text-sm space-y-1">{p.pro_features.map((f) => <li key={f}>✔ {f}</li>)}<li>✔ Invite a seller who goes Pro: you both get a month free</li></ul>
-          <Link href="/signup?next=/app/money" className="btn btn-primary w-full mt-2">Start free</Link>
+          <StartSelling signedIn={!!user} role={me?.role || null} className="btn btn-primary w-full mt-2" label={me?.role && me.role !== "buyer" ? "Go to my listings" : "Start free"} />
         </section>
 
         <section className="text-sm muted space-y-2">
