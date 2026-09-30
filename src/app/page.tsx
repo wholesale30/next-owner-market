@@ -59,8 +59,8 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
             <button className="btn btn-white font-bold">Search</button>
           </form>
           <div className="flex gap-2">
+            <Link href="/worth" className="btn btn-white flex-1">💰 What&apos;s it worth?</Link>
             <Link href="/pro" className="btn btn-outline-white flex-1">Start selling free</Link>
-            <Link href="/looking-for" className="btn btn-outline-white flex-1">I&apos;m looking for…</Link>
           </div>
         </div>
       </section>
@@ -150,7 +150,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
           {" • "}<Link href="/login" className="underline">Staff sign in</Link>
-          {" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
+          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
         </footer>
       </main>
     </div>

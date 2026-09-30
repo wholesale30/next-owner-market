@@ -64,3 +64,5 @@ a.card:active { transform: scale(.985); }
 .btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.7); }
 .pill { font-size: .8rem; }
 @media (max-width: 399px) { .navbtn { padding: 0 .6rem; font-size: .85rem; } }
+.no-scrollbar { scrollbar-width: none; } .no-scrollbar::-webkit-scrollbar { display: none; }
+.prose h2 { font-size: 1.35rem; font-weight: 800; margin: 1.4em 0 .5em; } .prose h3 { font-size: 1.1rem; font-weight: 700; margin: 1.2em 0 .4em; } .prose p { margin: .8em 0; line-height: 1.6; } .prose ul, .prose ol { padding-left: 1.4em; margin: .8em 0; } .prose li { margin: .3em 0; } .prose a { text-decoration: underline; } .prose img { border-radius: 12px; } .prose blockquote { border-left: 3px solid var(--brand); padding-left: 1em; color: var(--muted); }

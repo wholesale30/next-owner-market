@@ -92,6 +92,11 @@ export const TOPICS: HelpTopic[] = [
     "Bring a friend. Test the item before you hand over the code.",
     "Never pay outside the site. The code and the held money are your protection.",
   ] },
+  { id: "worth", who: "all", q: "What's it worth? How does that work?", a: [
+    "Tap Worth? at the top. Pick photos of the item (the whole thing, then labels and any damage). Tap What's it worth?",
+    "You get what it is, a price range, what drives the value, and where it sells best. If you want to sell it, tap List it now and the listing is already written.",
+    "3 free lookups; Pro is unlimited. It's an estimate from photos, not an in-person appraisal; rare or valuable pieces deserve a specialist too.",
+  ] },
   { id: "review", who: "seller", q: "Why does my listing say pending?", a: [
     "We look at every new seller's first listings before they go live. Usually same day. After a few good sales, listings go live immediately.",
   ] },

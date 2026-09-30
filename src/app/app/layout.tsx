@@ -46,6 +46,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/bins", label: "Bins" },
         { href: "/app/money", label: "Money" },
         { href: "/app/blast", label: "📧 Email" },
+        { href: "/app/blog", label: "✍️ Blog" },
         { href: "/app/people", label: pendingPeople ? `👤 People (${pendingPeople} waiting)` : "People" },
       ]
     : [
