@@ -10,6 +10,7 @@ export async function POST() {
   const s = stripe();
   const db = admin();
   let acct = me.stripe_account_id as string | null;
+  try {
   if (!acct) {
     const a = await s.accounts.create({
       type: "express",
@@ -25,6 +26,11 @@ export async function POST() {
   const back = me.role === "buyer" ? "/account" : "/app/money";
   const link = await s.accountLinks.create({ account: acct, type: "account_onboarding", refresh_url: `${site()}${back}?stripe=refresh`, return_url: `${site()}${back}?stripe=return` });
   return NextResponse.json({ url: link.url });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    await db.from("settings").upsert({ key: `err:connect:${Date.now()}`, value: { message, user: me.id, email: me.email } }).then(() => {}, () => {});
+    return NextResponse.json({ error: `Stripe couldn't start payout setup: ${message}. We've been notified; try again in a few minutes.` }, { status: 500 });
+  }
 }
 
 /** Refresh payout-ready status from Stripe (called when they come back). */

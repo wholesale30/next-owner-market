@@ -26,11 +26,13 @@ export default function PayoutSetup({ ready, hasAccount, address }: { ready: boo
   }, []);
   async function go() {
     setBusy(true); setErr(null);
-    const r = await fetch("/api/stripe/connect", { method: "POST" });
-    const j = (await r.json()) as { url?: string; error?: string };
-    setBusy(false);
-    if (!r.ok || !j.url) return setErr(j.error || "Not available yet");
-    window.location.assign(j.url);
+    try {
+      const r = await fetch("/api/stripe/connect", { method: "POST" });
+      const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
+      setBusy(false);
+      if (!r.ok || !j.url) return setErr(j.error || "Couldn't reach Stripe just now. Try again in a minute.");
+      window.location.assign(j.url);
+    } catch { setBusy(false); setErr("Couldn't reach Stripe just now. Try again in a minute."); }
   }
   const addrForm = (
     <div className="card p-3 space-y-2 text-sm">
