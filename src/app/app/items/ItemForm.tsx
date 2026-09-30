@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { embedFor } from "@/lib/video";
 import type { Category, Item, ItemPhoto, ItemVideo, Location, Profile, Tier } from "@/lib/types";
 import { CONDITION_LABELS, TIER_LABELS } from "@/lib/types";
+import { money } from "@/lib/listing";
 import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/photo";
 import { useEffect } from "react";
 
@@ -319,6 +320,13 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         if (vErr) throw vErr;
       }
 
+      if (mode === "edit" && item && (profile.role === "admin" || profile.role === "staff") && item.owner_id !== profile.id) {
+        const changes: string[] = [];
+        if (Number(item.price ?? 0) !== Number(d.price || 0)) changes.push(`price ${money(item.price)} → ${money(Number(d.price || 0))}`);
+        if (item.title !== d.title) changes.push("title");
+        if (item.description !== d.description) changes.push("description");
+        if (changes.length) fetch("/api/alert/seller", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ itemId, note: `Our staff edited your listing "${d.title}": ${changes.join(", ")}. This is part of our review so it sells faster; if you disagree, reply and we'll sort it out.` }) }).catch(() => {});
+      }
       if (!isPro || profile.role === "consignor") fetch("/api/alert/review", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ itemId }) }).catch(() => {});
       router.push(`/app/items/${itemId}`);
       router.refresh();

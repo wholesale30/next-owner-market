@@ -14,7 +14,8 @@ export default function MessageForm({ itemId, title, defaults }: { itemId: strin
   async function send(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setErr(null);
-    const { error } = await createClient().rpc("start_conversation", { p_item_id: itemId, p_name: f.name, p_contact: f.contact, p_body: f.body });
+    const { data: cid, error } = await createClient().rpc("start_conversation", { p_item_id: itemId, p_name: f.name, p_contact: f.contact, p_body: f.body });
+    if (!error && cid) fetch("/api/messages/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ conversationId: cid }) }).catch(() => {});
     setBusy(false);
     if (error) return setErr(error.message.replace(/^.*?: /, ""));
     setDone(true);

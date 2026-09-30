@@ -8,7 +8,7 @@ import { money } from "@/lib/listing";
 
 interface Convo {
   id: string; buyer_name: string | null; buyer_contact: string; subject: string | null; status: string;
-  last_message_at: string; unread_for_staff: boolean;
+  last_message_at: string; unread_for_staff: boolean; unread_for_seller?: boolean;
   items: { id: string; sku: string; title: string; price: number | null; status: string; item_photos: { url: string; is_primary: boolean }[] } | null;
 }
 interface Msg { id: string; sender: string; body: string; created_at: string }
@@ -21,7 +21,7 @@ const when = (iso: string) => {
 };
 const isPhone = (s: string) => /^[\d\s()+-]{7,}$/.test(s.trim());
 
-export default function InboxClient({ convos, active, messages, showAll }: { convos: Convo[]; active: string | null; messages: Msg[]; showAll: boolean }) {
+export default function InboxClient({ convos, active, messages, showAll, staff }: { convos: Convo[]; active: string | null; messages: Msg[]; showAll: boolean; staff: boolean }) {
   const router = useRouter();
   const supabase = createClient();
   const [reply, setReply] = useState("");
@@ -35,6 +35,7 @@ export default function InboxClient({ convos, active, messages, showAll }: { con
     const { error } = await supabase.rpc("staff_reply", { p_conversation_id: conv.id, p_body: reply });
     setBusy(false);
     if (error) return alert(error.message);
+    fetch("/api/messages/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ conversationId: conv.id }) }).catch(() => {});
     setReply("");
     router.refresh();
   }
@@ -77,32 +78,32 @@ export default function InboxClient({ convos, active, messages, showAll }: { con
               <textarea className="input" rows={2} placeholder="Reply…" value={reply} onChange={(e) => setReply(e.target.value)} />
               <button className="btn btn-primary" disabled={busy || !reply.trim()} onClick={send}>Send</button>
             </div>
-            <p className="text-[11px] muted">Replies are delivered by {isPhone(conv.buyer_contact) ? "text" : "email"} once sending is set up; until then, tap Text/Email above to answer directly. Logged-in buyers also see replies in their account.</p>
+            <p className="text-[11px] muted">{isPhone(conv.buyer_contact) ? "This buyer gave a phone number: your reply is saved here and shows in their account if they have one. Tap Text above to reach them now." : "Your reply is emailed to the buyer right away and shows in their account if they have one."}</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const unread = convos.filter((c) => c.unread_for_staff).length;
+  const unread = convos.filter((c) => (staff ? c.unread_for_staff : c.unread_for_seller)).length;
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold">Inbox</h1><p className="muted text-sm">{unread ? `${unread} unread` : "All caught up"}</p></div>
+        <div><h1 className="text-2xl font-bold">Inbox</h1><p className="muted text-sm">{unread ? `${unread} unread` : "All caught up"}{!staff && " • messages about your items"}</p></div>
         <div className="flex gap-1">
           <Link href="/app/inbox" className={`pill px-3 py-2 ${!showAll ? "pill-active" : ""}`}>Open</Link>
           <Link href="/app/inbox?show=all" className={`pill px-3 py-2 ${showAll ? "pill-active" : ""}`}>All</Link>
-          <Link href="/app/subscribers" className="pill px-3 py-2">📧 List</Link>
+          {staff && <Link href="/app/subscribers" className="pill px-3 py-2">📧 List</Link>}
         </div>
       </div>
       {!convos.length && <div className="card p-6 text-center muted text-sm">No messages yet. Every item page has a &quot;Message about this&quot; button; they land here.</div>}
       {convos.map((c) => {
         const photo = c.items?.item_photos?.find((p) => p.is_primary) || c.items?.item_photos?.[0];
         return (
-          <Link key={c.id} href={`/app/inbox?c=${c.id}${showAll ? "&show=all" : ""}`} className="card p-3 flex gap-3 items-center" style={c.unread_for_staff ? { borderColor: "var(--accent)" } : undefined}>
+          <Link key={c.id} href={`/app/inbox?c=${c.id}${showAll ? "&show=all" : ""}`} className="card p-3 flex gap-3 items-center" style={(staff ? c.unread_for_staff : c.unread_for_seller) ? { borderColor: "var(--accent)" } : undefined}>
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{photo && <img src={photo.url} alt="" className="w-full h-full object-cover" />}</div>
             <div className="min-w-0 flex-1">
-              <p className={`truncate ${c.unread_for_staff ? "font-bold" : "font-semibold"}`}>{c.buyer_name || c.buyer_contact}</p>
+              <p className={`truncate ${(staff ? c.unread_for_staff : c.unread_for_seller) ? "font-bold" : "font-semibold"}`}>{c.buyer_name || c.buyer_contact}</p>
               <p className="text-sm muted truncate">{c.items?.title || c.subject || "General question"}</p>
             </div>
             <div className="text-right shrink-0 text-xs muted">

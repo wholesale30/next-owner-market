@@ -20,6 +20,7 @@ export default function MyMessages({ convos }: { convos: C[] }) {
     const { error } = await createClient().rpc("reply_conversation", { p_conversation_id: id, p_body: text });
     setBusy(false);
     if (error) return alert(error.message);
+    fetch("/api/messages/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ conversationId: id }) }).catch(() => {});
     setText("");
     router.refresh();
   }
