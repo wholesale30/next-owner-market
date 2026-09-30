@@ -82,6 +82,9 @@ A sourcing request form: what you want, top budget, how far you'll drive, OK to 
 
 Card payments are processed by Stripe; the store never sees your card number.
 
+### 3.3b Pro page (nextownermarket.com/pro)
+The pitch for sellers: what the tools do, free vs Pro, and a Start free button. "Sell" links across the store go here.
+
 ### 3.4 Sign up (nextownermarket.com/signup)
 - **Buyer account** — name, email, phone, password. Instantly active.
 - **Consignor account** — same form via "Sell with us". Instantly active, but items only go live after staff approval.
@@ -177,6 +180,9 @@ Every Gaylord, pallet, shelf, or bin code with item counts. Mark a bin **sorted*
 ### 4.12 People (/app/people)
 Every account. Tap a person: set role (buyer / consignor / staff / admin), **approve** a consignor, set their commission tier or a custom rate, business name, contact, notes. See their items and balance.
 
+### 4.12b 📧 New arrivals email (/app/blast)
+Pick items (this week's are pre-selected), write a subject and two lines, **Send me a test**, then **Send**. Goes to everyone on the list with photos, prices, a store button, your address, and an unsubscribe link. Free tier: 100/day, 3,000/month.
+
 ### 4.13 Subscribers (/app/subscribers)
 Your email and text list. Counts by source (store box, message, signup, wanted, pickup). Export CSV to Mailchimp, Gmail, or a texting service for a "new arrivals" blast.
 
@@ -184,6 +190,9 @@ Your email and text list. Counts by source (store box, message, signup, wanted, 
 Business name, tagline, city, contact phone and email (used by the Text/Email buttons), **photo background color** (white default), and the **commission tiers**.
 
 ---
+
+### 4.15 Getting started card and referrals (sellers)
+New sellers see a checklist on their home screen (account → approved → payouts → first item → first live listing). Below it, **Share link**: every seller has a referral link (`nextownermarket.com/signup?ref=CODE`). When someone they invite goes Pro, both get a free month, applied automatically to their Stripe bill.
 
 ## Part 5 · Consignment — how selling through the platform works
 
