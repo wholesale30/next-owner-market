@@ -141,15 +141,15 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
           {order.tracking_number ? (
             <p><b>Shipped</b> • {order.tracking_carrier} {order.tracking_number}{order.delivered_at ? ` • delivered ${new Date(order.delivered_at).toLocaleDateString()}` : ""}</p>
           ) : (
-            <p className="muted">{isBuyer ? "Waiting for the seller to ship." : "Ship it and add tracking below."}</p>
+            <p className="muted">{isBuyer ? "Waiting for the seller to ship." : "Buy the label below, print it, and drop it off. Tracking attaches automatically."}</p>
           )}
           {!isBuyer && order.shipping_address?.address && (
             <p className="card p-2"><b>Ship to:</b><br />{order.shipping_address.name}<br />{order.shipping_address.address.line1}{order.shipping_address.address.line2 ? `, ${order.shipping_address.address.line2}` : ""}<br />{order.shipping_address.address.city}, {order.shipping_address.address.state} {order.shipping_address.address.postal_code}</p>
           )}
           {!isBuyer && !order.label_url && <LabelBox orderId={order.id} onDone={() => router.refresh()} />}
-          {order.label_url && !isBuyer && <p><a className="btn btn-primary" href={order.label_url} target="_blank" rel="noreferrer">🖨 Print label (4×6 PDF)</a> <span className="muted text-xs">{order.shipping_mode === "calculated" ? "Shipping was paid by the buyer; the label is covered." : `Label cost ${money(order.label_cost || 0)} comes out of your payout.`}</span></p>}
+          {order.label_url && !isBuyer && <p><a className="btn btn-primary" href={order.label_url} target="_blank" rel="noreferrer">🖨 Print label (4×6 PDF)</a> <span className="muted text-xs">{order.shipping_mode === "free" ? `Free shipping: the ${money(order.label_cost || 0)} label comes out of your payout.` : "Shipping was paid by the buyer; the label is covered."}</span></p>}
           {order.tracking_url && <p><a className="underline" href={order.tracking_url} target="_blank" rel="noreferrer">Track package</a></p>}
-          {!isBuyer && (
+          {role === "staff" && (
             <div className="flex gap-2 flex-wrap">
               <input className="input flex-1" placeholder="Carrier (USPS, UPS…)" value={track.carrier} onChange={(e) => setTrack({ ...track, carrier: e.target.value })} />
               <input className="input flex-1" placeholder="Tracking number" value={track.number} onChange={(e) => setTrack({ ...track, number: e.target.value })} />
@@ -157,6 +157,7 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
               {order.tracking_number && !order.delivered_at && <button className="btn btn-secondary" disabled={busy} onClick={() => post("/api/orders/ship", { orderId: order.id, delivered: true })}>Mark delivered</button>}
             </div>
           )}
+          {role === "seller" && order.tracking_number && !order.delivered_at && <button className="btn btn-secondary" disabled={busy} onClick={() => post("/api/orders/ship", { orderId: order.id, delivered: true })}>Mark delivered (starts the 3-day release clock)</button>}
           {isBuyer && order.tracking_number && <button className="btn btn-primary w-full" disabled={busy} onClick={() => post("/api/orders/delivered", { orderId: order.id })}>✅ I received it, release payment</button>}
           {order.release_after && <p className="text-xs muted">Payment releases automatically on {new Date(order.release_after).toLocaleDateString()} unless a problem is reported.</p>}
         </div>

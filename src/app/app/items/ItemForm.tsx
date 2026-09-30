@@ -507,11 +507,10 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
                   <div><label className="label">Box</label><select className="input" value={d.box} onChange={(e) => set({ box: e.target.value })}><option value="small">Small (shoebox)</option><option value="medium">Medium (microwave)</option><option value="large">Large (receiver)</option><option value="xl">XL (tower speaker)</option><option value="freight">Too big to ship</option></select></div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <div><label className="label">Buyer pays</label><select className="input" value={d.shipping_mode} onChange={(e) => set({ shipping_mode: e.target.value })}><option value="calculated">Calculated from their ZIP (recommended)</option><option value="flat">Flat amount</option><option value="free">Free shipping (comes out of your price)</option></select></div>
-                  {d.shipping_mode === "flat" && <div><label className="label">Flat shipping $</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>}
-                  {d.shipping_mode === "calculated" && <div><label className="label">Fallback $ (if rates unavailable)</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>}
+                  <div><label className="label">Shipping</label><select className="input" value={d.shipping_mode === "free" ? "free" : "calculated"} onChange={(e) => set({ shipping_mode: e.target.value })}><option value="calculated">Buyer pays the rate for their ZIP (recommended)</option><option value="free">Free shipping (label cost comes out of your payout)</option></select></div>
+                  {d.shipping_mode !== "free" && <div><label className="label">Estimate $ (shown only if live rates are down)</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>}
                 </div>
-                <p className="text-[11px] muted">Calculated: the buyer sees the exact cheapest ground rate for their ZIP before paying; you print that label from the order. Weight and box are what the rate is built on, so be honest with the packed weight.</p>
+                <p className="text-[11px] muted">Every shipped order ships with a label bought on the order page; that&apos;s how tracking, delivery, and your payout are handled. Weight and box set the rate, so use the packed weight.</p>
               </div>
             )}
           </section>

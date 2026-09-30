@@ -17,11 +17,11 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
   const { data: it } = await db.from("items").select("shipping_ok, shipping_mode, shipping_price, weight_lbs, box, owner_id").eq("id", itemId).single();
   if (!it || !it.shipping_ok || it.box === "freight") return null;
   if (it.shipping_mode === "free") return { amount: 0, service: "Free shipping", rateId: null, mode: "free" };
-  if (it.shipping_mode === "flat" || !shippoReady()) return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
+  if (!shippoReady()) return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
   const to = lookupZip(buyerZip);
   if (!to) return { amount: Number(it.shipping_price || 0), service: "Estimate (enter ZIP for exact)", rateId: null, mode: "estimate" };
   const from = await shipFromFor(it.owner_id);
-  if (!from) return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
+  if (!from) return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
   const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
   const b = (biz?.value as { shipping_markup_pct?: number; shipping_markup_min?: number }) || {};
   const pct = Number(b.shipping_markup_pct ?? 20), minUp = Number(b.shipping_markup_min ?? 1.5);
@@ -38,10 +38,10 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
     const picks = [ground[0], priority[0], fast[0]].filter(Boolean).sort((a, b) => Number(a.amount) - Number(b.amount));
     const options = picks.map((r) => ({ amount: cushion(r.amount), service: `${r.provider} ${r.servicelevel.name}`, rateId: r.object_id, days: r.estimated_days }));
     const chosen = (pickRateId && options.find((o) => o.rateId === pickRateId)) || options[0];
-    if (!chosen) return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
+    if (!chosen) return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
     return { ...chosen, mode: "calculated", options };
   } catch {
-    return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
+    return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
   }
 }
 

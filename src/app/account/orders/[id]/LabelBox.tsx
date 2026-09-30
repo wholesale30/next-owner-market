@@ -41,7 +41,7 @@ export default function LabelBox({ orderId, onDone }: { orderId: string; onDone:
       ))}
       {rates && !rates.length && <p className="muted">No rates came back; check the weight and try again.</p>}
       {err && <p style={{ color: "var(--danger)" }}>{err}</p>}
-      <p className="text-[11px] muted">Or ship it yourself and type the tracking number below.</p>
+      <p className="text-[11px] muted">All shipped orders use a label from here; that&apos;s how tracking and your payout are handled.</p>
     </div>
   );
 }

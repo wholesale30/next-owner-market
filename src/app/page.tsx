@@ -36,7 +36,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
     p_sort: sort === "sold" ? "sold" : sort || (here ? "near" : "new"), p_sold: sort === "sold",
     p_store_lat: store?.lat ?? null, p_store_lng: store?.lng ?? null, p_store_state: storeState, p_limit: 120,
   });
-  type Row = { id: string; sku: string; title: string; price: number; status: string; tested: boolean; serviced: boolean; shipping_ok: boolean; local_pickup_ok: boolean; owner_id: string; city: string | null; state: string | null; distance_mi: number | null; photo_url: string | null };
+  type Row = { id: string; sku: string; title: string; price: number; status: string; tested: boolean; serviced: boolean; shipping_ok: boolean; local_pickup_ok: boolean; owner_id: string; city: string | null; state: string | null; distance_mi: number | null; photo_url: string | null; shipping_mode?: string | null };
   const rows = (items || []) as Row[];
   const locOf = (it: Row) => it.state ? [it.city || (it.owner_id && !it.city ? (business.location || "").split(",")[0] : ""), it.state].filter(Boolean).join(", ") : business.location || "";
   const keep = (extra: Record<string, string>) => { const o: Record<string, string> = {}; for (const [k, v] of Object.entries({ q, cat, sort, state, zip, mi: sp.mi })) if (v) o[k] = String(v); return new URLSearchParams({ ...o, ...extra }).toString(); };
@@ -91,7 +91,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
                     <p className="font-bold">{money(it.price)}{it.status === "reserved" && <span className="pill ml-2">On hold</span>}{(it.status === "sold" || it.status === "shipped") && <span className="pill pill-sold ml-2">Sold</span>}</p>
                     <p className="text-sm leading-tight line-clamp-2">{it.title}</p>
                     <p className="text-xs muted">
-                      {[locOf(it) ? `📍 ${locOf(it)}${it.distance_mi != null ? ` · ${Math.round(it.distance_mi)} mi` : ""}` : null, it.shipping_ok && "Ships", it.tested && "Tested"].filter(Boolean).join(" • ")}
+                      {[locOf(it) ? `📍 ${locOf(it)}${it.distance_mi != null ? ` · ${Math.round(it.distance_mi)} mi` : ""}` : null, it.shipping_ok && (it.shipping_mode === "free" ? "🚚 Free shipping" : "🚚 Ships"), it.tested && "Tested"].filter(Boolean).join(" • ")}
                     </p>
                   </div>
                 </Link>

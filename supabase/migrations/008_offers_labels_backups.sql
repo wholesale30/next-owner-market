@@ -7,3 +7,4 @@
 -- become_seller(): a signed-in buyer becomes a consignor (pending approval), keeps the account
 -- calculated_shipping: items.box, items.shipping_mode (calculated|flat|free); orders.shipping_rate_id/shipping_service
 -- shipping_margin: orders.shipping_mode; seller_due excludes calculated shipping when the platform bought the label; settings.business.shipping_markup_pct/min
+-- shipping_two_modes: flat removed (mapped to calculated); seller_due = amount - commission, minus label cost only on free-shipping orders

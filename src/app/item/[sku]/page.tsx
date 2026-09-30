@@ -93,7 +93,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             {item.tested && <span className="pill pill-active">✔ Tested, works</span>}
             {item.serviced && <span className="pill pill-active">✔ Serviced</span>}
             {item.local_pickup_ok && <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}{miles != null ? ` · ${miles} mi from you` : ""}</span>}
-            {item.shipping_ok && <span className="pill">Ships</span>}
+            {item.shipping_ok && <span className="pill">{(item as unknown as { shipping_mode?: string }).shipping_mode === "free" ? "🚚 Free shipping" : "🚚 Ships"}</span>}
           </div>
         </div>
 
