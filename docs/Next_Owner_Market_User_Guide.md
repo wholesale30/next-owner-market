@@ -26,8 +26,8 @@ It runs in any phone browser (Chrome, Safari, Samsung Internet). Add it to your 
 
 | Role | Who | What they can do |
 |---|---|---|
-| **Shopper** (no account) | Anyone with the link | Browse, search, view items, message about an item, ask us to find something, join the email list |
-| **Buyer** (free account) | Shoppers who want more | Everything above plus: save items ♡, saved-search alerts, schedule pickups, bid in auctions, see message replies in their account |
+| **Shopper** (no account) | Anyone with the link | Browse, search, view items, ask us to find something, join the email list |
+| **Buyer** (free account) | Shoppers who want more | Everything above plus: message sellers, buy with card checkout, save items ♡, saved-search alerts, schedule pickups, bid in auctions |
 | **Consignor** (free account, approved by staff) | People selling through the platform | Add their own items with photos and AI listings; see only their items, sales, and payouts |
 | **Staff / Admin** | The business | Everything: inventory, Snap mode, review queue, inbox, wanted list, pickups, bins, money, people, settings |
 
@@ -63,7 +63,7 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 ### 3.2 Item page (nextownermarket.com/item/SKU)
 - Photo and video gallery (swipe; ▶ thumbnails are videos), price, condition, brand/model, specs, full description, bin location (staff only).
 - **🛒 Buy now** — pay by card, Apple Pay, or Google Pay. Choose **Pickup** or **Ship** (if the seller offers it). The money is held, not paid to the seller, until you have the item (see 3.6).
-- **💬 Message about this** — Facebook-style message. Shopper enters name and phone or email plus their question. It goes straight to the staff Inbox; if they have a buyer account the reply also shows in their account.
+- **💬 Message about this** — Facebook-style message. Needs a free account (one tap to create); the message goes out under the account's own email, so nobody can pose as someone else. Replies land in My account → Messages and by email.
 - **Text about this / Email** — one-tap direct contact using the business phone/email from Settings.
 - **♡ Save** — buyer accounts only.
 - **📅 Schedule pickup** — pick an open time slot at the warehouse. Staff confirm by text or email.

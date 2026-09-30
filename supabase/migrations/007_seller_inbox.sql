@@ -12,3 +12,4 @@ alter table orders add column if not exists shipping_address jsonb;
 -- delete_item(uuid): owner or staff may delete an item with no sale/paid order/live auction (see applied migration delete_item)
 create table if not exists password_resets (token text primary key default encode(gen_random_bytes(24), 'hex'), user_id uuid not null references auth.users(id) on delete cascade, expires_at timestamptz not null default now() + interval '1 hour', used_at timestamptz, created_at timestamptz not null default now());
 alter table password_resets enable row level security;
+-- start_conversation now requires a signed-in account and uses the account's own email/phone (see applied migration messaging_requires_account)

@@ -108,7 +108,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
         {item.status !== "sold" && (
           <div className="fixed bottom-0 inset-x-0 p-3 border-t" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
             <div className="max-w-3xl mx-auto flex gap-2 items-start">
-              <MessageForm itemId={item.id} title={item.title} />
+              <MessageForm itemId={item.id} title={item.title} sku={item.sku} signedIn={!!user} accountEmail={user?.email} />
               {business.contact_phone && <a href={`sms:${business.contact_phone}?&body=${smsBody}`} className="btn btn-secondary" title="Text us">📱</a>}
             </div>
           </div>
