@@ -7,6 +7,7 @@ import { CONDITION_LABELS, type Item } from "@/lib/types";
 import StoreHeader from "../../StoreHeader";
 import PhotoGallery from "./PhotoGallery";
 import BuyButton from "./BuyButton";
+import OfferButton from "./OfferButton";
 import { stripeReady } from "@/lib/stripe";
 import BuyerPanel from "./BuyerPanel";
 import AuctionPanel from "./AuctionPanel";
@@ -47,7 +48,9 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   const sellerIsPlatform = seller?.role === "admin" || seller?.role === "staff";
   const pickupLoc = sellerIsPlatform ? business.location || "" : [seller?.city, seller?.state].filter(Boolean).join(", ");
   const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
-  const { data: { user } } = await (await createClient()).auth.getUser();
+  const sb = await createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  const { data: myOffer } = user ? await sb.from("offers").select("id, amount, counter_amount, status, expires_at").eq("item_id", item.id).eq("buyer_id", user.id).in("status", ["pending", "countered", "accepted"]).order("created_at", { ascending: false }).limit(1).maybeSingle() : { data: null };
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
     const smsBody = encodeURIComponent(`Hi, I'm interested in ${item.title} (${item.sku}). Is it still available?`);
 
@@ -86,6 +89,9 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
         {auction && item.sale_type === "auction" && <AuctionPanel auction={auction} sku={item.sku} />}
         {item.status === "active" && item.sale_type !== "auction" && (
           <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} pickupLoc={pickupLoc} />
+        )}
+        {item.status === "active" && item.sale_type !== "auction" && sellerReady && item.owner_id !== user?.id && (
+          <OfferButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} signedIn={!!user} existing={myOffer as never} />
         )}
         {seller && !sellerIsPlatform && (
           <p className="text-xs muted">Sold by <Link href={`/seller/${seller.id}`} className="underline">{seller.display_name || "a member"}</Link>{seller.rating_count ? ` • ★ ${seller.rating_avg} (${seller.rating_count})` : " • new seller"}{seller.completed_sales ? ` • ${seller.completed_sales} sales` : ""} • Payment held until hand-off</p>

@@ -1,0 +1,2 @@
+-- Offers (make_offer / respond_offer / buyer_offer), orders.offer_id + label_cost/label_url/tracking_url (seller_due subtracts label cost),
+-- profiles.address1/2 (ship-from), private 'backups' storage bucket. Full bodies in applied migration offers_labels_backups.

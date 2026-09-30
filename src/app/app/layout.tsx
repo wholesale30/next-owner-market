@@ -23,6 +23,9 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "consignor").eq("approved", false);
     pendingPeople = count || 0;
   }
+  let offq = supabase.from("offers").select("id", { count: "exact", head: true }).eq("status", "pending").gt("expires_at", new Date().toISOString());
+  if (!staff) offq = offq.eq("seller_id", profile.id);
+  const openOffers = (await offq).count || 0;
   let oq = supabase.from("orders").select("id", { count: "exact", head: true }).in("status", ["paid", "disputed"]);
   if (!staff) oq = oq.eq("seller_id", profile.id);
   const openOrders = (await oq).count || 0;
@@ -34,6 +37,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/snap", label: "📷 Snap" },
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
         { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
+        { href: "/app/offers", label: openOffers ? `💸 Offers (${openOffers})` : "💸 Offers" },
         { href: "/app/review", label: pendingReview ? `✅ Review (${pendingReview})` : "Review" },
         { href: "/app/requests", label: "Wanted" },
         { href: "/app/pickups", label: "Pickups" },
@@ -47,6 +51,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/items/new", label: "+ Add" },
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
         { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
+        { href: "/app/offers", label: openOffers ? `💸 Offers (${openOffers})` : "💸 Offers" },
         { href: "/app/money", label: "Payouts" },
       ];
 
