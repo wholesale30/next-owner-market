@@ -11,6 +11,7 @@ export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Sign in first (it's free)." }, { status: 401 });
+  const { data: me } = await admin().from("profiles").select("ai_credits").eq("id", user.id).single();
   const { data: ok } = await admin().rpc("spend_ai_credit", { p_profile: user.id });
   if (!ok) return NextResponse.json({ error: "You've used your free lookups. Pro gives you unlimited for $15/month.", upgrade: true }, { status: 402 });
   if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "Not available right now." }, { status: 500 });
@@ -41,12 +42,16 @@ Return ONLY a JSON object:
   "box": "small|medium|large|xl|freight"
 }` },
   ];
+  let raw = "";
   try {
-    const msg = await client.messages.create({ model: MODEL, max_tokens: 1200, messages: [{ role: "user", content }] });
-    const text = msg.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
-    const parsed = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
+    const msg = await client.messages.create({ model: MODEL, max_tokens: 2000, messages: [{ role: "user", content }] });
+    raw = msg.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
+    const parsed = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1));
     return NextResponse.json({ result: parsed });
   } catch (e) {
-    return NextResponse.json({ error: e instanceof Error ? e.message : "AI request failed" }, { status: 500 });
+    const message = e instanceof Error ? e.message : String(e);
+    await admin().from("settings").upsert({ key: `err:worth:${Date.now()}`, value: { message, raw: raw.slice(0, 2000), photos: photoUrls.slice(0, 3), user: user.id } }).then(() => {}, () => {});
+    await admin().from("profiles").update({ ai_credits: (me?.ai_credits ?? 0) + 1 }).eq("id", user.id).then(() => {}, () => {});
+    return NextResponse.json({ error: "Couldn't read that one. Try a clearer photo of the whole item, or add a note about what it is." }, { status: 500 });
   }
 }
