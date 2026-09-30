@@ -431,7 +431,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
           <>
             <div>
               <label className="label">Anything the photos don&apos;t show? (optional)</label>
-              <div className="flex gap-2 items-center"><input className="input" placeholder="e.g. tested, works great, new belt, missing remote" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h + " " : "") + t)} /></div>
+              <div className="space-y-1"><textarea className="input" rows={3} style={{ minHeight: 72, fieldSizing: "content" } as React.CSSProperties} placeholder="e.g. tested, works great, new belt, missing remote" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h.trimEnd() + " " : "") + t)} /></div>
             </div>
             <button type="button" className="btn btn-primary w-full" disabled={aiBusy || uploading || !photos.length} onClick={runAi}>
               {aiBusy ? "Reading the photos…" : uploading ? "Uploading…" : "✨ Write the listing for me"}
