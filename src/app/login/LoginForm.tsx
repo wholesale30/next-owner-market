@@ -45,6 +45,7 @@ export default function LoginForm() {
         </div>
         {error && <p className="text-sm" style={{ color: "var(--danger)" }}>{error}</p>}
         <button className="btn btn-primary w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+        <p className="text-sm text-center"><Link href="/forgot" className="underline muted">Forgot your password?</Link></p>
         <p className="text-sm muted text-center">
           Want to sell with us? <Link href="/signup" className="underline">Create a consignor account</Link>
         </p>

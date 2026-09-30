@@ -10,3 +10,5 @@ create policy "conversations seller update" on conversations for update using (s
 -- Masked messaging: buyer_contact readable only by staff via conversation_contact(); bodies scrubbed via scrub_for_conversation(); explicit column grants (see applied migrations masked_messaging, mask_buyer_contact_column)
 alter table orders add column if not exists shipping_address jsonb;
 -- delete_item(uuid): owner or staff may delete an item with no sale/paid order/live auction (see applied migration delete_item)
+create table if not exists password_resets (token text primary key default encode(gen_random_bytes(24), 'hex'), user_id uuid not null references auth.users(id) on delete cascade, expires_at timestamptz not null default now() + interval '1 hour', used_at timestamptz, created_at timestamptz not null default now());
+alter table password_resets enable row level security;

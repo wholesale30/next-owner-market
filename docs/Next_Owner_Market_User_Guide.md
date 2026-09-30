@@ -31,7 +31,7 @@ It runs in any phone browser (Chrome, Safari, Samsung Internet). Add it to your 
 | **Consignor** (free account, approved by staff) | People selling through the platform | Add their own items with photos and AI listings; see only their items, sales, and payouts |
 | **Staff / Admin** | The business | Everything: inventory, Snap mode, review queue, inbox, wanted list, pickups, bins, money, people, settings |
 
-Sign in at **nextownermarket.com/login**. New accounts are ready the moment you create them (no confirmation email).
+Sign in at **nextownermarket.com/login**. New accounts are ready the moment you create them (no confirmation email). **Forgot your password?** is on the sign-in page: enter your email, tap the link we send (good for 1 hour), choose a new one, and you're signed in.
 
 ### Free vs Pro (for sellers)
 
