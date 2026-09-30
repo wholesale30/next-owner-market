@@ -20,6 +20,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${site}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${site}/community`, lastModified: now, changeFrequency: "hourly", priority: 0.6 },
     { url: `${site}/help`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${site}/sell-on`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    ...["facebook", "offerup", "ebay", "craigslist", "mercari", "poshmark", "vinted", "depop", "etsy"].map((a) => ({ url: `${site}/sell-on/${a}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 })),
     ...(cats || []).map((c) => ({ url: `${site}/c/${c.slug}`, lastModified: now, changeFrequency: "daily" as const, priority: 0.7 })),
     ...(items || []).map((i) => ({ url: `${site}/item/${i.sku}`, lastModified: new Date(i.updated_at), changeFrequency: "daily" as const, priority: 0.8 })),
     ...(posts || []).map((p) => ({ url: `${site}/blog/${p.slug}`, lastModified: new Date(p.updated_at), changeFrequency: "monthly" as const, priority: 0.7 })),
