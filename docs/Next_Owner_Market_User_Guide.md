@@ -256,6 +256,31 @@ Rates are editable in Settings, per consignor, and per item.
 - **Prohibited-item screening** by the AI on every listing (recalls, weapons, counterfeits).
 - **Suspend** any account from People; suspended sellers can't list or sell.
 
+## Part 6c · What's new (September 30, 2026)
+
+**Plain-English help everywhere**
+- Every screen in the app starts with one sentence saying what to do there, and a green **?** that opens a short answer.
+- **Help** (the ? in the top bar, or nextownermarket.com/help): short answers for selling, buying, shipping, pickup, and safety, plus an **Ask anything** box that answers from this guide in plain words.
+- Every marketplace guide (Facebook, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy) now has a **"Never used this app?"** section (what signing up asks for, what the odd words mean) and a glossary.
+- The seller home checklist is now **"Your first sale in 10 minutes"**: ZIP → payouts → first item → approval → live.
+
+**Usernames and privacy**
+- Everyone has a **username** (like @vintageaudio804). That's what buyers and sellers see everywhere: listings, messages, orders, reviews. Real names, emails, and phone numbers are private; only staff see them.
+- Pick or change it under Profile. The site checks while you type whether it's taken. 3–20 letters, numbers, or underscores.
+- Existing accounts were given a starter handle (first name + 3 digits); change it any time.
+
+**Seller tools (on each item page in the app)**
+- **Stats**: views, saves, messages, offers. If lots of people look but nobody asks, it suggests a small price drop.
+- **Also posted on**: tick each site you pasted the listing to. When the item sells here, a red box reminds you to take it down from the others, with a link straight to your listings on each site.
+- **Drop the price automatically**: e.g. 10% every 7 days, never below $X. Runs nightly. Anyone who saved the item gets an email about the drop.
+- **Text alerts** (Profile → "Text me when something happens"): pick your carrier, and new messages, offers, and sales come as free texts. Email still comes too.
+
+**Buyer tools**
+- **♡ Save** on any item (shows how many others saved it). Saved items are on My account, and a price drop on a saved item emails you.
+- **Safe places to meet**: on a pickup order, a list of police stations near the seller (many have marked Safe Exchange Zones), each with a map link.
+- **Problems can be settled without staff**: whoever reported a problem can tap "It's sorted, continue," and the seller can refund in full at any point. Staff only step in when the two can't agree.
+- **Landing page**: real reviews from completed orders, and a three-step "How it works" (pay by card, money held, pick up or ship).
+
 ## Part 7 · Sharing the store
 
 - Store: **https://nextownermarket.com**

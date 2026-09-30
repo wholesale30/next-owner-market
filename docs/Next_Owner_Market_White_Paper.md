@@ -198,3 +198,16 @@ Shipping labels · eBay direct posting/delisting · email/text sending (add Rese
 - `Next_Owner_Market_Share_Message.docx` — the announcement message.
 - `Their_Record_Outreach_Plan.docx` — belongs to the Their Record project; stored here too.
 - Related earlier work: `Record_and_Turntable_Refurbish.md` (restoration checklist), `Facebook_Group_Handoff.md`.
+
+
+## Addendum · September 30 additions
+
+- Plain-English layer: per-screen hints (`src/lib/help.ts`, `src/components/Help.tsx`), `/help` page, `/api/ask` (Claude Haiku, grounded in the User Guide + help topics, 30 questions/hour/IP).
+- Marketplace guides: `firstTime` sections + `GLOSSARY` in `src/lib/howto.ts`.
+- Usernames: `profiles.username` (unique, lowercase, 3–20 chars, reserved words blocked), `username_available()` RPC, `/api/username` check, `seller_public.display_name` now prefers username; `conversations.buyer_name` auto-masked to `@username` by trigger.
+- Seller tools (migration 009): `items.posted_to`, `view_count`, `save_count`, `drop_pct/drop_every_days/drop_floor/last_drop_at`; `bump_view()` (anon), `run_price_drops()` (called from the daily `/api/notify/send` cron), `item_stats` view (owner/staff only). UI in `src/app/app/items/[id]/SellerTools.tsx`.
+- Seller text alerts: `profiles.sms_gateway/alert_messages/alert_orders`; `src/lib/sms.ts` (carrier email gateways via Resend); hooked into messages, offers, and paid orders.
+- Buyer: `favorites` now maintains `items.save_count` and price drops queue emails to savers (`items_price_drop_alert` trigger); `WatchButton` on item page; `/api/safe-spots` (OpenStreetMap Overpass, cached 30 days in `settings`) shown on pickup orders; landing page reviews strip + How it works.
+- Disputes: reporter can withdraw (`POST /api/orders/dispute { withdraw: true }`), seller can refund an open dispute, staff resolve inline on the order page.
+- Shipping: built-in weight/distance ground estimate whenever Shippo isn't configured or returns nothing; estimate shows even when the seller hasn't set up payouts.
+- Brand: `src/components/Logo.tsx`, green top bar, hero on `/`.
