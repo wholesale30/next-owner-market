@@ -30,7 +30,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
       query = query.in("category_id", ids);
     }
   }
-  if (sort === "sold") query = query.gte("sold_at", new Date(Date.now() - 90 * 86400000).toISOString()).order("sold_at", { ascending: false });
+  if (sort === "sold") { const since = new Date(); since.setDate(since.getDate() - 90); query = query.gte("sold_at", since.toISOString()).order("sold_at", { ascending: false }); }
   else if (sort === "low") query = query.order("price", { ascending: true });
   else if (sort === "high") query = query.order("price", { ascending: false });
   else query = query.order("listed_at", { ascending: false, nullsFirst: false });
