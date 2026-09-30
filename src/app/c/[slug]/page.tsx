@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import StoreHeader from "../../StoreHeader";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
+import ToolPitch from "@/components/ToolPitch";
 
 /** Category landing pages: real text + the items, so "vintage receivers for sale" has a page to rank. */
 export async function generateMetadata({ params }: PageProps<"/c/[slug]">): Promise<Metadata> {
@@ -61,6 +62,7 @@ export default async function CategoryPage({ params }: PageProps<"/c/[slug]">) {
             );
           })}
         </ul>
+        <ToolPitch compact />
         <div className="card p-4 text-sm space-y-1">
           <p className="font-semibold">Selling {c.name.toLowerCase()}?</p>
           <p className="muted">List it free in a minute: photos in, the AI writes the listing, buyers pay by card. <Link href="/worth" className="underline">Check what it&apos;s worth first</Link> or <Link href="/pro" className="underline">start selling</Link>.</p>

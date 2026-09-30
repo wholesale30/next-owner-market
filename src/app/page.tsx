@@ -4,6 +4,7 @@ import { money } from "@/lib/listing";
 import StoreHeader from "./StoreHeader";
 import SubscribeBox from "./SubscribeBox";
 import LocationBar from "./LocationBar";
+import ToolPitch from "@/components/ToolPitch";
 import { lookupZip } from "@/lib/geo";
 
 export const revalidate = 60;

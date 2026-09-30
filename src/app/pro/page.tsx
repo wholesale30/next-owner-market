@@ -20,7 +20,7 @@ export default async function ProPage() {
       <main className="max-w-2xl mx-auto p-4 space-y-6">
         <section className="text-center space-y-3 pt-4">
           <h1 className="text-3xl font-extrabold leading-tight">Photograph the pile.<br />Get the listings.</h1>
-          <p className="text-lg muted">Upload 40 photos of 40 different things. The AI sorts them into items, cuts each one onto a clean background, writes the title, description, specs and price, and hands you ready-to-paste listings for nine marketplaces.</p>
+          <p className="text-lg muted">Upload 40 photos of 40 different things. The AI sorts them into items, writes the title, description, specs and price, and hands you ready-to-paste listings for nine marketplaces, each with a how-to. And it&apos;s listed in this store at the same time, <b>free</b>: no listing fee, ever. We only get paid when your item sells here.</p>
           <StartSelling signedIn={!!user} role={me?.role || null} className="btn btn-primary text-lg w-full" label={me?.role && me.role !== "buyer" ? "Go to my listings" : "Start free: 3 AI listings on us"} />
           <p className="text-xs muted">No card to start. Pro is ${p.pro_monthly}/month, cancel any time.</p>
         </section>

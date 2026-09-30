@@ -117,7 +117,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
           )}
           <div className="card p-4 space-y-2 text-center" style={{ borderColor: "var(--brand)" }}>
             <p className="font-bold">Want to sell it?</p>
-            <p className="text-sm muted">One tap. Photos, title, description, and price are already written. You just check it and hit List.</p>
+            <p className="text-sm muted">One tap. Photos, title, description, and price are already written. You just check it and hit List. Listing here is free; you also get the Facebook version to paste, and Pro gets all nine marketplaces.</p>
             <button type="button" className="btn btn-primary w-full text-lg" disabled={!!busy} onClick={listIt}>{busy || "List it now"}</button>
             <button type="button" className="btn btn-secondary w-full" onClick={reset}>Check another item</button>
           </div>
