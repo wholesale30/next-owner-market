@@ -4,7 +4,7 @@ import { createClient, getProfile } from "@/lib/supabase/server";
 import { money, commissionFor, DEFAULT_TIERS, facebookCopy, offerUpCopy, ebayCopy, craigslistCopy, etsyCopy, poshmarkCopy, vintedCopy, mercariCopy, depopCopy } from "@/lib/listing";
 import { STATUS_LABELS, CONDITION_LABELS, TIER_LABELS, type Item } from "@/lib/types";
 import ItemActions from "./ItemActions";
-import CopyBlock from "./CopyBlock";
+import CopyTabs from "./CopyTabs";
 import SellerTools from "./SellerTools";
 import { HOWTO } from "@/lib/howto";
 import AuctionAdmin from "./AuctionAdmin";
@@ -80,29 +80,17 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
 
       <section className="space-y-3">
         <h2 className="font-semibold">Copy &amp; paste listings</h2>
-        {staff || profile.plan === "pro" ? (
-          <>
-            <p className="text-sm muted">Tap copy, open the app, paste. Save the photos above to your phone first (press and hold).</p>
-            <CopyBlock howto={HOWTO.facebook} label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.offerup} label="OfferUp" text={offerUpCopy(copyInput)} title={it.title} />
-            <CopyBlock howto={HOWTO.ebay} label="eBay" text={ebayCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.craigslist} label="Craigslist" text={craigslistCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.mercari} label="Mercari" text={mercariCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.poshmark} label="Poshmark" text={poshmarkCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.vinted} label="Vinted" text={vintedCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.depop} label="Depop" text={depopCopy(copyInput)} />
-            <CopyBlock howto={HOWTO.etsy} label="Etsy (vintage / handmade only)" text={etsyCopy(copyInput)} />
-          </>
-        ) : (
-          <>
-            <p className="text-sm muted">Tap copy, open Facebook, paste. Save the photos above to your phone first (press and hold).</p>
-            <CopyBlock howto={HOWTO.facebook} label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
-            <div className="card p-3 text-sm space-y-1" style={{ borderColor: "var(--brand)" }}>
-              <p className="font-semibold">🔒 eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy</p>
-              <p className="muted">Ready-to-paste versions for all eight, each with a step-by-step how-to, are part of <b>Pro</b> ($15/month, unlimited AI listings too). <Link href="/app/money" className="underline font-semibold">Upgrade</Link></p>
-            </div>
-          </>
-        )}
+        <CopyTabs isPro={staff || profile.plan === "pro"} tabs={[
+          { key: "facebook", label: "Facebook Marketplace / Group", short: "Facebook", text: facebookCopy(copyInput), howto: HOWTO.facebook },
+          { key: "ebay", label: "eBay", short: "eBay", text: ebayCopy(copyInput), howto: HOWTO.ebay },
+          { key: "offerup", label: "OfferUp", short: "OfferUp", text: offerUpCopy(copyInput), title: it.title, howto: HOWTO.offerup },
+          { key: "craigslist", label: "Craigslist", short: "Craigslist", text: craigslistCopy(copyInput), howto: HOWTO.craigslist },
+          { key: "mercari", label: "Mercari", short: "Mercari", text: mercariCopy(copyInput), howto: HOWTO.mercari },
+          { key: "poshmark", label: "Poshmark", short: "Poshmark", text: poshmarkCopy(copyInput), howto: HOWTO.poshmark },
+          { key: "vinted", label: "Vinted", short: "Vinted", text: vintedCopy(copyInput), howto: HOWTO.vinted },
+          { key: "depop", label: "Depop", short: "Depop", text: depopCopy(copyInput), howto: HOWTO.depop },
+          { key: "etsy", label: "Etsy (vintage / handmade only)", short: "Etsy", text: etsyCopy(copyInput), howto: HOWTO.etsy },
+        ].map((t) => ({ ...t, locked: !(staff || profile.plan === "pro") && t.key !== "facebook" }))} />
         <div className="card p-3 text-sm">
           <p className="label">Storefront link</p>
           <p className="font-mono break-all">{publicUrl}</p>
