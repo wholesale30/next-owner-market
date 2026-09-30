@@ -281,6 +281,13 @@ Rates are editable in Settings, per consignor, and per item.
 - **Problems can be settled without staff**: whoever reported a problem can tap "It's sorted, continue," and the seller can refund in full at any point. Staff only step in when the two can't agree.
 - **Landing page**: real reviews from completed orders, and a three-step "How it works" (pay by card, money held, pick up or ship).
 
+
+**Three more tools (evening of Sept 30)**
+- **Sort the pile** (nextownermarket.com/pile): photograph a box, shelf, or garage corner (up to 10 photos). Every item comes back with a value range and Keep / Sell / Donate / Toss, with a reason. Change any label. "List N items" turns the Sell ones into draft listings with photo, title, description, and price. Uses AI credits like Worth.
+- **Buy or pass?** (nextownermarket.com/buy-or-pass): in a thrift store, one photo plus what they're asking. You get resale range, best place to sell, fees, shipping, profit, and BUY / MAYBE / PASS.
+- **Year summary** (📊 Year in the seller app): sales, shipping collected, fees, commissions, labels paid, cost of goods, net, per year, with CSV download for your tax preparer. It's a summary, not tax advice, and we don't file anything.
+- Help now has "How do I spot a scam in a marketplace deal?"
+
 ## Part 7 · Sharing the store
 
 - Store: **https://nextownermarket.com**
