@@ -28,17 +28,17 @@ export async function POST(req: Request) {
   if (last.sender === "buyer") {
     // → seller (if a consignor with an email) and staff
     const about = item ? `${item.title} (${item.sku})` : "a general question";
-    const body = `${c.buyer_name || c.buyer_contact} wrote about ${about}:\n\n"${last.body}"\n\nReply in the app: ${site()}/app/inbox?c=${c.id}\nOr contact them directly: ${c.buyer_contact}`;
+    const body = `${c.buyer_name || "A buyer"} wrote about ${about}:\n\n"${last.body}"\n\nReply in the app: ${site()}/app/inbox?c=${c.id}`;
     const sellerIsStaff = seller?.role === "admin" || seller?.role === "staff";
     if (seller && !sellerIsStaff && isEmail(seller.email)) await send(seller.email!, `New message about ${item?.title || "your listing"}`, body);
     await alertStaff(`Message: ${item?.title || "general"}`, `${c.buyer_name || c.buyer_contact}: ${last.body.slice(0, 120)}`, `/app/inbox?c=${c.id}`);
   } else {
     // staff/seller → buyer
     const who = seller && seller.role !== "admin" && seller.role !== "staff" ? seller.business_name || seller.full_name || "the seller" : b.name || "Next Owner Market";
-    const text = `${who} replied about ${item?.title || "your message"}:\n\n"${last.body}"\n\n${item ? `Item: ${link}\n` : ""}${c.buyer_profile_id ? `Reply in your account: ${site()}/account\n` : "Reply to this email and it comes straight back to us.\n"}`;
+    const sellerIsStaff = seller?.role === "admin" || seller?.role === "staff";
+    const text = `${who} replied about ${item?.title || "your message"}:\n\n"${last.body}"\n\n${c.buyer_profile_id ? `Reply in your account: ${site()}/account` : `Reply here: ${link} (tap "Message about this"; use the same ${isEmail(c.buyer_contact) ? "email" : "number"} and it lands in the same thread)`}\n\nMessages stay inside Next Owner Market so both sides are protected. Pay through the site's checkout; never send money outside it.`;
     if (isEmail(c.buyer_contact)) {
-      const replyTo = isEmail(seller?.email) && seller?.role !== "admin" && seller?.role !== "staff" ? seller!.email! : b.contact_email || undefined;
-      await send(c.buyer_contact, `Reply: ${item?.title || "your message"}`, text, replyTo);
+      await send(c.buyer_contact, `Reply: ${item?.title || "your message"}`, text, sellerIsStaff ? b.contact_email || undefined : undefined);
     } else {
       // phone-only buyer: queue for SMS (sends once Twilio is set up); seller can tap Text in the inbox meanwhile
       await db.from("notifications").insert({ profile_id: c.buyer_profile_id, contact: c.buyer_contact, channel: "sms", subject: `Reply about ${item?.title || "your message"}`, body: last.body, related_item_id: c.item_id });

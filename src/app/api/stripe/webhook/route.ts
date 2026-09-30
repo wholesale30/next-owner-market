@@ -22,8 +22,9 @@ export async function POST(req: Request) {
       if (cs.mode === "payment" && cs.metadata?.order_id) {
         const { data: o } = await db.from("orders").select("fulfillment").eq("id", cs.metadata.order_id).single();
         const expires = o?.fulfillment === "pickup" ? new Date(Date.now() + 7 * 86400000).toISOString() : null;
+        const ship = (cs as unknown as { collected_information?: { shipping_details?: { name?: string; address?: Record<string, string> } }; shipping_details?: { name?: string; address?: Record<string, string> } }).collected_information?.shipping_details || (cs as unknown as { shipping_details?: { name?: string; address?: Record<string, string> } }).shipping_details || null;
         await db.from("orders").update({
-          status: "paid", paid_at: new Date().toISOString(), expires_at: expires,
+          status: "paid", paid_at: new Date().toISOString(), expires_at: expires, shipping_address: ship,
           stripe_payment_intent_id: typeof cs.payment_intent === "string" ? cs.payment_intent : cs.payment_intent?.id,
         }).eq("id", cs.metadata.order_id).eq("status", "pending_payment");
         await alertStaff("New order paid", `$${((cs.amount_total || 0) / 100).toFixed(2)} order paid in the store (${o?.fulfillment}).`, `/account/orders/${cs.metadata.order_id}`);

@@ -46,6 +46,7 @@ export async function POST(req: Request) {
     ],
     payment_intent_data: { transfer_group: order.id, metadata: { order_id: order.id, item_id: item.id, sku: item.sku }, description: `${item.sku} ${item.title}`.slice(0, 200) },
     metadata: { order_id: order.id },
+    ...(ship ? { shipping_address_collection: { allowed_countries: ["US"] } } : {}),
     success_url: `${site()}/account/orders/${order.id}?paid=1`,
     cancel_url: `${site()}/item/${item.sku}`,
     expires_at: Math.floor(Date.now() / 1000) + 30 * 60,

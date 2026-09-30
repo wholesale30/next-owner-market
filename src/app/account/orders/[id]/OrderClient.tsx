@@ -97,6 +97,9 @@ export default function OrderClient({ order, role, meId, justPaid, business }: {
           ) : (
             <p className="muted">{isBuyer ? "Waiting for the seller to ship." : "Ship it and add tracking below."}</p>
           )}
+          {!isBuyer && order.shipping_address?.address && (
+            <p className="card p-2"><b>Ship to:</b><br />{order.shipping_address.name}<br />{order.shipping_address.address.line1}{order.shipping_address.address.line2 ? `, ${order.shipping_address.address.line2}` : ""}<br />{order.shipping_address.address.city}, {order.shipping_address.address.state} {order.shipping_address.address.postal_code}</p>
+          )}
           {!isBuyer && (
             <div className="flex gap-2 flex-wrap">
               <input className="input flex-1" placeholder="Carrier (USPS, UPS…)" value={track.carrier} onChange={(e) => setTrack({ ...track, carrier: e.target.value })} />

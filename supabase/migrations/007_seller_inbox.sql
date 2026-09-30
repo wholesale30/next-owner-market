@@ -7,3 +7,5 @@ create policy "conversations seller read" on conversations for select using (sel
 create policy "messages seller read" on messages for select using (exists (select 1 from conversations c where c.id = conversation_id and c.seller_profile_id = auth.uid()));
 create policy "conversations seller update" on conversations for update using (seller_profile_id = auth.uid()) with check (seller_profile_id = auth.uid());
 -- start_conversation now records seller_profile_id; reply_conversation sets unread_for_seller; staff_reply allows the item's seller too (see applied migration seller_inbox for full bodies)
+-- Masked messaging: buyer_contact readable only by staff via conversation_contact(); bodies scrubbed via scrub_for_conversation(); explicit column grants (see applied migrations masked_messaging, mask_buyer_contact_column)
+alter table orders add column if not exists shipping_address jsonb;

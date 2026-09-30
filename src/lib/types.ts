@@ -147,4 +147,5 @@ export interface Order {
   status: OrderStatus; pickup_code: string; tracking_carrier: string | null; tracking_number: string | null;
   shipped_at: string | null; delivered_at: string | null; release_after: string | null; expires_at: string | null;
   paid_at: string | null; released_at: string | null; refunded_at: string | null; buyer_note: string | null; created_at: string;
+  shipping_address?: { name?: string; address?: { line1?: string; line2?: string; city?: string; state?: string; postal_code?: string } } | null;
 }

@@ -160,6 +160,9 @@ Every store purchase. Open orders are highlighted.
 
 Consignors see only their own orders and enter codes for their own hand-offs.
 
+### 4.7c Seller inbox (consignors)
+Sellers see messages about their own items under **💬 Inbox** and reply there. They see the buyer's first name and the thread, never the contact. Replies reach the buyer by email instantly; phone-only buyers see it in their account.
+
 ### 4.8 Wanted (/app/requests)
 All "looking for" requests: what, budget, distance, contact, status (open → searching → matched → fulfilled). Text or email the person from the row. Carry this list when you buy pallets. Automatic matches show when a fitting item is listed.
 
@@ -239,7 +242,7 @@ Rates are editable in Settings, per consignor, and per item.
 - **Verified sellers only.** Nobody can sell through checkout without passing Stripe's identity and bank verification.
 - **Held payment.** Buyers never pay a stranger directly; sellers never hand over an item to someone who hasn't paid.
 - **New-seller limits.** 5 live listings and $500 total until 3 sales are completed.
-- **Contact info is removed from listings** (phone numbers, emails, "Venmo me") so every deal is protected by checkout. Staff listings are exempt.
+- **Contact info is removed from listings and messages** (phone numbers, emails, "Venmo me") so every deal is protected by checkout. Buyers and sellers never see each other's email or phone; they message inside the app, and shipping addresses are collected at checkout and shown to the seller only after payment. Staff listings are exempt and staff can see contacts to mediate.
 - **Ratings both ways** after every completed order.
 - **Problem reports** freeze the money; staff decide.
 - **Prohibited-item screening** by the AI on every listing (recalls, weapons, counterfeits).

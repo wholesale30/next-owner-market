@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { money } from "@/lib/listing";
 
 interface Convo {
-  id: string; buyer_name: string | null; buyer_contact: string; subject: string | null; status: string;
+  id: string; buyer_name: string | null; subject: string | null; status: string;
   last_message_at: string; unread_for_staff: boolean; unread_for_seller?: boolean;
   items: { id: string; sku: string; title: string; price: number | null; status: string; item_photos: { url: string; is_primary: boolean }[] } | null;
 }
@@ -21,7 +21,7 @@ const when = (iso: string) => {
 };
 const isPhone = (s: string) => /^[\d\s()+-]{7,}$/.test(s.trim());
 
-export default function InboxClient({ convos, active, messages, showAll, staff }: { convos: Convo[]; active: string | null; messages: Msg[]; showAll: boolean; staff: boolean }) {
+export default function InboxClient({ convos, active, messages, showAll, staff, contact }: { convos: Convo[]; active: string | null; messages: Msg[]; showAll: boolean; staff: boolean; contact: string | null }) {
   const router = useRouter();
   const supabase = createClient();
   const [reply, setReply] = useState("");
@@ -53,11 +53,11 @@ export default function InboxClient({ convos, active, messages, showAll, staff }
         <div className="card p-3 flex gap-3 items-center">
           <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{photo && <img src={photo.url} alt="" className="w-full h-full object-cover" />}</div>
           <div className="min-w-0 flex-1">
-            <p className="font-semibold truncate">{conv.buyer_name || "Buyer"} <span className="muted font-normal text-sm">• {conv.buyer_contact}</span></p>
+            <p className="font-semibold truncate">{conv.buyer_name || "Buyer"} {contact && <span className="muted font-normal text-sm">• {contact}</span>}</p>
             {conv.items ? <Link href={`/app/items/${conv.items.id}`} className="text-sm underline truncate block">{conv.items.title} • {money(conv.items.price)} • {conv.items.status}</Link> : <p className="text-sm muted">General question</p>}
           </div>
           <div className="flex flex-col gap-1">
-            {isPhone(conv.buyer_contact) ? <a className="pill" href={`sms:${conv.buyer_contact.replace(/\s/g, "")}`}>Text</a> : <a className="pill" href={`mailto:${conv.buyer_contact}`}>Email</a>}
+            {contact && (isPhone(contact) ? <a className="pill" href={`sms:${contact.replace(/\s/g, "")}`}>Text</a> : <a className="pill" href={`mailto:${contact}`}>Email</a>)}
             <button className="pill" onClick={() => setStatus(conv.status === "closed" ? "open" : "closed")}>{conv.status === "closed" ? "Reopen" : "Close"}</button>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function InboxClient({ convos, active, messages, showAll, staff }
               <textarea className="input" rows={2} placeholder="Reply…" value={reply} onChange={(e) => setReply(e.target.value)} />
               <button className="btn btn-primary" disabled={busy || !reply.trim()} onClick={send}>Send</button>
             </div>
-            <p className="text-[11px] muted">{isPhone(conv.buyer_contact) ? "This buyer gave a phone number: your reply is saved here and shows in their account if they have one. Tap Text above to reach them now." : "Your reply is emailed to the buyer right away and shows in their account if they have one."}</p>
+            <p className="text-[11px] muted">{staff ? "Your reply is emailed to the buyer right away (or saved for phone-only buyers; tap Text) and shows in their account." : "Your reply goes to the buyer right away. Contact details stay private both ways; phone numbers and emails typed here are removed. Sales go through checkout so you're guaranteed payment."}</p>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function InboxClient({ convos, active, messages, showAll, staff }
           <Link key={c.id} href={`/app/inbox?c=${c.id}${showAll ? "&show=all" : ""}`} className="card p-3 flex gap-3 items-center" style={(staff ? c.unread_for_staff : c.unread_for_seller) ? { borderColor: "var(--accent)" } : undefined}>
             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{photo && <img src={photo.url} alt="" className="w-full h-full object-cover" />}</div>
             <div className="min-w-0 flex-1">
-              <p className={`truncate ${(staff ? c.unread_for_staff : c.unread_for_seller) ? "font-bold" : "font-semibold"}`}>{c.buyer_name || c.buyer_contact}</p>
+              <p className={`truncate ${(staff ? c.unread_for_staff : c.unread_for_seller) ? "font-bold" : "font-semibold"}`}>{c.buyer_name || "Buyer"}</p>
               <p className="text-sm muted truncate">{c.items?.title || c.subject || "General question"}</p>
             </div>
             <div className="text-right shrink-0 text-xs muted">
