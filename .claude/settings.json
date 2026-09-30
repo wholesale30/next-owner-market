@@ -1,10 +1,24 @@
 {
   "hooks": {
     "PreCompact": [
-      { "hooks": [ { "type": "command", "command": "python3 scripts/journal.py" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/journal.py; python3 scripts/changelog.py"
+          }
+        ]
+      }
     ],
     "SessionEnd": [
-      { "hooks": [ { "type": "command", "command": "python3 scripts/journal.py" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/journal.py; python3 scripts/changelog.py"
+          }
+        ]
+      }
     ]
   }
 }
