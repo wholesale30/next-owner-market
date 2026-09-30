@@ -13,7 +13,7 @@ import PickupPicker from "./PickupPicker";
 type O = Order & {
   items: { sku: string; title: string; item_photos: { url: string; is_primary: boolean }[] } | null;
   profiles: { role: string; full_name: string | null; business_name: string | null } | null;
-  disputes: { status: string; reason: string; resolution_note: string | null }[] | null;
+  disputes: { status: string; reason: string; resolution_note: string | null; opened_by?: string }[] | null;
   ratings: { rater_id: string; stars: number }[] | null;
 };
 
@@ -189,7 +189,13 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
               <ResolveButtons orderId={order.id} />
             </div>
           )}
-          {dispute.status === "open" && role !== "staff" && <p className="muted text-xs">Pickup and payment are paused until staff decide. Use the message button above if you need to add anything.</p>}
+          {dispute.status === "open" && role !== "staff" && (
+            <div className="space-y-2">
+              <p className="muted text-xs">Pickup and payment are paused. Talk it out with the message button above; most problems get sorted between you. If not, staff will decide.</p>
+              {dispute.opened_by === meId && <button className="btn btn-primary w-full" disabled={busy} onClick={() => { if (confirm("Withdraw the problem report and continue the order?")) post("/api/orders/dispute", { orderId: order.id, withdraw: true }); }}>✅ It&apos;s sorted, continue the order</button>}
+              {role === "seller" && <button className="btn btn-secondary w-full" disabled={busy} onClick={() => { if (confirm("Refund the buyer in full and cancel this order?")) post("/api/orders/refund", { orderId: order.id }); }}>Refund the buyer in full</button>}
+            </div>
+          )}
         </div>
       )}
 

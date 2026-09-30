@@ -13,7 +13,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/ac
   if (!me) redirect(`/login?next=/account/orders/${id}`);
   const supabase = await createClient();
   const [{ data: order }, { data: biz }] = await Promise.all([
-    supabase.from("orders").select("*, items(sku, title, item_photos(url, is_primary)), disputes(status, reason, resolution_note), ratings(rater_id, stars)").eq("id", id).maybeSingle(),
+    supabase.from("orders").select("*, items(sku, title, item_photos(url, is_primary)), disputes(status, reason, resolution_note, opened_by), ratings(rater_id, stars)").eq("id", id).maybeSingle(),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   if (!order) notFound();
