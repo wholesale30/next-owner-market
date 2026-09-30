@@ -23,6 +23,7 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
     business_name: person.business_name || "",
     phone: person.phone || "",
     notes: person.notes || "",
+    city: person.city || "", state: person.state || "", zip: person.zip || "",
   });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
       business_name: p.business_name || null,
       phone: p.phone || null,
       notes: p.notes || null,
+      city: p.city || null, state: p.state || null, zip: p.zip || null,
     }).eq("id", person.id);
     setBusy(false);
     setMsg(error ? error.message : "Saved.");
@@ -78,6 +80,7 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
           </div>
           <div><label className="label">Commission % (blank = tier default)</label><input className="input" type="number" inputMode="decimal" value={p.default_commission_pct} onChange={(e) => setP({ ...p, default_commission_pct: e.target.value })} /></div>
           <div><label className="label">Business name</label><input className="input" value={p.business_name} onChange={(e) => setP({ ...p, business_name: e.target.value })} /></div>
+          <div className="grid grid-cols-3 gap-2"><div className="col-span-2"><label className="label">City</label><input className="input" value={p.city} onChange={(e) => setP({ ...p, city: e.target.value })} /></div><div><label className="label">State</label><input className="input" maxLength={2} value={p.state} onChange={(e) => setP({ ...p, state: e.target.value.toUpperCase() })} /></div></div>
           <div><label className="label">Phone</label><input className="input" value={p.phone} onChange={(e) => setP({ ...p, phone: e.target.value })} /></div>
         </div>
         <div><label className="label">Private notes</label><textarea className="input" rows={2} value={p.notes} onChange={(e) => setP({ ...p, notes: e.target.value })} /></div>

@@ -16,7 +16,7 @@ type O = Order & {
 
 const STATUS: Record<string, string> = { pending_payment: "Awaiting payment", paid: "Paid • money held", released: "Complete • seller paid", refunded: "Refunded", disputed: "Problem reported • on hold", cancelled: "Cancelled" };
 
-export default function OrderClient({ order, role, meId, justPaid, business }: { order: O; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; contact_phone?: string } }) {
+export default function OrderClient({ order, role, meId, justPaid, business, sellerName, sellerLoc, sellerIsPlatform, buyerName, buyerLoc, buyerContact }: { order: O; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; address?: string; pickup_hours?: string; contact_phone?: string }; sellerName: string; sellerLoc: string; sellerIsPlatform: boolean; buyerName: string; buyerLoc: string; buyerContact: string | null }) {
   const router = useRouter();
   const supabase = createClient();
   const [busy, setBusy] = useState(false);
@@ -31,7 +31,15 @@ export default function OrderClient({ order, role, meId, justPaid, business }: {
   const dispute = order.disputes?.[0];
   const myRating = order.ratings?.find((r) => r.rater_id === meId);
   const isBuyer = role === "buyer";
-  const platformSeller = order.profiles?.role === "admin" || order.profiles?.role === "staff";
+  const platformSeller = sellerIsPlatform;
+  const [msgBusy, setMsgBusy] = useState(false);
+  async function openThread() {
+    setMsgBusy(true);
+    const { data: cid, error } = await supabase.rpc("order_conversation", { p_order: order.id });
+    setMsgBusy(false);
+    if (error || !cid) return setErr(error?.message || "Couldn't open messages");
+    router.push(isBuyer ? "/account#messages" : `/app/inbox?c=${cid}`);
+  }
 
   // If they just came back from Stripe and the webhook hasn't landed yet, poll a few times.
   useEffect(() => {
@@ -68,13 +76,28 @@ export default function OrderClient({ order, role, meId, justPaid, business }: {
         </div>
       </div>
 
+      <div className="card p-3 text-sm space-y-1">
+        {isBuyer ? (
+          <p><b>Seller:</b> {sellerName}{sellerLoc ? ` • ${sellerLoc}` : ""}</p>
+        ) : (
+          <p><b>Buyer:</b> {buyerName}{buyerLoc ? ` • ${buyerLoc}` : ""}{buyerContact ? ` • ${buyerContact}` : ""}</p>
+        )}
+        {order.fulfillment === "pickup" && (
+          platformSeller ? (
+            <p><b>Pickup:</b> {order.status === "paid" || order.status === "released" ? (business.address || business.location || "Warehouse") : (business.location || "Warehouse")}{business.pickup_hours ? ` • ${business.pickup_hours}` : ""}{business.contact_phone && order.status === "paid" ? ` • ${business.contact_phone}` : ""}</p>
+          ) : (
+            <p><b>Pickup:</b> {sellerLoc || "seller's area"} • {isBuyer ? "The seller will message you the exact spot and time." : "Message the buyer with the spot and time."}</p>
+          )
+        )}
+        {order.status !== "pending_payment" && <button className="btn btn-secondary w-full" disabled={msgBusy} onClick={openThread}>💬 {isBuyer ? "Message the seller" : "Message the buyer"}</button>}
+      </div>
+
       {order.status === "pending_payment" && <div className="card p-4 text-sm">{justPaid ? "Confirming your payment…" : "Payment wasn't completed. Go back to the item to try again."}</div>}
 
       {order.status === "paid" && order.fulfillment === "pickup" && isBuyer && (
         <div className="card p-4 space-y-2 text-center">
           <p className="text-sm muted">Show this code at pickup. The seller enters it and your payment is released.</p>
           <p className="text-4xl font-extrabold tracking-[.3em]">{order.pickup_code}</p>
-          <p className="text-sm">{business.location ? `Pickup: ${business.location}` : "The seller will message you with the pickup spot."}{business.contact_phone && platformSeller ? ` • ${business.contact_phone}` : ""}</p>
           <p className="text-xs muted">Don&apos;t share this code until you have the item in hand. Not picked up within 7 days = automatic refund.</p>
         </div>
       )}

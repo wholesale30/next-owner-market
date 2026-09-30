@@ -42,6 +42,7 @@ export interface Profile {
   suspended?: boolean;
   ai_credits?: number;
   pro_credit_months?: number;
+  city?: string | null; state?: string | null; zip?: string | null;
   referral_count?: number;
 }
 

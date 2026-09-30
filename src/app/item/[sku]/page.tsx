@@ -24,7 +24,7 @@ async function load(sku: string) {
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   const { data: seller } = item ? await supabase.from("seller_public").select("*").eq("id", item.owner_id).maybeSingle() : { data: null };
-  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, seller: seller as { id: string; role: string; display_name: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; completed_sales: number } | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
+  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, seller: seller as { id: string; role: string; display_name: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; completed_sales: number; city: string | null; state: string | null } | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
 }
 
 export async function generateMetadata({ params }: PageProps<"/item/[sku]">): Promise<Metadata> {
@@ -45,6 +45,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   if (!item) notFound();
   const auction = Array.isArray(item.auctions) ? item.auctions[0] : item.auctions;
   const sellerIsPlatform = seller?.role === "admin" || seller?.role === "staff";
+  const pickupLoc = sellerIsPlatform ? business.location || "" : [seller?.city, seller?.state].filter(Boolean).join(", ");
   const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
   const { data: { user } } = await (await createClient()).auth.getUser();
   const photos = [...(item.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order);
@@ -77,19 +78,19 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             {item.condition && <span className="pill">{CONDITION_LABELS[item.condition]}</span>}
             {item.tested && <span className="pill pill-active">✔ Tested, works</span>}
             {item.serviced && <span className="pill pill-active">✔ Serviced</span>}
-            {item.local_pickup_ok && <span className="pill">Local pickup</span>}
+            {item.local_pickup_ok && <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}</span>}
             {item.shipping_ok && <span className="pill">Ships</span>}
           </div>
         </div>
 
         {auction && item.sale_type === "auction" && <AuctionPanel auction={auction} sku={item.sku} />}
         {item.status === "active" && item.sale_type !== "auction" && (
-          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} />
+          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} pickupLoc={pickupLoc} />
         )}
         {seller && !sellerIsPlatform && (
           <p className="text-xs muted">Sold by <Link href={`/seller/${seller.id}`} className="underline">{seller.display_name || "a member"}</Link>{seller.rating_count ? ` • ★ ${seller.rating_avg} (${seller.rating_count})` : " • new seller"}{seller.completed_sales ? ` • ${seller.completed_sales} sales` : ""} • Payment held until hand-off</p>
         )}
-        {item.status !== "sold" && <BuyerPanel itemId={item.id} sku={item.sku} title={item.title} canPickup={item.local_pickup_ok} />}
+        {item.status !== "sold" && <BuyerPanel itemId={item.id} sku={item.sku} title={item.title} canPickup={item.local_pickup_ok && sellerIsPlatform} />}
 
         <div className="card p-4 space-y-3 text-sm">
           <p className="whitespace-pre-wrap">{item.description}</p>

@@ -16,3 +16,6 @@ alter table password_resets enable row level security;
 create or replace view seller_public with (security_invoker = false) as
   select id, role, coalesce(business_name, split_part(coalesce(full_name,''), ' ', 1)) as display_name, stripe_payouts_ready, suspended, rating_avg, rating_count, completed_sales, created_at from profiles;
 grant select on seller_public to anon, authenticated;
+alter table profiles add column if not exists city text, add column if not exists state text, add column if not exists zip text;
+alter table conversations add column if not exists order_id uuid references orders(id) on delete set null;
+-- seller_public view gains city/state; order_conversation(uuid) starts/reuses the thread for an order (see applied migration seller_location)

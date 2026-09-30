@@ -19,7 +19,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
 
   let query = supabase
     .from("items")
-    .select("id, sku, title, price, status, tested, serviced, shipping_ok, local_pickup_ok, listed_at, category_id, item_photos(url, is_primary, sort_order), categories(name, slug)")
+    .select("id, sku, title, price, status, tested, serviced, shipping_ok, local_pickup_ok, listed_at, category_id, owner_id, item_photos(url, is_primary, sort_order), categories(name, slug)")
     .in("status", ["active", "reserved"])
     .limit(120);
   if (q) query = query.textSearch("search", q, { type: "websearch" });
@@ -35,6 +35,12 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
   else query = query.order("listed_at", { ascending: false, nullsFirst: false });
 
   const { data: items } = await query;
+
+  const ownerIds = Array.from(new Set((items || []).map((i) => i.owner_id)));
+
+  const { data: sellers } = ownerIds.length ? await supabase.from("seller_public").select("id, role, city, state").in("id", ownerIds) : { data: [] };
+
+  const locOf = (ownerId: string) => { const sp = (sellers || []).find((x) => x.id === ownerId); if (!sp) return ""; if (sp.role === "admin" || sp.role === "staff") return business.location || ""; return [sp.city, sp.state].filter(Boolean).join(", "); };
   const topCats = (categories || []).filter((c) => !c.parent_id);
 
   return (
@@ -84,7 +90,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
                     <p className="font-bold">{money(it.price)}{it.status === "reserved" && <span className="pill ml-2">On hold</span>}</p>
                     <p className="text-sm leading-tight line-clamp-2">{it.title}</p>
                     <p className="text-xs muted">
-                      {[it.tested && "Tested", it.serviced && "Serviced", it.shipping_ok && "Ships"].filter(Boolean).join(" • ")}
+                      {[it.local_pickup_ok && locOf(it.owner_id) ? `📍 ${locOf(it.owner_id)}` : null, it.shipping_ok && "Ships", it.tested && "Tested"].filter(Boolean).join(" • ")}
                     </p>
                   </div>
                 </Link>

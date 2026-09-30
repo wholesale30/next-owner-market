@@ -74,8 +74,9 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 A sourcing request form: what you want, top budget, how far you'll drive, OK to ship, and how to reach you. Requests go to the staff **Wanted** list. When a matching item is listed later, the system flags the match automatically.
 
 ### 3.6 How buying works (held payment)
-1. Tap **Buy now**, pay on the secure checkout page.
-2. **Pickup:** your order page shows a **6-digit code**. Meet the seller, check the item, then read them the code. They enter it and the payment is released. Don't give the code until the item is in your hands. If pickup never happens, you're refunded automatically after 7 days.
+Every listing shows **📍 Pickup in [city, state]** (the seller's location; warehouse items show the store's city) and **Ships** if the seller offers shipping, so you know before you buy whether it's near you.
+1. Tap **Buy now**, choose Pickup or Ship, pay on the secure checkout page. You and the seller both get a confirmation email.
+2. **Pickup:** your order page shows who the seller is, where pickup is (the warehouse address and hours for store items; the seller's city for others, with the exact spot arranged in **Message the seller** on the order page), and your **6-digit code**. Meet the seller, check the item, then read them the code. They enter it and the payment is released. Don't give the code until the item is in your hands. If pickup never happens, you're refunded automatically after 7 days.
    **Shipping:** the seller adds tracking. When it arrives, tap **I received it** (or it releases on its own 3 days after delivery).
 3. Something wrong? Tap **Report a problem** on the order. The money stays frozen until staff decide: refund you, or pay the seller.
 4. After it's done, rate the seller (and they rate you). Ratings show on every listing.
@@ -153,7 +154,7 @@ Every message from every item page and general question, newest first, with an u
 
 ### 4.7b 🛒 Orders (/app/orders) and Problems (/app/disputes)
 Every store purchase. Open orders are highlighted.
-- **Pickup orders:** at hand-off, open the order and enter the buyer's 6-digit code → **Release**. Done; the sale is recorded under Money automatically and the item is marked sold.
+- **Pickup orders:** the order page shows the buyer's name and city and a **Message the buyer** button (staff also see their contact). Agree a spot and time there. At hand-off, enter the buyer's 6-digit code → **Release**. Done; the sale is recorded under Money automatically and the item is marked sold.
 - **Shipping orders:** add carrier and tracking number → **Save tracking**. When delivered, tap **Mark delivered**; money releases 3 days later unless the buyer reports a problem.
 - **Cancel & refund** any paid order before hand-off (item damaged, can't find it).
 - **Problems:** buyer or seller reports go here. Read both sides, then **Refund buyer** or **Pay seller**, with a note both can see.
@@ -190,7 +191,7 @@ Pick items (this week's are pre-selected), write a subject and two lines, **Send
 Your email and text list. Counts by source (store box, message, signup, wanted, pickup). Export CSV to Mailchimp, Gmail, or a texting service for a "new arrivals" blast.
 
 ### 4.14 Settings (/app/settings, admin only)
-Business name, tagline, city, contact phone and email (used by the Text/Email buttons), **photo background color** (white default), and the **commission tiers**.
+Business name, tagline, city/state, **pickup address and hours** (shown to buyers only after they pay), contact phone and email (used by the Text/Email buttons), **photo background color** (white default), and the **commission tiers**.
 
 ---
 
@@ -265,7 +266,7 @@ Post the store link in your Facebook group's description and pinned post. Every 
 - eBay direct listing and delisting
 - Facebook Page auto-posting (Marketplace and Groups will stay copy-paste; Facebook allows nothing else)
 - Email and text sending switched on (alerts, pickup confirmations, message replies)
-- Shipping labels bought in the app
+- Shipping labels bought in the app (Shippo/EasyPost, pay per label; buyer pays shipping at checkout already)
 - Label-printer presets (DYMO LabelWriter and others)
 - Referral credits, reseller early-access tier
 - App-store version
