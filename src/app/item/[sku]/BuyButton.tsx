@@ -45,6 +45,7 @@ export default function BuyButton({ itemId, sku, price, canPickup, canShip, ship
           <button type="button" className={`pill px-3 py-2 ${mode === "ship" ? "pill-active" : ""}`} onClick={() => setMode("ship")}>Ship{quote || shippingMode !== "calculated" ? ` • ${money(price + shipCost)}` : ""}</button>
         </div>
       )}
+      {canShip && mode !== "ship" && (zip.length === 5 ? (quote ? <p className="text-sm">🚚 Ships to {zip} for <b>{money(quote.amount)}</b> ({quote.service})</p> : quoting ? <p className="text-sm muted">Getting shipping rate…</p> : null) : shippingMode !== "calculated" ? <p className="text-sm">🚚 Ships for <b>{money(shippingPrice)}</b></p> : <div className="flex items-center gap-2 text-sm"><span>🚚 Ships.</span><input className="input w-28" inputMode="numeric" maxLength={5} placeholder="ZIP for rate" value={zip} onChange={(e) => { setZip(e.target.value.replace(/\D/g, "")); setQuote(null); }} /></div>)}
       {mode === "ship" && (
         <div className="flex items-center gap-2 text-sm">
           <input className="input w-28" inputMode="numeric" maxLength={5} placeholder="Your ZIP" value={zip} onChange={(e) => { setZip(e.target.value.replace(/\D/g, "")); setQuote(null); }} />
