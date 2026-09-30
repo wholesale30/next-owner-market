@@ -200,7 +200,7 @@ revoke execute on function on_order_released() from anon, authenticated, public;
 revoke execute on function ratings_recalc() from anon, authenticated, public;
 
 -- plan pricing and platform settings
-insert into settings (key, value) values ('plans', '{"pro_monthly": 15, "free_ai_credits": 3, "pro_features": ["Unlimited AI-written listings (title, description, specs, price)", "Ready-to-paste listings for Facebook Marketplace, eBay, OfferUp, Craigslist", "Video on listings", "Unlimited live listings in the store"]}') on conflict (key) do nothing;
+insert into settings (key, value) values ('plans', '{"pro_monthly": 15, "free_ai_credits": 3, "pro_features": ["Unlimited AI-written listings (title, description, specs, price)", "Ready-to-paste listings for 9 marketplaces: Facebook Marketplace, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy", "Plain-English how-to-post guide for every marketplace", "Video on listings", "Unlimited live listings in the store"]}') on conflict (key) do nothing;
 
 -- spend one AI credit (server-side only). Returns true if allowed.
 create or replace function spend_ai_credit(p_profile uuid) returns boolean language plpgsql security definer set search_path = public as $$
