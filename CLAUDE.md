@@ -8,3 +8,4 @@
 - Photos: always let people pick from gallery/files first; camera is the second option.
 - After every push: trigger a Vercel production deployment (project is not git-auto-linked).
 - **Deliverables are always Word (.docx) downloads** sent as files in the chat. Never Google Drive, never links, never markdown-only. Also drop a copy in `docs/`.
+- **Build Journal.** `docs/Next_Owner_Market_Build_Journal.md/.docx` is the verbatim record of every conversation (for the owner's book). `python3 scripts/journal.py` rebuilds it from the transcript; hooks run it automatically before context is condensed and at session end. Also run it after any big batch of work, and send the .docx to the owner at the end of every session.

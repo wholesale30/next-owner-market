@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "PreCompact": [
+      { "hooks": [ { "type": "command", "command": "python3 scripts/journal.py" } ] }
+    ],
+    "SessionEnd": [
+      { "hooks": [ { "type": "command", "command": "python3 scripts/journal.py" } ] }
+    ]
+  }
+}
