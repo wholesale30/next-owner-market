@@ -8,6 +8,8 @@ import { lookupZip } from "@/lib/geo";
 
 export const revalidate = 60;
 
+export const metadata = { title: "Next Owner Market: buy and sell used, surplus and vintage, money held until you have it", description: "Vintage audio, tools, electronics, furniture, vehicles and more from sellers across the country. Pay by card, pick up or ship, money held until you have the item. Sell free: photos in, listing out." };
+
 export default async function StorePage({ searchParams }: PageProps<"/">) {
   const sp = (await searchParams) as { q?: string; cat?: string; sort?: string; state?: string; zip?: string; mi?: string };
   const { q, cat, sort } = sp;
@@ -71,7 +73,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <div className="flex gap-1 overflow-x-auto pb-1">
           <Link href={`/?${keep({ cat: "" })}`.replace(/cat=&?/, "")} className={`pill px-3 py-2 whitespace-nowrap ${!cat ? "pill-active" : ""}`}>All</Link>
           {topCats.map((c) => (
-            <Link key={c.id} href={`/?${keep({ cat: c.slug })}`} className={`pill px-3 py-2 whitespace-nowrap ${cat === c.slug ? "pill-active" : ""}`}>{c.name}</Link>
+            <Link key={c.id} href={q || state || zip ? `/?${keep({ cat: c.slug })}` : `/c/${c.slug}`} className={`pill px-3 py-2 whitespace-nowrap ${cat === c.slug ? "pill-active" : ""}`}>{c.name}</Link>
           ))}
         </div>
 
