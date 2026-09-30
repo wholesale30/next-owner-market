@@ -85,7 +85,14 @@ Return ONLY a JSON object with these fields:
       .join("");
     const jsonStart = text.indexOf("{");
     const jsonEnd = text.lastIndexOf("}");
-    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    let parsed: unknown;
+    try { parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1)); }
+    catch {
+      // second try: ask the model to fix its own JSON
+      const fix = await client.messages.create({ model: MODEL, max_tokens: 1500, messages: [{ role: "user", content: `Return ONLY this as valid JSON, nothing else:\n${text.slice(jsonStart, jsonEnd + 1)}` }] });
+      const t2 = fix.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
+      parsed = JSON.parse(t2.slice(t2.indexOf("{"), t2.lastIndexOf("}") + 1));
+    }
     return NextResponse.json({ draft: parsed, usage: msg.usage });
   } catch (e) {
     const message = e instanceof Error ? e.message : "AI request failed";
