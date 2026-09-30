@@ -61,6 +61,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/app" className="font-bold">Next Owner</Link>
           <div className="flex items-center gap-3 text-sm">
+            <Link href="/account/profile" className="muted">Profile</Link>
             <Link href="/" className="muted">Store</Link>
             <SignOutButton />
           </div>

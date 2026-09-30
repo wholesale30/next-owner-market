@@ -42,7 +42,10 @@ export default async function AccountPage() {
       <main className="max-w-3xl mx-auto p-4 space-y-5">
         <div className="flex justify-between items-center">
           <div><h1 className="text-2xl font-bold">Hi{profile.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}</h1><p className="muted text-sm">{profile.email}</p></div>
-          {staff && <Link href="/app" className="btn btn-secondary">Go to inventory</Link>}
+          <div className="flex gap-2">
+            <Link href="/account/profile" className="btn btn-secondary">👤 Profile</Link>
+            {profile.role !== "buyer" && <Link href="/app" className="btn btn-secondary">{staff ? "Inventory" : "My listings"}</Link>}
+          </div>
         </div>
 
         {myOffers?.length ? (

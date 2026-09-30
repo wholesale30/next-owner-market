@@ -24,6 +24,7 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
     phone: person.phone || "",
     notes: person.notes || "",
     city: person.city || "", state: person.state || "", zip: person.zip || "",
+    suspended: !!person.suspended, plan: person.plan || "free", ai_credits: String(person.ai_credits ?? 3),
   });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -31,16 +32,11 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
   async function save() {
     setBusy(true);
     setMsg(null);
-    const { error } = await createClient().from("profiles").update({
-      role: p.role,
-      approved: p.approved,
-      default_tier: p.default_tier,
-      default_commission_pct: p.default_commission_pct ? Number(p.default_commission_pct) : null,
-      business_name: p.business_name || null,
-      phone: p.phone || null,
-      notes: p.notes || null,
-      city: p.city || null, state: p.state || null, zip: p.zip || null,
-    }).eq("id", person.id);
+    const { error } = await createClient().rpc("staff_update_profile", { p_id: person.id, p_patch: {
+      role: p.role, approved: p.approved, default_tier: p.default_tier,
+      default_commission_pct: p.default_commission_pct || "", business_name: p.business_name || "", phone: p.phone || "", notes: p.notes || "",
+      city: p.city || "", state: p.state || "", zip: p.zip || "", suspended: p.suspended, plan: p.plan, ai_credits: Number(p.ai_credits || 0),
+    } });
     setBusy(false);
     setMsg(error ? error.message : "Saved.");
     router.refresh();
@@ -72,6 +68,9 @@ export default function PersonForm({ person, items, isAdmin }: Props) {
               <option value="yes">Yes</option><option value="no">No</option>
             </select>
           </div>
+          <div><label className="label">Plan</label><select className="input" value={p.plan} onChange={(e) => setP({ ...p, plan: e.target.value as "free" | "pro" })}><option value="free">Free</option><option value="pro">Pro (comped)</option></select></div>
+          <div><label className="label">AI credits</label><input className="input" type="number" value={p.ai_credits} onChange={(e) => setP({ ...p, ai_credits: e.target.value })} /></div>
+          <div><label className="label">Suspended</label><select className="input" value={p.suspended ? "yes" : "no"} onChange={(e) => setP({ ...p, suspended: e.target.value === "yes" })}><option value="no">No</option><option value="yes">Yes (cannot list or sell)</option></select></div>
           <div>
             <label className="label">Default consignment tier</label>
             <select className="input" value={p.default_tier} onChange={(e) => setP({ ...p, default_tier: e.target.value as Tier })}>

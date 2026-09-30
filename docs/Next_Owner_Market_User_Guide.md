@@ -91,6 +91,7 @@ The pitch for sellers: what the tools do, free vs Pro, and a Start free button. 
 - **Consignor account** — same form via "Sell with us". Instantly active, but items only go live after staff approval.
 
 ### 3.5 My account (nextownermarket.com/account)
+- **👤 Profile** — name, business name (sellers), phone, city/state/ZIP, street address (sellers, for labels; never shown), change password. Sellers also get links to My listings and their public seller page. Email is fixed to the sign-in; message staff to change it.
 - **My orders** — every purchase, with the pickup code, tracking, and the buttons above.
 - **Messages** — every conversation you've started, with replies.
 - **Alerts** — create a saved search ("Technics turntable under $300", any category). When a matching item goes live you're notified here and, once email/text sending is switched on, by email or text.
@@ -185,7 +186,7 @@ Every Gaylord, pallet, shelf, or bin code with item counts. Mark a bin **sorted*
 - **⬇ CSV** — sales, items, or subscribers. Tax-ready columns: date, SKU, sale price, cost, shipping, fees, commission, consignor due, channel, payment method.
 
 ### 4.12 People (/app/people)
-Every account. Tap a person: set role (buyer / consignor / staff / admin), **approve** a consignor, set their commission tier or a custom rate, business name, contact, notes. See their items and balance.
+Every account. Tap a person: set role (buyer / consignor / staff / admin), **approve** a consignor, set their commission tier or a custom rate, **plan** (comp someone Pro), **AI credits**, **suspend**, business name, contact, location, notes. Only an admin can make another admin. Users can never change their own role, plan, or credits; that's locked in the database. See their items and balance.
 
 ### 4.12b 📧 New arrivals email (/app/blast)
 Pick items (this week's are pre-selected), write a subject and two lines, **Send me a test**, then **Send**. Goes to everyone on the list with photos, prices, a store button, your address, and an unsubscribe link. Free tier: 100/day, 3,000/month.
