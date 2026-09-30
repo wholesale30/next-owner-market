@@ -30,6 +30,11 @@ type Draft = {
   brand: string;
   model: string;
   category_id: string;
+  year: string;
+  mileage: string;
+  vin: string;
+  title_status: string;
+  title_in_hand: boolean;
   condition: string;
   condition_notes: string;
   specs: Record<string, string>;
@@ -88,6 +93,11 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     brand: item?.brand || "",
     model: item?.model || "",
     category_id: item?.category_id || "",
+    year: (item as unknown as { year?: number | null })?.year ? String((item as unknown as { year?: number }).year) : "",
+    mileage: (item as unknown as { mileage?: number | null })?.mileage != null ? String((item as unknown as { mileage?: number }).mileage) : "",
+    vin: (item as unknown as { vin?: string | null })?.vin || "",
+    title_status: (item as unknown as { title_status?: string | null })?.title_status || "",
+    title_in_hand: !!(item as unknown as { title_in_hand?: boolean })?.title_in_hand,
     condition: item?.condition || "good",
     condition_notes: item?.condition_notes || "",
     specs: item?.specs || {},
@@ -258,6 +268,11 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         brand: d.brand || null,
         model: d.model || null,
         category_id: d.category_id || null,
+        year: d.year ? Number(d.year) : null,
+        mileage: d.mileage ? Number(d.mileage) : null,
+        vin: d.vin.trim() || null,
+        title_status: d.title_status || null,
+        title_in_hand: d.title_in_hand,
         condition: d.condition || null,
         condition_notes: d.condition_notes || null,
         specs: d.specs,
@@ -348,6 +363,12 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
 
   const uploading = photos.some((p) => p.uploading) || videos.some((v) => v.uploading);
   const topCats = categories.filter((c) => !c.parent_id);
+  const catById = new Map(categories.map((c) => [c.id, c]));
+  const selCat = catById.get(d.category_id);
+  const selParent = selCat?.parent_id ? catById.get(selCat.parent_id) : null;
+  const isVehicle = !!selCat && (selCat.slug === "vehicles" || selParent?.slug === "vehicles");
+  const vehicleSlug = selCat?.slug || "";
+  const needsTitle = ["cars-trucks", "motorcycles", "boats", "rvs", "atvs"].includes(vehicleSlug);
   const childCats = (pid: string) => categories.filter((c) => c.parent_id === pid);
 
   return (
@@ -447,6 +468,23 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
                 ))}
               </select>
             </div>
+            {isVehicle && (
+              <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
+                <p className="font-semibold text-sm">🚗 Vehicle details</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><label className="label">Year</label><input className="input" inputMode="numeric" maxLength={4} value={d.year} onChange={(e) => set({ year: e.target.value.replace(/\D/g, "") })} /></div>
+                  <div><label className="label">{/boat|rv|atv|equip|tractor/i.test(vehicleSlug) ? "Hours" : "Miles"}</label><input className="input" inputMode="numeric" value={d.mileage} onChange={(e) => set({ mileage: e.target.value.replace(/\D/g, "") })} /></div>
+                </div>
+                <div><label className="label">VIN / hull number / serial</label><input className="input" autoCapitalize="characters" value={d.vin} onChange={(e) => set({ vin: e.target.value.toUpperCase() })} /><p className="text-xs muted">Shown on the listing so buyers can run a history check. Skip for trailers or bikes if there isn&apos;t one.</p></div>
+                {needsTitle && (
+                  <>
+                    <div><label className="label">Title</label><select className="input" value={d.title_status} onChange={(e) => set({ title_status: e.target.value })}><option value="">Pick one…</option><option value="clean">Clean title</option><option value="salvage">Salvage title</option><option value="rebuilt">Rebuilt title</option><option value="bill_of_sale_only">Bill of sale only</option><option value="none">No title</option></select></div>
+                    <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={d.title_in_hand} onChange={(e) => set({ title_in_hand: e.target.checked })} /> I have the title in my hand, in my name, with no lien</label>
+                    <p className="text-xs muted">You can&apos;t list a car, truck, or motorcycle without the title in hand. Buyers put down a deposit through the site; you meet, they pay the balance, and the site prints the bill of sale for both of you to sign.</p>
+                  </>
+                )}
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="label">Condition</label>

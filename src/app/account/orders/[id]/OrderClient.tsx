@@ -14,6 +14,7 @@ import PickupPicker from "./PickupPicker";
 type O = Order & {
   items: { sku: string; title: string; item_photos: { url: string; is_primary: boolean }[] } | null;
   profiles: { role: string; full_name: string | null; business_name: string | null } | null;
+  full_price?: number | null; balance_due?: number | null;
   disputes: { status: string; reason: string; resolution_note: string | null; opened_by?: string }[] | null;
   ratings: { rater_id: string; stars: number }[] | null;
 };
@@ -87,7 +88,7 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
         <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{photo && <img src={photo} alt="" className="w-full h-full object-cover" />}</div>
         <div className="min-w-0 flex-1">
           <Link href={`/item/${order.items?.sku}`} className="font-semibold truncate block">{order.items?.title}</Link>
-          <p className="text-sm">{money(order.total)}{order.shipping > 0 ? ` (incl. ${money(order.shipping)} shipping)` : ""} • {order.fulfillment === "ship" ? "Shipping" : "Local pickup"}</p>
+          <p className="text-sm">{order.full_price ? `${money(order.amount)} deposit on ${money(order.full_price)}` : money(order.total)}{order.shipping > 0 ? ` (incl. ${money(order.shipping)} shipping)` : ""} • {order.fulfillment === "ship" ? "Shipping" : "Local pickup"}</p>
           <p className="text-sm font-semibold">{STATUS[order.status]}</p>
         </div>
       </div>
@@ -110,6 +111,14 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
 
       {order.status === "pending_payment" && <div className="card p-4 text-sm">{justPaid ? "Confirming your payment…" : "Payment wasn't completed. Go back to the item to try again."}</div>}
 
+      {order.full_price && (order.status === "paid" || order.status === "released") && (
+        <div className="card p-4 space-y-2 text-sm" style={{ borderColor: "var(--brand)" }}>
+          <p className="font-semibold">🚗 Big-ticket sale: deposit paid, balance at hand-off</p>
+          <p>Balance due at pickup: <b>{money(order.balance_due || 0)}</b> (cash or cashier&apos;s check, paid to the seller in person).</p>
+          <p className="muted">Meet, look it over, pay the balance, sign the bill of sale, {isBuyer ? "then give the seller your code" : "then enter the buyer's code"} so the deposit releases. Both keep a copy.</p>
+          <a href={`/account/orders/${order.id}/bill-of-sale`} className="btn btn-primary w-full">📄 Bill of sale (print two)</a>
+        </div>
+      )}
       {order.status === "paid" && order.fulfillment === "pickup" && isBuyer && (
         <div className="card p-4 space-y-2 text-center">
           <p className="text-sm muted">Show this code at pickup. The seller enters it and your payment is released.</p>
@@ -135,7 +144,7 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
             <input className="input text-2xl tracking-[.3em] text-center" inputMode="numeric" maxLength={6} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} placeholder="000000" />
             <button className="btn btn-primary" disabled={busy || code.length !== 6} onClick={() => post("/api/orders/release", { orderId: order.id, code })}>Release</button>
           </div>
-          <p className="text-xs muted">You get {money(order.seller_due)} in your bank within 2 business days.</p>
+          <p className="text-xs muted">You get {money(order.seller_due)} in your bank within 2 business days.{order.full_price ? " (That's the deposit minus the site fee; the balance you collected in person is yours already.)" : ""}</p>
         </div>
       )}
 

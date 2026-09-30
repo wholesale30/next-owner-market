@@ -97,6 +97,11 @@ export const TOPICS: HelpTopic[] = [
     "You get what it is, a price range, what drives the value, and where it sells best. If you want to sell it, tap List it now and the listing is already written.",
     "3 free lookups; Pro is unlimited. It's an estimate from photos, not an in-person appraisal; rare or valuable pieces deserve a specialist too.",
   ] },
+  { id: "vehicles", who: "all", q: "Selling or buying a car, boat, or motorcycle here?", a: [
+    "Sellers: list it like anything else, plus year, miles, VIN, and title status. You must have the title in hand. Vehicles are pickup only.",
+    "Buyers: under the cap (usually $5,000) you pay the full price by card and it's held like any order. Above it, you put down a small deposit by card that holds it for 7 days; you meet, look it over, pay the balance in cash or cashier's check, and both sign the bill of sale the site prints.",
+    "If the sale doesn't happen within 7 days, the deposit comes back to the buyer automatically. Report a problem freezes it like any order.",
+  ] },
   { id: "review", who: "seller", q: "Why does my listing say pending?", a: [
     "We look at every new seller's first listings before they go live. Usually same day. After a few good sales, listings go live immediately.",
   ] },

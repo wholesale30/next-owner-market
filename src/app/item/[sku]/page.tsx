@@ -62,6 +62,10 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
     if (here && there) miles = Math.round(milesBetween(here.lat, here.lng, there.lat, there.lng));
   }
   const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
+  const veh = item as unknown as { year?: number | null; mileage?: number | null; title_status?: string | null; title_in_hand?: boolean };
+  const { data: isVeh } = item.category_id ? await sb.rpc("is_vehicle_category", { p_cat: item.category_id }) : { data: false };
+  const bz = business as unknown as { vehicle_card_max?: number; vehicle_deposit_pct?: number; vehicle_deposit_min?: number; vehicle_deposit_max?: number };
+  const deposit = isVeh && Number(item.price) > Number(bz.vehicle_card_max ?? 5000) ? Math.min(Math.max(Math.round(Number(item.price) * Number(bz.vehicle_deposit_pct ?? 5) / 100), Number(bz.vehicle_deposit_min ?? 100)), Number(bz.vehicle_deposit_max ?? 500)) : null;
   const { data: myWatch } = user ? await sb.from("favorites").select("item_id").eq("item_id", item.id).eq("profile_id", user.id).maybeSingle() : { data: null };
   const watching = !!myWatch;
   const { data: myOffer } = user ? await sb.from("offers").select("id, amount, counter_amount, status, expires_at").eq("item_id", item.id).eq("buyer_id", user.id).in("status", ["pending", "countered", "accepted"]).order("created_at", { ascending: false }).limit(1).maybeSingle() : { data: null };
@@ -97,12 +101,15 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             {item.serviced && <span className="pill pill-active">✔ Serviced</span>}
             {item.local_pickup_ok && <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}{miles != null ? ` · ${miles} mi from you` : ""}</span>}
             {item.shipping_ok && <span className="pill">{(item as unknown as { shipping_mode?: string }).shipping_mode === "free" ? "🚚 Free shipping" : "🚚 Ships"}</span>}
+            {veh.year && <span className="pill">{veh.year}</span>}
+            {veh.mileage != null && <span className="pill">{veh.mileage.toLocaleString()} {/boat|rv|atv|equip/i.test(item.categories?.name || "") ? "hrs" : "mi"}</span>}
+            {veh.title_status && <span className="pill">{veh.title_status === "none" ? "No title" : veh.title_status === "bill_of_sale_only" ? "Bill of sale only" : `${veh.title_status[0].toUpperCase()}${veh.title_status.slice(1)} title`}{veh.title_in_hand ? " in hand" : ""}</span>}
           </div>
         </div>
 
         {auction && item.sale_type === "auction" && <AuctionPanel auction={auction} sku={item.sku} />}
         {item.status === "active" && item.sale_type !== "auction" && (
-          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} pickupLoc={pickupLoc} buyerZip={buyerZip} shippingMode={(item as unknown as { shipping_mode?: string }).shipping_mode || "calculated"} />
+          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} pickupLoc={pickupLoc} buyerZip={buyerZip} shippingMode={(item as unknown as { shipping_mode?: string }).shipping_mode || "calculated"} deposit={deposit} />
         )}
         {item.status === "active" && item.sale_type !== "auction" && sellerReady && item.owner_id !== user?.id && (
           <OfferButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} signedIn={!!user} existing={myOffer as never} />

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { money } from "@/lib/listing";
 
-export default function BuyButton({ itemId, sku, price, canPickup, canShip, shippingPrice, sellerReady, signedIn, pickupLoc, buyerZip, shippingMode }: { itemId: string; sku: string; price: number; canPickup: boolean; canShip: boolean; shippingPrice: number; sellerReady: boolean; signedIn: boolean; pickupLoc?: string; buyerZip?: string | null; shippingMode?: string }) {
+export default function BuyButton({ itemId, sku, price, canPickup, canShip, shippingPrice, sellerReady, signedIn, pickupLoc, buyerZip, shippingMode, deposit }: { deposit?: number | null; itemId: string; sku: string; price: number; canPickup: boolean; canShip: boolean; shippingPrice: number; sellerReady: boolean; signedIn: boolean; pickupLoc?: string; buyerZip?: string | null; shippingMode?: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -73,7 +73,14 @@ export default function BuyButton({ itemId, sku, price, canPickup, canShip, ship
           ))}
         </div>
       )}
-      <button type="button" className="btn btn-primary w-full text-lg" disabled={busy || (mode === "ship" && quoting)} onClick={buy}>{busy ? "One sec…" : `🛒 Buy now • ${money(mode === "ship" ? price + shipCost : price)}`}</button>
+      {deposit ? (
+        <>
+          <button type="button" className="btn btn-primary w-full text-lg" disabled={busy} onClick={buy}>{busy ? "One sec…" : `🔒 Hold it with a ${money(deposit)} deposit`}</button>
+          <p className="text-xs muted">Price {money(price)}. The deposit takes it off the market for 7 days while you meet the seller, look it over, and pay the balance ({money(price - deposit)}). The site prints the bill of sale. If the sale doesn&apos;t happen within 7 days, the deposit comes back to you automatically.</p>
+        </>
+      ) : (
+        <button type="button" className="btn btn-primary w-full text-lg" disabled={busy || (mode === "ship" && quoting)} onClick={buy}>{busy ? "One sec…" : `🛒 Buy now • ${money(mode === "ship" ? price + shipCost : price)}`}</button>
+      )}
       {mode === "pickup" && !canShip && pickupLoc && <p className="text-xs">📍 Local pickup only, in <b>{pickupLoc}</b>. Not near you? Message the seller and ask about shipping.</p>}
       <p className="text-[11px] muted">Pay by card, Apple Pay, or Google Pay. Your money is held until you {mode === "ship" ? "receive it" : "pick it up"}; full refund if it doesn&apos;t happen. By buying you agree to the <a href="/terms" className="underline">terms</a>.</p>
       {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}
