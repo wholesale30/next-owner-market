@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { money } from "@/lib/listing";
 import type { Order } from "@/lib/types";
+import LabelBox from "./LabelBox";
 
 type O = Order & {
   items: { sku: string; title: string; item_photos: { url: string; is_primary: boolean }[] } | null;
@@ -123,6 +124,9 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
           {!isBuyer && order.shipping_address?.address && (
             <p className="card p-2"><b>Ship to:</b><br />{order.shipping_address.name}<br />{order.shipping_address.address.line1}{order.shipping_address.address.line2 ? `, ${order.shipping_address.address.line2}` : ""}<br />{order.shipping_address.address.city}, {order.shipping_address.address.state} {order.shipping_address.address.postal_code}</p>
           )}
+          {!isBuyer && !order.label_url && <LabelBox orderId={order.id} onDone={() => router.refresh()} />}
+          {order.label_url && !isBuyer && <p><a className="btn btn-primary" href={order.label_url} target="_blank" rel="noreferrer">🖨 Print label (4×6 PDF)</a> <span className="muted text-xs">Label cost {money(order.label_cost || 0)} comes out of your payout.</span></p>}
+          {order.tracking_url && <p><a className="underline" href={order.tracking_url} target="_blank" rel="noreferrer">Track package</a></p>}
           {!isBuyer && (
             <div className="flex gap-2 flex-wrap">
               <input className="input flex-1" placeholder="Carrier (USPS, UPS…)" value={track.carrier} onChange={(e) => setTrack({ ...track, carrier: e.target.value })} />

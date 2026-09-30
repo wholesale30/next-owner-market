@@ -76,7 +76,7 @@ export default async function MoneyPage() {
         <h1 className="text-2xl font-bold">{staff ? "Money" : "Payouts"}</h1>
         {staff && <a href="/api/export?what=sales" className="btn btn-secondary">⬇ CSV</a>}
       </div>
-      {!staff && stripeReady() && <Suspense><PayoutSetup ready={!!profile.stripe_payouts_ready} hasAccount={!!profile.stripe_account_id} /></Suspense>}
+      {!staff && stripeReady() && <Suspense><PayoutSetup ready={!!profile.stripe_payouts_ready} hasAccount={!!profile.stripe_account_id} address={{ address1: profile.address1 || "", address2: profile.address2 || "", city: profile.city || "", state: profile.state || "", zip: profile.zip || "" }} /></Suspense>}
       {!staff && profile.plan !== "pro" && stripeReady() && <ProBanner credits={profile.ai_credits ?? 0} price={plans.pro_monthly} features={plans.pro_features} />}
       {profile.role === "admin" && <StripeSetup ready={stripeReady()} configured={!!stripeCfg.webhook_secret} connect={!!stripeCfg.connect_enabled} />}
 

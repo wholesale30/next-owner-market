@@ -42,7 +42,7 @@ export interface Profile {
   suspended?: boolean;
   ai_credits?: number;
   pro_credit_months?: number;
-  city?: string | null; state?: string | null; zip?: string | null;
+  city?: string | null; state?: string | null; zip?: string | null; address1?: string | null; address2?: string | null;
   referral_count?: number;
 }
 
@@ -149,4 +149,5 @@ export interface Order {
   shipped_at: string | null; delivered_at: string | null; release_after: string | null; expires_at: string | null;
   paid_at: string | null; released_at: string | null; refunded_at: string | null; buyer_note: string | null; created_at: string;
   shipping_address?: { name?: string; address?: { line1?: string; line2?: string; city?: string; state?: string; postal_code?: string } } | null;
+  label_url?: string | null; label_cost?: number; tracking_url?: string | null; offer_id?: string | null;
 }
