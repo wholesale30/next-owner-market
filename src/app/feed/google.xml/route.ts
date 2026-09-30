@@ -7,7 +7,7 @@ export async function GET() {
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com";
   const db = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
   const [{ data: items }, { data: biz }] = await Promise.all([
-    db.from("items").select("sku, title, description, price, condition, brand, model, shipping_ok, shipping_mode, category_id, item_photos(url, is_primary), categories(name)").eq("status", "active").not("price", "is", null).order("listed_at", { ascending: false }).limit(5000),
+    db.from("items").select("sku, title, description, price, condition, brand, model, shipping_ok, shipping_mode, weight_lbs, category_id, item_photos(url, is_primary), categories(name)").eq("status", "active").not("price", "is", null).order("listed_at", { ascending: false }).limit(5000),
     db.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
   const name = (biz?.value as { name?: string })?.name || "Next Owner Market";
@@ -30,6 +30,7 @@ ${ph.filter((p) => p !== photo).slice(0, 9).map((p) => `<g:additional_image_link
 ${i.brand ? `<g:brand>${esc(i.brand)}</g:brand>` : "<g:identifier_exists>no</g:identifier_exists>"}
 ${i.model ? `<g:mpn>${esc(i.model)}</g:mpn>` : ""}
 <g:product_type>${esc(cat)}</g:product_type>
+${i.shipping_ok ? `<g:shipping_weight>${Number(i.weight_lbs || 2).toFixed(1)} lb</g:shipping_weight>` : ""}
 ${i.shipping_ok ? (i.shipping_mode === "free" ? `<g:shipping><g:country>US</g:country><g:price>0.00 USD</g:price></g:shipping>` : "") : `<g:shipping><g:country>US</g:country><g:service>Local pickup only</g:service><g:price>0.00 USD</g:price></g:shipping>`}
 </item>`;
   });
