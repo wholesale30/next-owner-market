@@ -1,5 +1,7 @@
 "use client";
 
+import Mic from "@/components/Mic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -39,6 +41,7 @@ export default function MessageForm({ itemId, title, sku, signedIn, accountEmail
           <p className="font-semibold">Message about &quot;{title}&quot;</p>
           <div className="flex gap-1 flex-wrap">{quick.map((q) => <button key={q} type="button" className="pill" onClick={() => setBody((b) => (b ? b + " " + q : q))}>{q}</button>)}</div>
           <textarea className="input" rows={3} placeholder="Your message" value={body} onChange={(e) => setBody(e.target.value)} required />
+          <Mic onText={(t) => setBody((b) => (b ? b + " " : "") + t)} />
           <p className="text-[11px] muted">Sent from {accountEmail || "your account"}. Phone numbers and emails typed here are removed; pay through checkout so you&apos;re protected.</p>
           {err && <p style={{ color: "var(--danger)" }}>{err}</p>}
           <div className="flex gap-2">

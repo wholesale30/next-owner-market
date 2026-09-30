@@ -1,5 +1,7 @@
 "use client";
 
+import Mic from "@/components/Mic";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -76,6 +78,7 @@ export default function InboxClient({ convos, active, messages, showAll, staff, 
             <div className="flex gap-1 overflow-x-auto">{canned.map((c) => <button key={c} className="pill whitespace-nowrap" onClick={() => setReply((r) => (r ? r + " " : "") + c)}>{c}</button>)}</div>
             <div className="flex gap-2">
               <textarea className="input" rows={2} placeholder="Reply…" value={reply} onChange={(e) => setReply(e.target.value)} />
+              <Mic onText={(t) => setReply((r) => (r ? r + " " : "") + t)} />
               <button className="btn btn-primary" disabled={busy || !reply.trim()} onClick={send}>Send</button>
             </div>
             <p className="text-[11px] muted">{staff ? "Your reply is emailed to the buyer right away (or saved for phone-only buyers; tap Text) and shows in their account." : "Your reply goes to the buyer right away. Contact details stay private both ways; phone numbers and emails typed here are removed. Sales go through checkout so you're guaranteed payment."}</p>

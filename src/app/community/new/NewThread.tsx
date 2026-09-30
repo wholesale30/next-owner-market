@@ -1,5 +1,7 @@
 "use client";
 
+import Mic from "@/components/Mic";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -31,7 +33,7 @@ export default function NewThread({ meId, board: initial }: { meId: string; boar
     <form onSubmit={submit} className="card p-4 space-y-3">
       <div><label className="label">Where does it go?</label><select className="input" value={f.board} onChange={(e) => setF({ ...f, board: e.target.value })}>{BOARDS.map((b) => <option key={b.key} value={b.key}>{b.label}</option>)}</select></div>
       <div><label className="label">Title</label><input className="input" maxLength={120} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} required placeholder={f.board === "worth" ? "1978 Pioneer SX-780 receiver, works" : "What's on your mind?"} /></div>
-      <div><label className="label">Say more</label><textarea className="input" rows={5} maxLength={4000} value={f.body} onChange={(e) => setF({ ...f, body: e.target.value })} required /></div>
+      <div><div className="flex items-center justify-between"><label className="label">Say more</label><Mic onText={(t) => setF((x) => ({ ...x, body: (x.body ? x.body + " " : "") + t }))} /></div><textarea className="input" rows={5} maxLength={4000} value={f.body} onChange={(e) => setF({ ...f, body: e.target.value })} required /></div>
       <div><label className="label">Photo (optional)</label><input className="input" type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files?.[0] || null)} /></div>
       <p className="text-xs muted">Phone numbers and emails get removed automatically. Keep deals inside the site.</p>
       {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}

@@ -1,5 +1,7 @@
 "use client";
 
+import Mic from "@/components/Mic";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -81,7 +83,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
             )}
           </div>
           <p className="text-xs muted">Get the whole thing in one photo, then close-ups of any label, model number, or damage. Up to 6.</p>
-          <input className="input" placeholder="Anything we should know? (works, missing the lid, grandma's…)" value={hints} onChange={(e) => setHints(e.target.value)} />
+          <div className="flex gap-2 items-center"><input className="input" placeholder="Anything we should know? (works, missing the lid, grandma's…)" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h + " " : "") + t)} /></div>
           <button type="button" className="btn btn-primary w-full text-lg" disabled={!photos.length || !!busy} onClick={appraise}>{busy || "What's it worth?"}</button>
           {left != null && meId && <p className="text-xs muted text-center">{left} free lookup{left === 1 ? "" : "s"} left · <Link href="/pro" className="underline">Pro = unlimited</Link></p>}
           {!meId && <p className="text-xs muted text-center">Free. You&apos;ll make a free account first so we can save your results.</p>}

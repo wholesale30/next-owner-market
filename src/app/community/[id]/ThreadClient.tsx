@@ -1,5 +1,7 @@
 "use client";
 
+import Mic from "@/components/Mic";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -71,6 +73,7 @@ export default function ThreadClient({ thread, replies, meId, staff }: { thread:
       {thread.locked ? <p className="card p-3 text-sm muted text-center">This post is closed to new replies.</p> : (
         <form onSubmit={reply} className="card p-3 space-y-2">
           <textarea className="input" rows={3} maxLength={4000} placeholder={meId ? "Write a reply…" : "Sign in to reply"} value={body} onChange={(e) => setBody(e.target.value)} required />
+          <Mic onText={(t) => setBody((b) => (b ? b + " " : "") + t)} />
           {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}
           <button className="btn btn-primary w-full" disabled={busy || !body.trim()}>{meId ? "Reply" : "Sign in to reply"}</button>
         </form>

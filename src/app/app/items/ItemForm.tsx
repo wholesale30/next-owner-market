@@ -1,5 +1,7 @@
 "use client";
 
+import Mic from "@/components/Mic";
+
 import { HelpTip } from "@/components/Help";
 
 import { useMemo, useRef, useState } from "react";
@@ -429,7 +431,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
           <>
             <div>
               <label className="label">Anything the photos don&apos;t show? (optional)</label>
-              <input className="input" placeholder="e.g. tested, works great, new belt, missing remote" value={hints} onChange={(e) => setHints(e.target.value)} />
+              <div className="flex gap-2 items-center"><input className="input" placeholder="e.g. tested, works great, new belt, missing remote" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h + " " : "") + t)} /></div>
             </div>
             <button type="button" className="btn btn-primary w-full" disabled={aiBusy || uploading || !photos.length} onClick={runAi}>
               {aiBusy ? "Reading the photos…" : uploading ? "Uploading…" : "✨ Write the listing for me"}
@@ -451,7 +453,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
 
           <section className="card p-4 space-y-3">
             <div><label className="label">Title</label><input className="input" value={d.title} onChange={(e) => set({ title: e.target.value })} maxLength={120} /></div>
-            <div><label className="label">Description</label><textarea className="input" rows={6} value={d.description} onChange={(e) => set({ description: e.target.value })} /></div>
+            <div><div className="flex items-center justify-between"><label className="label">Description</label><Mic onText={(t) => set({ description: (d.description ? d.description.trimEnd() + " " : "") + t })} /></div><textarea className="input" rows={6} value={d.description} onChange={(e) => set({ description: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-2">
               <div><label className="label">Brand</label><input className="input" value={d.brand} onChange={(e) => set({ brand: e.target.value })} /></div>
               <div><label className="label">Model</label><input className="input" value={d.model} onChange={(e) => set({ model: e.target.value })} /></div>
