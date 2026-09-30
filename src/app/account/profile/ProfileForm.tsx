@@ -58,12 +58,7 @@ export default function ProfileForm({ me }: { me: Me }) {
         {seller && <div><label className="label">Business or shop name (shown to buyers instead of your name)</label><input className="input" value={p.business_name} onChange={(e) => setP({ ...p, business_name: e.target.value })} /></div>}
         <div><label className="label">Email</label><input className="input" value={me.email || ""} disabled /><p className="text-xs muted">To change your email, message us; it&apos;s tied to your sign-in.</p></div>
         <div><label className="label">Phone</label><input className="input" type="tel" value={p.phone} onChange={(e) => setP({ ...p, phone: e.target.value })} /></div>
-        <div className="grid grid-cols-4 gap-2">
-          <div className="col-span-2"><label className="label">City</label><input className="input" value={p.city} onChange={(e) => setP({ ...p, city: e.target.value })} /></div>
-          <div><label className="label">State</label><input className="input" maxLength={2} value={p.state} onChange={(e) => setP({ ...p, state: e.target.value.toUpperCase() })} /></div>
-          <div><label className="label">ZIP</label><input className="input" maxLength={5} inputMode="numeric" value={p.zip} onChange={async (e) => { const zip = e.target.value; setP({ ...p, zip }); if (zip.length === 5) { const g = await fetch(`/api/geo?zip=${zip}`).then((r) => r.json()).catch(() => null); if (g?.ok) setP((q) => ({ ...q, zip, city: q.city || g.city, state: q.state || g.state })); } }} /></div>
-        </div>
-        <p className="text-xs muted">City and state show on your listings so buyers know where pickup is. Everything else stays private.</p>
+
         <div className="card p-3 space-y-2">
           <label className="flex items-center gap-2 font-semibold"><input type="checkbox" checked={al.on} onChange={(e) => setAl({ ...al, on: e.target.checked })} /> 📱 Text me (free) when something happens</label>
           {al.on && (
@@ -75,12 +70,17 @@ export default function ProfileForm({ me }: { me: Me }) {
             </>
           )}
         </div>
-        {seller && (
-          <>
-            <div><label className="label">Street address (for shipping labels only; never shown)</label><input className="input" value={p.address1} onChange={(e) => setP({ ...p, address1: e.target.value })} /></div>
-            <div><label className="label">Apt / suite</label><input className="input" value={p.address2} onChange={(e) => setP({ ...p, address2: e.target.value })} /></div>
-          </>
-        )}
+        <div className="card p-3 space-y-2">
+          <p className="font-semibold">📍 Your address</p>
+          <div><label className="label">Street address</label><input className="input" autoComplete="address-line1" value={p.address1} onChange={(e) => setP({ ...p, address1: e.target.value })} /></div>
+          <div><label className="label">Apt / suite (optional)</label><input className="input" autoComplete="address-line2" value={p.address2} onChange={(e) => setP({ ...p, address2: e.target.value })} /></div>
+          <div className="grid grid-cols-4 gap-2">
+            <div className="col-span-2"><label className="label">City</label><input className="input" autoComplete="address-level2" value={p.city} onChange={(e) => setP({ ...p, city: e.target.value })} /></div>
+            <div><label className="label">State</label><input className="input" maxLength={2} autoComplete="address-level1" value={p.state} onChange={(e) => setP({ ...p, state: e.target.value.toUpperCase() })} /></div>
+            <div><label className="label">ZIP</label><input className="input" maxLength={5} inputMode="numeric" autoComplete="postal-code" value={p.zip} onChange={async (e) => { const zip = e.target.value; setP({ ...p, zip }); if (zip.length === 5) { const g = await fetch(`/api/geo?zip=${zip}`).then((r) => r.json()).catch(() => null); if (g?.ok) setP((q) => ({ ...q, zip, city: q.city || g.city, state: q.state || g.state })); } }} /></div>
+          </div>
+          <p className="text-xs muted">{seller ? "Only your city and state show on listings. The street address is used for shipping labels and the bill of sale; buyers never see it." : "Only city and state are ever shown (for \"near you\"). Street address is optional; it fills in your shipping address at checkout."}</p>
+        </div>
         <div className="flex items-center gap-2"><button className="btn btn-primary" disabled={busy}>{busy ? "Saving…" : "Save"}</button>{msg && <span className="text-sm muted">{msg}</span>}</div>
       </form>
       <form onSubmit={changePw} className="card p-4 space-y-3">
