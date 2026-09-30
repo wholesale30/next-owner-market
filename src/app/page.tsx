@@ -114,6 +114,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
           {" • "}<Link href="/login" className="underline">Staff sign in</Link>
+          {" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
         </footer>
       </main>
     </div>

@@ -65,6 +65,7 @@ function SignupForm() {
         <div><label className="label">Password</label><input className="input" type="password" minLength={8} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required /></div>
         {error && <p className="text-sm" style={{ color: "var(--danger)" }}>{error}</p>}
         <button className="btn btn-primary w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</button>
+        <p className="text-[11px] muted text-center">By creating an account you agree to the <Link href="/terms" className="underline">Terms</Link> and <Link href="/privacy" className="underline">Privacy Policy</Link>.</p>
         <p className="text-sm muted text-center">Already have one? <Link href="/login" className="underline">Sign in</Link></p>
         <p className="text-xs muted text-center">{buyer ? <Link href="/signup" className="underline">Want to sell with us instead?</Link> : <Link href="/signup?buyer=1" className="underline">Just want to buy? Create a buyer account.</Link>}</p>
       </form>

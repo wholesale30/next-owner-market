@@ -31,7 +31,7 @@ export default function BuyButton({ itemId, sku, price, canPickup, canShip, ship
       )}
       <button type="button" className="btn btn-primary w-full text-lg" disabled={busy} onClick={buy}>{busy ? "One sec…" : `🛒 Buy now • ${money(mode === "ship" ? price + shippingPrice : price)}`}</button>
       {mode === "pickup" && !canShip && pickupLoc && <p className="text-xs">📍 Local pickup only, in <b>{pickupLoc}</b>. Not near you? Message the seller and ask about shipping.</p>}
-      <p className="text-[11px] muted">Pay by card, Apple Pay, or Google Pay. Your money is held until you {mode === "ship" ? "receive it" : "pick it up"}; full refund if it doesn&apos;t happen.</p>
+      <p className="text-[11px] muted">Pay by card, Apple Pay, or Google Pay. Your money is held until you {mode === "ship" ? "receive it" : "pick it up"}; full refund if it doesn&apos;t happen. By buying you agree to the <a href="/terms" className="underline">terms</a>.</p>
       {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}
     </div>
   );
