@@ -14,8 +14,9 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     const { count } = await supabase.from("conversations").select("id", { count: "exact", head: true }).eq("unread_for_staff", true).neq("status", "closed");
     unread = count || 0;
   }
-  let pendingPeople = 0;
+  let pendingPeople = 0, pendingReview = 0;
   if (staff) {
+    pendingReview = (await supabase.from("items").select("id", { count: "exact", head: true }).eq("status", "pending_review")).count || 0;
     const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "consignor").eq("approved", false);
     pendingPeople = count || 0;
   }
@@ -30,7 +31,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/snap", label: "📷 Snap" },
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
         { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
-        { href: "/app/review", label: "Review" },
+        { href: "/app/review", label: pendingReview ? `✅ Review (${pendingReview})` : "Review" },
         { href: "/app/requests", label: "Wanted" },
         { href: "/app/pickups", label: "Pickups" },
         { href: "/app/bins", label: "Bins" },
