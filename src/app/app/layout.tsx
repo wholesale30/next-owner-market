@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import SignOutButton from "./SignOutButton";
+import { Wordmark } from "@/components/Logo";
 
 export default async function AppLayout({ children }: LayoutProps<"/app">) {
   const profile = await getProfile();
@@ -57,18 +58,18 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
 
   return (
     <div className="flex-1 flex flex-col">
-      <header className="no-print sticky top-0 z-10 border-b" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
-        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/app" className="font-bold">Next Owner</Link>
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/account/profile" className="muted">Profile</Link>
-            <Link href="/" className="muted">Store</Link>
+      <header className="no-print sticky top-0 z-10 topbar">
+        <div className="max-w-3xl mx-auto px-3 h-16 flex items-center justify-between gap-2">
+          <Link href="/app" aria-label="Home"><Wordmark compact /></Link>
+          <div className="flex items-center gap-1.5">
+            <Link href="/account/profile" className="navbtn">Profile</Link>
+            <Link href="/" className="navbtn">Store</Link>
             <SignOutButton />
           </div>
         </div>
         <nav className="max-w-3xl mx-auto px-2 flex gap-1 overflow-x-auto pb-2">
           {nav.map((n) => (
-            <Link key={n.href} href={n.href} className="pill whitespace-nowrap px-3 py-2">
+            <Link key={n.href} href={n.href} className="navbtn" style={{ minHeight: 36, fontSize: ".85rem" }}>
               {n.label}
             </Link>
           ))}

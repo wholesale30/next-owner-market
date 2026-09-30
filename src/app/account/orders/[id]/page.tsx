@@ -31,7 +31,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/ac
   const enriched = { ...order, profiles: sellerPub ? { role: sellerPub.role, full_name: sellerPub.display_name, business_name: null } : null };
   return (
     <div className="flex-1">
-      <StoreHeader business={business} />
+      <StoreHeader business={business} signedIn />
       <main className="max-w-3xl mx-auto p-4 space-y-4">
         <Link href={role === "buyer" ? "/account" : "/app/orders"} className="text-sm muted">← {role === "buyer" ? "My account" : "Orders"}</Link>
         <OrderClient order={enriched as never} role={role} meId={me.id} justPaid={paid === "1"} business={business} sellerName={sellerIsPlatform ? business.name : sellerPub?.display_name || "Seller"} sellerLoc={sellerIsPlatform ? business.location || "" : [sellerPub?.city, sellerPub?.state].filter(Boolean).join(", ")} sellerIsPlatform={sellerIsPlatform} buyerName={buyerPub?.display_name || "Buyer"} buyerLoc={[buyerPub?.city, buyerPub?.state].filter(Boolean).join(", ")} buyerContact={buyerContact ? buyerContact.email || buyerContact.phone || null : null} bookedSlot={bookedSlot} />

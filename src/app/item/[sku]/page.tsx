@@ -78,7 +78,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
 
   return (
     <div className="flex-1">
-      <StoreHeader business={business} />
+      <StoreHeader business={business} signedIn={!!user} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <main className="max-w-3xl mx-auto p-4 space-y-4 pb-28">
         <Link href="/" className="text-sm muted">← All items</Link>

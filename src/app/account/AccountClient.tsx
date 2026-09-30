@@ -51,7 +51,7 @@ export default function AccountClient({ searches, categories }: { searches: S[];
           <button className="muted" onClick={() => del(s.id)}>×</button>
         </div>
       ))}
-      <button className="text-xs muted underline" onClick={signOut}>Sign out</button>
+      <button className="btn btn-secondary w-full font-bold" onClick={signOut}>Sign out</button>
     </section>
   );
 }

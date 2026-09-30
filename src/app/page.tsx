@@ -44,13 +44,25 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
 
   return (
     <div className="flex-1">
-      <StoreHeader business={business} />
+      <StoreHeader business={business} signedIn={!!user} />
+      <section className="hero">
+        <div className="max-w-5xl mx-auto px-4 pt-6 pb-5 space-y-4">
+          <div className="space-y-1">
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">Everything finds its next owner.</h1>
+            <p className="text-base md:text-lg opacity-90">Surplus, vintage audio, tools and more from sellers across the country. Buy by card, pick up or ship. Money held until you have it.</p>
+          </div>
+          <form className="flex gap-2">
+            <input className="input" name="q" placeholder="Search: turntable, drill, lamp, Technics…" defaultValue={q || ""} />
+            {cat && <input type="hidden" name="cat" value={cat} />}
+            <button className="btn btn-white font-bold">Search</button>
+          </form>
+          <div className="flex gap-2">
+            <Link href="/pro" className="btn btn-outline-white flex-1">Start selling free</Link>
+            <Link href="/looking-for" className="btn btn-outline-white flex-1">I&apos;m looking for…</Link>
+          </div>
+        </div>
+      </section>
       <main className="max-w-5xl mx-auto p-4 space-y-4">
-        <form className="flex gap-2">
-          <input className="input" name="q" placeholder="Search: turntable, drill, lamp, Technics…" defaultValue={q || ""} />
-          {cat && <input type="hidden" name="cat" value={cat} />}
-          <button className="btn btn-primary">Search</button>
-        </form>
 
         <LocationBar zip={zip} state={state} mi={sp.mi || (here ? "100" : "any")} here={here ? `${here.city}, ${here.state}` : null} params={{ q: q || "", cat: cat || "", sort: sort || "" }} />
 

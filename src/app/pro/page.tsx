@@ -16,7 +16,7 @@ export default async function ProPage() {
   const p = (plans?.value as { pro_monthly: number; pro_features: string[] }) || { pro_monthly: 15, pro_features: [] };
   return (
     <div className="flex-1">
-      <StoreHeader business={business} />
+      <StoreHeader business={business} signedIn={!!user} />
       <main className="max-w-2xl mx-auto p-4 space-y-6">
         <section className="text-center space-y-3 pt-4">
           <h1 className="text-3xl font-extrabold leading-tight">Photograph the pile.<br />Get the listings.</h1>

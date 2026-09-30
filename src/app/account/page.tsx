@@ -39,7 +39,7 @@ export default async function AccountPage() {
 
   return (
     <div className="flex-1">
-      <StoreHeader business={business} />
+      <StoreHeader business={business} signedIn />
       <main className="max-w-3xl mx-auto p-4 space-y-5">
         <div className="flex justify-between items-center">
           <div><h1 className="text-2xl font-bold">Hi{profile.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}</h1><p className="muted text-sm">{profile.email}</p></div>

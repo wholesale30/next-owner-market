@@ -4,9 +4,10 @@
   --bg: #f6f5f1;
   --surface: #ffffff;
   --ink: #1b1b1a;
-  --muted: #6b6a66;
+  --muted: #4f4e49;
   --line: #e5e3dc;
   --brand: #1f6f5c;
+  --brand-deep: #174f43;
   --brand-ink: #ffffff;
   --accent: #d9822b;
   --danger: #b3261e;
@@ -18,17 +19,19 @@
     --bg: #131312;
     --surface: #1d1d1b;
     --ink: #f2f1ec;
-    --muted: #a3a29b;
+    --muted: #bdbcb4;
     --line: #2d2d2a;
-    --brand: #3d9b83;
-    --brand-ink: #0b0b0a;
+    --brand: #2c8a72;
+    --brand-deep: #1b5c4b;
+    --brand-ink: #ffffff;
   }
 }
 
 html { background: var(--bg); color: var(--ink); }
 body { background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+a.card:active { transform: scale(.985); }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 12px; padding: .8rem 1.1rem; font-weight: 600; min-height: 48px; transition: opacity .15s; }
 .btn:active { opacity: .8; }
 .btn-primary { background: var(--brand); color: var(--brand-ink); }
@@ -48,3 +51,16 @@ body { background: var(--bg); color: var(--ink); font-family: system-ui, -apple-
   .no-print { display: none !important; }
   body { background: #fff; color: #000; }
 }
+
+/* Branded top bar */
+.topbar { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%); color: #fff; }
+.topbar a, .topbar button { color: #fff; }
+.navbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 .75rem; border-radius: 999px; font-weight: 700; font-size: .9rem; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25); white-space: nowrap; }
+.navbtn:active { background: rgba(255,255,255,.28); }
+.navbtn-solid { background: #fff; color: var(--brand-deep) !important; border-color: #fff; }
+.hero { background: linear-gradient(180deg, var(--brand-deep) 0%, var(--brand) 100%); color: #fff; }
+.hero .input { background: #fff; color: #1b1b1a; border-color: transparent; }
+.btn-white { background: #fff; color: var(--brand-deep); }
+.btn-outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.7); }
+.pill { font-size: .8rem; }
+@media (max-width: 399px) { .navbtn { padding: 0 .6rem; font-size: .85rem; } }

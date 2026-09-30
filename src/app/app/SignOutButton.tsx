@@ -7,7 +7,7 @@ export default function SignOutButton() {
   const router = useRouter();
   return (
     <button
-      className="muted"
+      className="navbtn navbtn-solid"
       onClick={async () => {
         await createClient().auth.signOut();
         router.push("/login");
