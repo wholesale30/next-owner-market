@@ -14,6 +14,11 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     const { count } = await supabase.from("conversations").select("id", { count: "exact", head: true }).eq("unread_for_staff", true).neq("status", "closed");
     unread = count || 0;
   }
+  let pendingPeople = 0;
+  if (staff) {
+    const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "consignor").eq("approved", false);
+    pendingPeople = count || 0;
+  }
   let oq = supabase.from("orders").select("id", { count: "exact", head: true }).in("status", ["paid", "disputed"]);
   if (!staff) oq = oq.eq("seller_id", profile.id);
   const openOrders = (await oq).count || 0;
@@ -30,7 +35,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/pickups", label: "Pickups" },
         { href: "/app/bins", label: "Bins" },
         { href: "/app/money", label: "Money" },
-        { href: "/app/people", label: "People" },
+        { href: "/app/people", label: pendingPeople ? `👤 People (${pendingPeople} waiting)` : "People" },
       ]
     : [
         { href: "/app", label: "My items" },

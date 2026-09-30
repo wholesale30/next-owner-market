@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { admin, stripe, stripeSettings } from "@/lib/stripe";
+import { alertStaff } from "@/lib/alert";
 
 export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature") || "";
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
           status: "paid", paid_at: new Date().toISOString(), expires_at: expires,
           stripe_payment_intent_id: typeof cs.payment_intent === "string" ? cs.payment_intent : cs.payment_intent?.id,
         }).eq("id", cs.metadata.order_id).eq("status", "pending_payment");
+        await alertStaff("New order paid", `$${((cs.amount_total || 0) / 100).toFixed(2)} order paid in the store (${o?.fulfillment}).`, `/account/orders/${cs.metadata.order_id}`);
       }
       if (cs.mode === "subscription" && cs.metadata?.profile_id) {
         await db.from("profiles").update({ plan: "pro", stripe_customer_id: typeof cs.customer === "string" ? cs.customer : cs.customer?.id, stripe_subscription_id: typeof cs.subscription === "string" ? cs.subscription : cs.subscription?.id }).eq("id", cs.metadata.profile_id);

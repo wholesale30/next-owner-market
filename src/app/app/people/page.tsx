@@ -17,8 +17,8 @@ export default async function PeoplePage() {
         <Link href="/app/settings" className="btn btn-secondary">⚙️ Settings</Link>
       </div>
       <p className="muted text-sm">Consignors, staff, and buyers. Tap to approve, set their commission, or change role.</p>
-      {people?.map((p) => (
-        <Link key={p.id} href={`/app/people/${p.id}`} className="card p-3 flex items-center justify-between gap-2">
+      {[...(people || [])].sort((a, b) => Number(b.role === "consignor" && !b.approved) - Number(a.role === "consignor" && !a.approved)).map((p) => (
+        <Link key={p.id} href={`/app/people/${p.id}`} className="card p-3 flex items-center justify-between gap-2" style={p.role === "consignor" && !p.approved ? { borderColor: "var(--accent)", borderWidth: 2 } : undefined}>
           <div className="min-w-0">
             <p className="font-semibold truncate">{p.business_name || p.full_name || p.email}</p>
             <p className="text-sm muted truncate">{p.email}{p.phone ? ` • ${p.phone}` : ""}</p>

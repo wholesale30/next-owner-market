@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient as createAdmin } from "@supabase/supabase-js";
+import { alertStaff } from "@/lib/alert";
 
 // Creates the account server-side, already confirmed, so no confirmation email
 // (and no Supabase Site URL / redirect list) is ever involved.
@@ -19,5 +20,6 @@ export async function POST(req: Request) {
     const msg = /already|exists|registered/i.test(error.message) ? "That email already has an account. Sign in instead." : error.message;
     return NextResponse.json({ error: msg }, { status: 400 });
   }
+  if (role !== "buyer") await alertStaff("New seller waiting for approval", `${full_name || email} signed up to sell. Approve them under People.`, "/app/people?filter=pending");
   return NextResponse.json({ ok: true });
 }
