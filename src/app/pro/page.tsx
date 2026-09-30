@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 import StoreHeader from "../StoreHeader";
 import StartSelling from "../StartSelling";
 
@@ -22,7 +23,7 @@ export default async function ProPage() {
           <h1 className="text-3xl font-extrabold leading-tight">Photograph the pile.<br />Get the listings.</h1>
           <p className="text-lg muted">Upload 40 photos of 40 different things. The AI sorts them into items, writes the title, description, specs and price, and hands you ready-to-paste listings for nine marketplaces, each with a how-to. And it&apos;s listed in this store at the same time, <b>free</b>: no listing fee, ever. We only get paid when your item sells here.</p>
           <StartSelling signedIn={!!user} role={me?.role || null} className="btn btn-primary text-lg w-full" label={me?.role && me.role !== "buyer" ? "Go to my listings" : "Start free: 3 AI listings on us"} />
-          <p className="text-xs muted">No card to start. Pro is ${p.pro_monthly}/month, cancel any time.</p>
+          <p className="text-xs muted">No card to start. Pro is ${p.pro_monthly}/month, cancel any time. <Link href="/why" className="underline">Why we built this</Link> · <Link href="/start" className="underline">Start with one box</Link></p>
         </section>
 
         <section className="grid grid-cols-1 gap-3">

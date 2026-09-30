@@ -26,7 +26,7 @@ export default function ToolPitch({ compact = false }: { compact?: boolean }) {
         <Link href="/pile" className="pill px-3 py-2 flex-1 text-center">📦 Sort the pile</Link>
         <Link href="/buy-or-pass" className="pill px-3 py-2 flex-1 text-center">🛒 Buy or pass?</Link>
       </div>
-      <p className="text-xs muted text-center">Then $15/month for unlimited. Cancel any time.</p>
+      <p className="text-xs muted text-center">Then $15/month for unlimited. Cancel any time. <Link href="/start" className="underline">Overwhelmed? Start with one box.</Link></p>
     </section>
   );
 }

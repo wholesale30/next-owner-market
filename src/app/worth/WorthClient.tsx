@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/photo";
+import ShareValuation from "@/components/ShareValuation";
 
 type Result = {
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
@@ -115,6 +116,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
           {res.raise_value?.length > 0 && (
             <div className="card p-4 text-sm"><p className="font-semibold mb-1">Get more for it</p><ul className="list-disc pl-5 space-y-1">{res.raise_value.map((t, i) => <li key={i}>{t}</li>)}</ul></div>
           )}
+          <ShareValuation photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
           <div className="card p-4 space-y-2 text-center" style={{ borderColor: "var(--brand)" }}>
             <p className="font-bold">Want to sell it?</p>
             <p className="text-sm muted">One tap. Photos, title, description, and price are already written. You just check it and hit List. Listing here is free; you also get the Facebook version to paste, and Pro gets all nine marketplaces.</p>

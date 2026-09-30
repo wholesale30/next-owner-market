@@ -63,8 +63,9 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
           </form>
           <div className="flex gap-2">
             <Link href="/worth" className="btn btn-white flex-1">💰 What&apos;s it worth?</Link>
-            <Link href="/pro" className="btn btn-outline-white flex-1">Start selling free</Link>
+            <Link href="/pile" className="btn btn-outline-white flex-1">📦 Sort the pile</Link>
           </div>
+          <p className="text-sm text-center"><Link href="/start" className="underline">Overwhelmed by stuff? Start with one box →</Link> · <Link href="/why" className="underline">Why we built this</Link></p>
         </div>
       </section>
       <main className="max-w-5xl mx-auto p-4 space-y-4">
@@ -153,7 +154,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
           {" • "}<Link href="/login" className="underline">Staff sign in</Link>
-          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/pile" className="underline">Sort the pile</Link>{" • "}<Link href="/buy-or-pass" className="underline">Buy or pass?</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
+          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/pile" className="underline">Sort the pile</Link>{" • "}<Link href="/buy-or-pass" className="underline">Buy or pass?</Link>{" • "}<Link href="/valued" className="underline">What things are worth</Link>{" • "}<Link href="/start" className="underline">Start with one box</Link>{" • "}<Link href="/why" className="underline">Why we built this</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
         </footer>
       </main>
     </div>

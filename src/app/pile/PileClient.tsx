@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
 import Mic from "@/components/Mic";
 
+
 type Item = { name: string; category?: string; condition?: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: string; needs_expert: boolean; listing_title?: string; listing_description?: string; weight_lbs?: number; box?: string; photo_index: number };
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 const ACT: Record<string, { label: string; color: string; emoji: string }> = { sell: { label: "Sell", color: "var(--ok)", emoji: "💵" }, keep: { label: "Keep", color: "var(--brand)", emoji: "🏠" }, donate: { label: "Donate", color: "var(--accent)", emoji: "🎁" }, toss: { label: "Toss", color: "var(--muted)", emoji: "🗑" } };
@@ -82,7 +83,32 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
         <button type="button" className="btn btn-primary w-full text-lg" disabled={!picked.size || !!busy} onClick={listPicked}>{busy || `List ${picked.size} item${picked.size === 1 ? "" : "s"}`}</button>
         <button type="button" className="btn btn-secondary w-full" onClick={() => { setRes(null); setPhotos([]); }}>Sort another pile</button>
       </div>
+      <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
       <p className="text-xs muted">Estimates from photos, not appraisals. Ranges, because the market moves. Anything marked ⚠ deserves a specialist.</p>
+    </div>
+  );
+}
+
+function SharePile({ items, photos }: { items: Item[]; photos: Picked[] }) {
+  const [state, setState] = useState<"idle" | "busy" | "done" | "err">("idle");
+  const [withPhoto, setWithPhoto] = useState(true);
+  if (!items.length) return null;
+  async function share() {
+    setState("busy");
+    let ok = 0;
+    for (const x of items) {
+      const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source: "pile", title: x.name, condition: x.condition, value_low: x.low, value_high: x.high, confidence: x.confidence, why: x.reason, category: x.category, photo_url: withPhoto ? photos[x.photo_index]?.url || null : null }) });
+      if (r.ok) ok++;
+    }
+    setState(ok ? "done" : "err");
+  }
+  if (state === "done") return <p className="card p-3 text-sm">✅ Shared to <Link className="underline" href="/valued">What things are worth</Link>. No name on any of it.</p>;
+  return (
+    <div className="card p-3 text-sm space-y-2">
+      <p className="font-semibold">Share these {items.length} valuations (no name)?</p>
+      <p className="muted text-xs">They go on our public &quot;What things are worth&quot; pages so the next person with the same item finds an answer. Nothing about you or where you live.</p>
+      <label className="flex items-center gap-2"><input type="checkbox" checked={withPhoto} onChange={(e) => setWithPhoto(e.target.checked)} /> Include the photos</label>
+      <button type="button" className="btn btn-secondary w-full" disabled={state === "busy"} onClick={share}>{state === "busy" ? "Sharing…" : state === "err" ? "Couldn't share; try again" : "Share them"}</button>
     </div>
   );
 }

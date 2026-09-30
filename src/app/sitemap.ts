@@ -6,6 +6,7 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com";
   const db = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
+  const { data: vals } = await db.from("valuations").select("slug, created_at").eq("is_public", true).order("created_at", { ascending: false }).limit(20000);
   const [{ data: items }, { data: cats }, { data: posts }, { data: sellers }] = await Promise.all([
     db.from("items").select("sku, updated_at").in("status", ["active", "reserved"]).order("updated_at", { ascending: false }).limit(5000),
     db.from("categories").select("slug"),
@@ -17,6 +18,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${site}/`, lastModified: now, changeFrequency: "hourly", priority: 1 },
     { url: `${site}/worth`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${site}/pile`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${site}/start`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${site}/why`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${site}/valued`, lastModified: now, changeFrequency: "hourly", priority: 0.8 },
+    ...(vals || []).map((v) => ({ url: `${site}/valued/${v.slug}`, lastModified: new Date(v.created_at), changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${site}/buy-or-pass`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${site}/pro`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${site}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
