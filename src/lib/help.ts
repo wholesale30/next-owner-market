@@ -1,0 +1,105 @@
+/** Plain-English help. One sentence per screen (hints) and short answers (topics). Written for someone who has never sold online. */
+
+export const SCREEN_HINTS: { match: RegExp; text: string; topic?: string }[] = [
+  { match: /^\/app$/, text: "This is your stuff. Tap + Add to list something new. Tap an item to see it, change the price, or copy it to Facebook and eBay.", topic: "my-items" },
+  { match: /^\/app\/items\/new/, text: "Add photos first (pick from your gallery). Then tap Write it for me and the AI fills in the title, description, and price.", topic: "add-item" },
+  { match: /^\/app\/snap/, text: "Got a pile? Upload photos of everything at once. We sort them into items and write each listing.", topic: "snap" },
+  { match: /^\/app\/inbox/, text: "Questions from buyers land here. Reply like a text. Nobody sees your phone or email.", topic: "messages" },
+  { match: /^\/app\/orders/, text: "Someone bought something. Tap the order to hand it over (pickup code) or print a shipping label.", topic: "orders" },
+  { match: /^\/app\/offers/, text: "Buyers offering less than your price. Accept, counter, or pass.", topic: "offers" },
+  { match: /^\/app\/money/, text: "Where your money goes. Set up payouts once and card payments go straight to your bank.", topic: "payouts" },
+  { match: /^\/app\/items\/[^/]+\/edit/, text: "Change anything here. Price, photos, whether you'll ship. Save at the bottom.", topic: "add-item" },
+  { match: /^\/app\/items\/[^/]+$/, text: "Your listing. Scroll down for copy-and-paste versions for Facebook, eBay, and the rest, plus a how-to for each one.", topic: "crosspost" },
+  { match: /^\/app\/settings/, text: "Store settings. Your address, hours, who gets alerts, and fees.", topic: "settings" },
+  { match: /^\/app\/review/, text: "New listings and new sellers waiting for your OK. Tap to approve.", topic: "review" },
+  { match: /^\/app\/people/, text: "Everyone with an account. Tap a person to approve, change their plan, or pause them." },
+  { match: /^\/app\/blast/, text: "Send a New Arrivals email to your subscribers. Pick items, write a line, send." },
+  { match: /^\/app\/pickups/, text: "Pickup appointments buyers booked." },
+];
+
+export type HelpTopic = { id: string; q: string; a: string[]; who?: "seller" | "buyer" | "all" };
+
+export const TOPICS: HelpTopic[] = [
+  { id: "start", who: "seller", q: "How do I sell something?", a: [
+    "Tap + Add. Pick a few photos from your gallery. Tap Write it for me: the AI writes the title, description, and a price. Tap List it.",
+    "Your item shows up in the store. When someone buys it, you get a message and the money is held until they have it.",
+    "First 3 AI listings are free. After that it's $15/month for unlimited, or write them yourself for free.",
+  ] },
+  { id: "add-item", who: "seller", q: "What do the boxes on the Add item screen mean?", a: [
+    "Photos: pick from your gallery. The first one is the main picture.",
+    "Title: what it is, in a few words. Brand, model, size. \"Craftsman 19.2V drill with battery.\"",
+    "Price: what you want for it. Buyers can make offers if you turn that on.",
+    "Pickup / Ship: can a buyer come get it, mail it, or both? For shipping, put in the weight and pick a box size; we figure out the shipping cost for the buyer.",
+    "Condition: be honest. Scratches, missing parts. Honest listings sell faster and don't come back.",
+  ] },
+  { id: "snap", who: "seller", q: "What is Snap?", a: [
+    "Snap is for a pile of stuff. Take photos of everything, then upload them all at once.",
+    "We group the photos that belong to the same item, clean up the backgrounds, and write a listing for each one. You just check them and tap List.",
+    "It's a Pro feature after your free ones are used up.",
+  ] },
+  { id: "my-items", who: "seller", q: "What do Draft, Listed, and Sold mean?", a: [
+    "Draft: you started it but it's not in the store yet.",
+    "Listed: buyers can see it and buy it.",
+    "On hold: someone paid and it's waiting for pickup or shipping.",
+    "Sold: done. The money went to you.",
+  ] },
+  { id: "payouts", who: "seller", q: "How do I get paid?", a: [
+    "Go to Payouts and tap Set up payouts. It asks for your name, address, and bank account (or debit card). Takes about 5 minutes. This is done by Stripe, the same company that handles payments for Amazon and Shopify.",
+    "After that, every time something sells, the money lands in your bank 2 business days after the buyer has the item.",
+    "Until you set this up, buyers can message you but can't hit Buy.",
+  ] },
+  { id: "fees", who: "seller", q: "What does it cost?", a: [
+    "Listing is free. When something sells in the store, we keep a small percentage of the sale price (shown on your item before you list). Shipping is paid by the buyer and isn't part of it.",
+    "Pro is $15/month: unlimited AI listings, Snap, copy-and-paste for 9 other sites, and video.",
+  ] },
+  { id: "orders", who: "seller", q: "Someone bought my item. Now what?", a: [
+    "Pickup: message the buyer to set a time and place. When they show up, they'll have a 6-digit code on their phone. Type it into the order and tap Release. Money's yours.",
+    "Shipping: open the order, tap Buy label, print it (any printer, or the library), tape it on, drop it at the post office. Tracking is automatic. Money's yours 3 days after it's delivered.",
+    "Don't hand anything over without the code, and don't ship without the label from here. That's what protects you.",
+  ] },
+  { id: "offers", who: "seller", q: "What's an offer?", a: [
+    "A buyer says \"would you take $40 instead of $50?\" You can accept, send back a different number, or say no.",
+    "If you accept, they have 24 hours to pay. If they don't, the item goes back up.",
+  ] },
+  { id: "messages", who: "seller", q: "Can buyers see my phone number or email?", a: [
+    "No. Messages go through the site. Your number, email, and address are never shown.",
+    "You get an email (or text, if you turn it on in Profile) each time someone writes.",
+    "Do the deal here. If someone asks you to text them or pay outside the site, that's usually a scam.",
+  ] },
+  { id: "crosspost", who: "seller", q: "How do I put my item on Facebook, eBay, or the others?", a: [
+    "Open your item. Scroll to the copy blocks. Tap Copy under the site you want.",
+    "Tap the How to post button next to it. It walks you through that app screen by screen: where the Sell button is, what to tap, what to paste.",
+    "Photos: save them to your phone from the item page, then pick them in the other app.",
+    "When it sells anywhere, tap Mark sold on your item. We'll remind you to take it down from the other sites.",
+  ] },
+  { id: "shipping", who: "all", q: "How does shipping work?", a: [
+    "The buyer sees the shipping price before they buy; it's based on the item's weight and their ZIP.",
+    "The seller buys the label right on the order (the buyer's shipping money covers it), prints it, and drops the package off. The buyer gets tracking automatically.",
+    "Free shipping means the seller covers the label cost out of the sale.",
+  ] },
+  { id: "buy", who: "buyer", q: "How do I buy something?", a: [
+    "Tap Buy now. Pick pickup or shipping. Pay by card, Apple Pay, Google Pay, Cash App, or pay later with Affirm or Klarna.",
+    "Your money is held. It only goes to the seller after you have the item.",
+    "Pickup: you get a 6-digit code. Give it to the seller when you have the item in your hands. Not before.",
+  ] },
+  { id: "protection", who: "buyer", q: "What if something goes wrong?", a: [
+    "Open the order and tap Report a problem. The money stays frozen.",
+    "Talk it out with the seller in the message thread. Most things get sorted. If not, our staff decide, and you get a full refund if the item isn't as described or never showed up.",
+    "Pickup orders not completed within 7 days refund automatically.",
+  ] },
+  { id: "safety", who: "all", q: "Meeting up: how do I stay safe?", a: [
+    "Meet in a public place in daylight. Police stations have marked Safe Exchange Zones; we suggest ones near the seller on the order page.",
+    "Bring a friend. Test the item before you hand over the code.",
+    "Never pay outside the site. The code and the held money are your protection.",
+  ] },
+  { id: "review", who: "seller", q: "Why does my listing say pending?", a: [
+    "We look at every new seller's first listings before they go live. Usually same day. After a few good sales, listings go live immediately.",
+  ] },
+  { id: "settings", who: "seller", q: "Where do I change my address or turn on text alerts?", a: [
+    "Tap Profile at the top. City, state, ZIP, and how you want to be alerted are all there.",
+  ] },
+];
+
+export function hintFor(path: string) {
+  return SCREEN_HINTS.find((h) => h.match.test(path)) || null;
+}

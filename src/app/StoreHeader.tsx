@@ -9,6 +9,7 @@ export default function StoreHeader({ business, signedIn = false }: { business: 
         <nav className="flex gap-1.5">
           <Link href="/looking-for" className="navbtn">Wanted</Link>
           <Link href="/pro" className="navbtn">Sell</Link>
+          <Link href="/help" className="navbtn" aria-label="Help">?</Link>
           <Link href={signedIn ? "/account" : "/login"} className="navbtn navbtn-solid">{signedIn ? "Account" : "Sign in"}</Link>
         </nav>
       </div>

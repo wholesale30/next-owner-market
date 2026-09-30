@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import SignOutButton from "./SignOutButton";
 import { Wordmark } from "@/components/Logo";
+import { ScreenHint } from "@/components/Help";
 
 export default async function AppLayout({ children }: LayoutProps<"/app">) {
   const profile = await getProfile();
@@ -62,6 +63,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         <div className="max-w-3xl mx-auto px-3 h-16 flex items-center justify-between gap-2">
           <Link href="/app" aria-label="Home"><Wordmark compact /></Link>
           <div className="flex items-center gap-1.5">
+            <Link href="/help" className="navbtn" aria-label="Help">?</Link>
             <Link href="/account/profile" className="navbtn">Profile</Link>
             <Link href="/" className="navbtn">Store</Link>
             <SignOutButton />
@@ -80,7 +82,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
           Your account is pending approval. You can add items now; they go live once we approve.
         </div>
       )}
-      <main className="flex-1 max-w-3xl w-full mx-auto p-4">{children}</main>
+      <main className="flex-1 max-w-3xl w-full mx-auto p-4 space-y-4"><ScreenHint />{children}</main>
     </div>
   );
 }

@@ -33,7 +33,7 @@ export default function OffersClient({ offers }: { offers: Offer[] }) {
           <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0" style={{ background: "var(--line)" }}>{p && <img src={p} alt="" className="w-full h-full object-cover" />}</div>
           <div className="min-w-0 flex-1">
             <Link href={`/app/items/${o.items?.id}`} className="font-semibold truncate block">{o.items?.title}</Link>
-            <p className="muted">Asking {money(o.items?.price || 0)} • {o.fulfillment} • {b?.display_name || "Buyer"}{b?.city ? ` (${b.city}${b.state ? ", " + b.state : ""})` : ""}{b?.rating_count ? ` ★ ${b.rating_avg}` : ""}</p>
+            <p className="muted">Asking {money(o.items?.price || 0)} • {o.fulfillment === "ship" ? "shipping" : "pickup"} • {b?.display_name || "Buyer"}{b?.city ? ` (${b.city}${b.state ? ", " + b.state : ""})` : ""}{b?.rating_count ? ` ★ ${b.rating_avg}` : ""}</p>
           </div>
           <div className="text-right shrink-0"><p className="text-xl font-extrabold">{money(o.amount)}</p><p className="text-xs muted">{live ? `expires ${new Date(o.expires_at).toLocaleString([], { weekday: "short", hour: "numeric" })}` : o.status}{o.counter_amount ? ` • countered ${money(o.counter_amount)}` : ""}</p></div>
         </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { HelpTip } from "@/components/Help";
+
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -350,7 +352,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
 
   return (
     <div className="space-y-4 pb-24">
-      <h1 className="text-2xl font-bold">{mode === "new" ? "Add item" : "Edit item"}</h1>
+      <h1 className="text-2xl font-bold flex items-center gap-2">{mode === "new" ? "Add item" : "Edit item"} <HelpTip topic="add-item" /></h1>
 
       {/* PHOTOS */}
       <section className="card p-4 space-y-3">

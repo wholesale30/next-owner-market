@@ -3,6 +3,7 @@ import { createClient, getProfile } from "@/lib/supabase/server";
 import type { Item, ItemStatus } from "@/lib/types";
 import InventoryList from "./InventoryList";
 import SellerStart from "./SellerStart";
+import AskBox from "@/app/help/AskBox";
 
 export const metadata = { title: "Inventory" };
 
@@ -51,7 +52,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
       </div>
 
       <form className="flex gap-2">
-        <input className="input" name="q" placeholder="Search title, brand, model, SKU…" defaultValue={q || ""} />
+        <input className="input" name="q" placeholder="Search your items…" defaultValue={q || ""} />
         {status && <input type="hidden" name="status" value={status} />}
         <button className="btn btn-secondary">Go</button>
       </form>
@@ -86,6 +87,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
           };
         })}
       />
+      {!staff && <AskBox compact />}
     </div>
   );
 }

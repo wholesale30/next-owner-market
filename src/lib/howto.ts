@@ -1,12 +1,17 @@
 /** Plain-language, phone-first instructions for posting a listing on each marketplace.
  *  Written for someone who has never sold online. Apps move buttons around; steps stay close enough to follow. */
-export interface HowTo { app: string; fees: string; bestFor: string; before: string[]; steps: string[]; tips: string[] }
+export interface HowTo { app: string; fees: string; bestFor: string; firstTime?: string[]; before: string[]; steps: string[]; tips: string[] }
 
 export const HOWTO: Record<string, HowTo> = {
   facebook: {
     app: "Facebook Marketplace",
     fees: "Free for local pickup. If you ship through Facebook, they take 5% (min 40¢).",
     bestFor: "Anything local: furniture, tools, lamps, electronics, big items.",
+    firstTime: [
+      "You need a regular Facebook account; Marketplace is inside it. New accounts sometimes can't list for a few days; that's normal, just wait.",
+      "Facebook may ask you to confirm your phone number the first time you sell.",
+      "Buyers message you in Messenger. \"Is this still available?\" is an automatic button; answer \"Yes\" and ask when they can pick up.",
+    ],
     before: ["Save the item's photos to your phone (press and hold a photo above → Save).", "Have the Facebook app installed and be signed in."],
     steps: [
       "Open Facebook. Tap the Marketplace icon (the little storefront at the bottom or in the ≡ menu).",
@@ -26,6 +31,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "OfferUp",
     fees: "Free for local. Shipping sales: 12.9% (min $1.99).",
     bestFor: "Local buyers, electronics, tools, furniture. Strong in cities.",
+    firstTime: [
+      "Sign up with your phone number; it texts you a code.",
+      "It'll ask to use your location so buyers nearby can see your item. Say yes.",
+      "\"TruYou\" is a one-time ID check (driver's license photo). Optional, but buyers trust it.",
+    ],
     before: ["Save the photos to your phone.", "Install the OfferUp app and create an account (phone number verification)."],
     steps: [
       "Open OfferUp. Tap the big \"Post\" button at the bottom.",
@@ -42,6 +52,12 @@ export const HOWTO: Record<string, HowTo> = {
     app: "eBay",
     fees: "About 13.6% of the total (item + shipping) plus 30¢ per order for most categories. Free to list (250 a month).",
     bestFor: "Anything shippable with brand names: audio, tools, parts, collectibles, vintage. Biggest audience.",
+    firstTime: [
+      "Signing up asks for your name, address, phone, and a bank account for payouts. It may ask for a photo of your ID; that's normal for everyone, it's the law for payment companies.",
+      "\"Handling time\" = how many days you need to get it in the mail after they pay. Pick 1 or 2.",
+      "\"Item specifics\" = brand, model, color, size boxes. Fill in what you know; skip the rest.",
+      "Your first payouts can take a few extra days while eBay checks the account. After that it's 1-2 days.",
+    ],
     before: ["Save the photos.", "Install the eBay app, create an account, add a payout bank account (Payments → Set up)."],
     steps: [
       "Open eBay. Tap \"Selling\" at the bottom, then \"List an item\".",
@@ -63,6 +79,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "Craigslist",
     fees: "Free for almost everything (cars and some services cost $5).",
     bestFor: "Local, cash, older buyers, contractors, big items, lots and pallets.",
+    firstTime: [
+      "No app needed; it's a website. Make an account with your email.",
+      "Craigslist may charge $5 for some categories (cars, furniture in big cities). Most are free.",
+      "Buyers email you through a hidden Craigslist address; your real email isn't shown.",
+    ],
     before: ["Save the photos.", "Go to craigslist.org in your phone's browser and pick your city."],
     steps: [
       "Tap \"create a posting\" (top left).",
@@ -81,6 +102,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "Mercari",
     fees: "Currently no seller fee; the buyer pays a service fee at checkout. (Mercari has changed this before; check the app.)",
     bestFor: "Shippable items under $200: electronics, kitchen, toys, small collectibles.",
+    firstTime: [
+      "Sign up with email or phone. To get paid you add a bank account under Settings, then Payments.",
+      "Mercari holds the money until the buyer says they got it (3 days after delivery at most). That's how it protects both sides.",
+      "\"Smart pricing\" lowers your price automatically over time; turn it off if you want your number to stick.",
+    ],
     before: ["Save the photos.", "Install Mercari and create an account; add your bank for payouts."],
     steps: [
       "Open Mercari. Tap \"Sell\" (the camera icon at the bottom).",
@@ -97,6 +123,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "Poshmark",
     fees: "20% on sales over $15; flat $2.95 under $15. Buyer pays shipping.",
     bestFor: "Clothing, shoes, handbags, home décor, and some electronics. Brand names sell.",
+    firstTime: [
+      "Made for clothes, shoes, and bags; other stuff is allowed under Home and Electronics.",
+      "Sign up with email. Poshmark sends you a prepaid shipping label for every sale; you just tape it on.",
+      "\"Offer to likers\" lets you send a discount to people who liked your item; it's the main way things sell there.",
+    ],
     before: ["Save the photos; square photos look best.", "Install Poshmark and create an account."],
     steps: [
       "Open Poshmark. Tap \"Sell\" at the bottom.",
@@ -113,6 +144,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "Vinted",
     fees: "No seller fees. The buyer pays a small \"buyer protection\" fee.",
     bestFor: "Clothing, shoes, accessories, and (in the US) home goods and some electronics.",
+    firstTime: [
+      "Clothing-first, no seller fees. The buyer pays the fee.",
+      "Sign up with email or phone. You'll add a bank account when you get your first sale.",
+      "Vinted picks the shipping label for you; you print it or show a QR code at the drop-off.",
+    ],
     before: ["Save the photos.", "Install Vinted, create an account, verify your phone."],
     steps: [
       "Open Vinted. Tap the \"+\" (Sell) button at the bottom.",
@@ -129,6 +165,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "Depop",
     fees: "No selling fee in the US as of 2024; buyers pay a marketplace fee. Payment processing about 3.3% + 45¢.",
     bestFor: "Vintage clothing, streetwear, Y2K, retro electronics and décor. Young buyers.",
+    firstTime: [
+      "Trendy clothes and vintage. Sign up with email; it connects to PayPal or its own payments.",
+      "Photos matter more than words here; square photos work best.",
+      "\"Bump\" means paying to move your item up; not worth it for most items.",
+    ],
     before: ["Save the photos; Depop is very visual, so the clean-background photos help.", "Install Depop and create an account."],
     steps: [
       "Open Depop. Tap the camera icon at the bottom.",
@@ -145,6 +186,11 @@ export const HOWTO: Record<string, HowTo> = {
     app: "Etsy",
     fees: "20¢ per listing, 6.5% transaction fee, plus 3% + 25¢ payment processing.",
     bestFor: "Vintage items (must be 20+ years old), handmade, and craft supplies. Nothing else is allowed.",
+    firstTime: [
+      "Etsy is for handmade, vintage (20+ years old), and craft supplies. Regular used stuff isn't allowed.",
+      "Opening a shop asks for a shop name, bank account, and a credit card on file for fees. Takes 15 minutes.",
+      "Each listing costs 20 cents to post, whether it sells or not.",
+    ],
     before: ["Confirm the item is vintage (20+ years) or handmade.", "Open a shop at etsy.com/sell (one-time: shop name, bank, ID). Use the \"Etsy Seller\" app after that."],
     steps: [
       "Open the Etsy Seller app. Tap \"Listings\", then \"+\".",
@@ -160,3 +206,19 @@ export const HOWTO: Record<string, HowTo> = {
     tips: ["Etsy search runs on your tags and title; use all 13 tags.", "Renew (20¢) rather than relist to keep your reviews.", "Offer free shipping on items over $35; Etsy promotes those."],
   },
 };
+
+/** Words the other apps use, in plain English. */
+export const GLOSSARY: [string, string][] = [
+  ["Listing", "Your item's page: photos, title, price, description."],
+  ["Handling time", "How many days after they pay you promise to mail it."],
+  ["Calculated shipping", "The buyer's shipping cost is figured from the weight and their ZIP code."],
+  ["Flat rate", "One shipping price for everyone."],
+  ["Buy It Now", "A set price; no bidding."],
+  ["Auction", "Buyers bid; highest bid wins when time runs out."],
+  ["Best offer / Offers", "Buyers can suggest a lower price; you accept or decline."],
+  ["Item specifics", "Boxes for brand, model, color, size."],
+  ["Payout", "The money going from the app to your bank."],
+  ["Tracking number", "The code on the shipping label that shows where the package is."],
+  ["Renew / Bump / Relist", "Moving your listing back to the top."],
+  ["Local pickup", "The buyer comes to get it; no shipping."],
+];

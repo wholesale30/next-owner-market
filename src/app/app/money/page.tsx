@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HelpTip } from "@/components/Help";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
 import PayoutButton from "./PayoutButton";
@@ -73,7 +74,7 @@ export default async function MoneyPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{staff ? "Money" : "Payouts"}</h1>
+        <h1 className="text-2xl font-bold flex items-center gap-2">{staff ? "Money" : "Payouts"} <HelpTip topic="payouts" /></h1>
         {staff && <a href="/api/export?what=sales" className="btn btn-secondary">⬇ CSV</a>}
       </div>
       {!staff && stripeReady() && <Suspense><PayoutSetup ready={!!profile.stripe_payouts_ready} hasAccount={!!profile.stripe_account_id} address={{ address1: profile.address1 || "", address2: profile.address2 || "", city: profile.city || "", state: profile.state || "", zip: profile.zip || "" }} /></Suspense>}

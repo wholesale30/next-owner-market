@@ -7,12 +7,12 @@ export default function SellerStart({ approved, payoutsReady, itemCount, liveCou
   const [copied, setCopied] = useState(false);
   const link = `https://nextownermarket.com/signup?ref=${refCode}`;
   const steps = [
-    { done: true, label: "Create your account" },
-    { done: approved, label: "Get approved (we check every seller; usually same day)" },
-    { done: hasLocation, label: "Add your city, state, and ZIP so buyers see where pickup is", href: "/account/profile" },
-    { done: payoutsReady, label: "Set up payouts so buyers can pay you by card", href: "/app/money" },
-    { done: itemCount > 0, label: "Add your first item: upload photos, let the AI write it", href: "/app/items/new" },
-    { done: liveCount > 0, label: "First listing live in the store" },
+    { done: true, label: "Make your account" },
+    { done: hasLocation, label: "Tell us your ZIP (so buyers near you find your stuff)", href: "/account/profile" },
+    { done: payoutsReady, label: "Set up payouts (5 minutes; that's how you get paid)", href: "/app/money" },
+    { done: itemCount > 0, label: "List your first item (pick photos, AI writes the rest)", href: "/app/items/new" },
+    { done: approved, label: "We OK your account (usually same day)" },
+    { done: liveCount > 0, label: "Your first item is live. Share it!" },
   ];
   const remaining = steps.filter((s) => !s.done).length;
   async function share() {
@@ -26,11 +26,11 @@ export default function SellerStart({ approved, payoutsReady, itemCount, liveCou
     <div className="space-y-3">
       {remaining > 0 && (
         <div className="card p-3 space-y-1">
-          <p className="font-semibold">Getting started ({steps.length - remaining}/{steps.length})</p>
+          <p className="font-semibold">Your first sale in 10 minutes ({steps.length - remaining}/{steps.length} done)</p>
           {steps.map((s, i) => (
             <div key={i} className="flex items-center gap-2 text-sm">
               <span>{s.done ? "✅" : "⬜"}</span>
-              {s.href && !s.done ? <Link href={s.href} className="underline">{s.label}</Link> : <span className={s.done ? "muted line-through" : ""}>{s.label}</span>}
+              {s.href && !s.done ? <Link href={s.href} className="underline font-semibold">{s.label} →</Link> : <span className={s.done ? "muted line-through" : ""}>{s.label}</span>}
             </div>
           ))}
         </div>
