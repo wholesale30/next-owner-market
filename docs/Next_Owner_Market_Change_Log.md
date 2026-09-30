@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 4:31 PM from the project history (86 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 7:09 PM from the project history (89 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -698,3 +698,26 @@
 - **Automation scripts:** `scripts/changelog.py`
 
 <sub>change id 8b2e922</sub>
+
+### 16:31 — Regenerated Change Log and Build Journal
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+
+<sub>change id 753a206</sub>
+
+### 19:08 — Add-on modules: shared AI engine, Sort the Pile (/pile), Buy or Pass (/buy-or-pass), Year summary (/app/taxes) with seller CSV export, scam checklist in Help
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+- **Server routes (API):** `src/app/api/buy-or-pass/route.ts`, `src/app/api/export/route.ts`, `src/app/api/pile/route.ts`
+- **Seller / staff app:** `src/app/app/layout.tsx`, `src/app/app/taxes/ExportButtons.tsx`, `src/app/app/taxes/page.tsx`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/page.tsx`, `src/app/pile/PileClient.tsx`, `src/app/pile/page.tsx`, `src/app/sitemap.ts`
+- **Shared UI pieces:** `src/components/PhotoPicker.tsx`, `src/components/ToolPitch.tsx`
+- **Shared code (logic):** `src/lib/ai-engine.ts`, `src/lib/help.ts`
+
+<sub>change id b26ef25</sub>
+
+### 19:09 — Docs: Add-On Modules white paper with status update; User Guide new tools
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_AddOn_Modules_White_Paper.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`
+
+<sub>change id 6a6f47e</sub>

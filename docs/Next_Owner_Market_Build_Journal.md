@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 4:41 PM (58 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 7:08 PM (59 messages from Shayne)
 
 **Claude:**
 
@@ -1158,3 +1158,19 @@ Two things so the new project starts right:
 - In the first message, say: "Load my shayne-operating-rules skill, then set up a Build Journal and Change Log like Next Owner Market has." Opus can read this repo's `scripts/journal.py` and `scripts/changelog.py` and copy them over.
 
 When it's built, bring it back here and I'll go through it.
+
+### Sep 30, 7:02 PM — Shayne
+
+> @"/root/.claude/uploads/faa89acb-5a67-582b-a46a-1c3f3b736545/cdf6b6df-Next_Owner_Market_AddOn_Modules_White_Paper.docx"
+
+**Claude:**
+
+Shared engine first.
+
+Now the three routes, tables, and pages.
+
+Now the three screens: Sort the Pile, Buy or Pass, and the tax page.
+
+Export is staff-only; I'll let sellers export their own sales for a year, then wire navigation and help, and build.
+
+Now the docs: the paper's own "proposed" labels flip to "built," plus journal and change log.
