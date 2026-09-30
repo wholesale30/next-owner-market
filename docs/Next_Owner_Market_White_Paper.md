@@ -211,3 +211,5 @@ Shipping labels · eBay direct posting/delisting · email/text sending (add Rese
 - Disputes: reporter can withdraw (`POST /api/orders/dispute { withdraw: true }`), seller can refund an open dispute, staff resolve inline on the order page.
 - Shipping: built-in weight/distance ground estimate whenever Shippo isn't configured or returns nothing; estimate shows even when the seller hasn't set up payouts.
 - Brand: `src/components/Logo.tsx`, green top bar, hero on `/`.
+
+- Evening: `/why` (mission), `/start` (HowTo schema), `ToolGuide` component (FAQPage schema) on `/worth`, `/pile`, `/buy-or-pass`; `valuations` table (public read where `is_public`, owner can hide), `/api/valuations` (opt-in share; IndexNow ping), `/valued` + `/valued/[slug]` (Product/AggregateOffer schema, similar items), all in sitemap (valuations up to 20k). Shared AI engine `src/lib/ai-engine.ts`; `pile_scans`/`pile_items`/`buy_pass_scans` tables; `tax_year_summary` view; seller-scoped CSV export.

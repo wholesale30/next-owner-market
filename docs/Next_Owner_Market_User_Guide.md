@@ -288,6 +288,13 @@ Rates are editable in Settings, per consignor, and per item.
 - **Year summary** (📊 Year in the seller app): sales, shipping collected, fees, commissions, labels paid, cost of goods, net, per year, with CSV download for your tax preparer. It's a summary, not tax advice, and we don't file anything.
 - Help now has "How do I spot a scam in a marketplace deal?"
 
+
+**Teaching pages and the public valuations archive (Sept 30, evening)**
+- **Why we built this** (nextownermarket.com/why): the mission statement, in Shayne's words. Linked from the home page, Pro page, tool pages, footer.
+- **Start with one box** (nextownermarket.com/start): the eight-step path for someone overwhelmed by stuff. Pick one box → photograph → Sort the pile → list the Sell ones → set up payouts → copy to Facebook and the rest → hand over safely → next box. Google reads it as a how-to.
+- **Every tool page now teaches**: What's it worth?, Sort the pile, and Buy or pass? each have a plain-English explanation, numbered steps, real examples, and a Questions people ask section that Google can show directly in results.
+- **What things are worth** (nextownermarket.com/valued): a public archive of valuations people chose to share (no names). After any Worth or Pile result there's a "Share it (no name)" box; tick it and the valuation gets its own page (photo optional). Each page: value range, why, where it sells best, what raises the price, similar items, and a "value mine" button. Every shared item is another page Google can send people to. Owners can hide theirs from My account.
+
 ## Part 7 · Sharing the store
 
 - Store: **https://nextownermarket.com**
