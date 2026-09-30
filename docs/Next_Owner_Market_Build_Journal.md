@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 7:08 PM (59 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 7:09 PM (59 messages from Shayne)
 
 **Claude:**
 
@@ -1174,3 +1174,14 @@ Now the three screens: Sort the Pile, Buy or Pass, and the tax page.
 Export is staff-only; I'll let sellers export their own sales for a year, then wire navigation and help, and build.
 
 Now the docs: the paper's own "proposed" labels flip to "built," plus journal and change log.
+
+Built and live (deploy finishing now). Four of the paper's six modules:
+
+- **Sort the pile** — nextownermarket.com/pile. Up to 10 photos of a box, shelf, or garage corner. Back comes every item with a value range and Keep / Sell / Donate / Toss plus a one-line reason, an ⚠ on anything that needs an expert, and a total for the sellable ones. Change any label, then "List 7 items" makes seven drafts with photo, title, description, and price. This is the estate-cleanout front door.
+- **Buy or pass?** — nextownermarket.com/buy-or-pass. One photo plus what they're asking. Resale range, best place to sell, that place's fees, shipping, your profit, and a big BUY / MAYBE / PASS.
+- **Year summary** — 📊 Year in the seller app. Sales, shipping collected, fees, commissions, labels, cost of goods, net, by year, with a CSV for the tax preparer. Worded exactly as the paper said: summary, not advice, we don't file.
+- **Scam checklist** in Help.
+
+Held, per the paper's own warnings: trading cards (price-data licensing) and the estate pack (needs a Virginia lawyer's read). The shared engine the paper asked for is built too, so those become a schema and a screen when you're ready.
+
+All three tools are in the home-page strip, footer, sitemap, and use the same 3-free / Pro-unlimited credits. Docs are updated and attached.
