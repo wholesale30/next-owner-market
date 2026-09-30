@@ -101,6 +101,8 @@ export interface Item {
   service_notes: string | null;
   shipping_ok: boolean;
   shipping_price?: number;
+  shipping_mode?: "calculated" | "flat" | "free";
+  box?: string | null;
   local_pickup_ok: boolean;
   weight_lbs: number | null;
   ai_generated: boolean;

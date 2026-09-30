@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getProfile } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
 import { getRates, buyLabel, shippoReady, type Address } from "@/lib/shippo";
+import { shipFromFor } from "@/lib/shipping";
 
 const BOXES: Record<string, { length: number; width: number; height: number }> = { small: { length: 10, width: 8, height: 4 }, medium: { length: 14, width: 12, height: 8 }, large: { length: 20, width: 16, height: 12 }, xl: { length: 24, width: 20, height: 16 } };
 
@@ -11,18 +12,20 @@ export async function GET(req: Request) {
   if (!me) return NextResponse.json({ error: "Sign in" }, { status: 401 });
   if (!shippoReady()) return NextResponse.json({ error: "Label printing isn't switched on yet. Ship it yourself and add tracking." }, { status: 400 });
   const u = new URL(req.url);
-  const orderId = u.searchParams.get("orderId")!; const box = u.searchParams.get("box") || "medium"; const weight = Number(u.searchParams.get("weight") || 0);
+  const orderId = u.searchParams.get("orderId")!; const boxParam = u.searchParams.get("box"); const weight = Number(u.searchParams.get("weight") || 0);
   const db = admin();
-  const { data: o } = await db.from("orders").select("*, items(title, weight_lbs)").eq("id", orderId).single();
+  const { data: o } = await db.from("orders").select("*, items(title, weight_lbs, box)").eq("id", orderId).single();
   if (!o) return NextResponse.json({ error: "Order not found" }, { status: 404 });
   const staff = me.role === "admin" || me.role === "staff";
   if (o.seller_id !== me.id && !staff) return NextResponse.json({ error: "Not your order" }, { status: 403 });
   if (o.fulfillment !== "ship" || !o.shipping_address?.address) return NextResponse.json({ error: "This order has no shipping address." }, { status: 400 });
-  const from = await shipFrom(o.seller_id);
+  const from = await shipFromFor(o.seller_id);
   if (!from) return NextResponse.json({ error: "Add your ship-from address first (Payouts page → Ship-from address)." }, { status: 400 });
   const a = o.shipping_address as { name?: string; address: { line1?: string; line2?: string; city?: string; state?: string; postal_code?: string } };
   const to: Address = { name: a.name || "Buyer", street1: a.address.line1 || "", street2: a.address.line2 || undefined, city: a.address.city || "", state: a.address.state || "", zip: a.address.postal_code || "" };
-  const w = weight || Number((o.items as unknown as { weight_lbs: number | null })?.weight_lbs || 0) || 2;
+  const it = o.items as unknown as { weight_lbs: number | null; box: string | null };
+  const box = boxParam || it?.box || "medium";
+  const w = weight || Number(it?.weight_lbs || 0) || 2;
   try {
     const rates = await getRates(from, to, { ...(BOXES[box] || BOXES.medium), weight: w });
     return NextResponse.json({ rates: rates.slice(0, 6).map((r) => ({ id: r.object_id, amount: Number(r.amount), provider: r.provider, service: r.servicelevel.name, days: r.estimated_days })) });
@@ -53,23 +56,3 @@ export async function POST(req: Request) {
   }
 }
 
-async function shipFrom(sellerId: string): Promise<Address | null> {
-  const db = admin();
-  const { data: p } = await db.from("profiles").select("role, full_name, business_name, address1, address2, city, state, zip, phone, email").eq("id", sellerId).single();
-  if (!p) return null;
-  if (p.role === "admin" || p.role === "staff") {
-    const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
-    const b = (biz?.value as { name?: string; address?: string; contact_phone?: string; contact_email?: string }) || {};
-    const parsed = parseAddress(b.address || "");
-    if (!parsed) return null;
-    return { name: b.name || "Next Owner Market", ...parsed, phone: b.contact_phone, email: b.contact_email };
-  }
-  if (!p.address1 || !p.city || !p.state || !p.zip) return null;
-  return { name: p.business_name || p.full_name || "Seller", street1: p.address1, street2: p.address2 || undefined, city: p.city, state: p.state, zip: p.zip, phone: p.phone || undefined, email: p.email || undefined };
-}
-/** "123 Warehouse Rd, Richmond, VA 23220" → parts */
-function parseAddress(s: string) {
-  const m = s.match(/^(.*?),\s*([^,]+),\s*([A-Za-z]{2})\s+(\d{5})/);
-  if (!m) return null;
-  return { street1: m[1].trim(), city: m[2].trim(), state: m[3].toUpperCase(), zip: m[4] };
-}

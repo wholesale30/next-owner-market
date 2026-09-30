@@ -64,7 +64,7 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 
 ### 3.2 Item page (nextownermarket.com/item/SKU)
 - Photo and video gallery (swipe; ▶ thumbnails are videos), price, condition, brand/model, specs, full description, bin location (staff only).
-- **🛒 Buy now** — pay by card, Apple Pay, or Google Pay. Choose **Pickup** or **Ship** (if the seller offers it). The money is held, not paid to the seller, until you have the item (see 3.6).
+- **🛒 Buy now** — pay by card, Apple Pay, Google Pay, Cash App Pay, Link, or Affirm/Klarna on larger amounts. Choose **Pickup** or **Ship** (if the seller offers it). For shipping, type your ZIP and the exact cheapest ground rate (USPS/UPS/FedEx) shows before you pay. The money is held, not paid to the seller, until you have the item (see 3.6).
 - **💸 Make an offer** — name your price (at least half the asking price). The seller gets 48 hours to accept, decline, or counter; you get an email either way. Accepted offers give you 48 hours to **Buy at that price**. One open offer per item per person.
 - **💬 Message about this** — Facebook-style message. Needs a free account (one tap to create); the message goes out under the account's own email, so nobody can pose as someone else. Replies land in My account → Messages and by email.
 - **Text about this / Email** — one-tap direct contact using the business phone/email from Settings.
@@ -118,7 +118,7 @@ Add one item by hand.
 1. **🖼 Upload photos** (from your gallery — first, biggest button) or **📷 Take a photo**. Add as many as you like; the first is the cover. Drag to reorder, × to remove.
 2. **Clean background** checkbox — cuts the item out onto the plain background color from Settings. The first use downloads a ~40 MB model once; after that it's instant and free.
 3. **✨ Write it with AI** — the AI reads the photos and fills in: title, description, brand, model, category, condition, specs, tags, price and price range, "worth listing?", and any recall/prohibited-item warning.
-4. Edit anything, set the bin code, quantity, cost (what you paid), consignor and tier if applicable.
+4. Edit anything, set the bin code, quantity, cost (what you paid), consignor and tier if applicable. For shipping: **packed weight** and **box size** (the AI pre-fills both), and whether the buyer pays **calculated** (exact rate for their ZIP; recommended), **flat**, or **free**.
 5. **Video (optional)** — **🎬 Upload a clip** (up to 50 MB, about a minute from a phone) or paste a **YouTube / Facebook / Vimeo link**. A clip of the item working sells faster. Videos play right in the photo gallery on the public page.
 6. **Save** → item goes to Review (or straight to active if you choose).
 
@@ -161,7 +161,7 @@ Every offer on your items (staff see all). **Accept** (other open offers on that
 ### 4.7b 🛒 Orders (/app/orders) and Problems (/app/disputes)
 Every store purchase. Open orders are highlighted.
 - **Pickup orders:** the order page shows the buyer's name and city and a **Message the buyer** button (staff also see their contact). Agree a spot and time there. At hand-off, enter the buyer's 6-digit code → **Release**. Done; the sale is recorded under Money automatically and the item is marked sold.
-- **Shipping orders:** **Buy a shipping label here**: pick a box size and weight, get USPS/UPS rates, tap one, print the 4×6 label. The cost comes out of your payout. Or ship it yourself and type the tracking number → **Save tracking**. When delivered, tap **Mark delivered**; money releases 3 days later unless the buyer reports a problem.
+- **Shipping orders:** the buyer already paid the calculated rate. **Buy a shipping label here** (box and weight pre-filled from the listing), tap the rate, print the 4×6 label. The label cost comes out of your payout and is covered by what the buyer paid. Or ship it yourself and type the tracking number → **Save tracking**. When delivered, tap **Mark delivered**; money releases 3 days later unless the buyer reports a problem.
 - **Cancel & refund** any paid order before hand-off (item damaged, can't find it).
 - **Problems:** buyer or seller reports go here. Read both sides, then **Refund buyer** or **Pay seller**, with a note both can see.
 

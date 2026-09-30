@@ -35,6 +35,7 @@ export async function POST(req: Request) {
     condition: a.condition || "good", condition_notes: a.condition_notes || item.condition_notes || null,
     specs: a.specs || {}, tags: a.tags || [],
     price: mid, price_min_suggested: a.price_min || null, price_max_suggested: a.price_max || null,
+    weight_lbs: a.weight_lbs || null, box: ["small", "medium", "large", "xl", "freight"].includes(a.box) ? a.box : "medium",
     ai_generated: true, ai_raw: a,
     status: a.worth_listing === false ? "draft" : "pending_review",
   }).eq("id", itemId);

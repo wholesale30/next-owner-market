@@ -65,6 +65,8 @@ Return ONLY a JSON object with these fields:
   "price_min": number (realistic low resale price in USD for local pickup),
   "price_max": number (realistic high resale price in USD),
   "price_note": "one sentence on how you priced it and what would raise it (e.g. tested, box, accessories)",
+  "weight_lbs": number (estimated packed shipping weight in pounds, including box and padding),
+  "box": "one of: small (fits a shoebox), medium (microwave-size), large (stereo receiver / small speaker), xl (tower speaker, large lamp), freight (too big or heavy to ship by parcel)",
   "worth_listing": true or false (false if it is likely worth under $10 or is junk),
   "recalled_or_prohibited": "null, or a short warning if this item type is commonly recalled or can't be sold on marketplaces"
 }`,

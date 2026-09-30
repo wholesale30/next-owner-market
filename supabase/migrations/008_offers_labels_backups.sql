@@ -5,3 +5,4 @@
 -- profiles_column_lock: authenticated may update only contact columns on profiles; staff changes go through staff_update_profile(uuid, jsonb)
 -- geo_search: profiles.lat/lng, seller_public gains city/state/lat/lng, search_items(...) RPC with state + radius filters; items_trust_guard requires seller ZIP/state to list
 -- become_seller(): a signed-in buyer becomes a consignor (pending approval), keeps the account
+-- calculated_shipping: items.box, items.shipping_mode (calculated|flat|free); orders.shipping_rate_id/shipping_service

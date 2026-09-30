@@ -51,8 +51,10 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
   let miles: number | null = null;
+  let buyerZip: string | null = null;
   {
     const { data: me } = user ? await sb.from("profiles").select("zip").eq("id", user.id).maybeSingle() : { data: null };
+    buyerZip = me?.zip || null;
     const here = lookupZip(me?.zip);
     const bz = (business as { zip?: string; address?: string });
     const there = sellerIsPlatform ? lookupZip(bz.zip || (bz.address || "").match(/\b(\d{5})\b/)?.[1]) : (seller?.lat != null && seller?.lng != null ? { lat: seller.lat, lng: seller.lng } : null);
@@ -97,7 +99,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
 
         {auction && item.sale_type === "auction" && <AuctionPanel auction={auction} sku={item.sku} />}
         {item.status === "active" && item.sale_type !== "auction" && (
-          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} pickupLoc={pickupLoc} />
+          <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} pickupLoc={pickupLoc} buyerZip={buyerZip} shippingMode={(item as unknown as { shipping_mode?: string }).shipping_mode || "calculated"} />
         )}
         {item.status === "active" && item.sale_type !== "auction" && sellerReady && item.owner_id !== user?.id && (
           <OfferButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} signedIn={!!user} existing={myOffer as never} />

@@ -47,6 +47,8 @@ type Draft = {
   service_notes: string;
   shipping_ok: boolean;
   shipping_price: string;
+  shipping_mode: string;
+  box: string;
   local_pickup_ok: boolean;
   weight_lbs: string;
   worth_listing: boolean | null;
@@ -103,6 +105,8 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     service_notes: item?.service_notes || "",
     shipping_ok: item?.shipping_ok ?? false,
     shipping_price: item?.shipping_price != null ? String(item.shipping_price) : "0",
+    shipping_mode: (item as unknown as { shipping_mode?: string })?.shipping_mode || "calculated",
+    box: (item as unknown as { box?: string })?.box || "medium",
     local_pickup_ok: item?.local_pickup_ok ?? true,
     weight_lbs: item?.weight_lbs != null ? String(item.weight_lbs) : "",
     worth_listing: null,
@@ -205,6 +209,8 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         specs: a.specs || {},
         tags: a.tags || [],
         price: d.price || (mid ? String(mid) : ""),
+        weight_lbs: a.weight_lbs ? String(a.weight_lbs) : d.weight_lbs,
+        box: a.box && ["small", "medium", "large", "xl", "freight"].includes(a.box) ? a.box : d.box,
         price_min_suggested: a.price_min ? String(a.price_min) : "",
         price_max_suggested: a.price_max ? String(a.price_max) : "",
         price_note: a.price_note || "",
@@ -267,6 +273,8 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         service_notes: d.service_notes || null,
         shipping_ok: d.shipping_ok,
         shipping_price: d.shipping_ok && d.shipping_price ? Number(d.shipping_price) : 0,
+        shipping_mode: d.shipping_mode,
+        box: d.box,
         local_pickup_ok: d.local_pickup_ok,
         weight_lbs: d.weight_lbs ? Number(d.weight_lbs) : null,
         ai_generated: d.worth_listing !== null || item?.ai_generated || false,
@@ -493,9 +501,17 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
               <label className="flex items-center gap-2"><input type="checkbox" checked={d.shipping_ok} onChange={(e) => set({ shipping_ok: e.target.checked })} /> Will ship</label>
             </div>
             {d.shipping_ok && (
-              <div className="grid grid-cols-2 gap-2">
-                <div><label className="label">Shipping charge $</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>
-                <div><label className="label">Weight (lbs)</label><input className="input" type="number" inputMode="decimal" value={d.weight_lbs} onChange={(e) => set({ weight_lbs: e.target.value })} /></div>
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div><label className="label">Weight (lbs, packed)</label><input className="input" type="number" inputMode="decimal" value={d.weight_lbs} onChange={(e) => set({ weight_lbs: e.target.value })} /></div>
+                  <div><label className="label">Box</label><select className="input" value={d.box} onChange={(e) => set({ box: e.target.value })}><option value="small">Small (shoebox)</option><option value="medium">Medium (microwave)</option><option value="large">Large (receiver)</option><option value="xl">XL (tower speaker)</option><option value="freight">Too big to ship</option></select></div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><label className="label">Buyer pays</label><select className="input" value={d.shipping_mode} onChange={(e) => set({ shipping_mode: e.target.value })}><option value="calculated">Calculated from their ZIP (recommended)</option><option value="flat">Flat amount</option><option value="free">Free shipping (comes out of your price)</option></select></div>
+                  {d.shipping_mode === "flat" && <div><label className="label">Flat shipping $</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>}
+                  {d.shipping_mode === "calculated" && <div><label className="label">Fallback $ (if rates unavailable)</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>}
+                </div>
+                <p className="text-[11px] muted">Calculated: the buyer sees the exact cheapest ground rate for their ZIP before paying; you print that label from the order. Weight and box are what the rate is built on, so be honest with the packed weight.</p>
               </div>
             )}
           </section>

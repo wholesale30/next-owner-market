@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { getProfile } from "@/lib/supabase/server";
 import { admin, stripe, stripeReady, site, cents } from "@/lib/stripe";
 import { commissionFor, DEFAULT_TIERS } from "@/lib/listing";
+import { quoteShipping } from "@/lib/shipping";
 
 /** Buyer: POST { itemId, fulfillment: "pickup" | "ship" } → { url } to Stripe Checkout. Money is held until hand-off. */
 export async function POST(req: Request) {
   const me = await getProfile();
   if (!me) return NextResponse.json({ error: "Create a free account to buy." }, { status: 401 });
   if (!stripeReady()) return NextResponse.json({ error: "Checkout isn't switched on yet. Message the seller instead." }, { status: 400 });
-  const { itemId, fulfillment, offerId } = (await req.json()) as { itemId: string; fulfillment: "pickup" | "ship"; offerId?: string };
+  const { itemId, fulfillment, offerId, zip } = (await req.json()) as { itemId: string; fulfillment: "pickup" | "ship"; offerId?: string; zip?: string };
   const db = admin();
   const [{ data: item }, { data: tiersRow }] = await Promise.all([
     db.from("items").select("*, profiles!items_owner_id_fkey(id, role, stripe_payouts_ready, default_commission_pct, suspended), item_photos(url, is_primary)").eq("id", itemId).single(),
@@ -33,11 +34,16 @@ export async function POST(req: Request) {
   const tiers = (tiersRow?.value as typeof DEFAULT_TIERS) || DEFAULT_TIERS;
   // commission: platform-owned items keep 100% (0% commission = all to platform anyway); consignment uses tier; self-listed default
   const pct = platformOwned ? 0 : commissionFor(item, seller.default_commission_pct, tiers);
-  const shipping = ship ? Number(item.shipping_price || 0) : 0;
+  let shipping = 0, shippingService: string | null = null, shippingRateId: string | null = null;
+  if (ship) {
+    const q = await quoteShipping(item.id, zip || me.zip || null);
+    if (!q) return NextResponse.json({ error: "This item can't be shipped." }, { status: 400 });
+    shipping = q.amount; shippingService = q.service; shippingRateId = q.rateId;
+  }
 
   const { data: order, error } = await db.from("orders").insert({
     item_id: item.id, buyer_id: me.id, seller_id: seller.id, fulfillment: ship ? "ship" : "pickup",
-    amount, shipping, commission_pct: pct, offer_id: offerId || null,
+    amount, shipping, commission_pct: pct, offer_id: offerId || null, shipping_service: shippingService, shipping_rate_id: shippingRateId,
   }).select("*").single();
   if (error || !order) return NextResponse.json({ error: error?.message || "Could not start order" }, { status: 500 });
 
@@ -48,7 +54,7 @@ export async function POST(req: Request) {
     customer_email: me.email || undefined,
     line_items: [
       { price_data: { currency: "usd", unit_amount: cents(amount), product_data: { name: item.title, images: photo ? [photo] : undefined, metadata: { sku: item.sku } } }, quantity: 1 },
-      ...(shipping > 0 ? [{ price_data: { currency: "usd", unit_amount: cents(shipping), product_data: { name: "Shipping" } }, quantity: 1 }] : []),
+      ...(shipping > 0 ? [{ price_data: { currency: "usd", unit_amount: cents(shipping), product_data: { name: `Shipping (${shippingService || "ground"})` } }, quantity: 1 }] : []),
     ],
     payment_intent_data: { transfer_group: order.id, metadata: { order_id: order.id, item_id: item.id, sku: item.sku }, description: `${item.sku} ${item.title}`.slice(0, 200) },
     metadata: { order_id: order.id },
