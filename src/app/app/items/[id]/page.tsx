@@ -94,7 +94,14 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
             <CopyBlock howto={HOWTO.etsy} label="Etsy (vintage / handmade only)" text={etsyCopy(copyInput)} />
           </>
         ) : (
-          <div className="card p-3 text-sm">Ready-to-paste versions for Facebook Marketplace, OfferUp, eBay, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy are a <b>Pro</b> feature. <Link href="/app/money" className="underline">Upgrade</Link>.</div>
+          <>
+            <p className="text-sm muted">Tap copy, open Facebook, paste. Save the photos above to your phone first (press and hold).</p>
+            <CopyBlock howto={HOWTO.facebook} label="Facebook Marketplace / Group" text={facebookCopy(copyInput)} />
+            <div className="card p-3 text-sm space-y-1" style={{ borderColor: "var(--brand)" }}>
+              <p className="font-semibold">🔒 eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy</p>
+              <p className="muted">Ready-to-paste versions for all eight, each with a step-by-step how-to, are part of <b>Pro</b> ($15/month, unlimited AI listings too). <Link href="/app/money" className="underline font-semibold">Upgrade</Link></p>
+            </div>
+          </>
         )}
         <div className="card p-3 text-sm">
           <p className="label">Storefront link</p>

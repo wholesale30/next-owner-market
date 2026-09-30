@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
 
 export const maxDuration = 60;
 
@@ -59,7 +60,7 @@ Return ONLY a JSON object with these fields:
   "category_id": "id from the list",
   "condition": "one of: new, like_new, good, fair, for_parts (judge from photos; if unclear use good)",
   "condition_notes": "short honest note about visible wear, damage, or missing parts, or null",
-  "description": "3-6 sentences a buyer would want: what it is, what it does, notable features, size if guessable, what's included. Plain and honest. No hype words like 'amazing'. Do not mention price.",
+  "description": "3-6 sentences a buyer would want: what it is, what it does, notable features, size if guessable, what's included. Plain and honest. No hype words like 'amazing'. NEVER mention price, value, worth, or dollar amounts anywhere in title, description, condition_notes, or specs; the price goes in price_min/price_max only.",
   "specs": { "key": "value" } (2-6 useful specs like Dimensions, Power, Capacity, Year, Color; omit unknowns),
   "tags": ["5-10 lowercase search terms buyers would type"],
   "price_min": number (realistic low resale price in USD for local pickup),
@@ -93,7 +94,12 @@ Return ONLY a JSON object with these fields:
       const t2 = fix.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
       parsed = JSON.parse(t2.slice(t2.indexOf("{"), t2.lastIndexOf("}") + 1));
     }
-    return NextResponse.json({ draft: parsed, usage: msg.usage });
+    const d = parsed as { description?: string; condition_notes?: string; specs?: Record<string, string>; title?: string };
+    d.description = scrubPriceTalk(d.description);
+    d.condition_notes = d.condition_notes ? scrubPriceTalk(d.condition_notes) : d.condition_notes;
+    d.specs = scrubSpecs(d.specs);
+    if (d.title) d.title = d.title.replace(/\s*[-–(]?\s*\$\s?\d[\d,.]*\s*\)?/g, "").trim();
+    return NextResponse.json({ draft: d, usage: msg.usage });
   } catch (e) {
     const message = e instanceof Error ? e.message : "AI request failed";
     return NextResponse.json({ error: message }, { status: 500 });

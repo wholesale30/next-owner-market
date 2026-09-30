@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
+import { scrubPriceTalk } from "@/lib/listing";
 
 export const maxDuration = 60;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
@@ -54,7 +55,9 @@ export async function POST(req: Request) {
     const call = msg.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
     raw = JSON.stringify(call?.input ?? msg.content);
     if (!call) throw new Error("No appraisal returned");
-    return NextResponse.json({ result: call.input });
+    const out = call.input as { listing?: { title: string; description: string } };
+    if (out.listing) out.listing.description = scrubPriceTalk(out.listing.description);
+    return NextResponse.json({ result: out });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     await admin().from("settings").upsert({ key: `err:worth:${Date.now()}`, value: { message, raw: raw.slice(0, 2000), photos: photoUrls.slice(0, 3), user: user.id } }).then(() => {}, () => {});

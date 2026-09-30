@@ -123,3 +123,15 @@ export function depopCopy(input: ListingCopyInput) {
   const tags = (item.tags || []).slice(0, 5).map((t) => "#" + t.replace(/\s+/g, ""));
   return `${item.title}\n\n${item.description.trim().slice(0, 600)}\n\n${item.condition ? CONDITION_LABELS[item.condition] + ". " : ""}${item.shipping_ok ? "Ships fast." : "Local pickup."}\n\n${tags.join(" ")}`;
 }
+
+/** Remove any price talk the AI slipped into buyer-facing text. Prices live in the price field only. */
+export function scrubPriceTalk(text: string | null | undefined): string {
+  if (!text) return "";
+  const sentences = text.split(/(?<=[.!?])\s+|\n+/);
+  return sentences.filter((x) => !/\$\s?\d|\b\d+\s?(dollars|bucks)\b|\b(worth|valued?|retail(s|ed)? (for|at)|resale|asking|price[ds]?|sell(s)? for)\b/i.test(x)).join(" ").replace(/\s+/g, " ").trim();
+}
+export function scrubSpecs(specs: Record<string, string> | null | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(specs || {})) if (!/price|value|worth|msrp|retail|cost/i.test(k) && !/\$\s?\d/.test(String(v))) out[k] = v;
+  return out;
+}
