@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 interface Slot { id: string; starts_at: string; ends_at: string; capacity: number }
-interface Pickup { id: string; buyer_name: string; buyer_contact: string; status: string; notes: string | null; created_at: string; items: { sku: string; title: string } | null; pickup_slots: { starts_at: string; ends_at: string } | null }
+interface Pickup { id: string; buyer_name: string; buyer_contact: string; status: string; notes: string | null; created_at: string; order_id?: string | null; items: { sku: string; title: string } | null; pickup_slots: { starts_at: string; ends_at: string } | null }
 
 const fmt = (iso: string) => new Date(iso).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 
@@ -79,7 +81,7 @@ export default function PickupsClient({ slots, pickups }: { slots: Slot[]; picku
               <p className="font-semibold">{p.buyer_name} <span className="muted font-normal">• {p.buyer_contact}</span></p>
               <span className={`pill ${p.status === "confirmed" ? "pill-active" : p.status === "completed" ? "pill-sold" : ""}`}>{p.status}</span>
             </div>
-            <p>{p.items ? `${p.items.title} (${p.items.sku})` : "General pickup"}</p>
+            <p>{p.items ? `${p.items.title} (${p.items.sku})` : "General pickup"}{p.order_id && <> • <Link href={`/account/orders/${p.order_id}`} className="underline">paid order, enter code there</Link></>}</p>
             <p className="muted">{p.pickup_slots ? fmt(p.pickup_slots.starts_at) : "no slot"}{p.notes ? ` • ${p.notes}` : ""}</p>
             <div className="flex gap-1 flex-wrap">
               {p.status === "requested" && <button className="pill pill-active" onClick={() => setStatus(p.id, "confirmed")}>Confirm</button>}

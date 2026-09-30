@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { money } from "@/lib/listing";
 import type { Order } from "@/lib/types";
 import LabelBox from "./LabelBox";
+import PickupPicker from "./PickupPicker";
 
 type O = Order & {
   items: { sku: string; title: string; item_photos: { url: string; is_primary: boolean }[] } | null;
@@ -17,7 +18,7 @@ type O = Order & {
 
 const STATUS: Record<string, string> = { pending_payment: "Awaiting payment", paid: "Paid • money held", released: "Complete • seller paid", refunded: "Refunded", disputed: "Problem reported • on hold", cancelled: "Cancelled" };
 
-export default function OrderClient({ order, role, meId, justPaid, business, sellerName, sellerLoc, sellerIsPlatform, buyerName, buyerLoc, buyerContact }: { order: O; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; address?: string; pickup_hours?: string; contact_phone?: string }; sellerName: string; sellerLoc: string; sellerIsPlatform: boolean; buyerName: string; buyerLoc: string; buyerContact: string | null }) {
+export default function OrderClient({ order, role, meId, justPaid, business, sellerName, sellerLoc, sellerIsPlatform, buyerName, buyerLoc, buyerContact, bookedSlot }: { order: O; role: "buyer" | "seller" | "staff"; meId: string; justPaid: boolean; business: { name: string; location?: string; address?: string; pickup_hours?: string; contact_phone?: string }; sellerName: string; sellerLoc: string; sellerIsPlatform: boolean; buyerName: string; buyerLoc: string; buyerContact: string | null; bookedSlot: { starts_at: string; ends_at: string } | null }) {
   const router = useRouter();
   const supabase = createClient();
   const [busy, setBusy] = useState(false);
@@ -34,6 +35,18 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
   const isBuyer = role === "buyer";
   const platformSeller = sellerIsPlatform;
   const [msgBusy, setMsgBusy] = useState(false);
+  async function suggestTime() {
+    setMsgBusy(true);
+    const { data: cid, error } = await supabase.rpc("order_conversation", { p_order: order.id });
+    if (error || !cid) { setMsgBusy(false); return setErr(error?.message || "Couldn't open messages"); }
+    const text = prompt("When can you pick up? (e.g. \"Sat 10–12 or Sun afternoon\")", "Hi! I paid for this. Could I pick it up ");
+    if (text && text.trim()) {
+      await supabase.rpc("reply_conversation", { p_conversation_id: cid, p_body: text.trim() });
+      fetch("/api/messages/notify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ conversationId: cid }) }).catch(() => {});
+    }
+    setMsgBusy(false);
+    router.push("/account#messages");
+  }
   async function openThread() {
     setMsgBusy(true);
     const { data: cid, error } = await supabase.rpc("order_conversation", { p_order: order.id });
@@ -102,6 +115,15 @@ export default function OrderClient({ order, role, meId, justPaid, business, sel
           <p className="text-xs muted">Don&apos;t share this code until you have the item in hand. Not picked up within 7 days = automatic refund.</p>
         </div>
       )}
+      {order.status === "paid" && order.fulfillment === "pickup" && isBuyer && platformSeller && <PickupPicker orderId={order.id} booked={bookedSlot} />}
+      {order.status === "paid" && order.fulfillment === "pickup" && isBuyer && !platformSeller && (
+        <div className="card p-3 text-sm space-y-2">
+          <p className="font-semibold">📅 Set up the pickup with the seller</p>
+          <p className="muted">Suggest a couple of times that work for you; the seller answers in the same thread and you both get each message by email.</p>
+          <button className="btn btn-primary w-full" disabled={msgBusy} onClick={() => suggestTime()}>Suggest a time</button>
+        </div>
+      )}
+      {order.status === "paid" && order.fulfillment === "pickup" && !isBuyer && bookedSlot && <p className="card p-3 text-sm">📅 Buyer booked pickup: {new Date(bookedSlot.starts_at).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>}
 
       {order.status === "paid" && order.fulfillment === "pickup" && !isBuyer && (
         <div className="card p-4 space-y-2">

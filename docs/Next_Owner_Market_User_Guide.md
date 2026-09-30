@@ -67,7 +67,6 @@ Store sales pay the tier commission on any plan (Part 5). Upgrade from **Payouts
 - **💬 Message about this** — Facebook-style message. Needs a free account (one tap to create); the message goes out under the account's own email, so nobody can pose as someone else. Replies land in My account → Messages and by email.
 - **Text about this / Email** — one-tap direct contact using the business phone/email from Settings.
 - **♡ Save** — buyer accounts only.
-- **📅 Schedule pickup** — pick an open time slot at the warehouse. Staff confirm by text or email.
 - **Auction panel** (when an item is in auction) — live countdown, current bid, minimum next bid, Buy-now if set. Bidding needs a free buyer account.
 - **Share** — the page has product markup so it previews well in Facebook, Messenger, and texts, and shows up in Google Shopping results.
 
@@ -77,7 +76,7 @@ A sourcing request form: what you want, top budget, how far you'll drive, OK to 
 ### 3.6 How buying works (held payment)
 Every listing shows **📍 Pickup in [city, state]** (the seller's location; warehouse items show the store's city) and **Ships** if the seller offers shipping, so you know before you buy whether it's near you.
 1. Tap **Buy now**, choose Pickup or Ship, pay on the secure checkout page. You and the seller both get a confirmation email.
-2. **Pickup:** your order page shows who the seller is, where pickup is (the warehouse address and hours for store items; the seller's city for others, with the exact spot arranged in **Message the seller** on the order page), and your **6-digit code**. Meet the seller, check the item, then read them the code. They enter it and the payment is released. Don't give the code until the item is in your hands. If pickup never happens, you're refunded automatically after 7 days.
+2. **Pickup:** your order page shows who the seller is, where pickup is, and for warehouse items a **pick-a-time** list of open slots (booked instantly, confirmation email with the address and your code). For other sellers, tap **Suggest a time**: it opens the order thread with your proposed times, the seller answers there, and both of you get every message by email. Also shows (the warehouse address and hours for store items; the seller's city for others, with the exact spot arranged in **Message the seller** on the order page), and your **6-digit code**. Meet the seller, check the item, then read them the code. They enter it and the payment is released. Don't give the code until the item is in your hands. If pickup never happens, you're refunded automatically after 7 days.
    **Shipping:** the seller adds tracking. When it arrives, tap **I received it** (or it releases on its own 3 days after delivery).
 3. Something wrong? Tap **Report a problem** on the order. The money stays frozen until staff decide: refund you, or pay the seller.
 4. After it's done, rate the seller (and they rate you). Ratings show on every listing.
@@ -172,7 +171,7 @@ Sellers see messages about their own items under **💬 Inbox** and reply there.
 All "looking for" requests: what, budget, distance, contact, status (open → searching → matched → fulfilled). Text or email the person from the row. Carry this list when you buy pallets. Automatic matches show when a fitting item is listed.
 
 ### 4.9 Pickups (/app/pickups)
-Open time slots (day, start, end, how many). Buyers request from item pages. You **confirm**, **complete**, or mark **no-show**. Confirmations go by text or email.
+Open time slots (day, start, end, how many). Buyers who have paid book them from their order page; bookings appear here already confirmed with a link to the order (enter the code there at hand-off). Mark **complete** or **no-show**. Post slots for the week every Sunday so buyers always have times to choose.
 
 ### 4.10 Bins (/app/bins)
 Every Gaylord, pallet, shelf, or bin code with item counts. Mark a bin **sorted**, add notes. Tap a bin to see what's in it.
