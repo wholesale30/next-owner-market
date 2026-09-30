@@ -6,3 +6,4 @@
 -- geo_search: profiles.lat/lng, seller_public gains city/state/lat/lng, search_items(...) RPC with state + radius filters; items_trust_guard requires seller ZIP/state to list
 -- become_seller(): a signed-in buyer becomes a consignor (pending approval), keeps the account
 -- calculated_shipping: items.box, items.shipping_mode (calculated|flat|free); orders.shipping_rate_id/shipping_service
+-- shipping_margin: orders.shipping_mode; seller_due excludes calculated shipping when the platform bought the label; settings.business.shipping_markup_pct/min

@@ -22,10 +22,14 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
   if (!to) return { amount: Number(it.shipping_price || 0), service: "Estimate (enter ZIP for exact)", rateId: null, mode: "estimate" };
   const from = await shipFromFor(it.owner_id);
   if (!from) return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
+  const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
+  const b = (biz?.value as { shipping_markup_pct?: number; shipping_markup_min?: number }) || {};
+  const pct = Number(b.shipping_markup_pct ?? 20), minUp = Number(b.shipping_markup_min ?? 1.5);
   const box = BOXES[it.box || "medium"] || BOXES.medium;
   try {
     const rates = await getRates(from, { name: "Buyer", street1: "1 Main St", city: to.city, state: to.state, zip: to.zip }, { ...box, weight: Number(it.weight_lbs || 2) });
-    const cushion = (n: string) => Math.ceil(Number(n) * 1.05 * 100) / 100;
+    // buyer price = discounted rate + platform margin (max of % and minimum), rounded up to the next 5¢
+    const cushion = (n: string) => { const r = Number(n); const up = Math.max(r * pct / 100, minUp); return Math.ceil((r + up) * 20) / 20; };
     const isFast = (n: string) => /express|overnight|next day|2nd day|2 day|2-day/i.test(n);
     const isPriority = (n: string) => /priority|3 day|3-day|ground saver/i.test(n) && !isFast(n);
     const ground = rates.filter((r) => !isFast(r.servicelevel.name) && !isPriority(r.servicelevel.name));

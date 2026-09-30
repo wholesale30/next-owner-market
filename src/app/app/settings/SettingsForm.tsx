@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsForm({ business, tiers }: { business: Record<string, string | boolean>; tiers: Record<string, number> }) {
   const router = useRouter();
-  const [b, setB] = useState({ name: "", tagline: "", location: "", contact_phone: "", contact_email: "", alert_to: "", address: "", pickup_hours: "", alert_all_messages: false, zip: "", photo_bg: "#ffffff", ...business });
+  const [b, setB] = useState({ name: "", tagline: "", location: "", contact_phone: "", contact_email: "", alert_to: "", address: "", pickup_hours: "", alert_all_messages: false, zip: "", shipping_markup_pct: "20", shipping_markup_min: "1.50", photo_bg: "#ffffff", ...business });
   const [t, setT] = useState({ full_service: 40, full_service_under_50: 50, drop_off: 30, self_listed: 15, ...tiers });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -38,6 +38,11 @@ export default function SettingsForm({ business, tiers }: { business: Record<str
         <div><label className="label">Location (city, state shown to buyers)</label><input className="input" placeholder="Richmond, VA" value={b.location} onChange={(e) => setB({ ...b, location: e.target.value })} /></div>
         <div><label className="label">Pickup address (shown to buyers only after they pay)</label><input className="input" placeholder="123 Warehouse Rd, Richmond, VA 23220" value={b.address} onChange={(e) => setB({ ...b, address: e.target.value })} /></div>
         <div><label className="label">Store ZIP (for &quot;miles from you&quot; on your items)</label><input className="input" maxLength={5} inputMode="numeric" value={String(b.zip || "")} onChange={(e) => setB({ ...b, zip: e.target.value })} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><label className="label">Shipping margin %</label><input className="input" type="number" inputMode="decimal" value={String(b.shipping_markup_pct)} onChange={(e) => setB({ ...b, shipping_markup_pct: e.target.value })} /></div>
+          <div><label className="label">…or at least $</label><input className="input" type="number" inputMode="decimal" value={String(b.shipping_markup_min)} onChange={(e) => setB({ ...b, shipping_markup_min: e.target.value })} /></div>
+        </div>
+        <p className="text-xs muted">Buyers pay the discounted label rate plus this margin (whichever is more). You buy the label; the difference is yours. 20% / $1.50 lands close to retail counter prices.</p>
         <div><label className="label">Pickup hours</label><input className="input" placeholder="Sat 9–3, or by appointment" value={b.pickup_hours} onChange={(e) => setB({ ...b, pickup_hours: e.target.value })} /></div>
         <div><label className="label">Contact phone (for texts)</label><input className="input" type="tel" value={b.contact_phone} onChange={(e) => setB({ ...b, contact_phone: e.target.value })} /></div>
         <div><label className="label">Contact email</label><input className="input" type="email" value={b.contact_email} onChange={(e) => setB({ ...b, contact_email: e.target.value })} /></div>

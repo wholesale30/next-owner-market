@@ -185,6 +185,7 @@ Every Gaylord, pallet, shelf, or bin code with item counts. Mark a bin **sorted*
 - **Sales log** — every sale with channel, fees, commission, consignor due.
 - **Consignor balances** — who is owed what for sales made outside the store (cash, Facebook); **Mark paid** records a payout in one tap. Store sales pay consignors automatically through Stripe and need nothing here.
 - **Payments (admin)** — one-tap Stripe setup and status check.
+- **Shipping margin** (Settings) — buyers pay the discounted label rate plus your margin (default 20% or at least $1.50). The platform buys every label through its own Shippo account, so all sellers ship at your volume rate and the spread is store revenue. On calculated-shipping orders the seller's payout is item minus commission; shipping is the store's.
 - **⬇ CSV** — sales, items, or subscribers. Tax-ready columns: date, SKU, sale price, cost, shipping, fees, commission, consignor due, channel, payment method.
 
 ### 4.12 People (/app/people)

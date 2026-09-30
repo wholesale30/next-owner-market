@@ -34,16 +34,16 @@ export async function POST(req: Request) {
   const tiers = (tiersRow?.value as typeof DEFAULT_TIERS) || DEFAULT_TIERS;
   // commission: platform-owned items keep 100% (0% commission = all to platform anyway); consignment uses tier; self-listed default
   const pct = platformOwned ? 0 : commissionFor(item, seller.default_commission_pct, tiers);
-  let shipping = 0, shippingService: string | null = null, shippingRateId: string | null = null;
+  let shipping = 0, shippingService: string | null = null, shippingRateId: string | null = null, shippingMode = "flat";
   if (ship) {
     const q = await quoteShipping(item.id, zip || me.zip || null, rateId || null);
     if (!q) return NextResponse.json({ error: "This item can't be shipped." }, { status: 400 });
-    shipping = q.amount; shippingService = q.service; shippingRateId = q.rateId;
+    shipping = q.amount; shippingService = q.service; shippingRateId = q.rateId; shippingMode = q.mode;
   }
 
   const { data: order, error } = await db.from("orders").insert({
     item_id: item.id, buyer_id: me.id, seller_id: seller.id, fulfillment: ship ? "ship" : "pickup",
-    amount, shipping, commission_pct: pct, offer_id: offerId || null, shipping_service: shippingService, shipping_rate_id: shippingRateId,
+    amount, shipping, commission_pct: pct, offer_id: offerId || null, shipping_service: shippingService, shipping_rate_id: shippingRateId, shipping_mode: shippingMode,
   }).select("*").single();
   if (error || !order) return NextResponse.json({ error: error?.message || "Could not start order" }, { status: 500 });
 

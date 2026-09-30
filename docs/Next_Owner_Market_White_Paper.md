@@ -126,6 +126,10 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - Masked messaging: `buyer_contact` column grants removed from anon/authenticated, `conversation_contact()` staff-only; `scrub_for_conversation()`; messaging requires an account.
 - Database-level test suite run against production (scrub, caps, offers, messaging, order state machine, ratings, refund) — all passing as of Sep 30, 1:40 AM.
 
+**Shipping economics (Sep 30)**
+- Calculated shipping: `quoteShipping()` (src/lib/shipping.ts) rates the item's box/weight from the seller's ZIP to the buyer's ZIP via Shippo, offers ground/priority/express, and marks up by `settings.business.shipping_markup_pct` (default 20%) or `shipping_markup_min` ($1.50), rounded to 5¢. Buyer pays that; platform buys the label at the discounted rate; `orders.seller_due` excludes shipping on calculated orders where a label was bought in-app. Flat/free or self-shipped: seller keeps shipping minus label cost.
+- All labels are bought on the platform's Shippo account; connect UPS/FedEx accounts there to add their rates. Env `SHIPPO_API_KEY`.
+
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
 
 ## 6. Decisions and why
