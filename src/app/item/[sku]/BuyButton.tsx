@@ -26,7 +26,16 @@ export default function BuyButton({ itemId, sku, price, canPickup, canShip, ship
   }, [zip, itemId, canShip, shippingMode]);
   const chosen = quote?.options?.find((o) => o.rateId === rateId) || (quote?.options?.[0] ?? null);
   const shipCost = chosen ? chosen.amount : quote ? quote.amount : shippingPrice;
-  if (!sellerReady) return null;
+  if (!sellerReady) {
+    // Seller can't take card payments yet: still show what shipping would cost.
+    return (
+      <div className="card p-3 space-y-2">
+        {canShip && (zip.length === 5 ? (quote ? <p className="text-sm">🚚 Ships to {zip} from <b>{money(quote.options?.[0]?.amount ?? quote.amount)}</b>{quote.options && quote.options.length > 1 ? ` (${quote.options.length} speeds)` : ` (${quote.service})`}</p> : quoting ? <p className="text-sm muted">Getting shipping rate…</p> : <p className="text-sm muted">No rate for that ZIP yet.</p>) : shippingMode !== "calculated" ? <p className="text-sm">🚚 Ships for <b>{money(shippingPrice)}</b></p> : <div className="flex items-center gap-2 text-sm"><span>🚚 Ships.</span><input className="input w-28" inputMode="numeric" maxLength={5} placeholder="ZIP for rate" value={zip} onChange={(e) => { setZip(e.target.value.replace(/\D/g, "")); setQuote(null); }} /></div>)}
+        {canPickup && pickupLoc && <p className="text-sm">📍 Pickup in <b>{pickupLoc}</b></p>}
+        <p className="text-xs muted">This seller hasn&apos;t finished setting up payments yet, so Buy now is off. Message them below and they&apos;ll turn it on.</p>
+      </div>
+    );
+  }
 
   async function buy() {
     if (!signedIn) { router.push(`/signup?buyer=1&next=/item/${sku}`); return; }

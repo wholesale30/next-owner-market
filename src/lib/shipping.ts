@@ -1,6 +1,6 @@
 import { admin } from "@/lib/stripe";
 import { getRates, shippoReady, type Address } from "@/lib/shippo";
-import { lookupZip } from "@/lib/geo";
+import { lookupZip, milesBetween } from "@/lib/geo";
 
 export const BOXES: Record<string, { length: number; width: number; height: number; label: string }> = {
   small: { length: 10, width: 8, height: 4, label: "Small (shoebox)" },
@@ -17,19 +17,28 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
   const { data: it } = await db.from("items").select("shipping_ok, shipping_mode, shipping_price, weight_lbs, box, owner_id").eq("id", itemId).single();
   if (!it || !it.shipping_ok || it.box === "freight") return null;
   if (it.shipping_mode === "free") return { amount: 0, service: "Free shipping", rateId: null, mode: "free" };
-  if (!shippoReady()) return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
-  const to = lookupZip(buyerZip);
-  if (!to) return { amount: Number(it.shipping_price || 0), service: "Estimate (enter ZIP for exact)", rateId: null, mode: "estimate" };
-  const from = await shipFromFor(it.owner_id);
-  if (!from) return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
   const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
   const b = (biz?.value as { shipping_markup_pct?: number; shipping_markup_min?: number }) || {};
   const pct = Number(b.shipping_markup_pct ?? 20), minUp = Number(b.shipping_markup_min ?? 1.5);
+  // buyer price = discounted rate + platform margin (max of % and minimum), rounded up to the next 5¢
+  const cushion = (n: string | number) => { const r = Number(n); const up = Math.max(r * pct / 100, minUp); return Math.ceil((r + up) * 20) / 20; };
   const box = BOXES[it.box || "medium"] || BOXES.medium;
+  const weight = Number(it.weight_lbs || 2);
+  const to = lookupZip(buyerZip);
+  const from = await shipFromFor(it.owner_id);
+  const fromGeo = lookupZip(from?.zip);
+  // Built-in estimate (ground, by weight and distance) used whenever live carrier rates aren't available.
+  const estimate = (): Quote => {
+    const miles = to && fromGeo ? milesBetween(fromGeo.lat, fromGeo.lng, to.lat, to.lng) : 900;
+    const zone = miles < 150 ? 1 : miles < 600 ? 1.15 : miles < 1000 ? 1.3 : miles < 1400 ? 1.45 : miles < 1800 ? 1.6 : 1.8;
+    const lbs = Math.max(1, Math.ceil(weight));
+    const base = lbs <= 5 ? 4.5 + lbs : lbs <= 10 ? 9.5 + (lbs - 5) * 1.2 : lbs <= 20 ? 15.5 + (lbs - 10) * 1 : 25.5 + (lbs - 20) * 0.9;
+    const size = it.box === "large" ? 2 : it.box === "xl" ? 5 : 0;
+    return { amount: cushion(base * zone + size), service: to ? "Ground (estimate)" : "Ground (estimate; enter ZIP for exact)", rateId: null, mode: "calculated" };
+  };
+  if (!shippoReady() || !to || !from) return estimate();
   try {
-    const rates = await getRates(from, { name: "Buyer", street1: "1 Main St", city: to.city, state: to.state, zip: to.zip }, { ...box, weight: Number(it.weight_lbs || 2) });
-    // buyer price = discounted rate + platform margin (max of % and minimum), rounded up to the next 5¢
-    const cushion = (n: string) => { const r = Number(n); const up = Math.max(r * pct / 100, minUp); return Math.ceil((r + up) * 20) / 20; };
+    const rates = await getRates(from, { name: "Buyer", street1: "1 Main St", city: to.city, state: to.state, zip: to.zip }, { ...box, weight });
     const isFast = (n: string) => /express|overnight|next day|2nd day|2 day|2-day/i.test(n);
     const isPriority = (n: string) => /priority|3 day|3-day|ground saver/i.test(n) && !isFast(n);
     const ground = rates.filter((r) => !isFast(r.servicelevel.name) && !isPriority(r.servicelevel.name));
@@ -38,10 +47,10 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
     const picks = [ground[0], priority[0], fast[0]].filter(Boolean).sort((a, b) => Number(a.amount) - Number(b.amount));
     const options = picks.map((r) => ({ amount: cushion(r.amount), service: `${r.provider} ${r.servicelevel.name}`, rateId: r.object_id, days: r.estimated_days }));
     const chosen = (pickRateId && options.find((o) => o.rateId === pickRateId)) || options[0];
-    if (!chosen) return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
+    if (!chosen) return estimate();
     return { ...chosen, mode: "calculated", options };
   } catch {
-    return { amount: Number(it.shipping_price || 0), service: "Standard shipping", rateId: null, mode: "calculated" };
+    return estimate();
   }
 }
 
