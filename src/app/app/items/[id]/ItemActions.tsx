@@ -75,13 +75,28 @@ export default function ItemActions({ item, staff, commissionPct }: Props) {
     router.refresh();
   }
 
+  async function deleteItem() {
+    if (!confirm("Delete this item and its photos for good? (Anything that sold is archived instead.)")) return;
+    setBusy(true); setErr(null);
+    const { data: paths, error } = await supabase.rpc("delete_item", { p_item: item.id });
+    if (error) { setBusy(false); return setErr(error.message); }
+    if (paths?.length) await supabase.storage.from("item-photos").remove(paths as string[]);
+    router.push("/app");
+    router.refresh();
+  }
+  const deletable = !["sold", "shipped"].includes(item.status);
+
   if (!staff) {
     return (
-      <div className="card p-3 text-sm muted">
-        {item.status === "pending_review" && "Waiting for our review. We'll list it once approved."}
-        {item.status === "draft" && "Draft. Open Edit and tap Submit for review when it's ready."}
-        {item.status === "active" && "Live in the store."}
-        {item.status === "sold" && "Sold. Your payout shows under Payouts."}
+      <div className="space-y-2">
+        <div className="card p-3 text-sm muted">
+          {item.status === "pending_review" && "Waiting for our review. We'll list it once approved."}
+          {item.status === "draft" && "Draft. Open Edit and tap Submit for review when it's ready."}
+          {item.status === "active" && "Live in the store."}
+          {item.status === "sold" && "Sold. Your payout shows under Payouts."}
+        </div>
+        {deletable && <button className="pill" disabled={busy} onClick={deleteItem}>🗑 Delete this item</button>}
+        {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}
       </div>
     );
   }
@@ -114,6 +129,9 @@ export default function ItemActions({ item, staff, commissionPct }: Props) {
         )}
         {item.status !== "archived" && item.status !== "sold" && item.status !== "shipped" && (
           <button className="btn btn-secondary" disabled={busy} onClick={() => { if (confirm("Archive this item? It disappears from lists but keeps its history.")) setStatus("archived"); }}>Archive</button>
+        )}
+        {deletable && (
+          <button className="btn btn-secondary" disabled={busy} onClick={deleteItem}>🗑 Delete</button>
         )}
       </div>
 

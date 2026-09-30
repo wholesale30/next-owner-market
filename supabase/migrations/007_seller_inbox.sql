@@ -9,3 +9,4 @@ create policy "conversations seller update" on conversations for update using (s
 -- start_conversation now records seller_profile_id; reply_conversation sets unread_for_seller; staff_reply allows the item's seller too (see applied migration seller_inbox for full bodies)
 -- Masked messaging: buyer_contact readable only by staff via conversation_contact(); bodies scrubbed via scrub_for_conversation(); explicit column grants (see applied migrations masked_messaging, mask_buyer_contact_column)
 alter table orders add column if not exists shipping_address jsonb;
+-- delete_item(uuid): owner or staff may delete an item with no sale/paid order/live auction (see applied migration delete_item)

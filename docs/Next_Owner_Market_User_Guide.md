@@ -132,7 +132,7 @@ Everything the AI or a consignor produced, waiting for a human eye. Open, check 
 ### 4.5 The item page (/app/items/ID)
 Everything about one item:
 - **Copy blocks** — Facebook Marketplace/Group, OfferUp, eBay, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy (vintage/handmade only). Each is formatted to that site's rules (title length, tags, hashtags). Tap to copy, open the app, paste. Only eBay and Etsy offer posting APIs; the rest allow no automation, so copy-paste is the only safe path. eBay direct posting is on the roadmap.
-- **✅ Approve & list · Unlist · Hold / Release hold · Archive**
+- **✅ Approve & list · Unlist · Hold / Release hold · Archive · 🗑 Delete** (Delete works only on items that never sold and have no paid order; those get archived instead, so the books stay whole. Sellers can delete their own unsold items too.)
 - **💰 Mark sold** — sold for, shipping charged, platform fees, channel (Facebook, store, eBay, cash walk-in…), paid by, buyer name and contact. Commission and consignor payout are calculated automatically. **Undo sale** relists it.
 - **📦 Mark shipped**
 - **Start an auction** — starting bid, days, reserve, buy-now. Live countdown, minimum-increment rules, 2-minute anti-snipe extension, closes itself. Winner is contacted for payment and pickup.
