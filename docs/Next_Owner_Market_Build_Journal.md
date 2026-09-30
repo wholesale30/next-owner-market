@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 4:26 PM (49 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 4:31 PM (50 messages from Shayne)
 
 **Claude:**
 
@@ -1004,3 +1004,19 @@ One honest note for the book: the first day's exact words are gone — I only ha
 **Claude:**
 
 Making it automatic: a script in the repo that rebuilds the journal from the transcript, wired to run by itself right before the chat gets condensed, plus a rule in the project instructions so every future session keeps it up.
+
+Done. Three pieces:
+
+1. **A script in the project** (`scripts/journal.py`) that reads the raw chat transcript and rebuilds the Build Journal — Part 1 stays as written, and every session gets added verbatim, each under its own heading with dates and times.
+2. **Two automatic triggers**: it runs by itself right before the chat gets condensed (so nothing is lost the way day one was), and again when a session ends. No one has to remember.
+3. **A rule in the project instructions**: every future session — whatever model — runs it after big batches of work and sends you the Word file at the end.
+
+Just ran it: the journal now has today's session recorded as its own chapter, and the .docx is refreshed.
+
+### Sep 30, 4:31 PM — Shayne
+
+> downloadable document on all that too. So I actually have it. Everything you do like that too, every script you do and things you add to the files and stuff, I want an automatic document shipped out to me of everything you did and the changes you made.
+
+**Claude:**
+
+On it. A change log that writes itself from the code history — every commit, when, what changed, which files — as a Word file, regenerated automatically with the journal, and sent to you at the end of every session.

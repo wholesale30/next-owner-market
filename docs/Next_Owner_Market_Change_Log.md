@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 4:31 PM from the project history (85 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 4:31 PM from the project history (86 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -689,3 +689,12 @@
 - **Automation scripts:** `scripts/journal.py`
 
 <sub>change id c1e4d2b</sub>
+
+### 16:31 — Change Log automation: scripts/changelog.py from git history, hooked with the journal; rule to ship both docs every session
+
+- **Project automation:** `.claude/settings.json`
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`
+- **Automation scripts:** `scripts/changelog.py`
+
+<sub>change id 8b2e922</sub>
