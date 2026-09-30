@@ -11,7 +11,8 @@ export const BOXES: Record<string, { length: number; width: number; height: numb
 };
 
 /** Cheapest ground rate to a buyer ZIP for an item, or the flat price. Returns null if it can't ship. */
-export async function quoteShipping(itemId: string, buyerZip: string | null): Promise<{ amount: number; service: string; rateId: string | null; mode: string } | null> {
+export interface Quote { amount: number; service: string; rateId: string | null; mode: string; days?: number | null; options?: { amount: number; service: string; rateId: string; days: number | null }[] }
+export async function quoteShipping(itemId: string, buyerZip: string | null, pickRateId?: string | null): Promise<Quote | null> {
   const db = admin();
   const { data: it } = await db.from("items").select("shipping_ok, shipping_mode, shipping_price, weight_lbs, box, owner_id").eq("id", itemId).single();
   if (!it || !it.shipping_ok || it.box === "freight") return null;
@@ -24,10 +25,17 @@ export async function quoteShipping(itemId: string, buyerZip: string | null): Pr
   const box = BOXES[it.box || "medium"] || BOXES.medium;
   try {
     const rates = await getRates(from, { name: "Buyer", street1: "1 Main St", city: to.city, state: to.state, zip: to.zip }, { ...box, weight: Number(it.weight_lbs || 2) });
-    const ground = rates.filter((r) => !/express|overnight|next day|2nd day|2 day|priority mail express/i.test(r.servicelevel.name));
-    const best = (ground.length ? ground : rates)[0];
-    // small cushion for the label being bought a few days later
-    return { amount: Math.ceil(Number(best.amount) * 1.05 * 100) / 100, service: `${best.provider} ${best.servicelevel.name}`, rateId: best.object_id, mode: "calculated" };
+    const cushion = (n: string) => Math.ceil(Number(n) * 1.05 * 100) / 100;
+    const isFast = (n: string) => /express|overnight|next day|2nd day|2 day|2-day/i.test(n);
+    const isPriority = (n: string) => /priority|3 day|3-day|ground saver/i.test(n) && !isFast(n);
+    const ground = rates.filter((r) => !isFast(r.servicelevel.name) && !isPriority(r.servicelevel.name));
+    const priority = rates.filter((r) => isPriority(r.servicelevel.name));
+    const fast = rates.filter((r) => isFast(r.servicelevel.name));
+    const picks = [ground[0], priority[0], fast[0]].filter(Boolean).sort((a, b) => Number(a.amount) - Number(b.amount));
+    const options = picks.map((r) => ({ amount: cushion(r.amount), service: `${r.provider} ${r.servicelevel.name}`, rateId: r.object_id, days: r.estimated_days }));
+    const chosen = (pickRateId && options.find((o) => o.rateId === pickRateId)) || options[0];
+    if (!chosen) return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
+    return { ...chosen, mode: "calculated", options };
   } catch {
     return { amount: Number(it.shipping_price || 0), service: "Flat rate", rateId: null, mode: "flat" };
   }

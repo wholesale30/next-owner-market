@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const me = await getProfile();
   if (!me) return NextResponse.json({ error: "Create a free account to buy." }, { status: 401 });
   if (!stripeReady()) return NextResponse.json({ error: "Checkout isn't switched on yet. Message the seller instead." }, { status: 400 });
-  const { itemId, fulfillment, offerId, zip } = (await req.json()) as { itemId: string; fulfillment: "pickup" | "ship"; offerId?: string; zip?: string };
+  const { itemId, fulfillment, offerId, zip, rateId } = (await req.json()) as { itemId: string; fulfillment: "pickup" | "ship"; offerId?: string; zip?: string; rateId?: string };
   const db = admin();
   const [{ data: item }, { data: tiersRow }] = await Promise.all([
     db.from("items").select("*, profiles!items_owner_id_fkey(id, role, stripe_payouts_ready, default_commission_pct, suspended), item_photos(url, is_primary)").eq("id", itemId).single(),
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   const pct = platformOwned ? 0 : commissionFor(item, seller.default_commission_pct, tiers);
   let shipping = 0, shippingService: string | null = null, shippingRateId: string | null = null;
   if (ship) {
-    const q = await quoteShipping(item.id, zip || me.zip || null);
+    const q = await quoteShipping(item.id, zip || me.zip || null, rateId || null);
     if (!q) return NextResponse.json({ error: "This item can't be shipped." }, { status: 400 });
     shipping = q.amount; shippingService = q.service; shippingRateId = q.rateId;
   }
