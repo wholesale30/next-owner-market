@@ -13,3 +13,6 @@ alter table orders add column if not exists shipping_address jsonb;
 create table if not exists password_resets (token text primary key default encode(gen_random_bytes(24), 'hex'), user_id uuid not null references auth.users(id) on delete cascade, expires_at timestamptz not null default now() + interval '1 hour', used_at timestamptz, created_at timestamptz not null default now());
 alter table password_resets enable row level security;
 -- start_conversation now requires a signed-in account and uses the account's own email/phone (see applied migration messaging_requires_account)
+create or replace view seller_public with (security_invoker = false) as
+  select id, role, coalesce(business_name, split_part(coalesce(full_name,''), ' ', 1)) as display_name, stripe_payouts_ready, suspended, rating_avg, rating_count, completed_sales, created_at from profiles;
+grant select on seller_public to anon, authenticated;

@@ -20,10 +20,11 @@ async function load(sku: string) {
   const supabase = await createClient();
   await supabase.rpc("close_ended_auctions");
   const [{ data: item }, { data: biz }] = await Promise.all([
-    supabase.from("items").select("*, item_photos(*), item_videos(*), categories(name, slug), auctions(*), profiles!items_owner_id_fkey(role, stripe_payouts_ready, suspended, rating_avg, rating_count, business_name, full_name)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
+    supabase.from("items").select("*, item_photos(*), item_videos(*), categories(name, slug), auctions(*)").eq("sku", sku.toUpperCase()).in("status", ["active", "reserved", "sold"]).maybeSingle(),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
-  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
+  const { data: seller } = item ? await supabase.from("seller_public").select("*").eq("id", item.owner_id).maybeSingle() : { data: null };
+  return { item: item as unknown as (Item & { auctions: AuctionRow | AuctionRow[] | null }) | null, seller: seller as { id: string; role: string; display_name: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; completed_sales: number } | null, business: (biz?.value as { name: string; tagline?: string; location?: string; contact_phone?: string; contact_email?: string }) || { name: "Next Owner Market" } };
 }
 
 export async function generateMetadata({ params }: PageProps<"/item/[sku]">): Promise<Metadata> {
@@ -40,10 +41,9 @@ export async function generateMetadata({ params }: PageProps<"/item/[sku]">): Pr
 
 export default async function PublicItemPage({ params }: PageProps<"/item/[sku]">) {
   const { sku } = await params;
-  const { item, business } = await load(sku);
+  const { item, seller, business } = await load(sku);
   if (!item) notFound();
   const auction = Array.isArray(item.auctions) ? item.auctions[0] : item.auctions;
-  const seller = (item as unknown as { profiles: { role: string; stripe_payouts_ready: boolean; suspended: boolean; rating_avg: number | null; rating_count: number; business_name: string | null; full_name: string | null } | null }).profiles;
   const sellerIsPlatform = seller?.role === "admin" || seller?.role === "staff";
   const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
   const { data: { user } } = await (await createClient()).auth.getUser();
@@ -87,7 +87,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
           <BuyButton itemId={item.id} sku={item.sku} price={Number(item.price)} canPickup={item.local_pickup_ok} canShip={item.shipping_ok} shippingPrice={Number(item.shipping_price || 0)} sellerReady={sellerReady} signedIn={!!user} />
         )}
         {seller && !sellerIsPlatform && (
-          <p className="text-xs muted">Sold by {seller.business_name || seller.full_name || "a member"}{seller.rating_count ? ` • ★ ${seller.rating_avg} (${seller.rating_count})` : " • new seller"} • Payment held until hand-off</p>
+          <p className="text-xs muted">Sold by <Link href={`/seller/${seller.id}`} className="underline">{seller.display_name || "a member"}</Link>{seller.rating_count ? ` • ★ ${seller.rating_avg} (${seller.rating_count})` : " • new seller"}{seller.completed_sales ? ` • ${seller.completed_sales} sales` : ""} • Payment held until hand-off</p>
         )}
         {item.status !== "sold" && <BuyerPanel itemId={item.id} sku={item.sku} title={item.title} canPickup={item.local_pickup_ok} />}
 
