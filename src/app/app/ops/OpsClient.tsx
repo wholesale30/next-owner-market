@@ -54,7 +54,7 @@ const GLOSSARY: [string, string][] = [
 
 const KIND_LABEL: Record<string, string> = { welcome_1: "Welcome day 1", welcome_3: "Welcome day 3", welcome_7: "Welcome day 7", nudge_views: "Views, no messages", nudge_saves: "People saved it", nudge_drafts: "Drafts waiting", nudge_payouts: "Set up payouts", review_request: "Review request" };
 
-export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples }: { now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
+export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples, lists = {} }: { lists?: Record<string, { line: string; href?: string }[]>; now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [out, setOut] = useState<Record<string, string>>({});
@@ -88,13 +88,18 @@ export default function OpsClient({ stats, automations, tasks, emailsByKind, pos
         <h2 className="font-bold text-lg">The numbers</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {STAT.map((s) => (
-            <details key={s.key} className="card p-3">
-              <summary className="cursor-pointer list-none"><p className="text-2xl font-extrabold">{s.money ? money(stats[s.key]) : Number(stats[s.key] || 0).toLocaleString()}</p><p className="text-xs font-semibold">{s.label}</p></summary>
+            <details key={s.key} className="card p-3 group open:col-span-2 md:open:col-span-3">
+              <summary className="cursor-pointer list-none"><p className="text-2xl font-extrabold">{s.money ? money(stats[s.key]) : Number(stats[s.key] || 0).toLocaleString()}</p><p className="text-xs font-semibold">{s.label} <span className="muted font-normal">· tap to see who</span></p></summary>
               <p className="text-xs muted pt-1">{s.meaning}</p>
+              {lists[s.key] && (lists[s.key].length === 0 ? <p className="text-sm muted pt-2">Nobody / nothing yet.</p> : (
+                <ul className="pt-2 space-y-1 text-sm max-h-96 overflow-y-auto">
+                  {lists[s.key].map((r, i) => <li key={i} className="border-t pt-1" style={{ borderColor: "var(--line, #e5e7eb)" }}>{r.href ? <Link href={r.href} className="underline">{r.line}</Link> : r.line}</li>)}
+                </ul>
+              ))}
             </details>
           ))}
         </div>
-        <p className="text-xs muted">Tap a number to see what it means.</p>
+        <p className="text-xs muted">Tap any number to see exactly who or what it counts, with links. Tap again to close.</p>
       </section>
 
       <section className="space-y-2">

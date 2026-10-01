@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import { registerAutomations, EMAIL_SAMPLES } from "@/lib/automations";
 import OpsClient from "./OpsClient";
+import { opsLists } from "@/lib/ops-lists";
 
 export const metadata = { title: "Operations" };
 
@@ -11,7 +12,8 @@ export default async function OpsPage() {
   await registerAutomations();
   const supabase = await createClient();
   const now = new Date(new Date().toISOString()).getTime();
-  const [{ data: stats }, { data: autos }, { data: tasks }, { data: emails }, { data: posts }, { data: ints }] = await Promise.all([
+  const [lists, { data: stats }, { data: autos }, { data: tasks }, { data: emails }, { data: posts }, { data: ints }] = await Promise.all([
+    opsLists().catch(() => ({})),
     supabase.rpc("ops_stats"),
     supabase.from("automations").select("*").order("sort_order"),
     supabase.from("ops_tasks").select("*").order("sort_order"),
@@ -21,5 +23,5 @@ export default async function OpsPage() {
   ]);
   const byKind: Record<string, number> = {};
   for (const e of emails || []) byKind[e.kind] = (byKind[e.kind] || 0) + 1;
-  return <OpsClient stats={(stats as Record<string, number>) || {}} automations={autos || []} tasks={tasks || []} emailsByKind={byKind} posts={posts || []} now={now} integrations={ints || []} emailSamples={EMAIL_SAMPLES} />;
+  return <OpsClient stats={(stats as Record<string, number>) || {}} automations={autos || []} tasks={tasks || []} emailsByKind={byKind} posts={posts || []} now={now} integrations={ints || []} emailSamples={EMAIL_SAMPLES} lists={lists as Record<string, { line: string; href?: string }[]>} />;
 }
