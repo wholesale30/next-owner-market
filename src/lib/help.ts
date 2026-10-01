@@ -11,6 +11,7 @@ export const SCREEN_HINTS: { match: RegExp; text: string; topic?: string }[] = [
   { match: /^\/app\/items\/[^/]+\/edit/, text: "Change anything here. Price, photos, whether you'll ship. Save at the bottom.", topic: "add-item" },
   { match: /^\/app\/items\/[^/]+$/, text: "Your listing. Scroll down for copy-and-paste versions for Facebook, eBay, and the rest, plus a how-to for each one.", topic: "crosspost" },
   { match: /^\/app\/taxes/, text: "Your year in numbers: sales, fees, costs. Download it for whoever does your taxes. We don't file anything.", topic: "taxes" },
+  { match: /^\/app\/ops/, text: "The control room. Numbers at the top, what runs by itself in the middle, what a person still has to do at the bottom. Tap any number to see what it means." },
   { match: /^\/app\/settings/, text: "Store settings. Your address, hours, who gets alerts, and fees.", topic: "settings" },
   { match: /^\/app\/review/, text: "New listings and new sellers waiting for your OK. Tap to approve.", topic: "review" },
   { match: /^\/app\/people/, text: "Everyone with an account. Tap a person to approve, change their plan, or pause them." },

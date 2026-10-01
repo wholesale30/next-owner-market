@@ -35,6 +35,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   const nav = staff
     ? [
         { href: "/app", label: "Inventory" },
+        { href: "/app/ops", label: "🎛 Operations" },
         { href: "/app/items/new", label: "+ Add" },
         { href: "/app/snap", label: "📷 Snap" },
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
