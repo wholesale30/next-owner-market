@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:03 PM from the project history (124 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:11 PM from the project history (127 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -952,3 +952,22 @@
 - **Shared code (logic):** `src/lib/automations.ts`, `src/lib/help.ts`, `src/lib/orders.ts`
 
 <sub>change id efdf3d4</sub>
+
+### 23:03 — docs: selling before payout setup (User Guide, Complete Guide, White Paper, Seller Terms); journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Seller_Terms.docx`, `docs/Next_Owner_Market_Seller_Terms.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md` (+2 more)
+
+<sub>change id 4ccac4e</sub>
+
+### 23:03 — docs: fix dollar signs in Word export
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`
+
+<sub>change id 809cc98</sub>
+
+### 23:11 — Recycle bin: every delete anywhere (items+photos, photos removed in edits, blog, community, pickup times, invites, bins, categories…) is captured; 🗑 Deleted page restores with one tap; archived items can be brought back; photo files no longer erased
+
+- **Seller / staff app:** `src/app/app/InventoryList.tsx`, `src/app/app/items/ItemForm.tsx`, `src/app/app/items/[id]/ItemActions.tsx`, `src/app/app/layout.tsx`, `src/app/app/review/ReviewClient.tsx`, `src/app/app/trash/TrashClient.tsx`, `src/app/app/trash/page.tsx`
+- **Shared code (logic):** `src/lib/help.ts`
+
+<sub>change id 1fab7ee</sub>
