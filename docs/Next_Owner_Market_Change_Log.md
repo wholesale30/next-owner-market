@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 10:39 AM from the project history (141 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 10:45 AM from the project history (142 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1066,3 +1066,11 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id b80ef37</sub>
+
+### 10:44 — Fix: listings 404'd for signed-out shoppers (anon couldn't run is_staff in the public read rule); daily health now opens a live listing as a shopper and alerts staff if it fails
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Shared code (logic):** `src/lib/automations.ts`
+- **Database (migrations):** `supabase/migrations/031_anon_is_staff.sql`
+
+<sub>change id 7adda52</sub>
