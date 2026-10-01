@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:44 PM from the project history (170 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:52 PM from the project history (172 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1268,3 +1268,17 @@
 - **Shared UI pieces:** `src/components/ShareValuation.tsx`
 
 <sub>change id 9dabf71</sub>
+
+### 19:44 — Guides updated: sharing first, privacy line, Thrift Pro
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 99aeeec</sub>
+
+### 19:49 — Share: one tap saves to the site and says so; separate 'Also send to Facebook or a friend' button. Everyone's finds page. Facebook Page auto-post includes shared finds
+
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/thrift/page.tsx`, `src/app/valued/page.tsx`
+- **Shared UI pieces:** `src/components/ShareValuation.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id b86f257</sub>

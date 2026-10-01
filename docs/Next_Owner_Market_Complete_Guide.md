@@ -311,3 +311,15 @@ Built on how people actually decide: one obvious next step, see the value before
   - Checkout sets the price itself (`price_data` in `/api/stripe/subscribe` with `{plan:"thrift"}`), so nothing needs setting up in Stripe.
   - The webhook sets `profiles.thrift_pro` and `thrift_subscription_id` and turns it off when the subscription ends.
   - It's offered when someone runs out of free checks, and on /pro. $15 Pro stays as it is for sellers.
+
+## Share: two clear steps, and Everyone's finds (Oct 1, 2026, 7:50 PM)
+
+- **One tap on 📣 Share this find** puts the find on our site and shows "✓ Shared on Next Owner Market" with a link to its page. No pop-up.
+- **A separate button, "Also send it to Facebook or a friend,"** opens the phone's share menu.
+- **/valued is now titled "Everyone's finds."** Every share is listed there, newest first. It's linked from the share confirmation and from /thrift.
+- **Where each share goes automatically:**
+  - its own page;
+  - the sitemap;
+  - IndexNow, an instant notice to Bing, DuckDuckGo and Yahoo;
+  - the Facebook Page, up to 3 finds a day, once the Page token is set.
+- **Google** finds the pages through the sitemap. Search Console speeds that up, and it needs the owner's login.

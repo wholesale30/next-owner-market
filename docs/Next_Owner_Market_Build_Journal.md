@@ -2769,3 +2769,22 @@ While it publishes, let me check whether your shares from Goodwill today really 
 Live. Now I'm testing the new Buy or Pass share on the live site.
 
 Share works: it made the page. That one was my test, so I'm hiding it.
+
+You're right: every share makes its own page that Google can find. The 5 finds you shared from Goodwill tonight are 5 live pages on the site already. Thousands of shares means thousands of ways for people to find us.
+
+**Live now on What's it worth, Buy or Pass and Sort the pile:**
+- **Share is the big first button** right under the answer: "📣 Share this find." One tap makes the page, then opens your phone's share menu for Facebook, texts or anywhere else.
+- **"📸 Check another" sits right below it**, so nobody has to scroll to the bottom.
+- **The privacy line is in plain sight** on every share box: "🔒 Private. No name, no email, no address, no location. People only see the item, its photo and what it's worth." I checked that it's true: the pages never show who shared, and the app strips the phone's location data from photos before uploading.
+- **Buy or Pass shares now make Google pages too**, the same as What's it worth. The link people get is the "Paid $4 → BUY" card.
+- **Your finds now shows "Your shares made N pages on Google"**, so people keep sharing.
+
+**The fee: I set Thrift Pro at $3.99 a month** for unlimited checks on Buy or Pass and What's it worth. It shows up when someone runs out of their 5 free checks, and it's on the Pro page. $15 Pro stays as it is for sellers.
+
+I tested sharing on the live site, and it made the page. That one was my test, so I hid it.
+
+The updated Complete Guide and User Guide are attached, along with the latest Build Journal and Change Log.
+
+### Oct 1, 7:48 PM — Shayne
+
+> Okay, now the issue I have is the share this find. It goes to, it pops up a screen. We have to share it on Facebook, share it with somebody or something like that. It doesn't go, it doesn't appear to go to our site like it was before.
