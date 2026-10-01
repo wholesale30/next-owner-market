@@ -116,6 +116,7 @@ export default function InventoryList({ items, staff, locations }: { items: Row[
                   <span className={`pill ${pillClass}`}>{STATUS_LABELS[it.status]}</span>
                 </div>
               </Link>
+              {(it.status === "active" || it.status === "reserved" || it.status === "sold") && <Link href={`/item/${it.sku}`} className="text-xs underline shrink-0 px-1" aria-label="Open as a buyer sees it">👁 buyer view</Link>}
             </li>
           );
         })}

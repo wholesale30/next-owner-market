@@ -20,7 +20,7 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
   const [{ data: item }, { data: settingsRows }, { data: statsRow }] = await Promise.all([
     supabase
       .from("items")
-      .select("*, item_photos(*), categories(name, slug), locations(code), auctions(*), profiles!items_owner_id_fkey(full_name, business_name, default_commission_pct, phone, email)")
+      .select("*, item_photos(*), categories(name, slug), locations(code), auctions(*), profiles!items_owner_id_fkey(full_name, business_name, default_commission_pct, phone, email, role, username, stripe_payouts_ready, suspended)")
       .eq("id", id)
       .single(),
     supabase.from("settings").select("key, value").in("key", ["business", "commission_tiers"]),
@@ -29,7 +29,7 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
   if (!item) notFound();
   const stats = (statsRow as { view_count: number; save_count: number; message_count: number; offer_count: number } | null) || null;
   const x = item as unknown as { drop_pct?: number; drop_every_days?: number; drop_floor?: number; last_drop_at?: string };
-  const it = item as unknown as Item & { auctions: AuctionRow[] | AuctionRow | null; profiles: { full_name: string; business_name: string; default_commission_pct: number | null; phone: string; email: string } | null };
+  const it = item as unknown as Item & { auctions: AuctionRow[] | AuctionRow | null; profiles: { full_name: string; business_name: string; default_commission_pct: number | null; phone: string; email: string; role?: string; username?: string | null; stripe_payouts_ready?: boolean; suspended?: boolean } | null };
   const business = (settingsRows?.find((s) => s.key === "business")?.value as { name: string; location?: string }) || { name: "Next Owner Market" };
   const tiers = (settingsRows?.find((s) => s.key === "commission_tiers")?.value as typeof DEFAULT_TIERS) || DEFAULT_TIERS;
   const photos = [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order);
@@ -41,8 +41,34 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
     ? await supabase.from("sales").select("*").eq("item_id", it.id).order("sold_at", { ascending: false }).limit(1).maybeSingle()
     : { data: null };
 
+  const sp = it.profiles;
+  const platformItem = sp?.role === "admin" || sp?.role === "staff";
+  const payReady = platformItem || (!!sp?.stripe_payouts_ready && !sp?.suspended);
+  const live = it.status === "active" || it.status === "reserved";
+  const it2 = it as unknown as { local_pickup_ok?: boolean; shipping_ok?: boolean; sale_type?: string };
+  const buyerNotes: { ok: boolean; text: string }[] = [
+    live ? { ok: true, text: "Buyers can see this listing in the store and on Google." }
+      : it.status === "sold" || it.status === "shipped" ? { ok: false, text: "Sold. Buyers see it marked SOLD, with no Buy button." }
+      : it.status === "pending_review" ? { ok: false, text: "Waiting for approval. Buyers can't see it yet; approve it under Review." }
+      : { ok: false, text: "Draft. Buyers can't see it until it's listed." },
+    it2.sale_type === "auction" ? { ok: true, text: "Auction: buyers see the bid box instead of Buy now." }
+      : payReady ? { ok: true, text: "Buy now is ON. Buyers can pay by card, Apple Pay, Cash App, Affirm or Klarna." }
+      : { ok: false, text: sp?.suspended ? "Buy now is OFF: this seller is paused." : "Buy now is OFF: this seller hasn't finished payout setup. Buyers see a Message button and the shipping estimate instead." },
+    { ok: !!(it2.local_pickup_ok || it2.shipping_ok), text: [it2.local_pickup_ok ? "pickup" : null, it2.shipping_ok ? "shipping" : null].filter(Boolean).join(" and ").replace(/^./, (c) => c.toUpperCase()) + (it2.local_pickup_ok || it2.shipping_ok ? " offered." : "Neither pickup nor shipping is turned on; buyers can't check out.") },
+  ];
+
   return (
     <div className="space-y-4 pb-8">
+      {(
+        <div className="card p-3 space-y-2" style={{ borderLeft: "4px solid var(--brand)" }}>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <p className="font-semibold">What a buyer sees{staff && sp && !platformItem ? ` · seller: ${sp.business_name || sp.full_name}${sp.username ? ` @${sp.username}` : ""}` : ""}</p>
+            {live || it.status === "sold" ? <Link href={`/item/${it.sku}`} className="btn btn-primary">👁 Open as a buyer</Link> : null}
+          </div>
+          <ul className="text-sm space-y-1">{buyerNotes.map((n, i) => <li key={i}>{n.ok ? "✅" : "⚠️"} {n.text}</li>)}</ul>
+          {staff && <p className="text-xs muted">The button opens the real public page. Buy now works there for you too (you&apos;re not the seller), so you can check every step a buyer takes. Don&apos;t finish a payment unless you mean to buy it.</p>}
+        </div>
+      )}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h1 className="text-xl font-bold leading-tight">{it.title || "Untitled"}</h1>
