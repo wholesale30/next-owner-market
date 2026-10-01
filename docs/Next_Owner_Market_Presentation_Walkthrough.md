@@ -62,7 +62,7 @@
 
 ## Slide 8 · It runs itself
 
-**Show:** nextownermarket.com/app/ops (staff). Scroll the "What runs by itself" list.
+**Show:** nextownermarket.com/app/ops (staff). Tap a number (say, Accounts or Email subscribers) and it opens into the actual list of people with links. Then scroll the "What runs by itself" list.
 
 **Say:** "Welcome emails on day 1, 3, 7. A nudge when 20 people looked at your lamp and nobody asked. A congratulations with a paste-able line at your first sale and at $500. A review request the day after every order. A blog post every Monday written from the week's real numbers. Price drops on schedule. Search engines pinged within minutes of anything changing. Backups nightly. Each one says what it did, and any of them can be switched off from this page."
 
