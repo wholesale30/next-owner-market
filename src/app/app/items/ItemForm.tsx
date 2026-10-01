@@ -317,7 +317,6 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       const removed = (initialPhotos || []).filter((p) => !keep.some((k) => k.id === p.id));
       if (removed.length) {
         await supabase.from("item_photos").delete().in("id", removed.map((p) => p.id));
-        await supabase.storage.from("item-photos").remove(removed.map((p) => p.storage_path));
       }
       const upserts = keep.map((p, i) => ({
         ...(existingIds.has(p.id) ? { id: p.id } : {}),
@@ -338,8 +337,6 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       const removedV = (initialVideos || []).filter((v) => !keepV.some((k) => k.id === v.id));
       if (removedV.length) {
         await supabase.from("item_videos").delete().in("id", removedV.map((v) => v.id));
-        const paths = removedV.map((v) => v.storage_path).filter((x): x is string => !!x);
-        if (paths.length) await supabase.storage.from("item-photos").remove(paths);
       }
       const vUpserts = keepV.map((v, i) => ({ ...(existingV.has(v.id) ? { id: v.id } : {}), item_id: itemId!, kind: v.kind, url: v.url, storage_path: v.storage_path || null, sort_order: i }));
       if (vUpserts.length) {

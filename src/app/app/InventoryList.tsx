@@ -39,13 +39,13 @@ export default function InventoryList({ items, staff, locations }: { items: Row[
   });
 
   const bulkDelete = () => {
-    if (!confirm(`Delete ${sel.size} item(s) and their photos for good? Anything that sold is skipped.`)) return;
+    if (!confirm(`Delete ${sel.size} item(s)? They go to 🗑 Deleted, where you can bring them back. Anything that sold is skipped.`)) return;
     run(async () => {
       let skipped = 0;
       for (const id of ids()) {
         const { data: paths, error } = await supabase.rpc("delete_item", { p_item: id });
         if (error) { skipped++; continue; }
-        if (paths?.length) await supabase.storage.from("item-photos").remove(paths as string[]);
+        void paths; // photo files are kept so the item can be restored from 🗑 Deleted
       }
       if (skipped) alert(`${skipped} item(s) have a sale or order and were kept; archive those instead.`);
     });

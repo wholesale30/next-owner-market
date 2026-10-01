@@ -40,7 +40,7 @@ export default function ReviewClient({ items }: { items: Row[] }) {
     for (const id of ids()) {
       const { data: paths, error } = await supabase.rpc("delete_item", { p_item: id });
       if (error) { failed.push(error.message); continue; }
-      if (paths?.length) await supabase.storage.from("item-photos").remove(paths as string[]);
+      void paths; // kept for restore
     }
     setBusy(false);
     if (failed.length) setErr(`${failed.length} couldn't be deleted (have a sale or order): archive those instead.`);

@@ -77,11 +77,11 @@ export default function ItemActions({ item, staff, commissionPct }: Props) {
   }
 
   async function deleteItem() {
-    if (!confirm("Delete this item and its photos for good? (Anything that sold is archived instead.)")) return;
+    if (!confirm("Delete this item? It goes to 🗑 Deleted, where it can be brought back. (Anything that sold is archived instead.)")) return;
     setBusy(true); setErr(null);
     const { data: paths, error } = await supabase.rpc("delete_item", { p_item: item.id });
     if (error) { setBusy(false); return setErr(error.message); }
-    if (paths?.length) await supabase.storage.from("item-photos").remove(paths as string[]);
+    void paths; // kept for restore
     router.push("/app");
     router.refresh();
   }
