@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:52 PM from the project history (172 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:58 PM from the project history (174 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1282,3 +1282,16 @@
 - **Shared code (logic):** `src/lib/automations.ts`
 
 <sub>change id b86f257</sub>
+
+### 19:52 — Guide: share flow, Everyone's finds, where shares go
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id fd5dff3</sub>
+
+### 19:56 — Facebook posts and link previews use the branded card (photo + value/price + Next Owner Market + web address); captions link to the find and the free tool
+
+- **Public site pages:** `src/app/valued/[slug]/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id 6379fd4</sub>

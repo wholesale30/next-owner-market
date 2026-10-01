@@ -323,3 +323,8 @@ Built on how people actually decide: one obvious next step, see the value before
   - IndexNow, an instant notice to Bing, DuckDuckGo and Yahoo;
   - the Facebook Page, up to 3 finds a day, once the Page token is set.
 - **Google** finds the pages through the sitemap. Search Console speeds that up, and it needs the owner's login.
+
+**Branded pictures (Oct 1, 2026):**
+- **Facebook Page posts** use the branded card, not the bare photo. The card shows the item's photo, its value or price, "Next Owner Market" and nextownermarket.com: `/valued/<slug>/opengraph-image` for finds and `/item/<sku>/opengraph-image` for listings.
+- **Captions** link to the page and to the free tool (/thrift or /worth).
+- **Link previews:** when anyone pastes a find's link into Facebook, a text or Messenger, the same branded card shows as the preview.
