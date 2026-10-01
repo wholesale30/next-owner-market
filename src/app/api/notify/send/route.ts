@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+export const maxDuration = 300;
 import { createClient as createAdmin } from "@supabase/supabase-js";
 
 /**
@@ -12,8 +13,6 @@ export async function GET(req: Request) {
   }
   const admin = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   await admin.rpc("close_ended_auctions");
-  await admin.rpc("run_price_drops");
-  await admin.rpc("expire_comps");
 
   // Held-money timers: auto-release delivered orders after the 3-day window; auto-refund pickup orders nobody completed.
   if (process.env.STRIPE_SECRET_KEY) {
@@ -38,14 +37,12 @@ export async function GET(req: Request) {
     for (const o of toRefund || []) { try { await refundOrder(o.id); } catch (e) { console.error("auto-refund", o.id, e); } }
   }
 
-  try {
-    const { indexNow } = await import("@/lib/indexnow");
-    const since = new Date(Date.now() - 86400_000).toISOString();
-    const { data: changed } = await admin.from("items").select("sku").gte("updated_at", since).in("status", ["active", "reserved", "sold"]).limit(2000);
-    await indexNow(["/", "/sitemap.xml", ...(changed || []).map((i) => `/item/${i.sku}`)]);
-  } catch (e) { console.error("indexnow", e); }
   const { flushNotifications } = await import("@/lib/notify");
   const result = await flushNotifications(200);
+
+  // everything the site does by itself (welcome series, nudges, milestones, reviews, weekly post, price drops, comps, search pings)
+  let automations: Record<string, unknown> = {};
+  try { const { runAutomations } = await import("@/lib/automations"); automations = await runAutomations(); } catch (e) { console.error("automations", e); }
 
   // nightly backup of every table to the private "backups" bucket (keeps 30 days)
   try {
@@ -53,5 +50,6 @@ export async function GET(req: Request) {
     await runBackup();
   } catch (e) { console.error("backup", e); }
 
-  return NextResponse.json(result);
+  await admin.from("automations").update({ last_run_at: new Date().toISOString(), last_result: { ok: true } }).in("key", ["held_money_timers", "backups"]);
+  return NextResponse.json({ ...result, automations });
 }
