@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 7:53 PM (64 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 7:54 PM (64 messages from Shayne)
 
 **Claude:**
 
@@ -1278,3 +1278,15 @@ Now the shared "rich page" pieces (steps + FAQ with Google markup) for the three
 Now wire the share option into Worth and Pile results, and add the guides to the three tool pages.
 
 Now the mission statement as a Word doc, plus docs and journal.
+
+All live (deploy finishing now).
+
+**Why we built this** — nextownermarket.com/why. Your story, in your voice: three warehouses, 400 pallets, couldn't make yourself start, the shelf that changed it, "start with one box." It's on the home page under the hero, the Pro page, every tool page, and the footer. The Word version (Next_Owner_Market_Mission_Statement.docx) has the full piece plus one-line and three-line versions for posts and press. Read it and change anything that isn't how you'd say it — it should sound like you, not me.
+
+**Start with one box** — nextownermarket.com/start. The eight-step path for someone overwhelmed: one box → photograph → sort → list the Sell ones → set up payouts → copy to Facebook → hand over safely → next box. Each step has a tip and a button to the actual screen. Google reads it as a how-to.
+
+**Every tool page teaches now.** Worth, Sort the pile, and Buy or pass each have a plain explanation, numbered steps, real examples ("Shelf in Dad's garage: 14 items, sellable total $310–$520"), and a Questions-people-ask section in the format Google shows right in search results.
+
+**What things are worth** — nextownermarket.com/valued. After any Worth or Pile result: "Share it (no name)." Tick it and that valuation gets its own public page — value, why, where it sells, similar items, "value mine" button. Every share is a page Google can send someone to. This is the one that grows with users.
+
+On the search question: this batch turns the tool pages from thin to real, and gives the site a way to grow pages without you listing them. The rest is you: your first hundred items, and the launch plan.

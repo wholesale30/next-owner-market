@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 7:54 PM from the project history (93 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 7:58 PM from the project history (94 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -747,3 +747,9 @@
 - **Documents:** `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`
 
 <sub>change id a325f0d</sub>
+
+### 19:54 — Regenerated journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+
+<sub>change id ec243e8</sub>
