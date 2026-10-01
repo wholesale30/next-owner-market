@@ -1,0 +1,195 @@
+# Next Owner Market — The Complete Guide
+
+*Everything the site is, what each part does, why it exists, how it works, and how it grows the business. Written so anyone can read it: an assistant running the site, a partner, a buyer of the company. September 30, 2026.*
+
+---
+
+## Part 1 · What this is, in one page
+
+**The problem.** Millions of people have stuff worth money that they can't make themselves deal with. A garage, an attic, a storage unit, a parent's house, a warehouse. They know it's worth something. They don't know what, or how to sell it, or where to start, and the size of the job stops them cold. So it sits.
+
+**The product.** Next Owner Market (nextownermarket.com) is a phone-first website that turns "I have too much stuff" into "I sold it," one box at a time:
+
+1. **Photograph it.** One item or a whole box.
+2. **It tells you what it is and what it's worth**, and whether to sell, keep, donate, or toss.
+3. **It writes the listing**: title, description, price, shipping weight. In plain English, no jargon.
+4. **It gives you copy-and-paste versions for nine marketplaces** (Facebook, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy) with a step-by-step how-to for each, written for people who've never done it.
+5. **It lists it in our own store, free**, where buyers pay by card and the money is held until the buyer has the item.
+6. **It handles the hand-off safely**: a 6-digit pickup code, or a shipping label bought in the app with tracking.
+7. **It does the boring parts by itself**: nudges, price drops, milestones, weekly blog posts, search-engine pings, backups.
+
+**How it makes money.** Two ways. **Pro**, $15/month, for the tools (unlimited AI listings and lookups, the nine marketplace copies, Sort the pile, video). **Commission** on store sales (15% of the item price, set per seller; 0% on the owner's own items). Listing is always free. Shipping labels carry a small margin.
+
+**Why it can win.** The big marketplaces can't help you list on each other. The crosslisting apps have no store, no payments, no held money, no beginner guidance. And nobody has built the whole thing around the feeling of being overwhelmed. The owner has 30 years in surplus and 400 pallets; the site was built for him first.
+
+**Where it lives.** Website only (works as a phone app from the home screen). Hosted on Vercel; database and files on Supabase; payments by Stripe; email by Resend; AI by Anthropic. Everything runs on free tiers until there's real volume.
+
+---
+
+## Part 2 · The public site, page by page
+
+For each: where it is, how you get there, what it does, why it exists, how it grows the business.
+
+### Home · nextownermarket.com
+- **What:** Green hero with the one-line pitch, search box, two big buttons (What's it worth? / Sort the pile), link to Start with one box and Why we built this. Below: the "New: the AI writes your listings" card, location bar (ZIP/state/radius), category pills, sort pills, the item grid, reviews strip (once there are two), How it works (pay by card → money held → pick up or ship), subscribe box, Looking-for card, Have-stuff-to-sell card, footer with every page.
+- **Why:** Buyers browse; sellers see the tool pitch first. The footer links every page so Google can crawl them all.
+
+### Item page · /item/NOM-XXXXXX
+- **What:** Photos/video gallery, price, Save (♡ with count), condition/pickup/shipping/vehicle pills, Buy now (or "Hold it with a deposit" for vehicles over the cap; or "seller hasn't set up payments" note), shipping estimate by ZIP with carrier options, Make an offer, seller line (username, rating, sales), description, specs, message-the-seller form (mic enabled). Product markup for Google; share image generated on the fly.
+- **Why:** The page that sells. Every live item is a search result waiting to happen.
+
+### Category pages · /c/turntables (110 of them)
+- **What:** "Turntables for sale" headline, a sentence of real text, subcategory pills, the items, tool pitch.
+- **Why:** These rank for "X for sale" searches. 27 top-level groups incl. Vehicles, Farm, Heavy Equipment, Building, Baby, Pets.
+
+### City pages · /near/richmond-va
+- **What:** Items from sellers in and around a city, auto-generated from where items are. Appears on its own once a city has items.
+- **Why:** "Used tools near Richmond" searches are easy to win locally.
+
+### What's it worth? · /worth
+- **What:** Pick up to 6 photos, optional note (mic), tap. Result: what it is, era, condition, value range, retail-new, confidence, why, where it sells best (ranked, with reasons), ship-or-local, what raises the price, warning. Then **List it now** (one tap → draft listing with photos/title/description/price; buyers become sellers automatically) and **Share it (no name)** → public page. Below the tool: plain explanation, steps, examples, FAQ (Google-readable).
+- **Why:** The front door for people who aren't sellers yet. 3 free, then Pro. Every shared result becomes a page Google can rank.
+
+### Sort the pile · /pile
+- **What:** Up to 10 photos of a box/shelf/corner. Result: up to 25 items, each with value range, Sell/Keep/Donate/Toss, reason, expert flag; total for sellable items. Change any label. **List N items** makes drafts for all the Sell ones. Share all valuations (no name). Guide + FAQ below.
+- **Why:** The estate/garage/downsizing front door. Turns "overwhelmed" into "listed" in a minute. Feeds the store with supply.
+
+### Buy or pass? · /buy-or-pass
+- **What:** Photo + what they're asking. Result: resale range, best marketplace, that marketplace's fees (shown), shipping, profit range, BUY/MAYBE/PASS. Guide + FAQ.
+- **Why:** The thrift-store demo. Great for 15-second videos. Ends in a listing.
+
+### What things are worth · /valued, /valued/[slug], /valued/about/[term]
+- **What:** Public archive of valuations people chose to share (no names). Each has its own page with value, why, where to sell, similar items, "Value mine" button, share image. Hub pages ("What is a Pioneer SX-780 worth?") build themselves once 2+ valuations share the same words: typical range, where it sells, what raises price, every example.
+- **Why:** This is the self-growing search engine. Thousands of users → thousands of pages matching searches people type every day.
+
+### Start with one box · /start
+- **What:** Eight steps from "too much stuff" to "sold," each with a tip and a button to the actual screen. HowTo markup.
+- **Why:** The teaching page. Linked from everywhere a stuck person lands.
+
+### Why we built this · /why
+- **What:** The mission statement in the owner's voice.
+- **Why:** People buy from people. This is the story that gets shared and quoted.
+
+### How to sell on … · /sell-on, /sell-on/ebay (nine)
+- **What:** Full beginner guide per marketplace: what signup asks for, what the words mean, fees, steps, tips, glossary. HowTo markup. Tool pitch at the end.
+- **Why:** "How to sell on Poshmark" is a huge evergreen search. Every guide ends with our tool.
+
+### Blog · /blog, /blog/[slug]
+- **What:** Staff-written posts plus the automatic weekly "This week on Next Owner Market" post (what people valued, what sold, what's new, a tip). Every post ends with a Start-selling card. RSS at /feed/blog.xml.
+- **Why:** Google rewards sites that keep publishing. 52 automatic posts a year.
+
+### Community · /community
+- **What:** Five boards (What I found, What's it worth?, Questions, Tips, General). Posts with photos, replies, usernames only, Report on everything, contact info auto-removed, 20 posts/day limit. Staff hide/pin/lock/delete.
+- **Why:** Keeps people coming back; questions become content; a board is manageable where a live chat room isn't.
+
+### Help · /help
+- **What:** Short plain-English answers grouped Selling/Buying/Shipping-pickup-safety, an Ask-anything box answered from the User Guide, scam checklist, vehicles, taxes.
+- **Why:** The layperson's safety net. Also feeds the ? buttons throughout the app.
+
+### Pro · /pro
+- **What:** The tool pitch, free vs Pro, comparison to crosslisting apps, how commission works, Start free button.
+
+### Seller page · /seller/[id]
+- **What:** Username, rating, sales count, their live items.
+
+### Embed · /embed, /embed/worth
+- **What:** A free widget any website can paste in (iframe or link). Instructions for WordPress/Squarespace/Wix/Shopify.
+- **Why:** Every embed is a backlink, which is what Google weighs most.
+
+### Feeds · /feed/google.xml, /feed/items.xml, /feed/valued.xml, /feed/blog.xml, /sitemap.xml, /robots.txt
+- **What:** Google Shopping product feed (with weights, condition, shipping); RSS for items, valuations, blog; sitemap of every public page (rebuilt hourly); robots that keep private pages out.
+
+### Account pages · /account, /account/profile, /account/orders/[id], /signup, /login, /forgot, /unsubscribe
+- **What:** Buyer home (offers, orders, alerts, bids, saved items), profile (username with live availability check, private name, phone, one address block, free text alerts by carrier), order page (status, pickup code, pickup picker, safe meet spots, shipping label, tracking, problem report with self-resolution, bill of sale for vehicles, ratings), email settings.
+
+### Legal · /terms, /privacy
+
+---
+
+## Part 3 · The seller/staff app, screen by screen (nextownermarket.com/app)
+
+Every screen starts with a one-line hint and a ? for more. Sellers see their own things; staff see everything plus the extra tabs.
+
+- **🎛 Operations (staff):** numbers explained, every automation with what/why/last result/on-off/run now, the human task list with exact steps and notes, glossary. The page to hand an assistant.
+- **Inventory / My items:** list with Listed/Drafts/Sold filters, search, bulk select/delete, + Add item. Sellers: "Your first sale in 10 minutes" checklist, invite-a-friend card, Ask anything box.
+- **+ Add / Edit item:** photos (gallery first; clean background optional with studio look), notes box with mic, Write it for me (AI), title, brand/model, category (110), vehicle details when a vehicle category is chosen (year, miles, VIN, title status, title-in-hand), condition, description (mic), specs, tags, price with AI suggestion (never in the listing text), cost (staff), pickup/ship with weight and box, shipping mode (calculated or free), video (Pro). Save draft / List it.
+- **Item page (seller view):** stats (views/saves/messages/offers) with nudge, "Also posted on" tracker with take-down reminder after sale, automatic price drop schedule, Edit, Print tag, View in store, nine marketplace tabs (Copy, How to post, Never used this app?, glossary), storefront link, description.
+- **📷 Snap:** upload a pile of photos; AI groups them into items; clean backgrounds optional.
+- **💬 Inbox:** conversations (usernames only), reply with mic; staff see all.
+- **🛒 Orders:** open/all, Problems link (staff).
+- **💸 Offers:** accept/counter/decline.
+- **Payouts / Money:** Set up payouts (Stripe Express); staff: sales, consignor balances, payouts, Stripe status, Re-check.
+- **📊 Year:** per-year sales/shipping/fees/commissions/labels/cost/net, CSV export, plain-English note; not tax advice.
+- **Review (staff):** listings and new sellers awaiting approval; bulk approve/archive/delete.
+- **Wanted (staff):** buyer requests.
+- **Pickups (staff):** booked pickup slots.
+- **Bins (staff):** warehouse locations.
+- **📧 Email (staff):** New Arrivals blast.
+- **✍️ Blog (staff):** write/publish posts; community reports queue.
+- **🎁 Invites (staff):** free-Pro invite links (code, who, how long, how many uses), share sheet.
+- **👤 People (staff):** every account; approve, role, plan, credits, suspend; 🎁 Give free Pro (forever or a term).
+- **Settings (staff):** store name/tagline/location/contact, alert email + text, alert on all messages, store ZIP, shipping margin, vehicle card cap and deposit rules, pickup address/hours, photo background, backups.
+- **Profile:** username, private name, phone, address block, text alerts by carrier, password.
+
+---
+
+## Part 4 · What runs by itself (and why)
+
+All from one daily job (about 9 AM Eastern), each switchable from Operations, each recording what it did:
+
+| Automation | What | Why |
+|---|---|---|
+| Held-money timers | Release 3 days after delivery; refund pickup orders not completed in 7 days; apply referral credits | Money never gets stuck |
+| Welcome series | Day 1 "start with one box," day 3 "what's your first item worth," day 7 nudge; each once, only if they haven't done it | Turns sign-ups into sellers |
+| Seller nudges | Views-no-messages → suggest price drop; 3+ saves; drafts sitting 3+ days; live listing but no payouts | Each is a reason to act |
+| Milestones | First listing, 10 listings, first sale, third sale, $100/$500/$1,000 sold; each once, with a paste-able share line | Wins get shared |
+| Review requests | Day after an order completes, both sides asked to rate | Trust that shows in Google |
+| Weekly blog | Every Monday, a post from the week's real valuations, sales, new items | 52 pages a year, zero effort |
+| Price drops | Sellers' schedules applied; savers emailed | Stuck items sell |
+| Expire comps | Term-limited free Pro ends on time | Honest numbers |
+| Search engines | IndexNow for everything changed; sitemap hourly; Google feed every 30 min | Found in hours |
+| Backups | Every table, nightly, 30 days | Nothing lost |
+
+Also automatic, no switch: share images for every page; hub and city pages appearing on their own; price-drop emails to savers; staff alerts (email + text) for orders, problems, messages, review, new sellers, invites; contact-info stripping; username masking in conversations; starter usernames; vehicle rules; new-seller caps lifting after three sales; Build Journal and Change Log regenerating.
+
+Email volume is capped per day so the free tier is never exceeded; nothing is ever sent twice; anyone can turn tips off (order and payment emails always come).
+
+---
+
+## Part 5 · How it grows (the flywheel)
+
+1. **Supply:** Sort the pile and Worth turn overwhelmed people into listings. The owner's own 400 pallets seed it.
+2. **Pages:** every listing, valuation, hub, city, guide, category and weekly post is a page Google can rank. The sitemap, feeds and pings make sure Google and Bing see them within hours.
+3. **Links:** the embed widget, creator deals, Product Hunt and Reddit bring backlinks, which is what moves rankings.
+4. **Retention:** welcome series, nudges, milestones, Year summary and the community bring people back.
+5. **Sharing:** milestone lines, share images, valuation pages and the referral program (both get a month of Pro) bring the next person.
+6. **Revenue:** Pro for the tools, commission on sales. Both scale with the loop above.
+
+What a person still has to do is listed, with steps, on the Operations page (Search Console, Merchant Center, Business Profile, the demo video, Reddit, Product Hunt, creators, weekly group posts, weekly email, monthly embed outreach, Stripe check, Shippo key, review queue, problems).
+
+---
+
+## Part 6 · Trust and safety (how we keep people safe)
+
+- Money held until the buyer has the item; 6-digit pickup code; mandatory in-app shipping labels with tracking.
+- Real names, emails, phones never shown; usernames everywhere; contact info stripped from listings, messages and community posts.
+- New-seller caps (5 listings / $500) until three completed sales; staff approval of first listings.
+- Problem reports freeze the money; buyer and seller can settle it themselves (withdraw / refund); staff decide only when they can't.
+- Safe meet spots (police stations) on pickup orders; scam checklist in Help.
+- Vehicles: title in hand required, pickup only, deposit over the cap, printable bill of sale with real names only after payment.
+- Prohibited-item screening on every AI listing; Report on everything; suspend from People.
+- Ranges not promises; "estimate" never "appraisal"; Year summary is a summary, not tax advice.
+
+---
+
+## Part 7 · What it costs to run
+
+$0 today. Vercel (hosting), Supabase (database/files), Resend (email, 3,000/month free), Anthropic (AI, pennies per listing; roughly 3¢ per five-photo listing), Stripe (pay-as-you-go), Shippo (pay per label). The first few Pro subscriptions cover the AI.
+
+---
+
+## Part 8 · Where everything is kept
+
+- Code: GitHub `wholesale30/next-owner-market`. Hosting: Vercel `next-owner-market`. Database: Supabase `efikjdiamqzqnbifauke`.
+- Documents (Word, in `docs/` and sent in chat): User Guide, White Paper (technical), Complete Guide (this), Presentation Walkthrough, Mission Statement, Tool Marketing Plan, Launch Kit, Add-On Modules paper, Seller Terms, File Index, Build Journal (every conversation), Change Log (every change).
+- Rules for working on it: `CLAUDE.md` in the repo; the `shayne-operating-rules` skill on the owner's Claude account.

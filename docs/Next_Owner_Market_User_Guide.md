@@ -295,6 +295,16 @@ Rates are editable in Settings, per consignor, and per item.
 - **Every tool page now teaches**: What's it worth?, Sort the pile, and Buy or pass? each have a plain-English explanation, numbered steps, real examples, and a Questions people ask section that Google can show directly in results.
 - **What things are worth** (nextownermarket.com/valued): a public archive of valuations people chose to share (no names). After any Worth or Pile result there's a "Share it (no name)" box; tick it and the valuation gets its own page (photo optional). Each page: value range, why, where it sells best, what raises the price, similar items, and a "value mine" button. Every shared item is another page Google can send people to. Owners can hide theirs from My account.
 
+
+**Runs by itself, and the Operations page (Sept 30, night)**
+- **🎛 Operations** (first tab in the staff app): the numbers (tap any for what it means), every automation with what it does / why / last result / on-off / Run now, the list of human tasks with exact steps and a notes box, and a glossary. Hand this page to an assistant.
+- **Automatic emails**: welcome series (day 1, 3, 7), seller nudges (views with no messages, saves, drafts sitting, payouts not set up), milestones (first listing, 10 listings, first sale, third sale, $100/$500/$1,000) with a share line, review requests after each order. Each once; capped per day; anyone can turn tips off at /unsubscribe (order emails always come).
+- **Weekly blog post** written every Monday from the week's real valuations, sales and new items.
+- **Pages that build themselves**: hub pages (/valued/about/…) once two valuations share the same words; city pages (/near/richmond-va) for any city with items.
+- **Share images** for every item, valuation, tool page and the home page, so links look right on Facebook, texts and Reddit.
+- **RSS feeds** (/feed/items.xml, /feed/valued.xml, /feed/blog.xml) and the **free embeddable widget** (/embed) other sites can paste in.
+- **Year summary** (📊 Year), **Sort the pile**, **Buy or pass?**, **Why we built this**, **Start with one box**, **What things are worth**: see Part 6c.
+
 ## Part 7 · Sharing the store
 
 - Store: **https://nextownermarket.com**

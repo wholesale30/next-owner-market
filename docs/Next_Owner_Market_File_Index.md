@@ -28,3 +28,8 @@
 | 13 | Next_Owner_Market_Build_Journal.docx | The complete chronological record of the build conversation: every request, every correction, what was built |
 
 User Guide and White Paper were updated the same day (What's New / Sept 30 addendum).
+
+| 14 | Next_Owner_Market_Complete_Guide.docx | Everything the site is, page by page, what runs by itself, how it grows, trust, costs, where things are kept |
+| 15 | Next_Owner_Market_Presentation_Walkthrough.docx | A 14-slide script for presenting the site to anyone, with every address |
+| 16 | Next_Owner_Market_Mission_Statement.docx | Why we built this, full and short versions |
+| 17 | Next_Owner_Market_AddOn_Modules_White_Paper.docx | The add-on modules research paper with status (four of six built) |
