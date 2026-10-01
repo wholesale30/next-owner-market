@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
 import { scrubPriceTalk } from "@/lib/listing";
+import { askWithTool } from "@/lib/ai-tool";
 
 export const maxDuration = 60;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
@@ -47,14 +48,9 @@ export async function POST(req: Request) {
   ];
   let raw = "";
   try {
-    const msg = await client.messages.create({
-      model: MODEL, max_tokens: 2000, messages: [{ role: "user", content }],
-      tools: [{ name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema }],
-      tool_choice: { type: "tool", name: "appraise" },
-    });
-    const call = msg.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-    raw = JSON.stringify(call?.input ?? msg.content);
-    if (!call) throw new Error("No appraisal returned");
+    const input = await askWithTool(client, { model: MODEL, max_tokens: 2000, messages: [{ role: "user", content }], tool: { name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema } });
+    raw = JSON.stringify(input);
+    const call = { input };
     const out = call.input as { listing?: { title: string; description: string } };
     if (out.listing) out.listing.description = scrubPriceTalk(out.listing.description);
     return NextResponse.json({ result: out });

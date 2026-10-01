@@ -4,6 +4,7 @@ import { createHash, randomBytes } from "crypto";
 import { cookies, headers } from "next/headers";
 import { createClient as createAdmin } from "@supabase/supabase-js";
 import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
+import { askWithTool } from "@/lib/ai-tool";
 
 /**
  * Try it free: one photo in, a full listing out, no account needed.
@@ -70,17 +71,15 @@ export async function POST(req: Request) {
   };
   try {
     const client = new Anthropic();
-    const msg = await client.messages.create({
+    const input = await askWithTool(client, {
       model: MODEL, max_tokens: 1500,
-      tools: [{ name: "listing", description: "Record the listing.", input_schema: schema as unknown as Anthropic.Tool.InputSchema }],
-      tool_choice: { type: "tool", name: "listing" },
+      tool: { name: "listing", description: "Record the listing.", input_schema: schema as unknown as Anthropic.Tool.InputSchema },
       messages: [{ role: "user", content: [
         { type: "image", source: { type: "base64", media_type: `image/${m[1]}` as "image/jpeg", data: m[2] } },
         { type: "text", text: `You are an experienced US reseller writing a listing for this item. Read every label, model number and brand mark you can see. ${hints ? `The owner says: "${String(hints).slice(0, 300)}". ` : ""}Categories (pick the best id): ${(cats || []).map((c) => `${c.id}=${c.name}`).join("; ")}. Be honest; if it's common, say so plainly in the price.` },
       ] }],
     });
-    const call = msg.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-    if (!call) throw new Error("no listing");
+    const call = { input };
     const draft = call.input as Record<string, unknown> & { description: string; title: string; specs?: Record<string, string>; condition_notes?: string | null };
     draft.description = scrubPriceTalk(draft.description);
     if (draft.condition_notes) draft.condition_notes = scrubPriceTalk(draft.condition_notes);

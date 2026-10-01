@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { admin } from "@/lib/stripe";
+import { askWithTool } from "@/lib/ai-tool";
 
 /**
  * One place for "photos in, structured answer out":
@@ -35,14 +36,8 @@ export async function runVision<T>(opts: {
     { type: "text", text: opts.prompt },
   ];
   try {
-    const msg = await client.messages.create({
-      model: MODEL, max_tokens: opts.maxTokens ?? 2500, messages: [{ role: "user", content }],
-      tools: [{ name: opts.name, description: "Record the answer.", input_schema: opts.schema as unknown as Anthropic.Tool.InputSchema }],
-      tool_choice: { type: "tool", name: opts.name },
-    });
-    const call = msg.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
-    if (!call) throw new Error("No structured answer returned");
-    return { ok: true, result: call.input as T };
+    const result = await askWithTool<T>(client, { model: MODEL, max_tokens: opts.maxTokens ?? 2500, messages: [{ role: "user", content }], tool: { name: opts.name, description: "Record the answer.", input_schema: opts.schema as unknown as Anthropic.Tool.InputSchema } });
+    return { ok: true, result };
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     await db.from("settings").upsert({ key: `err:${opts.name}:${Date.now()}`, value: { message, photos: photos.slice(0, 3), user: opts.userId } }).then(() => {}, () => {});
