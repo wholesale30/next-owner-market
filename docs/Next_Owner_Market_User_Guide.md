@@ -376,3 +376,7 @@ Built on how people actually decide: one obvious next step, see the value before
 **Fixed while testing (Oct 1).** The AI model in use stopped accepting the way several tools asked for their answer, so **What's it worth?, Sort the pile, Buy or pass?, the weight guess and try-it-free were all failing** (7 real Sort-the-pile attempts failed between 12:45 and 12:48 PM; credits were refunded automatically). All of them now go through one shared helper that asks the way the model accepts.
 
 **Also fixed Oct 1:** the Google Shopping feed (what Merchant Center reads), the new-items feed and the sitemap were being saved once at build time, and the last build saved an empty Google feed. They're now made fresh on request (cached at the edge for 15 to 30 minutes), and if the database ever doesn't answer they return "try again later" instead of an empty list, so Google keeps its last good copy. The morning sweep checks that both feeds have items.
+
+## Taking a photo right in the app (Oct 1, 2026)
+
+What's it worth, Buy or Pass and Sort the pile each have two buttons. **🖼 Pick photos** uses pictures already on your phone. **📸 Take a photo** opens the camera right there, which is handy in a store aisle.

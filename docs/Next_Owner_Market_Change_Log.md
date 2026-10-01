@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 5:42 PM from the project history (160 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 6:36 PM from the project history (162 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1193,3 +1193,20 @@
 - **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_AddOn_Modules_White_Paper.md`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id 0ba5e33</sub>
+
+### 18:12 — Update build journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id d4cea7c</sub>
+
+### 18:34 — Take-a-photo button on every pricing tool; signed-out photo pick goes to signup instead of doing nothing; owner to-do list with Monday + due-date reminders
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Seller / staff app:** `src/app/app/layout.tsx`, `src/app/app/todo/TodoClient.tsx`, `src/app/app/todo/page.tsx`, `src/app/app/trash/page.tsx`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/PhotoPicker.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`, `src/lib/help.ts`
+- **Database (migrations):** `supabase/migrations/032_owner_todos.sql`
+
+<sub>change id f2ce52b</sub>

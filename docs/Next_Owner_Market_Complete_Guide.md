@@ -261,3 +261,26 @@ Built on how people actually decide: one obvious next step, see the value before
 **Fixed while testing (Oct 1).** The AI model in use stopped accepting the way several tools asked for their answer, so **What's it worth?, Sort the pile, Buy or pass?, the weight guess and try-it-free were all failing** (7 real Sort-the-pile attempts failed between 12:45 and 12:48 PM; credits were refunded automatically). All of them now go through one shared helper that asks the way the model accepts.
 
 **Also fixed Oct 1:** the Google Shopping feed (what Merchant Center reads), the new-items feed and the sitemap were being saved once at build time, and the last build saved an empty Google feed. They're now made fresh on request (cached at the edge for 15 to 30 minutes), and if the database ever doesn't answer they return "try again later" instead of an empty list, so Google keeps its last good copy. The morning sweep checks that both feeds have items.
+
+## Your to-do list (added Oct 1, 2026)
+
+**Where:** 📝 To-do, in the staff menu bar (`/app/todo`). Only staff can see it.
+
+**Adding things:** Type or say what you need to remember. Pick 🔴 Urgent, 🟡 Needed or ⚪ Someday, and add a due date if there is one. Under "More" you can add notes and choose how to be reminded. You can also just tell Claude, and Claude adds it.
+
+**Reminders:** These come from the automation "To-do reminders (your assistant)", by email and text.
+
+- **Every Monday:** the whole open list, urgent first.
+- **Other days:** only when something needs you. That means due in 3 days, due tomorrow, due today, or late. Urgent items with no date come every 2 days.
+- **Snooze a week** hides an item until then.
+- Deleted to-dos go to 🗑 Deleted.
+
+**In the app:** A green banner and the number on the To-do tab show how many things need you now.
+
+**Table:** `todos`. Migration: `032_owner_todos.sql`.
+
+## Camera on every pricing tool (Oct 1, 2026)
+
+**What changed:** What's it worth, Buy or Pass and Sort the pile now show two big buttons: 🖼 Pick photos first, then 📸 Take a photo. Listing and Try it free already had both.
+
+**Bug fixed:** If a signed-out visitor picked a photo on Buy or Pass or Sort the pile, nothing happened. Now they go straight to the free account page and come right back.

@@ -2634,3 +2634,15 @@ Sources:
 **Claude:**
 
 The updated Build Journal and Change Log are saved and pushed, and nothing is left uncommitted. That push was records only, so nothing on the website changed. The sales tax question is still waiting on your answers: does the warehouse business already have a Virginia sales tax number, and do you want me to build the free option?
+
+### Oct 1, 6:20 PM — Shayne
+
+> Hold on tax for a bit but keep in cue and refund me about once a week in the app. Al Also in the app, do a to-do list reminder like a secretary would or assistant like once a week or something or once when it's important when it comes to, comes due. So I don't forget I do a hundred different things. So all this stuff I add into like a to-do list of, or and needed and urgent and stuff like that. Next, um, I'm in Goodwill shopping using our app for what's it worth. And I think we need to really push this somehow to people that buy at Goodwill. There's shit tons of people. Shit tons of people across the country. We could be popping this too if we could find out how to get reach those people.
+
+**Claude:**
+
+I'll do all three: put sales tax on a weekly reminder, build you a to-do list that reminds you like an assistant would, and work out how to reach Goodwill and thrift shoppers. First I'm looking at the task list that's already in Operations.
+
+Next I'm building the to-do list. It needs a small new table in the database.
+
+Next is the daily reminder that sends it to you, plus a To-do tab in your menu.
