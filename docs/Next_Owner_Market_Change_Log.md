@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:38 AM from the project history (138 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 10:35 AM from the project history (140 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1046,3 +1046,17 @@
 - **Public site pages:** `src/app/page.tsx`, `src/app/why/page.tsx`
 
 <sub>change id aea3dd4</sub>
+
+### 01:38 — docs: corrected Mission Statement, Walkthrough, Complete Guide; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id deb5a70</sub>
+
+### 10:35 — Health: Resend send-only key no longer shows Broken (judged by real sends); carriers that shut off email-to-text (AT&T, Cricket, T-Mobile, Metro, Mint, Sprint) marked, skipped, and explained on Profile
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Buyer account & orders:** `src/app/account/profile/ProfileForm.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`, `src/lib/sms.ts`
+
+<sub>change id 8693abc</sub>

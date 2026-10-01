@@ -2281,3 +2281,7 @@ The held-money explanation still lives in Help and on the order pages, where peo
 **The same facts are corrected everywhere else:** the Mission Statement, Presentation Walkthrough and Complete Guide. Your account-wide rules still said "three warehouses"; the card above fixes that and adds a note never to repeat it. Tap save. The User Guide and White Paper already had it right.
 
 The corrected Mission Statement, Presentation Walkthrough, Complete Guide, Build Journal and Change Log are attached; save over your old copies.
+
+### Oct 1, 10:32 AM — Shayne
+
+> a mor- my morning app report um, reported a issue. Here's uh, what it is. And maybe that other one, that delay, but I'm not sure what that is.
