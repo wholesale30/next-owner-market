@@ -11,8 +11,9 @@ import AuctionAdmin from "./AuctionAdmin";
 
 interface AuctionRow { id: string; starting_bid: number; reserve_price: number | null; buy_now_price: number | null; current_bid: number | null; starts_at: string; ends_at: string; status: string }
 
-export default async function ItemPage({ params }: PageProps<"/app/items/[id]">) {
+export default async function ItemPage({ params, searchParams }: PageProps<"/app/items/[id]">) {
   const { id } = await params;
+  const welcome = !!((await searchParams) as { welcome?: string }).welcome;
   const supabase = await createClient();
   const profile = (await getProfile())!;
   const staff = profile.role === "admin" || profile.role === "staff";
@@ -59,6 +60,17 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
 
   return (
     <div className="space-y-4 pb-8">
+      {welcome && (
+        <div className="card p-4 space-y-2" style={{ borderLeft: "4px solid var(--ok)" }}>
+          <p className="text-xl font-extrabold">🎉 Your first listing is saved.</p>
+          <p className="text-sm">Two quick things and it can sell:</p>
+          <ol className="text-sm list-decimal pl-5 space-y-1">
+            <li>Check the price and words below. Tap <b>Edit</b> to change anything.</li>
+            <li>Tap the green <b>List it in the store</b> button. It&apos;s free, buyers near you can find it, and it shows up on Google.</li>
+          </ol>
+          <p className="text-sm">Then copy it to Facebook and the other sites with the tabs further down.</p>
+        </div>
+      )}
       {(
         <div className="card p-3 space-y-2" style={{ borderLeft: "4px solid var(--brand)" }}>
           <div className="flex items-center justify-between gap-2 flex-wrap">

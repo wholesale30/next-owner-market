@@ -92,10 +92,11 @@ export default function ItemActions({ item, staff, commissionPct }: Props) {
       <div className="space-y-2">
         <div className="card p-3 text-sm muted">
           {item.status === "pending_review" && "Waiting for our review. We'll list it once approved."}
-          {item.status === "draft" && "Draft. Open Edit and tap Submit for review when it's ready."}
+          {item.status === "draft" && "Not in the store yet. Give it a quick look, then tap the green button."}
           {item.status === "active" && "Live in the store."}
           {item.status === "sold" && "Sold. Your payout shows under Payouts."}
         </div>
+        {item.status === "draft" && <button className="btn btn-primary w-full text-lg py-3" disabled={busy} onClick={() => setStatus("pending_review")}>🏪 List it in the store (free)</button>}
         {deletable && <button className="pill" disabled={busy} onClick={deleteItem}>🗑 Delete this item</button>}
         {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err}</p>}
       </div>
