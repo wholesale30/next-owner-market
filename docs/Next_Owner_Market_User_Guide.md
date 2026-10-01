@@ -304,6 +304,7 @@ Rates are editable in Settings, per consignor, and per item.
 - **Share images** for every item, valuation, tool page and the home page, so links look right on Facebook, texts and Reddit.
 - **RSS feeds** (/feed/items.xml, /feed/valued.xml, /feed/blog.xml) and the **free embeddable widget** (/embed) other sites can paste in.
 - **Year summary** (📊 Year), **Sort the pile**, **Buy or pass?**, **Why we built this**, **Start with one box**, **What things are worth**: see Part 6c.
+- **Later the same night**: buyer weekly "new near you" (Thursdays), seller weekly report (Mondays), win-back at 30 days, Pro offer when free credits run out, Facebook Page auto-posting (needs a token; steps in Operations), a daily health check of every outside service, a Monday digest to staff. Milestones now start at $25 and $50; nudges fire at 10 views / 2 saves; milestone texts for people with text alerts on. Operations gained a Read-me-first for new hires, the Outside-the-site registry with live status, and every automatic email word for word. Settings has a Facebook Page ID/token box.
 
 ## Part 7 · Sharing the store
 

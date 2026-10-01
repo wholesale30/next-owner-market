@@ -66,7 +66,9 @@
 
 **Say:** "Welcome emails on day 1, 3, 7. A nudge when 20 people looked at your lamp and nobody asked. A congratulations with a paste-able line at your first sale and at $500. A review request the day after every order. A blog post every Monday written from the week's real numbers. Price drops on schedule. Search engines pinged within minutes of anything changing. Backups nightly. Each one says what it did, and any of them can be switched off from this page."
 
-**Then scroll to "What a person still has to do."** **Say:** "And the parts that need a human login or a human judgment are here with the exact steps, so I can hand this page to an assistant and walk away."
+**Then scroll to "Outside the site."** **Say:** "Every other company we depend on, who holds the login, what's automatic there, and whether it's healthy this morning. If email breaks at 3 AM, this page is red by 9 and I've got an email about it."
+
+**Then "What a person still has to do."** **Say:** "And the parts that need a human login or a human judgment are here with the exact steps, so I can hand this page to a new hire on day one and walk away. There's a Read-me-first at the top written for exactly that person."
 
 ## Slide 9 · How it grows without ads
 

@@ -139,10 +139,16 @@ All from one daily job (about 9 AM Eastern), each switchable from Operations, ea
 
 | Automation | What | Why |
 |---|---|---|
+| Health check | Tests Stripe, email, AI, Shippo, Facebook, sitemap, Google feed, IndexNow every morning; marks each OK/broken on Operations; emails staff if something that worked breaks | Nobody finds out from a customer |
 | Held-money timers | Release 3 days after delivery; refund pickup orders not completed in 7 days; apply referral credits | Money never gets stuck |
 | Welcome series | Day 1 "start with one box," day 3 "what's your first item worth," day 7 nudge; each once, only if they haven't done it | Turns sign-ups into sellers |
 | Seller nudges | Views-no-messages → suggest price drop; 3+ saves; drafts sitting 3+ days; live listing but no payouts | Each is a reason to act |
-| Milestones | First listing, 10 listings, first sale, third sale, $100/$500/$1,000 sold; each once, with a paste-able share line | Wins get shared |
+| Milestones | First listing, 10 listings, first sale, third sale, $25/$50/$100/$500/$1,000 sold; each once, with a paste-able share line and the referral link; a text too if they turned texts on | Wins get shared; small sellers feel it early |
+| Buyer weekly digest | Thursdays: every account with a ZIP gets the newest items within 100 miles | Buyers come back for the weekend |
+| Seller weekly report | Mondays: views, saves, messages, offers, sales, and the one thing to do next | The habit loop |
+| Win-back + Pro offer | 30 days quiet → one note; free credits hit zero → one plain explanation of Pro | Cheapest users to bring back; the right moment to upsell |
+| Facebook Page | With a Page token: up to 3 new items a day and each weekly post, posted to the Page | Posting by hand stops; this doesn't |
+| Staff weekly digest | Mondays: numbers, what ran, what's broken, human tasks due, in one email | Nobody has to remember to look |
 | Review requests | Day after an order completes, both sides asked to rate | Trust that shows in Google |
 | Weekly blog | Every Monday, a post from the week's real valuations, sales, new items | 52 pages a year, zero effort |
 | Price drops | Sellers' schedules applied; savers emailed | Stuck items sell |
@@ -164,6 +170,18 @@ Email volume is capped per day so the free tier is never exceeded; nothing is ev
 4. **Retention:** welcome series, nudges, milestones, Year summary and the community bring people back.
 5. **Sharing:** milestone lines, share images, valuation pages and the referral program (both get a month of Pro) bring the next person.
 6. **Revenue:** Pro for the tools, commission on sales. Both scale with the loop above.
+
+### The Operations page (nextownermarket.com/app/ops)
+
+The control room, written so a brand-new hire can run the business from it. Top to bottom:
+
+1. **Read me first**: what the business is, what this page is, the weekly routine (Monday: digest + Review + People + Problems; Thursday: New Arrivals email; any day: three Facebook groups, reports), and what to do if something looks wrong (write down what you see, tell Claude, switch the automation off meanwhile).
+2. **The numbers**: 28 figures (accounts, new this week, sellers, sellers with payouts, Pro, paying Pro, items live, listed this week, drafts, waiting for approval, orders, sold all time and 30 days, our cut, problems, public valuations, piles sorted, buy-or-pass checks, blog posts, community posts, reports, subscribers, automatic emails, views, saves, invites). Tap any number for a one-line meaning.
+3. **What runs by itself**: every automation above, with what it does, why, how often, how many times it has run, when last, the plain result, an on/off switch, and ▶ Run now. Plus the automatic emails sent this week by type, the latest posts, and a list of the things that run with nothing to switch (sitemap, feed, pings, share images, hub/city pages, price-drop emails, staff alerts, backups).
+4. **Outside the site**: every other company or service we depend on (Vercel, Supabase, GitHub, Stripe, Resend, Anthropic, Shippo, Google Search Console, Merchant Center, Business Profile, Bing/IndexNow, sitemap, Google feed, Facebook Page, Reddit, Product Hunt, creators). For each: what it is, what the site does there automatically, what a person does, who holds the login, a link, and a live status (OK / broken / human-run / not set up) from the morning health check.
+5. **What customers receive, word for word**: every automatic email, when it goes, subject and body.
+6. **What a person still has to do**: grouped Search / Marketing / Money / Trust / Weekly, each with what, why, exact numbered steps, a link, a notes box for the next person, and a done tick (one-time tasks fade when done; weekly/monthly ones come back).
+7. **Words**: a glossary.
 
 What a person still has to do is listed, with steps, on the Operations page (Search Console, Merchant Center, Business Profile, the demo video, Reddit, Product Hunt, creators, weekly group posts, weekly email, monthly embed outreach, Stripe check, Shippo key, review queue, problems).
 
