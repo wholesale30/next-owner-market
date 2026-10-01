@@ -36,7 +36,8 @@ export default function ShareValuation({ payload, photoUrl }: { payload: Record<
         <p className="text-sm text-center" style={{ color: "var(--ok)" }}>✓ It has its own page now, so people searching Google for it can find it. <Link className="underline" href={`/valued/${(state as { slug: string }).slug}`}>See it</Link></p>
       ) : (
         <>
-          <p className="text-xs muted text-center">Every share gets its own page that people searching Google can find. It helps the next person, and your friends can check theirs free. No name on it.</p>
+          <p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the item, its photo and what it&apos;s worth.</p>
+          <p className="text-xs muted text-center">Every share gets its own page that people searching Google can find. It helps the next person, and your friends can check theirs free.</p>
           {photoUrl && <label className="flex items-center justify-center gap-2 text-xs"><input type="checkbox" checked={withPhoto} onChange={(e) => setWithPhoto(e.target.checked)} /> Include the photo</label>}
         </>
       )}

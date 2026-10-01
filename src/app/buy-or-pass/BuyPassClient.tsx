@@ -133,7 +133,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
       <div className="card p-3 space-y-2" style={{ background: "color-mix(in srgb, var(--brand) 8%, var(--surface))", borderColor: "var(--brand)", borderWidth: 2 }}>
         <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={sharing} onClick={share}>{sharing ? "Making its page…" : shared ? "📣 Share it again" : "📣 Share this find"}</button>
         {page ? <p className="text-sm text-center" style={{ color: "var(--ok)" }}>✓ Your find has its own page now, so people searching Google for it can find it. <a className="underline" href={`/valued/${page}`}>See it</a></p>
-          : <p className="text-xs muted text-center">Every share gets its own page that people searching Google can find. It helps the next person, and your friends can check their finds free. No name on it.</p>}
+          : <><p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the item, its photo and what it&apos;s worth.</p><p className="text-xs muted text-center">Every share gets its own page that people searching Google can find. It helps the next person, and your friends can check their finds free.</p></>}
       </div>
 
       <div className="grid gap-2">

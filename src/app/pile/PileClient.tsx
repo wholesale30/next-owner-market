@@ -107,7 +107,8 @@ function SharePile({ items, photos }: { items: Item[]; photos: Picked[] }) {
   return (
     <div className="card p-3 space-y-2" style={box}>
       <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={state === "busy"} onClick={share}>{state === "busy" ? "Making their pages…" : state === "err" ? "Couldn't share; tap to try again" : `📣 Share these ${items.length} finds`}</button>
-      <p className="text-xs muted text-center">Each one gets its own page that people searching Google can find. It helps the next person with the same thing. No name, nothing about where you live.</p>
+      <p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the items, their photos and what they&apos;re worth.</p>
+      <p className="text-xs muted text-center">Each one gets its own page that people searching Google can find. It helps the next person with the same thing.</p>
       <label className="flex items-center justify-center gap-2 text-xs"><input type="checkbox" checked={withPhoto} onChange={(e) => setWithPhoto(e.target.checked)} /> Include the photos</label>
     </div>
   );
