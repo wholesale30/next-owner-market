@@ -441,10 +441,10 @@ const facebookPage: Automation = {
     let n = 0; const errors: string[] = [];
     for (const i of fresh || []) {
       if (n >= 3) break; if (posted.has(i.sku)) continue;
-      const ph = (i.item_photos as { url: string; is_primary: boolean }[]) || []; const photo = (ph.find((p) => p.is_primary) || ph[0])?.url;
-      const msg = `${i.title} — $${Math.round(Number(i.price))}${i.city ? ` · ${i.city}, ${i.state}` : ""}\nPay by card, money held until you have it.\n${site()}/item/${i.sku}`;
+      const msg = `${i.title} — $${Math.round(Number(i.price))}${i.city ? ` · ${i.city}, ${i.state}` : ""}\nBuy it here: ${site()}/item/${i.sku}\n\nNext Owner Market · snap a photo, the AI writes your listing: ${site()}`;
+      const card = `${site()}/item/${i.sku}/opengraph-image`; // branded picture: photo + price + our name and web address
       try {
-        const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/${photo ? "photos" : "feed"}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(photo ? { url: photo, caption: msg, access_token: cfg.page_token } : { message: msg, access_token: cfg.page_token }) });
+        const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/photos`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: card, caption: msg, access_token: cfg.page_token }) });
         if (r.ok) { posted.add(i.sku); n++; } else errors.push(`${i.sku}: ${(await r.text()).slice(0, 120)}`);
       } catch (e) { errors.push(String(e)); }
     }
@@ -454,9 +454,10 @@ const facebookPage: Automation = {
     for (const v of vals || []) {
       if (vn >= 3) break; if (posted.has(`val:${v.slug}`)) continue;
       const short = String(v.title).split(/[—(,]/)[0].trim().slice(0, 90);
-      const msg = `${v.source === "buypass" ? "Thrift find" : "What's it worth?"} ${short}: about $${Math.round(Number(v.value_low))}–$${Math.round(Number(v.value_high))}.\nCheck yours free, 30 seconds: ${site()}/valued/${v.slug}`;
+      const msg = `${v.source === "buypass" ? "🛒 Thrift find" : "💰 What's it worth?"} ${short}: about $${Math.round(Number(v.value_low))}–$${Math.round(Number(v.value_high))}.\nSee it: ${site()}/valued/${v.slug}\n\nCheck yours free in 30 seconds, no app to download: ${site()}/${v.source === "buypass" ? "thrift" : "worth"}\nNext Owner Market`;
+      const card = `${site()}/valued/${v.slug}/opengraph-image`; // branded picture: photo + value + our name and web address
       try {
-        const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/${v.photo_url ? "photos" : "feed"}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(v.photo_url ? { url: v.photo_url, caption: msg, access_token: cfg.page_token } : { message: msg, access_token: cfg.page_token }) });
+        const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/photos`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: card, caption: msg, access_token: cfg.page_token }) });
         if (r.ok) { posted.add(`val:${v.slug}`); vn++; } else errors.push(`val ${v.slug}: ${(await r.text()).slice(0, 120)}`);
       } catch (e) { errors.push(String(e)); }
     }

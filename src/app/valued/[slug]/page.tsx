@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps<"/valued/[slug]">):
   const supabase = await createClient();
   const { data: v } = await supabase.from("valuations").select("title, value_low, value_high, era, why, photo_url").eq("slug", slug).maybeSingle();
   if (!v) return {};
-  return { title: `${v.title}: worth about ${money(v.value_low)}–${money(v.value_high)}`, description: `${v.era ? v.era + ". " : ""}${(v.why || "").slice(0, 150)} Check what yours is worth in 30 seconds, free.`, openGraph: v.photo_url ? { images: [v.photo_url] } : undefined };
+  return { title: `${v.title}: worth about ${money(v.value_low)}–${money(v.value_high)}`, description: `${v.era ? v.era + ". " : ""}${(v.why || "").slice(0, 150)} Check what yours is worth in 30 seconds, free.` }; // preview picture: the branded card in opengraph-image.tsx (photo + value + our name)
 }
 
 export default async function ValuedPage({ params }: PageProps<"/valued/[slug]">) {
