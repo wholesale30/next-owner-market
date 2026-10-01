@@ -427,7 +427,7 @@ const winback: Automation = {
 // ---------------------------------------------------------------- Facebook Page auto-post
 const facebookPage: Automation = {
   key: "facebook_page", name: "Post to the Facebook Page", schedule: "daily", sort_order: 55,
-  what: "If a Facebook Page token is set (Operations → Outside the site → Facebook Page), posts up to 3 new items a day (photo, price, link) and the weekly blog post to the Page. Nothing is posted twice.",
+  what: "If a Facebook Page token is set (Operations → Outside the site → Facebook Page), posts up to 3 new items and up to 3 shared finds a day (photo, value, link) and the weekly blog post to the Page. Nothing is posted twice.",
   why: "The Page is the top of the local funnel. Posting by hand every day is the first thing that stops happening.",
   async run() {
     const d = db();
@@ -448,12 +448,24 @@ const facebookPage: Automation = {
         if (r.ok) { posted.add(i.sku); n++; } else errors.push(`${i.sku}: ${(await r.text()).slice(0, 120)}`);
       } catch (e) { errors.push(String(e)); }
     }
+    // Shared finds (What's it worth / Buy or Pass / Sort the pile): up to 3 a day, so every share also reaches Facebook
+    const { data: vals } = await d.from("valuations").select("slug, title, value_low, value_high, photo_url, source").eq("is_public", true).order("created_at", { ascending: false }).limit(30);
+    let vn = 0;
+    for (const v of vals || []) {
+      if (vn >= 3) break; if (posted.has(`val:${v.slug}`)) continue;
+      const short = String(v.title).split(/[—(,]/)[0].trim().slice(0, 90);
+      const msg = `${v.source === "buypass" ? "Thrift find" : "What's it worth?"} ${short}: about $${Math.round(Number(v.value_low))}–$${Math.round(Number(v.value_high))}.\nCheck yours free, 30 seconds: ${site()}/valued/${v.slug}`;
+      try {
+        const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/${v.photo_url ? "photos" : "feed"}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(v.photo_url ? { url: v.photo_url, caption: msg, access_token: cfg.page_token } : { message: msg, access_token: cfg.page_token }) });
+        if (r.ok) { posted.add(`val:${v.slug}`); vn++; } else errors.push(`val ${v.slug}: ${(await r.text()).slice(0, 120)}`);
+      } catch (e) { errors.push(String(e)); }
+    }
     const { data: post } = await d.from("posts").select("slug, title").not("published_at", "is", null).order("published_at", { ascending: false }).limit(1).maybeSingle();
     if (post && !posted.has(`post:${post.slug}`)) {
       try { const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/feed`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: `${post.title}\n${site()}/blog/${post.slug}`, access_token: cfg.page_token }) }); if (r.ok) posted.add(`post:${post.slug}`); else errors.push("post: " + (await r.text()).slice(0, 120)); } catch (e) { errors.push(String(e)); }
     }
     await d.from("settings").upsert({ key: "facebook", value: { posted: [...posted].slice(-500) } });
-    return { items_posted: n, errors: errors.slice(0, 3) };
+    return { items_posted: n, finds_posted: vn, errors: errors.slice(0, 3) };
   },
 };
 

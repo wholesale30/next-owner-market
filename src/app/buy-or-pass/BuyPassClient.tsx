@@ -56,20 +56,23 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
     if (!r.ok || !j.item_id) return setErr({ msg: j.error || "Couldn't make the listing." });
     router.push(`/app/items/${j.item_id}/edit`);
   }
+  // Step 1: put it on our site (no popup). Step 2 (optional button): send the brag card to Facebook or a friend.
   async function share() {
     if (!res?.id) return;
     setSharing(true);
     const r = await fetch("/api/buy-or-pass/share", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: res.id }) });
     const j = (await r.json().catch(() => ({}))) as { slug?: string };
     setSharing(false);
-    if (j.slug) setPage(j.slug);
+    if (j.slug) { setPage(j.slug); setShared(true); } else setErr({ msg: "Couldn't share that one. Tap Share again." });
+  }
+  async function send() {
+    if (!res?.id) return;
     const url = `${window.location.origin}/flip/${res.id}${refCode ? `?ref=${refCode}` : ""}`;
     const text = res.paid ? `Paid ${money(res.paid)} at the thrift store. It sells for about ${money(res.resale_low)}–${money(res.resale_high)}. ${V[res.verdict].label}! Checked free with Buy or Pass:` : `Found this thrifting. It sells for about ${money(res.resale_low)}–${money(res.resale_high)}. Checked free with Buy or Pass:`;
     try {
       if (navigator.share) await navigator.share({ title: "Buy or pass?", text, url });
-      else { await navigator.clipboard.writeText(`${text} ${url}`); }
-    } catch { /* closed the share sheet: the page is still made */ }
-    setShared(true);
+      else await navigator.clipboard.writeText(`${text} ${url}`);
+    } catch { /* closed */ }
   }
   async function thriftPro() {
     if (!meId) { router.push(`/signup?buyer=1${refQ}&next=/buy-or-pass`); return; }
@@ -131,9 +134,19 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
       </div>
 
       <div className="card p-3 space-y-2" style={{ background: "color-mix(in srgb, var(--brand) 8%, var(--surface))", borderColor: "var(--brand)", borderWidth: 2 }}>
-        <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={sharing} onClick={share}>{sharing ? "Making its page…" : shared ? "📣 Share it again" : "📣 Share this find"}</button>
-        {page ? <p className="text-sm text-center" style={{ color: "var(--ok)" }}>✓ Your find has its own page now, so people searching Google for it can find it. <a className="underline" href={`/valued/${page}`}>See it</a></p>
-          : <><p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the item, its photo and what it&apos;s worth.</p><p className="text-xs muted text-center">Every share gets its own page that people searching Google can find. It helps the next person, and your friends can check their finds free.</p></>}
+        {shared && page ? (
+          <>
+            <p className="text-base font-bold text-center" style={{ color: "var(--ok)" }}>✓ Shared on Next Owner Market</p>
+            <p className="text-sm text-center">It has its own page now, so people searching Google for one can find it. <Link className="underline font-semibold" href={`/valued/${page}`}>See your page</Link> · <Link className="underline" href="/valued">Everyone&apos;s finds</Link></p>
+            <button type="button" className="btn btn-secondary w-full" onClick={send}>Also send it to Facebook or a friend</button>
+          </>
+        ) : (
+          <>
+            <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={sharing} onClick={share}>{sharing ? "Sharing…" : "📣 Share this find"}</button>
+            <p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the item, its photo and what it&apos;s worth.</p>
+            <p className="text-xs muted text-center">It goes on our site as its own page that Google can find. It helps the next person with the same thing.</p>
+          </>
+        )}
       </div>
 
       <div className="grid gap-2">

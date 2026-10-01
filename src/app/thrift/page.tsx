@@ -50,6 +50,7 @@ export default async function ThriftPage({ searchParams }: PageProps<"/thrift">)
           <p><b>Does it work at Goodwill, Salvation Army, Savers, yard sales?</b> Anywhere. It only needs a photo and a price.</p>
           <p><b>Do I have to download an app?</b> No. It&apos;s a web page. After your first check you can put it on your home screen and it opens like an app.</p>
           <p><b>What if I buy it?</b> Tap &quot;I bought it: list it now.&quot; Your photo, the price and what you paid are filled in.</p>
+          <p><b>See what others found:</b> <Link href="/valued" className="underline">Everyone&apos;s finds</Link>.</p>
           <p><b>More tools:</b> <Link href="/worth" className="underline">What&apos;s it worth?</Link> for things at home, <Link href="/pile" className="underline">Sort the pile</Link> for a whole box at once.</p>
         </div>
         <p className="text-xs muted text-center">Not affiliated with Goodwill Industries International or any thrift store. Estimates, not guarantees.</p>

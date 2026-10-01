@@ -19,7 +19,7 @@ export default async function ValuedIndex({ searchParams }: PageProps<"/valued">
     <div className="flex-1">
       <StoreHeader business={business} signedIn={!!user} />
       <main className="max-w-5xl mx-auto p-4 space-y-4">
-        <div><h1 className="text-2xl font-extrabold">What things are worth</h1><p className="muted text-sm">Real items, valued from photos by people cleaning out garages, attics, and warehouses. Shared with their OK, no names.</p></div>
+        <div><h1 className="text-2xl font-extrabold">Everyone&apos;s finds: what things are worth</h1><p className="muted text-sm">Real thrift finds and household items, checked from a photo and shared by the people who found them. No names. Newest first.</p></div>
         <form className="flex gap-2"><input className="input" name="q" placeholder="Search: receiver, drill, lamp…" defaultValue={q || ""} /><button className="btn btn-primary">Search</button></form>
         {!rows?.length && <p className="card p-6 text-center muted">Nothing here yet. Be the first: <Link href="/worth" className="underline">value something</Link> and tick &quot;share it.&quot;</p>}
         <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
