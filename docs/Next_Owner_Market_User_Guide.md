@@ -348,3 +348,29 @@ Post the store link in your Facebook group's description and pinned post. Every 
 **Weight guess (Add / Edit item):** next to "Weight (lbs, packed)" there's a **✨ Guess it** button. It reads the title, description and specs and fills in the packed weight (item + box + padding, rounded up) and the box size, with a one-line reason under it. It also runs by itself when someone ticks **Will ship** and the weight is empty. It's free (no AI credit used). If the seller can weigh it, the real number is better.
 
 **Text alerts (free, by carrier):** AT&T and Cricket shut off free email-to-text on June 17, 2025; T-Mobile, Metro and Mint stopped around December 2024; Sprint is gone. Those carriers are marked "texts not available" on Profile, the site skips them, and those people still get every alert by email. Verizon (and Xfinity, Visible, Straight Talk) still works but Verizon plans to end it by March 31, 2027; a paid text service would replace it then (ask first; about a cent a text). **Resend health:** the email key is send-only (the safe kind), so the old check showed "Broken" even while emails were delivering; Health now judges by real sends.
+
+## The new-visitor redesign (Oct 1, 2026)
+
+Built on how people actually decide: one obvious next step, see the value before signing up, ask for Pro only at happy moments.
+
+**Try it free (/try).** The home page now leads with one big button: **📸 Try it free: pick a photo**. No account. The visitor picks one photo (gallery first, camera second), can add a note by typing or talking, and taps **Write my listing**. About 30 seconds later they see their title, a price range, the description, and ready-to-paste versions for all 9 sites, with "Done in 22 seconds. By hand that's 15 to 20 minutes." Then: **💾 Keep this listing (free account)** and **🏪 Bonus: list it in our store too, free.** One free try per phone (and two per network per day, 300 a day site-wide) keeps the AI bill small.
+
+**Keep it.** Signing up from a try turns the result into the person's first draft listing, photo and all, and drops them on it with a 🎉 welcome card and one green button: **🏪 List it in the store (free)**.
+
+**Home page.** Headline "Snap a photo. The AI writes your listing." One big button, three small links (What's it worth? · List a whole box · Overwhelmed? Start here), a 3-step "How selling works" (Snap it · AI writes it · Get paid), then "Shopping? Find something near you" with the search and the store. The top bar is just **📸 Sell · Tools · ? · Sign in** (Tools hides on narrow phones).
+
+**AI tools page (/tools).** Every tool in plain words, biggest first: List one item (Start here), List a whole box, What's it worth?, Should I buy it?, How to post on each app, Overwhelmed? Start with one box, What things are worth. Plus a simple Free vs Pro box.
+
+**Pro at the right moments.** Right after the AI writes a listing for a free seller: "✨ Written in 18 seconds. By hand that's about 15 minutes. 2 free AI listings left." with **⭐ Go Pro** and **Later**. When the free listings run out: "You've used your free AI listings 🎉 That means it's working for you," with Go Pro or "Not now, I'll type this one myself." Never before they've seen it work.
+
+**Simple menus.** Sellers see 4 big tabs: **➕ Sell · 📦 My stuff · 💬 Messages · 💵 Money**. Everything else is under **☰ More**, grouped (Selling: Orders, Offers, AI tools, List a whole pile · You: Profile & alerts, Year summary, Pro, See the store, Help). When an order or offer needs them, a green bar across the top says so ("🛒 Someone bought something! Tap to see what to do."). Staff see 6 tabs (Inventory, Add, Inbox, Orders, Review, Operations) and More in three groups: Selling · Store & people · Run the business.
+
+**Plain-English sign-up.** "Start selling, free" / "Keep your listing"; no "consignor" anywhere a newcomer looks.
+
+**Checks that now run by themselves.**
+- **Pretend new seller (weekly, Mondays; Run now on Operations):** a robot does the whole new-person path on the live site: try it free with a real photo → keep it → sign up → its first draft appears → signs in → adds another item with a photo → sends for review → approved → a signed-out shopper opens it → then it deletes everything it made. If any step breaks, staff get an alert naming the step. Its very first run found that the AI tools were failing (below).
+- **Morning page sweep:** every page in the sitemap plus the feeds, opened as a signed-out shopper.
+- **Morning AI test:** a real structured AI call like the tools make; alerts if the AI tools stop answering.
+- **Where new people drop off (Operations):** bars for Tried it free → Kept it → Seller accounts → Added an item → Has something live → Made a sale → Paying Pro, with the % that made it from each step to the next.
+
+**Fixed while testing (Oct 1).** The AI model in use stopped accepting the way several tools asked for their answer, so **What's it worth?, Sort the pile, Buy or pass?, the weight guess and try-it-free were all failing** (7 real Sort-the-pile attempts failed between 12:45 and 12:48 PM; credits were refunded automatically). All of them now go through one shared helper that asks the way the model accepts.

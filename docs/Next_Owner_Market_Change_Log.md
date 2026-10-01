@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 12:28 PM from the project history (147 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:01 PM from the project history (155 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1107,3 +1107,59 @@
 - **Project rules:** `CLAUDE.md`
 
 <sub>change id 2afb284</sub>
+
+### 12:34 — Try it free (/try): one photo → AI listing + 9 ready-to-paste versions, no account; one try per device; 'Keep it' signup turns it into their first draft with the photo; welcome card + one-tap 'List it in the store (free)' for sellers; plain-English signup
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/signup/route.ts`, `src/app/api/try/route.ts`
+- **Seller / staff app:** `src/app/app/items/[id]/ItemActions.tsx`, `src/app/app/items/[id]/page.tsx`
+- **Public site pages:** `src/app/signup/page.tsx`, `src/app/try/TryClient.tsx`, `src/app/try/page.tsx`
+
+<sub>change id c7112e3</sub>
+
+### 12:35 — Home: one big 'Try it free: pick a photo' button, 3-step how-selling-works, shopping search below; header is Sell / Tools / ? / Sign in
+
+- **Public site pages:** `src/app/StoreHeader.tsx`, `src/app/page.tsx`
+
+<sub>change id 9d9cdb5</sub>
+
+### 12:36 — App menus: sellers get 4 big tabs (Sell, My stuff, Messages, Money) + a grouped More menu; staff get 6 main tabs + More in 3 groups; green banner when an order or offer needs action
+
+- **Seller / staff app:** `src/app/app/layout.tsx`
+
+<sub>change id 9db5a62</sub>
+
+### 12:37 — AI tools page in plain words (List one item, List a whole box, What's it worth, Should I buy it, How to post on each app); time-saved + Pro offer right after a great AI listing; friendly upgrade card at the free limit; /try and /tools in sitemap
+
+- **Seller / staff app:** `src/app/app/items/ItemForm.tsx`
+- **Public site pages:** `src/app/sitemap.ts`, `src/app/tools/page.tsx`
+
+<sub>change id eda66d4</sub>
+
+### 12:39 — Weekly robot new seller (signs up, adds item + photo, sends for review, gets approved, opens listing as shopper, cleans up; alerts on the stuck step); drop-off funnel on Operations (tried → kept → seller → item → live → sale → Pro)
+
+- **Server routes (API):** `src/app/api/signup/route.ts`
+- **Seller / staff app:** `src/app/app/ops/OpsClient.tsx`, `src/app/app/ops/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id ac89087</sub>
+
+### 12:44 — Robot also tests try-it-free → keep it → first item; header fits phone width (Tools hidden under 460px)
+
+- **Public site pages:** `src/app/StoreHeader.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id d7b2ffc</sub>
+
+### 12:50 — Fix: current AI model rejects forced tool use (400), which broke What's it worth, Sort the pile, Buy or pass, weight guess and try-it-free; shared askWithTool retries the way the model accepts
+
+- **Server routes (API):** `src/app/api/guess-weight/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Shared code (logic):** `src/lib/ai-engine.ts`, `src/lib/ai-tool.ts`
+
+<sub>change id e57f774</sub>
+
+### 12:55 — Health: daily real AI test call (structured, like the tools); alerts staff if AI tools stop working
+
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id 6f20ed3</sub>

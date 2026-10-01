@@ -18,7 +18,17 @@
 
 **Show:** nextownermarket.com/why. Read the first three paragraphs aloud. It's the owner's story: 30 years in surplus, one 25,000-square-foot warehouse, over 300 pallets, couldn't start.
 
-## Slide 3 · The answer, in 60 seconds
+## Slide 3 · Try it, in 30 seconds, no account
+
+**Show:** nextownermarket.com on your phone. Tap **Try it free: pick a photo**. Pick one photo. Tap **Write my listing**.
+
+**Say while it runs:** "No account. No typing. Watch."
+
+**Show the result:** title, price range, description, and the 9 tabs ready to paste. Point at "Done in 22 seconds. By hand that's 15 to 20 minutes." Then **Keep this listing**: signing up makes it their first listing, photo and all.
+
+**Say:** "We don't ask for anything until they've seen it work on their own stuff. That's the whole funnel."
+
+## Slide 3b · The answer for a whole pile, in 60 seconds
 
 **Show:** nextownermarket.com/pile on your phone. Pick 4–6 photos of a shelf. Tap Sort it. Wait a minute.
 
