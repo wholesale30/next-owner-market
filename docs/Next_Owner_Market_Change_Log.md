@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 9:50 PM from the project history (116 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 10:51 PM from the project history (120 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -899,3 +899,27 @@
 - **Shared code (logic):** `src/lib/ops-lists.ts`
 
 <sub>change id 011c46d</sub>
+
+### 21:50 — docs: Operations lists, Email page subscriber list; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 6fc4c54</sub>
+
+### 22:13 — docs: regenerate journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 7d21908</sub>
+
+### 22:46 — docs: regenerate journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 488f64a</sub>
+
+### 22:51 — Owner inventory: items grouped under each seller (name, @username, count) with a seller filter row; no more mixed-in items
+
+- **Seller / staff app:** `src/app/app/page.tsx`
+
+<sub>change id 2333cdd</sub>
