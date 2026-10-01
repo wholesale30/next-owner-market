@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 8:29 PM (67 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 8:43 PM (68 messages from Shayne)
 
 **Claude:**
 
@@ -1348,3 +1348,52 @@ Now share images (Open Graph) for items and valuations, RSS feeds, and the sitem
 Now the Operations page: stats explained, every automation with what/why/last result/toggle/run now, the manual task list with exact steps, and a glossary.
 
 Now the two documents: the complete "everything" document and the presentation walkthrough.
+
+Everything's live and the documents are attached. Here's the whole thing in one place.
+
+**Runs by itself now** (all from the daily job, each one once per person/item, capped so the free email tier never blows):
+- Welcome emails day 1 / 3 / 7, each only if they haven't done the thing yet.
+- Seller nudges: 20+ views with no messages → "drop it $10," 3+ saves, drafts sitting 3 days, live listing but no payouts.
+- Milestones, lower like you asked: first listing, 10 listings, first sale, third sale (limits come off), $100, $500, $1,000 — each with a paste-able share line.
+- Review request the day after every order.
+- A blog post every Monday written from the week's real valuations, sales, and new items.
+- Price drops, free-Pro expiry, search-engine pings, backups.
+
+**Pages that build themselves:** hub pages ("What is a Pioneer SX-780 worth?") once two valuations share words; city pages for any city with items; share images on every link; RSS feeds; the free widget at /embed that other sites paste in (each one a backlink).
+
+**🎛 Operations** — first tab in your app. Every number with a tap-to-read meaning, every automation with what/why/last result/on-off/Run now, every human task with exact steps, a link, a notes box, and a done tick. Glossary at the bottom. That's the page you hand your assistant.
+
+**The documents:**
+- **Complete Guide** — everything, page by page: where it is, what it does, why, how it grows the business, trust, costs, where things are kept.
+- **Presentation Walkthrough** — a 14-slide script you can read straight through to anyone, what to show and what to say, plus every address in one table.
+- Updated User Guide, White Paper, File Index, Change Log (99 changes), Build Journal.
+
+One honest line to close: the site now does more by itself than most startups with ten people. What it can't do is list your pallets or post the demo video. The Operations page has those steps waiting.
+
+### Sep 30, 8:38 PM — Shayne
+
+> Do downloads everything we need to, and I can delete everything else, or is there certain things that I've already downloaded that I should keep? Because I'm trying to keep this, um, my file on OneDrive um, current and not get a bunch of stuff mixed in that's out of date and mixed up, especially since a lot of them have the same names. And there's anything else like the limits, the valuations, um, the, um, like, 100, 500,000, maybe we should lower that stuff to start with so people that are doing lower volumes of stuff get their emails and their texts and stuff and feel like this is really doing something for them, that type of thing. And now we do another evaluation, look at the entire page, everything we've done, everything you just wrote, all the automations. Is there anything else we can add? Do the entire search like you're God of the internet. You have every bit of knowledge, everything that everybody else has ever done, everything we're doing, everything how it blends in and mixes together. And is there anything else we can do or anything we can update or, or perfect? And I really want the um, our page, our operations uh, page, like very, every single detail of everything, whether it's Reddit stuff or Google stuff, any, anything and everything that this page does outside of the page, and all the potential stuff and everything is doing, when it's doing, how it's doing, it's doing it, all the automated stuff, plus stuff like we've already done that needs a, a click by, the, by a person, all that with all the details, this place and the explanations, I can hire a brand new person, they can read it and know every single thing that's going on, why it's going on and what's happening and and how how to read it and, and how to, to proceed if they need to do something. Well, that's a very important to me. And, um, and then I'm sure you're going to change some stuff from what I'm just now saying. And then update all these things again. I'm not going to keep updating the pages until, uh, downloading the pages until you, um, until we get this close to final. And then we're going to constantly try to keep updating it. But, um, I mean, this thing's becoming a monster and, and it's, it's amazing to me. I just told my girlfriend, I'll send you what I told, I'm, I'm going to paste in what I told her because I want you to keep that in the, in the, in the overall, um, files of why and how I think. Um, and also give me one that I can put in like the master Claude file and tell me where to put it. So every, every, um, new project or new chat will see it. And I, don't, I want something, I want to start doing some stuff that I don't have to say, go look at it. Cause I'll forget all that. We do, I do so many, so much of the stuff. I'd like to be able to have it where you guys see a lot of stuff automatically. I don't have to go tell you to go see it if that's possible.
+
+**Claude:**
+
+Taking these in order. First the quick calls, then the build, then the final file set.
+
+**Files:** keep only the ones I send at the end of this round; delete every earlier copy. Same names, newer dates — the newest wins. I'll send the complete set once this batch is done so you have one clean upload.
+
+**Lower thresholds:** yes. Milestones get $25 and $50 before $100; the views nudge fires at 10 instead of 20; saves at 2. Texts go out for milestones too, for anyone who turned text alerts on.
+
+**The full evaluation** — what's still missing, after everything:
+- Buyers get nothing automatic. Adding a weekly "new near you" email by ZIP to every account, and a seller weekly report ("your week: 84 views, 6 saves, 2 messages, 1 sale").
+- Win-back at 30 days quiet; Pro offer the moment free credits hit zero (once).
+- A Facebook Page auto-poster for new items and the weekly post (needs one token from you; task with steps in Operations).
+- A weekly Operations digest emailed to you/your assistant so nobody has to go look.
+- Health checks: every day the site tests its own keys and feeds and flags anything broken on the Operations page.
+- Operations gets: a "Read me first" for a new hire, an "Outside the site" section (every external account: what it is, who holds the login, what we do there automatically, what a human does, current status), and the text of every automatic email so a new person knows what customers receive.
+
+Building now.
+
+Types pass. Now the integrations registry, last-seen tracking, a Facebook Page settings box, and the expanded Operations page (read-me-first, outside the site, email samples).
+
+Now the skill update (so every chat sees the new state), then final docs and the clean file set.
+
+Tap Save on the card above — that's the updated account-wide rulebook. Now the project rules and the documents.
