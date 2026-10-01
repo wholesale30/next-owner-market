@@ -54,7 +54,7 @@ const GLOSSARY: [string, string][] = [
 
 const KIND_LABEL: Record<string, string> = { welcome_1: "Welcome day 1", welcome_3: "Welcome day 3", welcome_7: "Welcome day 7", nudge_views: "Views, no messages", nudge_saves: "People saved it", nudge_drafts: "Drafts waiting", nudge_payouts: "Set up payouts", review_request: "Review request" };
 
-export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples, lists = {} }: { lists?: Record<string, { line: string; href?: string }[]>; now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
+export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples, lists = {}, funnel = [] }: { funnel?: { label: string; n: number; tip: string }[]; lists?: Record<string, { line: string; href?: string }[]>; now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [out, setOut] = useState<Record<string, string>>({});
@@ -83,6 +83,26 @@ export default function OpsClient({ stats, automations, tasks, emailsByKind, pos
           <p><b>Words you don&apos;t know</b> are at the bottom of this page.</p>
         </div>
       </details>
+
+      {funnel.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="font-bold text-lg">Where new people drop off</h2>
+          <p className="text-sm muted">Each bar is how many people made it to that step. The biggest drop between two bars is the screen to fix first.</p>
+          <div className="card p-3 space-y-2">
+            {funnel.map((f, i) => {
+              const top = Math.max(1, ...funnel.map((x) => x.n));
+              const prev = i > 0 ? funnel[i - 1].n : null;
+              return (
+                <div key={f.label} className="space-y-0.5">
+                  <div className="flex justify-between text-sm"><span className="font-semibold">{f.label}</span><span>{f.n.toLocaleString()}{prev ? <span className="muted"> · {Math.round((f.n / Math.max(prev, 1)) * 100)}% of the step above</span> : null}</span></div>
+                  <div className="h-3 rounded-full" style={{ background: "var(--line)" }}><div className="h-3 rounded-full" style={{ width: `${Math.max(2, (f.n / top) * 100)}%`, background: "var(--brand)" }} /></div>
+                  <p className="text-xs muted">{f.tip}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="space-y-2">
         <h2 className="font-bold text-lg">The numbers</h2>

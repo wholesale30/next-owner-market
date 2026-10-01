@@ -127,6 +127,64 @@ const nudges: Automation = {
   },
 };
 
+// ---------------------------------------------------------------- robot new user
+const robot: Automation = {
+  key: "robot_new_user", name: "Pretend new seller (weekly test)", schedule: "weekly (Monday)", sort_order: 3,
+  what: "Every Monday a robot does what a brand-new seller does: signs up on the real sign-up page, signs in, adds an item with a photo, sends it for review, gets approved, then opens the listing as a signed-out shopper. Then it deletes itself and its item. If any step breaks, staff get an alert naming the step.",
+  why: "Page checks can't see a broken sign-up or a broken 'add item.' This walks the whole path a real person takes, so we find out before they do.",
+  async run() {
+    if (new Date().getDay() !== 1 && !process.env.ROBOT_ANY_DAY && !catchup) return { skipped: "runs Mondays (or tap Run now)" };
+    return runRobot();
+  },
+};
+export async function runRobot(): Promise<Result> {
+  const d = db(); const s = site(); const steps: string[] = []; let fail: string | null = null;
+  const ts = Date.now(); const email = `robot${ts}@robot.nextownermarket.com`; const password = `R0bot!${ts}x`;
+  let userId: string | null = null; let itemId: string | null = null;
+  const { createClient: mk } = await import("@supabase/supabase-js");
+  try {
+    const r = await fetch(`${s}/api/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password, full_name: "Test Robot", username: `robot${String(ts).slice(-8)}`, role: "consignor", zip: "23219", city: "Richmond", state: "VA" }) });
+    if (!r.ok) throw new Error(`sign-up page answered ${r.status}: ${(await r.text()).slice(0, 120)}`);
+    steps.push("signed up");
+    const u = mk(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } });
+    const { data: si, error: se } = await u.auth.signInWithPassword({ email, password });
+    if (se || !si.user) throw new Error(`sign-in failed: ${se?.message}`);
+    userId = si.user.id; steps.push("signed in");
+    await d.from("profiles").update({ marketing_opt_out: true }).eq("id", userId);
+    const { data: it, error: ie } = await u.from("items").insert({ owner_id: userId, created_by: userId, title: "Robot test item please ignore", description: "Automatic weekly test. This listing deletes itself in a minute.", price: 1, local_pickup_ok: true, shipping_ok: false, tier: "self_listed", status: "draft" }).select("id, sku").single();
+    if (ie || !it) throw new Error(`add item failed: ${ie?.message}`);
+    itemId = it.id; steps.push("added an item");
+    const { data: ph } = await d.from("item_photos").select("url").limit(1).maybeSingle();
+    const { error: pe } = await u.from("item_photos").insert({ item_id: it.id, url: ph?.url || `${s}/icon.png`, storage_path: "robot/none.jpg", is_primary: true, sort_order: 0 });
+    if (pe) throw new Error(`add photo failed: ${pe.message}`);
+    steps.push("added a photo");
+    const { error: ue } = await u.from("items").update({ status: "pending_review" }).eq("id", it.id);
+    if (ue) throw new Error(`send for review failed: ${ue.message}`);
+    steps.push("sent for review");
+    await d.from("profiles").update({ approved: true }).eq("id", userId);
+    await d.from("items").update({ status: "active", listed_at: new Date().toISOString() }).eq("id", it.id);
+    steps.push("approved");
+    const page = await fetch(`${s}/item/${it.sku}`, { cache: "no-store" });
+    const html = page.ok ? await page.text() : "";
+    if (!page.ok || !html.includes("Robot test item")) throw new Error(`shopper couldn't open the listing (${page.status})`);
+    steps.push("shopper opened the listing");
+    const trap = await fetch(`${s}/try`, { cache: "no-store" });
+    if (!trap.ok) throw new Error(`try-it-free page answered ${trap.status}`);
+    steps.push("try-it-free page loads");
+  } catch (e) { fail = e instanceof Error ? e.message : String(e); }
+  // clean up everything the robot made
+  try {
+    if (itemId) { await d.from("items").delete().eq("id", itemId); await d.from("trash").delete().eq("row_id", itemId); await d.from("trash").delete().eq("data->>item_id", itemId); }
+    await d.from("subscribers").delete().ilike("email", "%@robot.nextownermarket.com");
+    await d.from("trash").delete().like("data->>email", "%@robot.nextownermarket.com");
+    if (userId) { await d.auth.admin.deleteUser(userId); }
+    else { const { data: list } = await d.auth.admin.listUsers({ perPage: 200 }); for (const x of list?.users || []) if (x.email?.endsWith("@robot.nextownermarket.com")) await d.auth.admin.deleteUser(x.id); }
+    steps.push("cleaned up");
+  } catch (e) { steps.push(`cleanup problem: ${e instanceof Error ? e.message : e}`); }
+  if (fail) { const { alertStaff } = await import("@/lib/alert"); await alertStaff("The weekly test seller got stuck", `A robot tried what a new seller does. It got through: ${steps.join(" → ") || "nothing"}. Then: ${fail}. Tell Claude.`, "/app/ops"); return { ok: false, stuck_at: fail, got_through: steps.join(" → ") }; }
+  return { ok: true, steps: steps.join(" → ") };
+}
+
 // ---------------------------------------------------------------- milestones
 const milestones: Automation = {
   key: "milestones", name: "Milestones & share moments", schedule: "daily", sort_order: 30,
@@ -528,7 +586,7 @@ const heldPayouts: Automation = {
   },
 };
 
-export const AUTOMATIONS: Automation[] = [health, heldMoney, payoutsReady, heldPayouts, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
+export const AUTOMATIONS: Automation[] = [health, robot, heldMoney, payoutsReady, heldPayouts, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {

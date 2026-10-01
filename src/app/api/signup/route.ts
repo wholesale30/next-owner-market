@@ -56,6 +56,7 @@ export async function POST(req: Request) {
   let invited = false;
   if (invite && created?.user) { const { data } = await admin.rpc("redeem_invite", { p_new: created.user.id, p_code: invite }); invited = !!data; }
   if (invited) { await alertStaff("Invite used", `${full_name || email} signed up with invite "${invite}" and has free Pro.`, "/app/invites"); return NextResponse.json({ ok: true, invited: true, item_id: tryItemId }); }
-  if (role !== "buyer") await alertStaff("New seller waiting for approval", `${full_name || email} signed up to sell. Approve them under People.`, "/app/people?filter=pending");
+  const isRobot = email.trim().toLowerCase().endsWith("@robot.nextownermarket.com");
+  if (role !== "buyer" && !isRobot) await alertStaff("New seller waiting for approval", `${full_name || email} signed up to sell. Approve them under People.`, "/app/people?filter=pending");
   return NextResponse.json({ ok: true, item_id: tryItemId });
 }
