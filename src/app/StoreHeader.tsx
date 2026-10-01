@@ -7,11 +7,10 @@ export default function StoreHeader({ business, signedIn = false }: { business: 
       <div className="max-w-5xl mx-auto px-3 h-16 flex items-center justify-between gap-1">
         <Link href="/" aria-label={business.name}><Wordmark /></Link>
         <nav className="flex gap-1.5 overflow-x-auto no-scrollbar">
-          <Link href="/worth" className="navbtn">Worth?</Link>
-          <Link href="/community" className="navbtn">Community</Link>
-          <Link href="/pro" className="navbtn">Sell</Link>
+          <Link href={signedIn ? "/app/items/new" : "/try"} className="navbtn navbtn-solid">📸 Sell</Link>
+          <Link href="/tools" className="navbtn">Tools</Link>
           <Link href="/help" className="navbtn" aria-label="Help">?</Link>
-          <Link href={signedIn ? "/account" : "/login"} className="navbtn navbtn-solid">{signedIn ? "Account" : "Sign in"}</Link>
+          <Link href={signedIn ? "/app" : "/login"} className="navbtn">{signedIn ? "My stuff" : "Sign in"}</Link>
         </nav>
       </div>
     </header>

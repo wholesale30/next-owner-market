@@ -9,7 +9,7 @@ import { lookupZip } from "@/lib/geo";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Next Owner Market: buy and sell used, surplus and vintage", description: "Vintage audio, tools, electronics, furniture, vehicles and more from sellers across the country. Pay by card, pick up or ship. Sell free: photos in, listing out." };
+export const metadata = { title: "Next Owner Market: snap a photo, the AI writes your listing for 9 sites. Buy and sell used, surplus and vintage", description: "Try it free: one photo, and the AI writes your listing for Facebook, eBay, OfferUp and 6 more. Vintage audio, tools, electronics, furniture, vehicles and more from sellers across the country. Pay by card, pick up or ship. Sell free: photos in, listing out." };
 
 export default async function StorePage({ searchParams }: PageProps<"/">) {
   const sp = (await searchParams) as { q?: string; cat?: string; sort?: string; state?: string; zip?: string; mi?: string };
@@ -51,22 +51,36 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
     <div className="flex-1">
       <StoreHeader business={business} signedIn={!!user} />
       <section className="hero">
-        <div className="max-w-5xl mx-auto px-4 pt-6 pb-5 space-y-4">
-          <div className="space-y-1">
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">Everything finds its next owner.</h1>
-            <p className="text-base md:text-lg opacity-90">Surplus, vintage audio, tools and more from sellers across the country. Buy by card, pick up or ship.</p>
+        <div className="max-w-5xl mx-auto px-4 pt-7 pb-6 space-y-4">
+          <div className="space-y-2 text-center">
+            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">Snap a photo.<br />The AI writes your listing.</h1>
+            <p className="text-base md:text-lg opacity-90">Title, description and price, plus ready-to-paste versions for Facebook, eBay and 7 more sites. About 30 seconds. Free to try, no account.</p>
           </div>
-          <form className="flex gap-2">
-            <input className="input" name="q" placeholder="Search: turntable, drill, lamp, Technics…" defaultValue={q || ""} />
-            {cat && <input type="hidden" name="cat" value={cat} />}
-            <button className="btn btn-white font-bold">Search</button>
-          </form>
-          <div className="flex gap-2">
-            <Link href="/worth" className="btn btn-white flex-1">💰 What&apos;s it worth?</Link>
-            <Link href="/pile" className="btn btn-outline-white flex-1">📦 Sort the pile</Link>
+          <Link href={user ? "/app/items/new" : "/try"} className="btn btn-white w-full text-lg py-4 font-extrabold block text-center">📸 {user ? "List an item" : "Try it free: pick a photo"}</Link>
+          <div className="grid grid-cols-3 gap-2 text-center text-xs opacity-95">
+            <Link href="/worth" className="underline">💰 What&apos;s it worth?</Link>
+            <Link href="/pile" className="underline">📦 List a whole box</Link>
+            <Link href="/start" className="underline">😮‍💨 Overwhelmed? Start here</Link>
           </div>
-          <p className="text-sm text-center"><Link href="/start" className="underline">Overwhelmed by stuff? Start with one box →</Link> · <Link href="/why" className="underline">Why we built this</Link></p>
         </div>
+      </section>
+      <section className="max-w-5xl mx-auto px-4 pt-4">
+        <div className="card p-4">
+          <p className="font-bold mb-2">How selling works</p>
+          <ol className="grid grid-cols-3 gap-2 text-center text-xs">
+            <li><p className="text-2xl">📸</p><p className="font-semibold">1. Snap it</p><p className="muted">One photo from your phone.</p></li>
+            <li><p className="text-2xl">✨</p><p className="font-semibold">2. AI writes it</p><p className="muted">For 9 sites, ready to paste.</p></li>
+            <li><p className="text-2xl">💵</p><p className="font-semibold">3. Get paid</p><p className="muted">Plus a free spot in our store.</p></li>
+          </ol>
+        </div>
+      </section>
+      <section className="max-w-5xl mx-auto px-4 pt-5 space-y-2">
+        <h2 className="font-bold text-lg">Shopping? Find something near you</h2>
+        <form className="flex gap-2">
+          <input className="input" name="q" placeholder="Search: turntable, drill, lamp, Technics…" defaultValue={q || ""} />
+          {cat && <input type="hidden" name="cat" value={cat} />}
+          <button className="btn btn-primary font-bold">Search</button>
+        </form>
       </section>
       <main className="max-w-5xl mx-auto p-4 space-y-4">
 
@@ -146,14 +160,14 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
           <p className="muted text-sm">We source surplus across the country. Tell us what you want and we&apos;ll hunt it down.</p>
           <Link href="/looking-for" className="btn btn-primary">Tell us what you need</Link>
         </div>
-        <div className="card p-5 text-center space-y-2">
+        <div className="card p-5 text-center space-y-2" style={{ borderColor: "var(--brand)" }}>
           <h2 className="font-bold text-lg">Have stuff to sell?</h2>
-          <p className="muted text-sm">We test, photograph, list, and sell it for you. You get paid when it sells.</p>
-          <Link href="/pro" className="btn btn-secondary">Sell with us</Link>
+          <p className="muted text-sm">Pick one photo. Watch the AI write the listing for Facebook, eBay and 7 more. Free to try, no account needed.</p>
+          <Link href={user ? "/app/items/new" : "/try"} className="btn btn-primary">📸 Try it free</Link>
         </div>
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
-          {" • "}<Link href="/login" className="underline">Staff sign in</Link>
+          {" • "}<Link href="/try" className="underline">Try it free</Link>{" • "}<Link href="/tools" className="underline">All tools</Link>{" • "}<Link href="/pro" className="underline">Pro</Link>{" • "}<Link href="/login" className="underline">Sign in</Link>
           {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/pile" className="underline">Sort the pile</Link>{" • "}<Link href="/buy-or-pass" className="underline">Buy or pass?</Link>{" • "}<Link href="/valued" className="underline">What things are worth</Link>{" • "}<Link href="/start" className="underline">Start with one box</Link>{" • "}<Link href="/why" className="underline">Why we built this</Link>{" • "}<Link href="/embed" className="underline">Free widget for your site</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
         </footer>
       </main>
