@@ -79,6 +79,10 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   );
   const [hints, setHints] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
+  const [aiWin, setAiWin] = useState<{ secs: number; left: number } | null>(null);
+  const [outOfCredits, setOutOfCredits] = useState(false);
+  const [proBusy, setProBusy] = useState(false);
+  async function goPro() { setProBusy(true); const r = await fetch("/api/stripe/subscribe", { method: "POST" }); const j = (await r.json()) as { url?: string; error?: string }; setProBusy(false); if (j.url) window.location.assign(j.url); else setError(j.error || "Pro checkout isn't available right now."); }
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [videos, setVideos] = useState<LocalVideo[]>((initialVideos || []).map((v) => ({ id: v.id, kind: v.kind, url: v.url, storage_path: v.storage_path })));
@@ -215,6 +219,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     if (!urls.length) return setError("Add at least one photo first.");
     setAiBusy(true);
     setError(null);
+    const t0 = Date.now();
     try {
       const res = await fetch("/api/ai-listing", {
         method: "POST",
@@ -222,7 +227,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         body: JSON.stringify({ photoUrls: urls, hints, categories: categories.map((c) => ({ id: c.id, name: c.name })) }),
       });
       const json = await res.json();
-      if (res.status === 402) throw new Error(`${json.error} Go to Payouts → Upgrade to Pro.`);
+      if (res.status === 402) { setOutOfCredits(true); return; }
       if (!res.ok) throw new Error(json.error || "AI failed");
       const a = json.draft;
       const mid = a.price_min && a.price_max ? Math.round((Number(a.price_min) + Number(a.price_max)) / 2) : "";
@@ -246,6 +251,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         warning: a.recalled_or_prohibited || null,
       });
       setStep("details");
+      if (!isPro) setAiWin({ secs: Math.max(5, Math.round((Date.now() - t0) / 1000)), left: Math.max(0, (Number((profile as unknown as { ai_credits?: number }).ai_credits ?? 3)) - 1) });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -450,6 +456,21 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
             </button>
             <button type="button" className="btn btn-secondary w-full" onClick={() => setStep("details")}>I&apos;ll type it myself</button>
           </>
+        )}
+        {outOfCredits && (
+          <div className="card p-4 space-y-2" style={{ borderLeft: "4px solid var(--brand)" }}>
+            <p className="font-bold text-lg">You&apos;ve used your free AI listings 🎉</p>
+            <p className="text-sm">That means it&apos;s working for you. Pro writes unlimited listings and unlocks all 9 sites, for $15 a month. Most people save that in their first afternoon.</p>
+            <button type="button" className="btn btn-primary w-full" disabled={proBusy} onClick={goPro}>{proBusy ? "One sec…" : "⭐ Go Pro: unlimited listings"}</button>
+            <button type="button" className="text-sm underline w-full" onClick={() => { setOutOfCredits(false); setStep("details"); }}>Not now, I&apos;ll type this one myself</button>
+          </div>
+        )}
+        {aiWin && (
+          <div className="card p-4 space-y-2" style={{ borderLeft: "4px solid var(--ok)" }}>
+            <p className="font-bold">✨ Written in {aiWin.secs} seconds. By hand that&apos;s about 15 minutes.</p>
+            <p className="text-sm">{aiWin.left > 0 ? `${aiWin.left} free AI listing${aiWin.left === 1 ? "" : "s"} left.` : "That was your last free AI listing."} Pro writes unlimited listings and gives you copy-and-paste versions for all 9 sites, $15 a month.</p>
+            <div className="flex gap-2"><button type="button" className="btn btn-primary flex-1" disabled={proBusy} onClick={goPro}>{proBusy ? "One sec…" : "⭐ Go Pro"}</button><button type="button" className="btn btn-secondary" onClick={() => setAiWin(null)}>Later</button></div>
+          </div>
         )}
         {step === "details" && mode === "new" && (
           <button type="button" className="btn btn-secondary w-full" disabled={aiBusy || uploading || !photos.length} onClick={runAi}>
