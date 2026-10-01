@@ -176,6 +176,8 @@ Email volume is capped per day so the free tier is never exceeded; nothing is ev
 The control room, written so a brand-new hire can run the business from it. Top to bottom:
 
 1. **Read me first**: what the business is, what this page is, the weekly routine (Monday: digest + Review + People + Problems; Thursday: New Arrivals email; any day: three Facebook groups, reports), and what to do if something looks wrong (write down what you see, tell Claude, switch the automation off meanwhile).
+**What a buyer sees (every item page in the app):** a box at the top of each item says, in plain words, whether buyers can see it, whether Buy now is on (and if not, exactly why: seller hasn't set up payouts, seller paused, still a draft, waiting for approval), and whether pickup and shipping are offered. The **👁 Open as a buyer** button opens the real public page exactly as a buyer sees it; Buy now works there for the owner too, so every step can be checked. Every row in the inventory list also has a small **👁 buyer view** link.
+
 **Owner inventory (/app, signed in as admin or staff):** every seller's items are grouped under that seller's name and @username, with a count. Your own store items come first, then sellers with the most items. A row of seller buttons across the top shows one seller at a time; "All sellers" shows everyone. The Drafts / Listed / Sold buttons work inside either view.
 
 **Email page (/app/blast)** now has a "Who's on the list" section: every subscriber's email, name, how they joined (made an account, store signup box, messaged a seller, booked a pickup) and the date.

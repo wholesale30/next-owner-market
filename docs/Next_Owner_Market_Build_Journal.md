@@ -1948,3 +1948,20 @@ The journal updates are pushed and nothing is left uncommitted. I'm waiting on t
 **Claude:**
 
 Yes, I agree. As the owner you should see every seller's items grouped under that seller's name, not mixed in as if they were yours. Fixing it now.
+
+Your master account's inventory now groups every item under the seller who owns it. That's going live now, in about 2 minutes; I haven't seen it on screen yet, so tell me if anything looks off.
+
+- **Your own items come first**, under "Yours (store)."
+- **Then each seller gets a section:** name, @username and item count, for example "Nikki Fiveash · @nikki775 · 4 items." Sellers with the most items are listed first.
+- **A row of seller buttons runs across the top.** Tap a name to see only that seller's items, or tap "All sellers" to see everyone.
+- **Drafts / Listed / Sold** still work inside either view.
+
+To check Buy now on Nikki's items, sign out or use your buyer account (shayne.snavely@gmail.com) and open one of her lamps.
+
+The updated Complete Guide, Build Journal and Change Log are attached. Same file names, so save over your old copies.
+
+Still waiting for your go on letting every listing take Buy now before the seller has set up payouts.
+
+### Sep 30, 10:52 PM — Shayne
+
+> And I, and I should have a buy it now button on all. I should be able to see exactly what everybody else would see that's a buyer on my master page. Not all the listings with no buy it now because because you have them like they're my listings too since I'm the master account. I should be able to see exactly what everybody else, what every other buyer should see. So I know that everything is right. Right now you have the, all the inventory as if it's all my inventory, even if somebody lists it. And then I have no buy it now button to see or nothing. I want, I want what the normal buyer that's not the account holder sees on every single listing among anything else you think I should see with notes if it's not what the buyer actually sees.

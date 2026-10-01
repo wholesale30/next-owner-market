@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 10:51 PM from the project history (120 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 10:54 PM from the project history (122 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -923,3 +923,15 @@
 - **Seller / staff app:** `src/app/app/page.tsx`
 
 <sub>change id 2333cdd</sub>
+
+### 22:51 — docs: owner inventory by seller; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id f01f8ff</sub>
+
+### 22:53 — Owner/seller item pages: 'What a buyer sees' panel (visible? Buy now on/off and why, pickup/shipping) + Open as a buyer button; buyer-view link on every inventory row
+
+- **Seller / staff app:** `src/app/app/InventoryList.tsx`, `src/app/app/items/[id]/page.tsx`
+
+<sub>change id e693403</sub>
