@@ -127,6 +127,20 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     warning: null,
   });
   const set = (patch: Partial<Draft>) => setD((prev) => ({ ...prev, ...patch }));
+  const [guessing, setGuessing] = useState(false);
+  const [weightNote, setWeightNote] = useState<string | null>(null);
+  /** Free AI guess of packed weight + box from the title, description and specs. */
+  async function guessWeight(quiet = false) {
+    if (!d.title.trim()) { if (!quiet) setWeightNote("Add a title first, then tap Guess it."); return; }
+    setGuessing(true);
+    try {
+      const r = await fetch("/api/guess-weight", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: d.title, description: d.description, specs: d.specs, category: categories.find((c) => c.id === d.category_id)?.name }) });
+      const j = (await r.json()) as { weight_lbs?: number; box?: string; reason?: string; error?: string };
+      if (j.weight_lbs) { set({ weight_lbs: String(j.weight_lbs), ...(j.box ? { box: j.box } : {}) }); setWeightNote(`AI guess: ${j.weight_lbs} lb packed, ${j.box} box. ${j.reason || ""} If you can weigh it, use the real number.`); }
+      else if (!quiet) setWeightNote(j.error || "Couldn't guess. Type a weight.");
+    } catch { if (!quiet) setWeightNote("Couldn't guess. Type a weight."); }
+    setGuessing(false);
+  }
 
   // ---------- photos ----------
   async function addFiles(files: FileList | null) {
@@ -538,14 +552,15 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
             )}
             <div className="flex flex-wrap gap-3">
               <label className="flex items-center gap-2"><input type="checkbox" checked={d.local_pickup_ok} onChange={(e) => set({ local_pickup_ok: e.target.checked })} /> Local pickup</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={d.shipping_ok} onChange={(e) => set({ shipping_ok: e.target.checked })} /> Will ship</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={d.shipping_ok} onChange={(e) => { set({ shipping_ok: e.target.checked }); if (e.target.checked && !d.weight_lbs) guessWeight(true); }} /> Will ship</label>
             </div>
             {d.shipping_ok && (
               <div className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <div><label className="label">Weight (lbs, packed)</label><input className="input" type="number" inputMode="decimal" value={d.weight_lbs} onChange={(e) => set({ weight_lbs: e.target.value })} /></div>
+                  <div><label className="label flex items-center justify-between gap-1"><span>Weight (lbs, packed)</span><button type="button" className="text-xs underline" disabled={guessing} onClick={() => guessWeight()}>{guessing ? "Guessing…" : "✨ Guess it"}</button></label><input className="input" type="number" inputMode="decimal" value={d.weight_lbs} onChange={(e) => { set({ weight_lbs: e.target.value }); setWeightNote(null); }} /></div>
                   <div><label className="label">Box</label><select className="input" value={d.box} onChange={(e) => set({ box: e.target.value })}><option value="small">Small (shoebox)</option><option value="medium">Medium (microwave)</option><option value="large">Large (receiver)</option><option value="xl">XL (tower speaker)</option><option value="freight">Too big to ship</option></select></div>
                 </div>
+                {weightNote && <p className="text-xs" style={{ color: "var(--brand)" }}>✨ {weightNote}</p>}
                 <div className="grid grid-cols-2 gap-2">
                   <div><label className="label">Shipping</label><select className="input" value={d.shipping_mode === "free" ? "free" : "calculated"} onChange={(e) => set({ shipping_mode: e.target.value })}><option value="calculated">Buyer pays the rate for their ZIP (recommended)</option><option value="free">Free shipping (label cost comes out of your payout)</option></select></div>
                   {d.shipping_mode !== "free" && <div><label className="label">Estimate $ (shown only if live rates are down)</label><input className="input" type="number" inputMode="decimal" value={d.shipping_price} onChange={(e) => set({ shipping_price: e.target.value })} /></div>}
