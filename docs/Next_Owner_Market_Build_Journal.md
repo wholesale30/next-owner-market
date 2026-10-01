@@ -2069,3 +2069,7 @@ The photo files used to be erased when an item was deleted; now they're kept, so
 Nothing has been deleted since this went in, so the page starts empty. Anything deleted before tonight was already gone and can't be recovered. Nothing was missing when I checked earlier.
 
 The updated User Guide, Complete Guide, Build Journal and Change Log are attached; save over your old copies.
+
+### Sep 30, 11:30 PM — Shayne
+
+> feedback from Janelle that signed up and she was confused and I agree. So you have three things when they sign up. List your first item. Um, we've approved your account and then your item is live or your first item is live. Stupid fucking order. Plus, I like the green check mark when, when they completed, but why is list your first item at the top? Your account is approved second and then your listing is live third. That's stupid. It should be your account is approved first. List your first item and then check mark in, in, in order. Plus, it's confusing to her and I'm sure others that you have a check mark, but then you have a line through the item. I understand it, but most people aren't going to understand that. Remember, this all has to be in layman's terms for stupid people considered stupid or don't know shit about anything. That's why there's a slice sign. That's why you see all the things. How to do all these other things. So fix that.

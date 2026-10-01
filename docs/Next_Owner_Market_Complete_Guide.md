@@ -221,3 +221,5 @@ $0 today. Vercel (hosting), Supabase (database/files), Resend (email, 3,000/mont
 - Code: GitHub `wholesale30/next-owner-market`. Hosting: Vercel `next-owner-market`. Database: Supabase `efikjdiamqzqnbifauke`.
 - Documents (Word, in `docs/` and sent in chat): User Guide, White Paper (technical), Complete Guide (this), Presentation Walkthrough, Mission Statement, Tool Marketing Plan, Launch Kit, Add-On Modules paper, Seller Terms, File Index, Build Journal (every conversation), Change Log (every change).
 - Rules for working on it: `CLAUDE.md` in the repo; the `shayne-operating-rules` skill on the owner's Claude account.
+
+**Seller "Getting started" checklist:** in real order (account made → approved → ZIP → first item → live → payouts). Numbered circles; done steps show a green check and the word "Done" (nothing crossed out); one big button on the next thing the seller can do; our steps say "waiting on us."

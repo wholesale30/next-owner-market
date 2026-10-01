@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:15 PM from the project history (128 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:31 PM from the project history (129 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -978,3 +978,10 @@
 - **Database (migrations):** `supabase/migrations/030_payout_pending_and_recycle_bin.sql`
 
 <sub>change id 9a9b4d4</sub>
+
+### 23:30 — Getting-started checklist: real order (account, approved, ZIP, first item, live, payouts), numbered circles, green check + 'Done' instead of crossed-out text, one big 'do this next' button, 'waiting on us' for our steps
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Seller / staff app:** `src/app/app/SellerStart.tsx`
+
+<sub>change id 315ae0c</sub>

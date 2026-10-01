@@ -203,7 +203,7 @@ Your email and text list. Counts by source (store box, message, signup, wanted, 
 ---
 
 ### 4.15 Getting started card and referrals (sellers)
-New sellers see a checklist on their home screen (account → approved → payouts → first item → first live listing). Below it, **Share link**: every seller has a referral link (`nextownermarket.com/signup?ref=CODE`). When someone they invite goes Pro, both get a free month, applied automatically to their Stripe bill.
+New sellers see a "Getting started" checklist on their home screen, in the order things happen: account made → account approved → ZIP code → first item listed → first item live → payouts set up. Below it, **Share link**: every seller has a referral link (`nextownermarket.com/signup?ref=CODE`). When someone they invite goes Pro, both get a free month, applied automatically to their Stripe bill.
 
 ## Part 5 · Consignment — how selling through the platform works
 
@@ -262,7 +262,7 @@ Rates are editable in Settings, per consignor, and per item.
 - Every screen in the app starts with one sentence saying what to do there, and a green **?** that opens a short answer.
 - **Help** (the ? in the top bar, or nextownermarket.com/help): short answers for selling, buying, shipping, pickup, and safety, plus an **Ask anything** box that answers from this guide in plain words.
 - Every marketplace guide (Facebook, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy) now has a **"Never used this app?"** section (what signing up asks for, what the odd words mean) and a glossary.
-- The seller home checklist is now **"Your first sale in 10 minutes"**: ZIP → payouts → first item → approval → live.
+- The seller home checklist is **"Getting started"**, in real order: account made → account approved → ZIP → first item → first item live → payouts. Each step has a number in a circle; finished steps turn into a green check with the word "Done" (nothing is crossed out); the next thing the seller can do has one big button; our steps say "waiting on us."
 
 **Usernames and privacy**
 - Everyone has a **username** (like @vintageaudio804). That's what buyers and sellers see everywhere: listings, messages, orders, reviews. Real names, emails, and phone numbers are private; only staff see them.
