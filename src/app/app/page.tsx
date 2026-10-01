@@ -15,18 +15,19 @@ const STATUS_FILTERS: { key: string; label: string; statuses?: ItemStatus[] }[] 
 ];
 
 export default async function InventoryPage({ searchParams }: PageProps<"/app">) {
-  const { q, status, bin } = (await searchParams) as { q?: string; status?: string; bin?: string };
+  const { q, status, bin, seller } = (await searchParams) as { q?: string; status?: string; bin?: string; seller?: string };
   const profile = (await getProfile())!;
   const staff = profile.role === "admin" || profile.role === "staff";
   const supabase = await createClient();
 
   let query = supabase
     .from("items")
-    .select("id, sku, title, price, status, tier, location_id, created_at, listed_at, item_photos(url, is_primary, sort_order), locations(code), profiles!items_owner_id_fkey(full_name, business_name)")
+    .select("id, sku, title, price, status, tier, location_id, created_at, listed_at, item_photos(url, is_primary, sort_order), locations(code), owner_id, profiles!items_owner_id_fkey(id, full_name, business_name, username, email)")
     .neq("status", "archived")
     .order("created_at", { ascending: false })
-    .limit(200);
+    .limit(staff ? 1000 : 200);
   if (!staff) query = query.eq("owner_id", profile.id);
+  if (staff && seller) query = query.eq("owner_id", seller);
   const filter = STATUS_FILTERS.find((f) => f.key === (status || "active"));
   if (filter?.statuses) query = query.in("status", filter.statuses);
   if (q) query = query.textSearch("search", q, { type: "websearch" });
@@ -74,19 +75,42 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
         </div>
       )}
 
-      <InventoryList
-        staff={staff}
-        locations={locations || []}
-        items={((items as unknown as Item[] | null) || []).map((it) => {
+      {(() => {
+        type Row = Item & { owner_id: string; profiles: { id: string; full_name: string | null; business_name: string | null; username: string | null; email: string | null } | null };
+        const rows = (items as unknown as Row[] | null) || [];
+        const shape = (it: Row) => {
           const photo = [...(it.item_photos || [])].sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order)[0];
           return {
             id: it.id, sku: it.sku, title: it.title, price: it.price, status: it.status, tier: it.tier,
-            photo: photo?.url || null, location: it.locations?.code || null,
-            owner: staff && it.tier !== "owned" && it.profiles ? it.profiles.business_name || it.profiles.full_name || null : null,
+            photo: photo?.url || null, location: it.locations?.code || null, owner: null,
             stale: it.status === "active" && !!it.listed_at && now - new Date(it.listed_at).getTime() > 30 * 86400000,
           };
-        })}
-      />
+        };
+        if (!staff) return <InventoryList staff={false} locations={[]} items={rows.map(shape)} />;
+        // Owner view: every seller's items, grouped under that seller.
+        const groups = new Map<string, { name: string; rows: Row[] }>();
+        for (const it of rows) {
+          const p = it.profiles;
+          const name = it.owner_id === profile.id ? "Yours (store)" : [p?.business_name || p?.full_name || "Unnamed seller", p?.username ? `@${p.username}` : null].filter(Boolean).join(" · ");
+          const g = groups.get(it.owner_id) || { name, rows: [] };
+          g.rows.push(it); groups.set(it.owner_id, g);
+        }
+        const list = [...groups.entries()].sort((a, b) => (a[0] === profile.id ? -1 : b[0] === profile.id ? 1 : b[1].rows.length - a[1].rows.length));
+        return (
+          <div className="space-y-5">
+            <div className="flex gap-1 overflow-x-auto">
+              <Link href={`/app?status=${status || "active"}`} className={`pill px-3 py-2 whitespace-nowrap ${!seller ? "pill-active" : ""}`}>All sellers</Link>
+              {list.map(([id, g]) => <Link key={id} href={`/app?status=${status || "active"}&seller=${id}`} className={`pill px-3 py-2 whitespace-nowrap ${seller === id ? "pill-active" : ""}`}>{g.name.split(" · ")[0]} ({g.rows.length})</Link>)}
+            </div>
+            {list.map(([id, g]) => (
+              <section key={id} className="space-y-2">
+                <h2 className="font-bold text-lg flex items-center justify-between gap-2"><span>{g.name}</span><span className="text-sm muted font-normal">{g.rows.length} item{g.rows.length === 1 ? "" : "s"}</span></h2>
+                <InventoryList staff={staff} locations={locations || []} items={g.rows.map(shape)} />
+              </section>
+            ))}
+          </div>
+        );
+      })()}
       {!staff && <AskBox compact />}
     </div>
   );
