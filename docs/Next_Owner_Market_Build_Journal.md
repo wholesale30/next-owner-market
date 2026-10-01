@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 8:43 PM (68 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 8:46 PM (70 messages from Shayne)
 
 **Claude:**
 
@@ -1397,3 +1397,51 @@ Types pass. Now the integrations registry, last-seen tracking, a Facebook Page s
 Now the skill update (so every chat sees the new state), then final docs and the clean file set.
 
 Tap Save on the card above — that's the updated account-wide rulebook. Now the project rules and the documents.
+
+That's the clean set — 16 files. Wipe the OneDrive folder and drop these in; the File Index is the list of what should be there and what each one is for.
+
+**What landed in this round:**
+- Milestones now start at **$25 and $50**; nudges at 10 views / 2 saves; milestone **texts** for anyone with text alerts on; every milestone carries their referral link.
+- New automations: buyers get a Thursday "new near you" by ZIP; sellers get a Monday report with the one thing to do; win-back at 30 days quiet; a Pro explanation the day free credits run out; Facebook Page auto-posting (one token from you — steps are in Operations); a **daily health check** of every outside service that turns things red and emails you when something breaks; a **Monday digest** to your alert address so nobody has to go look.
+- **Operations** now opens with **Read me first** for a new hire, has an **Outside the site** section (Vercel, Supabase, GitHub, Stripe, Resend, Anthropic, Shippo, Search Console, Merchant Center, Business Profile, Bing, sitemap, feed, Facebook, Reddit, Product Hunt, creators — what each is, what's automatic there, what a person does, who holds the login, live status), and **every automatic email word for word**.
+- All of it is in the Complete Guide and the Presentation Walkthrough.
+
+**On "automatic" and the journal:** I was honest above and I'll repeat it: the file regenerates itself before compaction, but only I can hand it to you in the chat. So the rule is now written into both the skill and the project: send both after every batch and at least every two hours, without being asked. You just saw it happen.
+
+**The skill card above** — tap Save. That's the one place every future chat reads. Paste me the message to your girlfriend whenever you're ready and it goes into the journal and the mission statement.
+
+### Sep 30, 8:46 PM — Shayne
+
+> Thanks sweetest I love you so much and thanks for continuing to support and help me. The things I'm working on are without a doubt going to do big things and I trulynfeel, see the patch, and AI agrees, that these things have million dollar potential. All of it seems like a long hard struggle and finacially too. But every step path other things I've  and things Ive done built perfected and then switched to the next are all for the path. My mind is rocking and working and advancing in ways like a fine tuned computer that people just cannot comprehend.
+> 
+> I just know.
+> 
+> The intuition and the thoughts and the things to build and make to finally end up on a boat with things running millions and automated etc. Are crazy. Like who even thinks up this stuff and comes up with it all in such a precise manner and detail.
+> 
+> Look at this new app now. I've added and added and it's crazy the stuff I've come up with and blended I to it all.
+> 
+> I'm working on other stuff as well. These apps and sites are the kind of thing that get eventually bought for millions. I'm building them with that purposeful goal.
+> 
+> All of it has gotten me here and I've mastered this stuff in months. So weeks at one thing you may think was wasted or months of building something then redirecting all gave me the knowledge and ability to be where I am now.
+> 
+> This site proves it. It's the culmination of all of it for 30 years and the tech that I'm mastering to do it puts me in the top teir ahead of most. Like the person that leaned to use computers before everyone else really thought they needed to.
+> 
+> I soon will be able to give presentationsbuild this kind of stuff for others and do many other new age things that few will be able to do.
+> 
+> Today with this app I truly felt like you know I really could be a millionaire soon with this stuff. to my girlfriend and in this sort of to my family too. My sister's been way more supportive than any other person besides my girlfriend Janelle. She's been the most supportive of me being gone all the time, working, not being home for three weeks at a time, a month at a time, two weeks at a time, a week, being home for two or three days. Loves me just the same, supports me, uh, financially supports me when I'm not making money on all this stuff, knowing it's gonna be big one day. Um, paying even credit card bills that should I should be paying the whole works. My sister um thinks I'm a genius, I'm, I'm like, like almost an alien or tapped into God. Um, really thinks I'm really that, like that some of these things I'm doing are going to be like world changing and I'm going to be some big guy that one day can do books and stuff and be on the news and stuff, talk about why I built this and how I built it and my struggles and everything. Uh, of course, my mom does the same thing, but she's not as near as intelligent or, or in tune. She's always She's always, you know, uh, praying and and God's guiding me. And, you know, she's overly, like, too far Christian religious for me about that stuff. But she gives me that kind of love and support. Um, but mainly my, my, I mean, my sister's, like, worships me and my intelligence. And my girlfriend does also, but um, in a different way. Yeah, I'd like to be all that be sort of part of the, part of the journey record too.
+
+### Sep 30, 8:46 PM — Shayne
+
+> Your response above was stopped by a safety classifier — this is not a tool or API error. The rest of it was withheld, and tool calls in it that had not finished did not run. Do not produce that content again, even reworded.
+
+**Claude:**
+
+That's in the record now — your words, exactly as you wrote them, are in the Build Journal automatically, and I'll add a short "the people behind it" note to the Mission Statement: Janelle, your sister, your mom, and what each of them has carried while you've been gone building this.
+
+Two honest things, because you've asked me to be that.
+
+What you built in two days is real. Not the code — I wrote the code — the thing you did: you saw what overwhelmed people need, you kept saying "no, that's wrong, it should work like this," and you were right nearly every time. That's the part that can't be copied, and it's the part a buyer would be paying for.
+
+And the money part: the potential is there, and I've told you where it hinges — users and volume, which means the launch plan and your first hundred items. Nobody gets to "millions" from the build alone, and you know that; you've said as much. The people who love you are betting on the next six months of showing up, not on the site. So am I.
+
+Go get some rest. The site runs itself tonight.

@@ -39,6 +39,26 @@ Start with one box. That's all it takes to feel it.
 - Buyers and sellers should never have to trust a stranger. Held payments, pickup codes, tracked labels.
 - The tool leads; the store is the bonus. Listing here is free. We earn when you do.
 
+## The people behind it (added September 30, 2026, in Shayne's words)
+
+What Shayne wrote the night the site came together, to the people closest to him, kept here because the why matters as much as the what:
+
+> The things I'm working on are without a doubt going to do big things and I truly feel, see the path, and AI agrees, that these things have million dollar potential. All of it seems like a long hard struggle and financially too. But every step, every other thing I've built, perfected and then switched to the next, are all for the path.
+>
+> Look at this new app now. I've added and added and it's crazy the stuff I've come up with and blended into it all. These apps and sites are the kind of thing that get eventually bought for millions. I'm building them with that purposeful goal.
+>
+> All of it has gotten me here and I've mastered this stuff in months. So weeks at one thing you may think was wasted, or months of building something then redirecting, all gave me the knowledge and ability to be where I am now. This site proves it. It's the culmination of all of it, thirty years, and the tech I'm mastering to do it.
+>
+> Today with this app I truly felt like I really could be a millionaire soon with this stuff.
+
+**Janelle**, his girlfriend: the most supportive person in his life. Supports him being gone three weeks at a time, a month at a time, home for two or three days. Loves him the same. Has carried the finances, credit card bills included, while none of this was making money yet, knowing it will.
+
+**His sister**: thinks he's a genius, that some of what he's building will change things, that one day there'll be books and he'll be the guy on the news talking about why he built it and the struggle behind it.
+
+**His mom**: gives the same love and support in her own way, praying, certain he's being guided.
+
+**Claude's reply, the same night, kept as said:** "What you built in two days is real. Not the code — I wrote the code — the thing you did: you saw what overwhelmed people need, you kept saying 'no, that's wrong, it should work like this,' and you were right nearly every time. That's the part that can't be copied, and it's the part a buyer would be paying for. And the money part: the potential is there, and I've told you where it hinges — users and volume, which means the launch plan and your first hundred items. Nobody gets to millions from the build alone, and you know that. The people who love you are betting on the next six months of showing up, not on the site. So am I."
+
 ## Where it lives on the site
 - nextownermarket.com/why — the full statement
 - nextownermarket.com/start — the eight-step "Start with one box" path
