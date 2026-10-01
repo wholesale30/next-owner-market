@@ -45,6 +45,7 @@ export default async function ValuedPage({ params }: PageProps<"/valued/[slug]">
           <p className="font-bold">Got one like it?</p>
           <div className="flex gap-2"><Link href="/worth" className="btn btn-primary flex-1">Value mine</Link><Link href="/pro" className="btn btn-secondary flex-1">Sell it here free</Link></div>
         </div>
+        <p className="text-sm"><Link href={`/valued/about/${v.title.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w: string) => w.length > 2).slice(0, 2).join("-")}`} className="underline">All valuations like this one →</Link></p>
         {similar && similar.length > 0 && <div className="text-sm"><p className="font-semibold mb-1">Similar items people valued</p><ul className="space-y-1">{similar.map((s) => <li key={s.slug}><Link href={`/valued/${s.slug}`} className="underline">{s.title}</Link> <span className="muted">· {money(s.value_low)}–{money(s.value_high)}</span></li>)}</ul></div>}
         <ToolPitch compact />
         <p className="text-xs muted">An estimate from photos by Next Owner Market&apos;s valuation tool, shared by the owner. Not an appraisal; markets move. Rare or high-value items deserve a specialist.</p>

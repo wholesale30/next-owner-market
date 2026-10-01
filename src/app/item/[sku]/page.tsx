@@ -99,7 +99,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             {item.condition && <span className="pill">{CONDITION_LABELS[item.condition]}</span>}
             {item.tested && <span className="pill pill-active">✔ Tested, works</span>}
             {item.serviced && <span className="pill pill-active">✔ Serviced</span>}
-            {item.local_pickup_ok && <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}{miles != null ? ` · ${miles} mi from you` : ""}</span>}
+            {item.local_pickup_ok && (pickupLoc && (item as unknown as { city?: string; state?: string }).city && (item as unknown as { state?: string }).state ? <Link href={`/near/${String((item as unknown as { city: string }).city).toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${String((item as unknown as { state: string }).state).toLowerCase()}`} className="pill">📍 Pickup in {pickupLoc}{miles != null ? ` · ${miles} mi from you` : ""}</Link> : <span className="pill">📍 Pickup{pickupLoc ? ` in ${pickupLoc}` : ""}{miles != null ? ` · ${miles} mi from you` : ""}</span>)}
             {item.shipping_ok && <span className="pill">{(item as unknown as { shipping_mode?: string }).shipping_mode === "free" ? "🚚 Free shipping" : "🚚 Ships"}</span>}
             {veh.year && <span className="pill">{veh.year}</span>}
             {veh.mileage != null && <span className="pill">{veh.mileage.toLocaleString()} {/boat|rv|atv|equip/i.test(item.categories?.name || "") ? "hrs" : "mi"}</span>}
