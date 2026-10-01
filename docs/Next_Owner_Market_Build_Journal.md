@@ -2689,3 +2689,14 @@ The Thrift Shopper Growth Plan, the updated Complete Guide and User Guide, and t
 **Claude:**
 
 Good news: you don't have to sign in to Vercel at all. I got it working from my side, and today's changes are publishing now. Marking that to-do as done and waiting for the build to finish.
+
+Vercel didn't really shut us out, and you don't need to sign in to anything.
+
+**What happened:** the Vercel login was fine the whole time: shayneforva@gmail.com, username wholesale30. The two emails you tried weren't it, which is why it said "no account." The problem was on my side. I was adding a "team" setting to my publishing request that the connection no longer accepts, so Vercel answered "not authorized." Most likely the connection's permissions narrowed the last time it was linked. When I dropped that setting, it worked right away. I've written the fix into the Complete Guide so it doesn't happen again.
+
+**Live now** (I opened the site as a shopper to check):
+- **📸 Take a photo** on What's it worth, Buy or Pass and Sort the pile.
+- **Signed-out visitors** who pick a photo now go to the free account page instead of getting a dead button.
+- **📝 To-do tab** with Monday and due-date reminders. Your list is loaded, and I marked "Reconnect Vercel" as done.
+
+The five Goodwill builds are still waiting on your go.

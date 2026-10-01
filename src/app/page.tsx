@@ -62,6 +62,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
             <Link href="/pile" className="underline">📦 List a whole box</Link>
             <Link href="/start" className="underline">😮‍💨 Overwhelmed? Start here</Link>
           </div>
+          <Link href="/thrift" className="block text-center text-sm font-semibold underline opacity-95">🛒 In a thrift store? Check it before you buy it →</Link>
         </div>
       </section>
       <section className="max-w-5xl mx-auto px-4 pt-4">
@@ -168,7 +169,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <footer className="text-center text-xs muted py-6">
           {business.name}{business.location ? ` • ${business.location}` : ""}{business.contact_phone ? ` • ${business.contact_phone}` : ""}
           {" • "}<Link href="/try" className="underline">Try it free</Link>{" • "}<Link href="/tools" className="underline">All tools</Link>{" • "}<Link href="/pro" className="underline">Pro</Link>{" • "}<Link href="/login" className="underline">Sign in</Link>
-          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/pile" className="underline">Sort the pile</Link>{" • "}<Link href="/buy-or-pass" className="underline">Buy or pass?</Link>{" • "}<Link href="/valued" className="underline">What things are worth</Link>{" • "}<Link href="/start" className="underline">Start with one box</Link>{" • "}<Link href="/why" className="underline">Why we built this</Link>{" • "}<Link href="/embed" className="underline">Free widget for your site</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
+          {" • "}<Link href="/worth" className="underline">What&apos;s it worth?</Link>{" • "}<Link href="/pile" className="underline">Sort the pile</Link>{" • "}<Link href="/buy-or-pass" className="underline">Buy or pass?</Link>{" • "}<Link href="/thrift" className="underline">Thrift store scanner</Link>{" • "}<Link href="/valued" className="underline">What things are worth</Link>{" • "}<Link href="/start" className="underline">Start with one box</Link>{" • "}<Link href="/why" className="underline">Why we built this</Link>{" • "}<Link href="/embed" className="underline">Free widget for your site</Link>{" • "}<Link href="/looking-for" className="underline">Wanted</Link>{" • "}<Link href="/community" className="underline">Community</Link>{" • "}<Link href="/blog" className="underline">Blog</Link>{" • "}<Link href="/sell-on" className="underline">How to sell on eBay, Poshmark…</Link>{" • "}<Link href="/help" className="underline">Help</Link>{" • "}<Link href="/terms" className="underline">Terms</Link>{" • "}<Link href="/privacy" className="underline">Privacy</Link>
         </footer>
       </main>
     </div>

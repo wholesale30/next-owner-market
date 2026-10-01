@@ -16,7 +16,7 @@ export default async function ToolsPage() {
     { href: user ? "/app/items/new" : "/try", icon: "📸", name: "List one item", what: "Pick a photo. The AI writes the title, description and price, plus ready-to-paste versions for Facebook, eBay and 7 more sites.", tag: "Start here", main: true },
     { href: "/pile", icon: "📦", name: "List a whole box", what: "Photos of a shelf, a box, a table of stuff. It sorts every item into sell, keep, donate or toss, with a value for each, and lists the ones worth selling." },
     { href: "/worth", icon: "💰", name: "What's it worth?", what: "One item, the deep look: what it is, the year, a realistic price range, why, and where it sells best." },
-    { href: "/buy-or-pass", icon: "🛒", name: "Should I buy it?", what: "At a thrift store or yard sale? Snap it and see what it resells for after fees, and a clear buy or pass." },
+    { href: "/buy-or-pass", icon: "🛒", name: "Should I buy it?", what: "At a thrift store or yard sale? Snap it and see what it resells for after fees, and a clear buy or pass. First one free, no account; then 5 free every day." },
     { href: "/sell-on", icon: "🧭", name: "How to post on each app", what: "Step-by-step, screen by screen, for Facebook, eBay, OfferUp, Mercari, Poshmark and the rest. Written for first-timers." },
     { href: "/start", icon: "😮‍💨", name: "Overwhelmed? Start with one box", what: "Garage, attic, a parent's house: eight small steps that get you from stuck to your first sale." },
     { href: "/valued", icon: "📚", name: "What things are worth", what: "Real items people valued with the tool. Browse to get a feel for prices." },

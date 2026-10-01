@@ -646,7 +646,32 @@ const secretary: Automation = {
   },
 };
 
-export const AUTOMATIONS: Automation[] = [health, secretary, robot, heldMoney, payoutsReady, heldPayouts, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
+// ---------------------------------------------------------------- Monday thrift heads-up (opt-in)
+const thriftMonday: Automation = {
+  key: "thrift_monday", name: "Monday thrift heads-up", schedule: "weekly (Monday)", sort_order: 9,
+  what: "Every Monday morning, one short email to people who tapped 'Remind me Mondays' on Buy or Pass: new color-tag week, check before you buy, with the link. Also shows what they found last week if they have an account.",
+  why: "Brings shoppers back on the day stores restock and color tags change, so Buy or Pass becomes a habit instead of a one-time try.",
+  async run() {
+    const ny = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" });
+    if (ny !== "Monday" && process.env.FORCE_DIGEST !== "1") return { skipped: "not Monday" };
+    const d = db();
+    const { data: subs } = await d.from("subscribers").select("email, profile_id").contains("interests", ["thrift_monday"]).eq("unsubscribed", false).not("email", "is", null).limit(5000);
+    let n = 0; let left = await budget();
+    for (const x of subs || []) {
+      if (left <= 0) break;
+      let line = "";
+      if (x.profile_id) {
+        const { data: f } = await d.from("buy_pass_scans").select("verdict, net_low").eq("owner_id", x.profile_id).gte("created_at", new Date(Date.now() - 7 * 86400_000).toISOString());
+        const buys = (f || []).filter((r) => r.verdict === "buy");
+        if (f?.length) line = `Last week you checked ${f.length} find${f.length === 1 ? "" : "s"}${buys.length ? ` and spotted about $${Math.round(buys.reduce((a, r) => a + Number(r.net_low || 0), 0))} in profit` : ""}.\n\n`;
+      }
+      if (await send(x.email, "New color-tag week: check before you buy", `${line}It's Monday: fresh stock and, at a lot of thrift stores, a new half-off color tag.\n\nIn the aisle, snap it and type the tag price. You get BUY or PASS and what you'd keep after fees:\n${site()}/buy-or-pass\n\nTip: flip it over and photograph the maker's mark or model number. It changes the price more than anything.\n\nHappy hunting.`, { profile_id: x.profile_id, kind: "thrift_monday" })) { n++; left--; }
+    }
+    return { emails_sent: n, on_list: subs?.length || 0 };
+  },
+};
+
+export const AUTOMATIONS: Automation[] = [health, secretary, robot, heldMoney, payoutsReady, heldPayouts, thriftMonday, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {

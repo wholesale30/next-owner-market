@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 6:45 PM from the project history (163 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 6:46 PM from the project history (164 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1216,3 +1216,9 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Thrift_Shopper_Growth_Plan.docx`, `docs/Next_Owner_Market_Thrift_Shopper_Growth_Plan.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id 8a6d797</sub>
+
+### 18:45 — Note how to publish to Vercel now (no team ID)
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 601a65b</sub>
