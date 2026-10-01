@@ -1848,3 +1848,44 @@ Nothing else changed tonight, so keep your other files (User Guide, White Paper,
 > Since your last reply here, the user spoke with Claude by voice; here is that exchange, treat it as prior conversation context:
 > User (voice): Okay, run everything, look at everything, and as I did with Fable, see if there's anything else we could do to make this scalable and auto-running and to make it grow and grow automatically and everything.
 > Claude (voice): Hey, I've lost the thread on this — long conversations do this sometimes. Let's start a fresh conversation.
+
+**Claude:**
+
+No response requested.
+
+### Sep 30, 10:12 PM — Shayne
+
+> Run this thing strong, ran, ran fa fables, entire credits out and everything else. We ain't lost, never lost nothing. What's going on now? Why now?
+
+**Claude:**
+
+Nothing is lost. Everything is saved in the code, the database and the documents I sent you tonight. The "lost the thread" reply came from the separate voice conversation, not from this one; I can't see why it said that, but it has no effect on the work here.
+
+Let me do the check you asked for.
+
+I checked the live system. It's sound and nothing is broken. Here's where it will hit walls as it grows, in order of how soon:
+
+**1. Payouts. This blocks sales today.** Until Stripe says yes, no seller can get paid, so buyers see "Message" instead of "Buy." Tap **Run now** on "Tell sellers when payout setup opens" and tell me what it says. Everything else matters less than this.
+
+**2. Photo storage fills at roughly 1,500 items.** The free database plan holds 1 GB of photos. Yours average 157 KB each, about 4 per item. Your 400 pallets will pass that. Fix: shrink photos on upload to about 60 KB each. They look the same on a phone, and the room grows to roughly 4,000 items. Free, about 30 minutes of work.
+
+**3. Email caps at 80 a day.** That's set to stay under the free email plan (100 a day). With a few hundred users, the welcome, nudge, digest and milestone emails will hit that cap and wait in line. Fix: rank them so receipts and payout emails always go first and digests go last. Free. Past about 300 active users, you'd need the paid email plan (about $20 a month); I'd ask you first.
+
+**4. Hosting terms.** I believe Vercel's free plan is for non-commercial use, and a store taking payments is commercial. I'd check their current terms before you push traffic. Pro is about $20 a month. Your call; nothing breaks today.
+
+**5. AI cost abuse.** Each new account gets 3 free AI lookups, so someone could make 50 throwaway emails and run up your Anthropic bill. Fix: a daily spending ceiling plus a limit on free lookups per device. Free.
+
+**6. Operations lists.** They load up to 1,000 rows at once. That's fine until you have thousands of users; then they need pages. Not urgent.
+
+**Growth that already runs by itself:** a sitemap and search-engine pings on every new listing, the Google Shopping feed, the weekly blog, public valuation pages, city pages, referrals, milestone share lines, the embed widget. **Two growth engines are built but switched off, waiting on you:** the Facebook Page auto-post (needs your Page token) and Google Business Profile. Each one is a single task on the Operations page.
+
+My recommendation: do 2, 3 and 5 now. All three are free, and 2 matters before the pallets go up. You're near your limit, though, so say **go** and I'll start with photo shrinking (the most important), push and deploy each fix as it's done, and send the papers.
+
+### Sep 30, 10:13 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The journal updates are pushed and nothing is left uncommitted. I'll start on the photo shrinking as soon as you say go.
