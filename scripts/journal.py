@@ -62,18 +62,43 @@ def render(rows, session_label):
             out.append("**Claude:**\n\n" + txt + "\n"); i += 1
     return "\n".join(out)
 
+def merge_rows(cache_path, rows):
+    """Append-only cache: the transcript file is rewritten when the chat is condensed, so never trust it alone."""
+    old = []
+    if os.path.exists(cache_path):
+        try: old = json.load(open(cache_path))
+        except Exception: old = []
+    seen = {(r[0], r[1], r[2][:120]) for r in old}
+    for r in rows:
+        k = (r[0], r[1], r[2][:120])
+        if k not in seen: old.append(list(r)); seen.add(k)
+    old.sort(key=lambda r: r[1])
+    json.dump(old, open(cache_path, "w"))
+    return [tuple(r) for r in old]
+
 def main():
     path = find_transcript()
     if not path or not os.path.exists(path): print("no transcript found"); return
     rows = rows_from(path)
-    if not rows: print("no rows"); return
     part1 = open(PART1).read() if os.path.exists(PART1) else "# Next Owner Market — The Build Journal\n"
-    # keep previously archived sessions (other transcripts) in docs/journal_sessions/
     sess_dir = os.path.join(DOCS, "journal_sessions"); os.makedirs(sess_dir, exist_ok=True)
     sid = os.path.basename(path).split(".")[0]
-    label = f"{local(rows[0][1])} → {local(rows[-1][1])} ({len([r for r in rows if r[0]=='U'])} messages from Shayne)"
-    open(os.path.join(sess_dir, f"{sid}.md"), "w").write(render(rows, label))
+    rows = merge_rows(os.path.join(sess_dir, f"{sid}.rows.json"), rows)
+    if not rows: print("no rows"); return
+    # An .archive.md holds text captured before a condense wiped the transcript; new rows after its end are appended.
+    archive = os.path.join(sess_dir, f"{sid}.archive.md")
+    if os.path.exists(archive):
+        a = open(archive).read()
+        meta = os.path.join(sess_dir, f"{sid}.archive.json")
+        end = json.load(open(meta))["end"] if os.path.exists(meta) else "0000"
+        fresh = [r for r in rows if r[1] > end]
+        text = a + ("\n" + render(fresh, "continued").split("\n", 2)[2] if fresh else "")
+    else:
+        label = f"{local(rows[0][1])} → {local(rows[-1][1])} ({len([r for r in rows if r[0]=='U'])} messages from Shayne)"
+        text = render(rows, label)
+    open(os.path.join(sess_dir, f"{sid}.md"), "w").write(text)
     sessions = sorted(glob.glob(os.path.join(sess_dir, "*.md")), key=os.path.getmtime)
+    sessions = [s for s in sessions if not s.endswith(".archive.md")]
     body = part1 + "\n\n---\n\n## Part 2 · Verbatim sessions\n" + "".join(open(s).read() for s in sessions)
     open(OUT_MD, "w").write(body)
     try:
