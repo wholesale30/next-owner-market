@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:54 PM from the project history (134 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 12:54 AM from the project history (136 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1016,3 +1016,20 @@
 - **Project rules:** `CLAUDE.md`
 
 <sub>change id 27d7be4</sub>
+
+### 23:54 — docs: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 5c56dd8</sub>
+
+
+## Thursday, October 1, 2026
+
+### 00:54 — Weight: free AI 'Guess it' from title/description/specs (packed lbs + box, with a one-line reason); auto-guesses when Will ship is ticked and weight is empty
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/guess-weight/route.ts`
+- **Seller / staff app:** `src/app/app/items/ItemForm.tsx`
+
+<sub>change id 8f82e27</sub>
