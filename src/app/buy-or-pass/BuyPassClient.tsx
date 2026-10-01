@@ -136,6 +136,11 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
           : <p className="text-xs muted text-center">Every share gets its own page that people searching Google can find. It helps the next person, and your friends can check their finds free. No name on it.</p>}
       </div>
 
+      <div className="grid gap-2">
+        <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={again}>📸 Check the next one</button>
+        {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: list it now"}</button>}
+      </div>
+
       <div className="card p-4 text-sm space-y-2">
         <div className="flex justify-between text-base"><span>Sells for (used)</span><b>{money(r.resale_low)} – {money(r.resale_high)}</b></div>
         <p className="font-semibold pt-1">What you keep, by where you sell it</p>
@@ -150,10 +155,6 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
 
       <div className="card p-4 text-sm space-y-1"><p>{r.why}</p>{r.watch_out && <p className="p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {r.watch_out}</p>}</div>
 
-      <div className="grid gap-2">
-        {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: list it now"}</button>}
-        <button type="button" className={`btn w-full ${r.verdict === "pass" ? "btn-primary text-lg" : ""}`} onClick={again}>📸 Check the next one</button>
-      </div>
       {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err.msg}</p>}
 
       {!meId && (

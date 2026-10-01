@@ -65,6 +65,8 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
         <p className="text-sm">{res.summary}</p>
         <p className="text-xs muted">{Object.entries(counts).filter(([, n]) => n).map(([k, n]) => `${ACT[k].emoji} ${n} ${ACT[k].label.toLowerCase()}`).join(" · ")}</p>
       </div>
+      <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
+      <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); }}>📸 Sort another pile</button>
       {res.items.map((x, i) => (
         <div key={i} className="card p-3 space-y-1" style={{ borderLeft: `4px solid ${ACT[x.action].color}` }}>
           <div className="flex items-start justify-between gap-2">
@@ -81,9 +83,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
         <p className="font-bold">List the {picked.size} marked Sell</p>
         <p className="text-sm muted">Each becomes a draft with a photo, title, description and price already written. You check them and tap List. Free.</p>
         <button type="button" className="btn btn-primary w-full text-lg" disabled={!picked.size || !!busy} onClick={listPicked}>{busy || `List ${picked.size} item${picked.size === 1 ? "" : "s"}`}</button>
-        <button type="button" className="btn btn-secondary w-full" onClick={() => { setRes(null); setPhotos([]); }}>Sort another pile</button>
       </div>
-      <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
       <p className="text-xs muted">Estimates from photos, not appraisals. Ranges, because the market moves. Anything marked ⚠ deserves a specialist.</p>
     </div>
   );
@@ -102,13 +102,13 @@ function SharePile({ items, photos }: { items: Item[]; photos: Picked[] }) {
     }
     setState(ok ? "done" : "err");
   }
-  if (state === "done") return <p className="card p-3 text-sm">✅ Shared to <Link className="underline" href="/valued">What things are worth</Link>. No name on any of it.</p>;
+  const box = { background: "color-mix(in srgb, var(--brand) 8%, var(--surface))", borderColor: "var(--brand)", borderWidth: 2 } as const;
+  if (state === "done") return <div className="card p-3 text-sm text-center" style={box}><p style={{ color: "var(--ok)" }}>✓ {items.length} new page{items.length === 1 ? "" : "s"} people can find on Google. <Link className="underline" href="/valued">See them</Link></p><button type="button" className="btn btn-primary w-full mt-2" onClick={async () => { const url = `${window.location.origin}/valued`; try { if (navigator.share) await navigator.share({ title: "What's it worth?", text: "Found out what my stuff is worth, free:", url }); else await navigator.clipboard.writeText(url); } catch { /* ok */ } }}>📣 Tell your friends</button></div>;
   return (
-    <div className="card p-3 text-sm space-y-2">
-      <p className="font-semibold">Share these {items.length} valuations (no name)?</p>
-      <p className="muted text-xs">They go on our public &quot;What things are worth&quot; pages so the next person with the same item finds an answer. Nothing about you or where you live.</p>
-      <label className="flex items-center gap-2"><input type="checkbox" checked={withPhoto} onChange={(e) => setWithPhoto(e.target.checked)} /> Include the photos</label>
-      <button type="button" className="btn btn-secondary w-full" disabled={state === "busy"} onClick={share}>{state === "busy" ? "Sharing…" : state === "err" ? "Couldn't share; try again" : "Share them"}</button>
+    <div className="card p-3 space-y-2" style={box}>
+      <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={state === "busy"} onClick={share}>{state === "busy" ? "Making their pages…" : state === "err" ? "Couldn't share; tap to try again" : `📣 Share these ${items.length} finds`}</button>
+      <p className="text-xs muted text-center">Each one gets its own page that people searching Google can find. It helps the next person with the same thing. No name, nothing about where you live.</p>
+      <label className="flex items-center justify-center gap-2 text-xs"><input type="checkbox" checked={withPhoto} onChange={(e) => setWithPhoto(e.target.checked)} /> Include the photos</label>
     </div>
   );
 }

@@ -115,6 +115,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
           <ShareValuation photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
+          <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={reset}>📸 Check another item</button>
           <div className="card p-4 space-y-2 text-sm">
             <p className="font-semibold">Where it sells best</p>
             {res.best_places.map((b, i) => <p key={i}><b>{i + 1}. {b.place}</b> <span className="muted">— {b.why}</span></p>)}
@@ -127,7 +128,6 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
             <p className="font-bold">Want to sell it?</p>
             <p className="text-sm muted">One tap. Photos, title, description, and price are already written. You just check it and hit List. Listing here is free; you also get the Facebook version to paste, and Pro gets all nine marketplaces.</p>
             <button type="button" className="btn btn-primary w-full text-lg" disabled={!!busy} onClick={listIt}>{busy || "List it now"}</button>
-            <button type="button" className="btn btn-secondary w-full" onClick={reset}>Check another item</button>
           </div>
         </div>
       )}
