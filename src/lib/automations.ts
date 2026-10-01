@@ -142,15 +142,29 @@ export async function runRobot(): Promise<Result> {
   const ts = Date.now(); const email = `robot${ts}@robot.nextownermarket.com`; const password = `R0bot!${ts}x`;
   let userId: string | null = null; let itemId: string | null = null;
   const { createClient: mk } = await import("@supabase/supabase-js");
+  let tryToken: string | null = null;
   try {
-    const r = await fetch(`${s}/api/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password, full_name: "Test Robot", username: `robot${String(ts).slice(-8)}`, role: "consignor", zip: "23219", city: "Richmond", state: "VA" }) });
+    // 1. Try it free, like a stranger: one real photo through the AI.
+    const { data: ph0 } = await d.from("item_photos").select("url").order("created_at", { ascending: false }).limit(1).maybeSingle();
+    if (ph0?.url) {
+      const img = await fetch(ph0.url); const buf = Buffer.from(await img.arrayBuffer());
+      const tr = await fetch(`${s}/api/try`, { method: "POST", headers: { "Content-Type": "application/json", "x-forwarded-for": `robot-${ts}` }, body: JSON.stringify({ image: `data:${/png|webp/.test(img.headers.get("content-type") || "") ? img.headers.get("content-type") : "image/jpeg"};base64,${buf.toString("base64")}`, hints: "weekly robot test" }) });
+      const tj = (await tr.json().catch(() => ({}))) as { token?: string; draft?: { title?: string }; error?: string };
+      if (!tr.ok || !tj.token || !tj.draft?.title) throw new Error(`try-it-free didn't write a listing (${tr.status}: ${tj.error || "no result"})`);
+      tryToken = tj.token; steps.push(`try-it-free wrote "${tj.draft.title.slice(0, 40)}"`);
+    }
+    // 2. Keep it: sign up with the try token, like tapping "Keep this listing".
+    const r = await fetch(`${s}/api/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ try: tryToken || undefined, email, password, full_name: "Test Robot", username: `robot${String(ts).slice(-8)}`, role: "consignor", zip: "23219", city: "Richmond", state: "VA" }) });
     if (!r.ok) throw new Error(`sign-up page answered ${r.status}: ${(await r.text()).slice(0, 120)}`);
+    const sj = (await r.json().catch(() => ({}))) as { item_id?: string | null };
     steps.push("signed up");
+    if (tryToken) { if (!sj.item_id) throw new Error("signed up but the try listing didn't become their first item"); steps.push("try listing became their first draft"); }
     const u = mk(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } });
     const { data: si, error: se } = await u.auth.signInWithPassword({ email, password });
     if (se || !si.user) throw new Error(`sign-in failed: ${se?.message}`);
     userId = si.user.id; steps.push("signed in");
     await d.from("profiles").update({ marketing_opt_out: true }).eq("id", userId);
+    if (sj.item_id) { const { data: own } = await u.from("items").select("id").eq("id", sj.item_id).maybeSingle(); if (!own) throw new Error("the new seller can't see their own first item"); await d.from("items").delete().eq("id", sj.item_id); await d.from("trash").delete().eq("row_id", sj.item_id); await d.from("trash").delete().eq("data->>item_id", sj.item_id); steps.push("seller sees their first item"); }
     const { data: it, error: ie } = await u.from("items").insert({ owner_id: userId, created_by: userId, title: "Robot test item please ignore", description: "Automatic weekly test. This listing deletes itself in a minute.", price: 1, local_pickup_ok: true, shipping_ok: false, tier: "self_listed", status: "draft" }).select("id, sku").single();
     if (ie || !it) throw new Error(`add item failed: ${ie?.message}`);
     itemId = it.id; steps.push("added an item");
@@ -176,6 +190,7 @@ export async function runRobot(): Promise<Result> {
   try {
     if (itemId) { await d.from("items").delete().eq("id", itemId); await d.from("trash").delete().eq("row_id", itemId); await d.from("trash").delete().eq("data->>item_id", itemId); }
     await d.from("subscribers").delete().ilike("email", "%@robot.nextownermarket.com");
+    if (tryToken) { await d.from("settings").delete().eq("key", `try:result:${tryToken}`); const day = new Date().toISOString().slice(0, 10); const { data: c } = await d.from("settings").select("value").eq("key", `try:day:${day}`).maybeSingle(); const n = Number((c?.value as { n?: number } | null)?.n || 0); if (n > 0) await d.from("settings").upsert({ key: `try:day:${day}`, value: { n: n - 1 } }); }
     await d.from("trash").delete().like("data->>email", "%@robot.nextownermarket.com");
     if (userId) { await d.auth.admin.deleteUser(userId); }
     else { const { data: list } = await d.auth.admin.listUsers({ perPage: 200 }); for (const x of list?.users || []) if (x.email?.endsWith("@robot.nextownermarket.com")) await d.auth.admin.deleteUser(x.id); }
