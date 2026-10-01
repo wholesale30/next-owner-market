@@ -2700,3 +2700,29 @@ Vercel didn't really shut us out, and you don't need to sign in to anything.
 - **📝 To-do tab** with Monday and due-date reminders. Your list is loaded, and I marked "Reconnect Vercel" as done.
 
 The five Goodwill builds are still waiting on your go.
+
+### Oct 1, 6:49 PM — Shayne
+
+> The Google thing would be one of the biggest things ever, won't it? Um, I I don't understand about the four dollar thing. The four dollar. Um, if pay paid for sales of forty five thirty one profit a share card. Um, the big thing is I want to cut out the competition. So however we got to do that and make money, I'd like to. incorporate that whatever do everything all the research all the psychology what do we have to do to hook people on this app
+
+**Claude:**
+
+Yes. Goodwill is huge, and nobody owns this space yet.
+
+**The $4 card, in plain words:** you're at Goodwill holding a lamp with a $4 tag. The app says it sells for about $45 online, and after eBay's fees and shipping you'd keep about $31. The "share card" is a little picture of that result ("Paid $4 → sells for $45 → $31 profit") that people post on TikTok and Facebook to show off a find. Every post carries our web address and their invite link, so their friends come to us for free.
+
+You said do everything, so I'm building it now. First I'm looking at how Buy or Pass works today.
+
+Next I'm writing the new Buy or Pass engine: one free answer with no account, 5 free a day once signed in, and profit shown for every place to sell.
+
+Now the Buy or Pass page itself: your finds tracker, real counts, and saving a check made before signing up.
+
+Next: the public share page, so a shared find opens a nice card with a "check your own find free" button.
+
+Next is the page for thrift shoppers.
+
+Signed-out photo picking works. Publishing now so I can run a real end-to-end check on the live site.
+
+Live. Now I'm doing a real signed-out check on the live site, the way a stranger in Goodwill would.
+
+While that publishes, I'm writing up the plan for beating the competition.

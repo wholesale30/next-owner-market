@@ -286,3 +286,16 @@ Built on how people actually decide: one obvious next step, see the value before
 **Bug fixed:** If a signed-out visitor picked a photo on Buy or Pass or Sort the pile, nothing happened. Now they go straight to the free account page and come right back.
 
 **Publishing note for Claude (Oct 1, 2026):** Call Vercel `create_deployment` **without** a teamId. Use project `prj_VzFBDFjx5WS6ShwiQaiaQrxv08Ed` and gitSource github `wholesale30/next-owner-market` `main`. Passing the team ID now returns "not authorized". The Vercel login is shayneforva@gmail.com (username wholesale30).
+
+## Buy or Pass growth build and /thrift (Oct 1, 2026)
+
+- **Signed-out visitors:** one free check per device per day, with no account. The site also allows 3 per network and 500 site-wide per day. Counters are stored in settings (`bp:ip:*`, `bp:day:*`). The photo is uploaded by the server to `item-photos/buypass/anon/`.
+- **Free accounts:** 5 free checks per rolling day (`BP_FREE_DAILY` in `src/lib/thrift.ts`). After that a saved AI credit is used if they have one; if not, they see the Pro offer. Pro and staff are unlimited.
+- **The answer shows** profit at every place to sell, and "best" is the place where you keep the most. It also gives gain or loss wording, "Worth it at $X or less" on a MAYBE, and how sure it is.
+- **"I bought it: list it now"** (`/api/buy-or-pass/list`, `listFromScan`) makes a draft listing with the photo, price, and cost filled in. It marks the check as bought and links it to the item. Signed-out people go through signup and come back to `/buy-or-pass?claim=<id>&list=1`.
+- **Share:** `/flip/<id>` is a public card with its own preview picture (`opengraph-image`). It carries the sharer's `?ref=` invite code all the way through to signup.
+- **Your finds** (signed in) shows profit spotted, BUYs found, money not wasted, and a Flipper badge that starts at 1 of 10.
+- **Home-screen prompt:** `src/components/InstallPrompt.tsx` shows only after a result.
+- **Monday heads-up:** the "Remind me Mondays" button (`/api/thrift-reminder`) adds people to `subscribers` with interest `thrift_monday`. The automation "Monday thrift heads-up" emails them on Mondays.
+- **Page `/thrift`:** for thrift and Goodwill shoppers. It includes a "Not affiliated" line. It's linked from the home page hero and footer, and it's in the sitemap.
+- **Database:** `buy_pass_scans.owner_id` can now be empty (signed-out checks). New columns: `best_place`, `listing_title`, `shared`. Migration: `033_buy_pass_anon_share.sql`.

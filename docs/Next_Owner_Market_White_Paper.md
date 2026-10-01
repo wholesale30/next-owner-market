@@ -249,3 +249,13 @@ Built on how people actually decide: one obvious next step, see the value before
 **Fixed while testing (Oct 1).** The AI model in use stopped accepting the way several tools asked for their answer, so **What's it worth?, Sort the pile, Buy or pass?, the weight guess and try-it-free were all failing** (7 real Sort-the-pile attempts failed between 12:45 and 12:48 PM; credits were refunded automatically). All of them now go through one shared helper that asks the way the model accepts.
 
 **Also fixed Oct 1:** the Google Shopping feed (what Merchant Center reads), the new-items feed and the sitemap were being saved once at build time, and the last build saved an empty Google feed. They're now made fresh on request (cached at the edge for 15 to 30 minutes), and if the database ever doesn't answer they return "try again later" instead of an empty list, so Google keeps its last good copy. The morning sweep checks that both feeds have items.
+
+## Winning thrift shoppers (Oct 1, 2026)
+
+Paid thrift-scanner apps charge to scan, from $9.99 a week to $29.99 a month. Their reviews complain about wrong values and trial billing.
+
+Next Owner Market gives the check away. The first one needs no account, and a free account gets 5 a day. We earn when the find is listed and sold.
+
+The answer shows what you keep at each place to sell, and one tap turns a BUY into a listing. Share cards and a Monday reminder bring people back and bring in new ones.
+
+Full plan: *Beating the Thrift Apps* and *Reaching Goodwill and Thrift Shoppers*.

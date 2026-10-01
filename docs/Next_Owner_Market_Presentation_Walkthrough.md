@@ -151,3 +151,10 @@
 | Account | /account, /account/profile, /account/orders/id | signed in |
 | Seller app | /app and tabs | sellers |
 | Operations, Review, People, Invites, Blog, Email, Settings, Money | /app/ops … | staff |
+
+## Demo: Buy or Pass at the thrift store (Oct 1, 2026)
+
+1. Open **nextownermarket.com/thrift** signed out. Point out: no app, no account.
+2. Tap **Take a photo** and photograph something with a price tag. Type the price and tap **Buy or pass?**
+3. Show the big BUY, MAYBE or PASS, the "what you keep" line for each site, and "worth it at $X or less."
+4. Tap **Show off this find** to show the share card, then **I bought it: list it now** to show it become a listing.

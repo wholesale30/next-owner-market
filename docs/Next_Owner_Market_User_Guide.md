@@ -380,3 +380,17 @@ Built on how people actually decide: one obvious next step, see the value before
 ## Taking a photo right in the app (Oct 1, 2026)
 
 What's it worth, Buy or Pass and Sort the pile each have two buttons. **🖼 Pick photos** uses pictures already on your phone. **📸 Take a photo** opens the camera right there, which is handy in a store aisle.
+
+## Buy or Pass in a thrift store (Oct 1, 2026)
+
+Go to **nextownermarket.com/thrift**. Snap the item, type the price on the tag, and tap **Buy or pass?** Your first check is free with no account. A free account gives you 5 free checks every day.
+
+**What you get back:**
+- what you'd keep at eBay, Mercari, Poshmark, Facebook and our store, with the best one marked;
+- the most you should pay;
+- a straight BUY, MAYBE or PASS.
+
+**After the answer:**
+- **I bought it: list it now** turns the find into a listing.
+- **Show off this find** shares a picture card with your invite link.
+- **Remind me Mondays** sends a heads-up on color-tag day.

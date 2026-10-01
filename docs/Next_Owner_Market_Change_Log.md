@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 6:46 PM from the project history (164 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:14 PM from the project history (166 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1222,3 +1222,20 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id 601a65b</sub>
+
+### 19:09 — Buy or Pass growth build: free check with no account, 5 free a day, profit by marketplace, loss/gain framing, max-pay, I bought it -> listing, share card + /flip page, finds tracker with badge, home-screen prompt, Monday thrift email, /thrift page
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/buy-or-pass/list/route.ts`, `src/app/api/buy-or-pass/route.ts`, `src/app/api/thrift-reminder/route.ts`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/flip/[id]/opengraph-image.tsx`, `src/app/flip/[id]/page.tsx`, `src/app/page.tsx`, `src/app/sitemap.ts`, `src/app/thrift/page.tsx`, `src/app/tools/page.tsx`
+- **Shared UI pieces:** `src/components/InstallPrompt.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`, `src/lib/help.ts`, `src/lib/thrift.ts`
+- **Database (migrations):** `supabase/migrations/033_buy_pass_anon_share.sql`
+
+<sub>change id f9f947a</sub>
+
+### 19:13 — Buy or Pass: best place is where you keep the most
+
+- **Server routes (API):** `src/app/api/buy-or-pass/route.ts`
+
+<sub>change id fbb4ad2</sub>
