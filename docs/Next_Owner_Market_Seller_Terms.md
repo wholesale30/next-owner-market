@@ -8,7 +8,7 @@ Next Owner Market (nextownermarket.com) is an online marketplace operated by ___
 ## 2. Accounts
 - You must be 18 or older and provide accurate contact information.
 - One account per person or business. We may suspend or close accounts that break these terms.
-- Sellers must complete payout verification with our payment processor (Stripe) before they can sell through checkout.
+- Sellers can sell through checkout right away. To receive money, sellers must complete payout verification with our payment processor (Stripe). Until they do, their share of completed sales is held for them and sent automatically once verification is complete. If payouts are not set up within 60 days of a sale, we will contact the seller and may, at our discretion, continue holding the funds or take other reasonable steps.
 
 ## 3. Listings
 - Describe items accurately, including defects. Photos must be of the actual item.

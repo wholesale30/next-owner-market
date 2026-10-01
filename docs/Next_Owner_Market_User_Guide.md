@@ -211,7 +211,7 @@ New sellers see a checklist on their home screen (account → approved → payou
 2. Staff approve the account (People → Approve) and set the tier.
 3. Consignor taps **+ Add**, uploads photos, lets the AI write it, submits.
 4. Staff review and approve; the item goes live in the store and can be copy-posted to Facebook, OfferUp, eBay, Craigslist.
-5. **Set up payouts** (Payouts page, 2 minutes, done with Stripe: name, address, bank account; we never see them). Until this is done, listings show without a Buy button.
+5. **Set up payouts** (Payouts page, 2 minutes, done with Stripe: name, address, bank account; we never see them). You can sell before this is done: if something sells first, we hold your money and send it the moment you finish.
 6. When a buyer pays in the store, the money is held. At pickup the consignor enters the buyer's code (or ships with tracking). The consignor's share, minus commission, lands in their bank in about 2 business days. Nothing to invoice, nothing to chase.
 7. Sales made outside the store (cash at the warehouse, Facebook) are still recorded by staff and paid from **Money → Mark paid**.
 
@@ -298,7 +298,7 @@ Rates are editable in Settings, per consignor, and per item.
 
 **Runs by itself, and the Operations page (Sept 30, night)**
 - **🎛 Operations** (first tab in the staff app): the numbers (tap any for what it means), every automation with what it does / why / last result / on-off / Run now, the list of human tasks with exact steps and a notes box, and a glossary. Hand this page to an assistant.
-- **Automatic emails**: welcome series (day 1, 3, 7), seller nudges (views with no messages, saves, drafts sitting, payouts not set up), milestones (first listing, 10 listings, first sale, third sale, $100/$500/$1,000) with a share line, review requests after each order. Each once; capped per day; anyone can turn tips off at /unsubscribe (order emails always come).
+- **Automatic emails**: welcome series (day 1, 3, 7), seller nudges (views with no messages, saves, drafts sitting, payout setup reminders on day 1, 3 and 5), milestones (first listing, 10 listings, first sale, third sale, $100/$500/$1,000) with a share line, review requests after each order. Each once; capped per day; anyone can turn tips off at /unsubscribe (order emails always come).
 - **Weekly blog post** written every Monday from the week's real valuations, sales and new items.
 - **Pages that build themselves**: hub pages (/valued/about/…) once two valuations share the same words; city pages (/near/richmond-va) for any city with items.
 - **Share images** for every item, valuation, tool page and the home page, so links look right on Facebook, texts and Reddit.
@@ -340,3 +340,5 @@ Post the store link in your Facebook group's description and pinned post. Every 
 - Photos and data are stored in a managed database with role-based security; consignors can only ever see their own items.
 - Everyone can browse and buy without an account. Accounts are free and instant.
 - Built and launched in a single day, September 29, 2026.
+
+**Selling before payouts are set up (Sept 30, 2026):** every listing shows Buy now from day one, whether or not the seller has finished payout setup. The buyer pays and the money is held as always. When the item is handed over, if the seller hasn't set up payouts, their share stays held and they get an email: "You sold [item]. $X is waiting for you." Reminders go out every 3 days with the amount. The moment the seller finishes setup, everything owed is sent to their bank automatically, and the daily job double-checks each morning (automation: "Send held seller money"). Anything held 60+ days alerts staff to decide. New sellers also get payout setup reminders on day 1, 3 and 5 after signing up. The Payouts page shows sellers a green "$X is waiting for you" box.

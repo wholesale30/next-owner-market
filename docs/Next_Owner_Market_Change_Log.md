@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 10:54 PM from the project history (122 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:03 PM from the project history (124 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -935,3 +935,20 @@
 - **Seller / staff app:** `src/app/app/InventoryList.tsx`, `src/app/app/items/[id]/page.tsx`
 
 <sub>change id e693403</sub>
+
+### 22:54 — docs: buyer view; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 59ef4b6</sub>
+
+### 23:03 — Buy now on every listing from day one; seller money held until payout setup, then sent automatically (on Stripe ready + daily); 'You sold X, $Y waiting' email, 3-day reminders, 60-day staff alert; payout setup reminders day 1/3/5 after signup; held total shown on Payouts
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/stripe/checkout/route.ts`, `src/app/api/stripe/connect/route.ts`, `src/app/api/stripe/webhook/route.ts`
+- **Seller / staff app:** `src/app/app/items/[id]/page.tsx`, `src/app/app/money/page.tsx`
+- **Public item page:** `src/app/item/[sku]/BuyButton.tsx`, `src/app/item/[sku]/page.tsx`
+- **Public site pages:** `src/app/seller/[id]/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`, `src/lib/help.ts`, `src/lib/orders.ts`
+
+<sub>change id efdf3d4</sub>
