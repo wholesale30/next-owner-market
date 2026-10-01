@@ -1811,3 +1811,40 @@ Now writing the list loader.
 Sandbox can't reach the database directly, so I'm checking every column name against the live schema instead.
 
 All columns check out. Shipping it.
+
+Every number on the Operations page now opens to the actual list behind it, with links. It's going live now, in about 2 minutes. I couldn't load the lists from here, because this workspace can't reach the live database, but I checked every column they read against it. After it's live, tap one number to confirm it shows people.
+
+You were right that a count with no names was useless. Here's what each number now shows when you tap it:
+
+- **Accounts, new this week, sellers, sellers with payouts, Pro, paying Pro, sellers to approve:** name, @username, email, whether they're a seller or buyer, Pro or free Pro, city, and the date they joined.
+- **Items live, listed this week, drafts, waiting for approval, item views:** title, price, status, seller and view count, linked to the item. The views list is ranked most-viewed first.
+- **Orders, sold, our cut, problems open:** item, amount, buyer, date and our cut, linked to the order.
+- **Automatic emails this week:** date, who it went to, the subject, and a note if it failed.
+- **Items saved:** what was saved and by whom.
+- **Piles sorted and buy-or-pass checks:** what was scanned, the value or verdict, and who ran it.
+- **Subscribers, blog posts, community posts, reports, public valuations, invites used:** the full list of each.
+
+The Complete Guide and Presentation Walkthrough now include this, and the Build Journal and Change Log are updated. All four are attached; same file names, so they replace your old copies.
+
+Still waiting on your **Run now** result for "Tell sellers when payout setup opens." That tells us whether Nikki can set up payouts tonight.
+
+### Sep 30, 9:54 PM — Shayne
+
+> Do any of these need to replace the premium previous ones so I don't save old stuff that match?
+
+**Claude:**
+
+Yes, all four replace the copies you already have. They use the exact same file names, so save over the old ones:
+
+- Next_Owner_Market_Complete_Guide.docx
+- Next_Owner_Market_Presentation_Walkthrough.docx
+- Next_Owner_Market_Build_Journal.docx
+- Next_Owner_Market_Change_Log.docx
+
+Nothing else changed tonight, so keep your other files (User Guide, White Paper, Mission Statement, Marketing Plan, Launch Kit and the rest) as they are. If your phone saved a new copy with "(1)" at the end of the name instead of overwriting, delete the version without the "(1)" and rename the new one.
+
+### Sep 30, 9:57 PM — Shayne
+
+> Since your last reply here, the user spoke with Claude by voice; here is that exchange, treat it as prior conversation context:
+> User (voice): Okay, run everything, look at everything, and as I did with Fable, see if there's anything else we could do to make this scalable and auto-running and to make it grow and grow automatically and everything.
+> Claude (voice): Hey, I've lost the thread on this — long conversations do this sometimes. Let's start a fresh conversation.
