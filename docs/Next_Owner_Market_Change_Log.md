@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 7:58 PM from the project history (94 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 8:32 PM from the project history (99 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -753,3 +753,39 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
 
 <sub>change id ec243e8</sub>
+
+### 20:09 — Regenerated journal
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+
+<sub>change id 4e1e790</sub>
+
+### 20:22 — Automation engine: welcome series, seller nudges, milestones with share lines, review requests, weekly auto blog, registry + results; marketing opt-out; ops API
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+- **Server routes (API):** `src/app/api/notify/send/route.ts`, `src/app/api/ops/route.ts`
+- **Public site pages:** `src/app/unsubscribe/OptOutButton.tsx`, `src/app/unsubscribe/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id cb96529</sub>
+
+### 20:25 — Self-growing pages: valuation hubs (/valued/about/term), city pages (/near/city-st), share images for items/valuations/tools/home, RSS feeds, embeddable widget (/embed), sitemap
+
+- **Public site pages:** `src/app/embed/CopyCode.tsx`, `src/app/embed/page.tsx`, `src/app/embed/worth/page.tsx`, `src/app/feed/blog.xml/route.ts`, `src/app/feed/items.xml/route.ts`, `src/app/feed/valued.xml/route.ts`, `src/app/layout.tsx`, `src/app/near/[slug]/page.tsx`, `src/app/opengraph-image.tsx`, `src/app/page.tsx`, `src/app/pile/opengraph-image.tsx`, `src/app/sitemap.ts` (+4 more)
+- **Public item page:** `src/app/item/[sku]/opengraph-image.tsx`, `src/app/item/[sku]/page.tsx`
+- **Shared code (logic):** `src/lib/og.tsx`, `src/lib/rss.ts`
+
+<sub>change id 7a1cd6b</sub>
+
+### 20:29 — Operations page: every number explained, every automation with what/why/last result/toggle/run now, human task list with exact steps and notes, glossary
+
+- **Seller / staff app:** `src/app/app/layout.tsx`, `src/app/app/ops/OpsClient.tsx`, `src/app/app/ops/page.tsx`
+- **Shared code (logic):** `src/lib/help.ts`
+
+<sub>change id e203b69</sub>
+
+### 20:32 — Docs: Complete Guide, Presentation Walkthrough, User Guide/White Paper/File Index updates
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`
+
+<sub>change id e01fe33</sub>
