@@ -497,7 +497,18 @@ const health: Automation = {
       if (bad.length) { const { alertStaff } = await import("@/lib/alert"); await alertStaff(`${bad.length} page(s) broken on the site`, `The morning sweep opened ${urls.length} pages as a signed-out visitor. Broken:\n${bad.slice(0, 20).join("\n")}\n\nTell Claude.`, "/app/ops"); }
     } catch (e) { out.site_sweep = `sweep failed: ${e instanceof Error ? e.message : e}`; }
     await set("stripe", process.env.STRIPE_SECRET_KEY ? "ok" : "missing", process.env.STRIPE_SECRET_KEY ? "key present" : "STRIPE_SECRET_KEY not set");
-    await set("anthropic", process.env.ANTHROPIC_API_KEY ? "ok" : "missing");
+    if (!process.env.ANTHROPIC_API_KEY) await set("anthropic", "missing");
+    else {
+      // Real test: the same kind of structured AI call the tools make. Catches model or API changes the same morning.
+      try {
+        const { askWithTool } = await import("@/lib/ai-tool");
+        const out = await askWithTool<{ title: string }>(new Anthropic(), { model: process.env.CLAUDE_MODEL || "claude-sonnet-5-5", max_tokens: 200, messages: [{ role: "user", content: "Write a short resale listing title for: a red Craftsman 16 oz claw hammer." }], tool: { name: "listing", description: "Record the title.", input_schema: { type: "object", properties: { title: { type: "string" } }, required: ["title"] } } });
+        await set("anthropic", out?.title ? "ok" : "error", out?.title ? `AI tools answering ("${out.title.slice(0, 40)}")` : "AI answered without a title");
+      } catch (e) {
+        await set("anthropic", "error", (e instanceof Error ? e.message : String(e)).slice(0, 160));
+        const { alertStaff } = await import("@/lib/alert"); await alertStaff("The AI tools stopped working", `The morning AI test failed: ${(e instanceof Error ? e.message : String(e)).slice(0, 300)}. Try it free, What's it worth, Sort the pile and Buy or pass are probably down. Tell Claude.`, "/app/ops");
+      }
+    }
     await set("shippo", process.env.SHIPPO_API_KEY ? "ok" : "missing", process.env.SHIPPO_API_KEY ? "live rates and labels on" : "built-in estimate in use; labels can't be bought in-app until the key is added");
     if (process.env.RESEND_API_KEY) { try { const r = await fetch("https://api.resend.com/domains", { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }); if (r.ok) await set("resend", "ok", "email service answering");
         else {
