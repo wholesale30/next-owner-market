@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:07 PM from the project history (157 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:11 PM from the project history (158 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1175,3 +1175,9 @@
 - **Public site pages:** `src/app/feed/blog.xml/route.ts`, `src/app/feed/google.xml/route.ts`, `src/app/feed/items.xml/route.ts`, `src/app/feed/valued.xml/route.ts`, `src/app/sitemap.ts`
 
 <sub>change id d597806</sub>
+
+### 13:07 — docs: feed fix; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md` (+1 more)
+
+<sub>change id 86d6602</sub>

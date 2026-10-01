@@ -2481,3 +2481,36 @@ Running the full health check one more time on the final version, AI test includ
 The database's web caller is a little backed up; three requests are still waiting. Saving the papers while it catches up.
 
 The final check caught one more thing: the Google Shopping feed came back with 0 items when it had 8 an hour ago. Checking it directly.
+
+Everything checks out live: the Google feed has all 8 items again, as do the new-items feed and the sitemap, and the new home, try-it-free and tools pages are up. Finishing the papers.
+
+The redesign is built and live, and a test run of the whole new-person path passed on the real site. Testing it also turned up two serious problems that had already been hurting you, and both are fixed.
+
+**What a new visitor gets now:**
+- **The home page leads with one big button: "📸 Try it free: pick a photo."** No account needed.
+- **Try it free:** in about 20 to 30 seconds they get their title, a price range, the description and ready-to-paste versions for all 9 sites. It tells them "By hand that's 15 to 20 minutes."
+- **Keep it:** "Keep this listing" makes a free account and turns the result into their first listing, photo and all. A 🎉 welcome card has one green button, "List it in the store (free)."
+- **Pro is offered only at happy moments:** right after the AI writes a listing, and when the free listings run out ("That means it's working for you"). Never before they've seen it work.
+- **Menus:** sellers see 4 big tabs (Sell, My stuff, Messages, Money) with everything else under ☰ More. Staff get 6 tabs plus More in 3 groups. A green bar appears when an order or offer needs action.
+- **A Tools page** lists every tool in plain words, and the site's top bar is just Sell, Tools, ? and Sign in.
+
+I checked the public pages at your Fold's cover-screen width; the top bar was cutting off "Sign in," so I fixed it. The signed-in seller menus I could only test by robot, not see on screen. Have a look from a seller account and tell me if anything looks off.
+
+**Checks that now run by themselves:**
+- **Weekly pretend new seller:** a robot does the whole path. It tries it free with a real photo, keeps it, signs up, adds an item, gets approved and opens the listing as a shopper, then deletes everything it made. If a step breaks, you get an alert naming the step. Today's run passed; the AI wrote "KitchenAid Pasta Roller…" in 18 seconds.
+- **Every morning:** all public pages and feeds opened as a stranger, plus a real AI test.
+- **Operations has a new "Where new people drop off" chart**, from tried it free through to paying Pro.
+
+**The two problems testing found:**
+- **The AI tools were broken.** The AI model now refuses one setting the tools used, so What's it worth?, Sort the pile, Buy or pass?, the weight guess and try-it-free were all failing. Seven Sort-the-pile attempts failed today between 12:45 and 12:48 PM, on the account that owns the two Game Boy listings. The free uses those attempts spent were given back automatically. All the tools work again.
+- **The Google Shopping feed was empty.** It's what Merchant Center reads, and it had 0 items. It's rebuilt fresh now with all 8, and it can no longer come out empty.
+
+**What I'd do next, best value first (say go on any):**
+1. **A 15-second demo video on the home page:** a photo, the listing appearing, the paste into Facebook. Video is the strongest proof for people who've never sold online.
+2. **Text me the link:** a "Text me the link" button so a person can do this later in bed. Most people sell from their phone at night.
+3. **Pro trial for active sellers:** when someone uses up their 3 free listings, offer 7 days of Pro free. People who are already using it are the most likely to pay.
+4. **Real-number social proof:** "1,240 listings written this month," shown once the count is worth showing.
+5. **Share card after the first listing:** "I just listed my stuff on 9 sites in 30 seconds" with their referral link. It uses the excitement of a first win.
+6. **A repeat-visit email the next day:** "Your listing has 14 views. Here's your next item," pulling people back while the habit forms.
+
+The updated Complete Guide, User Guide, White Paper, Presentation Walkthrough, Build Journal and Change Log are attached; save over your old copies.
