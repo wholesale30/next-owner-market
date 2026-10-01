@@ -47,7 +47,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
   }
   if (!res) return (
     <div className="card p-4 space-y-3">
-      <PhotoPicker photos={photos} onChange={setPhotos} max={10} folder="pile" meId={meId} onBusy={setBusy} label="Photograph the pile" />
+      <PhotoPicker photos={photos} onChange={setPhotos} max={10} folder="pile" meId={meId} onBusy={setBusy} label="Pick photos" />
       <p className="text-xs muted">Wide shot first, then closer shots so labels are readable. Up to 10 photos. Big piles: do them a shelf at a time.</p>
       <div className="space-y-1"><textarea className="input" rows={2} placeholder="Anything we should know? (Dad's tools, all works, some water damage…)" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h.trimEnd() + " " : "") + t)} /></div>
       <button type="button" className="btn btn-primary w-full text-lg" disabled={!photos.length || !!busy} onClick={run}>{busy || "Sort it"}</button>

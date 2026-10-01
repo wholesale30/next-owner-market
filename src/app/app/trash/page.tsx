@@ -6,7 +6,7 @@ import TrashClient from "./TrashClient";
 export const metadata = { title: "Deleted" };
 export const revalidate = 0;
 
-const KIND: Record<string, string> = { items: "Item", item_photos: "Photo", item_videos: "Video", auctions: "Auction", listings: "Marketplace listing", lots: "Lot", lot_members: "Lot item", posts: "Blog post", threads: "Community post", replies: "Community reply", pickup_slots: "Pickup time", invites: "Invite", categories: "Category", locations: "Bin", subscribers: "Email subscriber", offers: "Offer", valuations: "Valuation", ops_tasks: "Ops task", saved_searches: "Saved search" };
+const KIND: Record<string, string> = { items: "Item", item_photos: "Photo", item_videos: "Video", auctions: "Auction", listings: "Marketplace listing", lots: "Lot", lot_members: "Lot item", posts: "Blog post", threads: "Community post", replies: "Community reply", pickup_slots: "Pickup time", invites: "Invite", categories: "Category", locations: "Bin", subscribers: "Email subscriber", offers: "Offer", valuations: "Valuation", ops_tasks: "Ops task", saved_searches: "Saved search", todos: "To-do" };
 
 export default async function TrashPage() {
   const me = await getProfile();

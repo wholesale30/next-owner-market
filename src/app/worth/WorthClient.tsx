@@ -78,8 +78,14 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
             {photos.map((p) => <img key={p.path} src={p.url} alt="" className="aspect-square object-cover rounded-xl" />)}
             {photos.length < 6 && (
               <label className="aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-sm cursor-pointer" style={{ borderColor: "var(--brand)" }}>
-                <span className="text-3xl">📷</span><span className="font-semibold">{photos.length ? "Add more" : "Pick photos"}</span>
-                <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => addFiles(e.target.files)} />
+                <span className="text-3xl">🖼</span><span className="font-semibold">{photos.length ? "Add more" : "Pick photos"}</span>
+                <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+              </label>
+            )}
+            {photos.length < 6 && (
+              <label className="aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-sm cursor-pointer" style={{ borderColor: "var(--brand)" }}>
+                <span className="text-3xl">📸</span><span className="font-semibold">Take a photo</span>
+                <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
               </label>
             )}
           </div>

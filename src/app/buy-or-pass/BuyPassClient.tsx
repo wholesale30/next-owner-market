@@ -30,7 +30,7 @@ export default function BuyPassClient({ meId }: { meId: string | null }) {
     <div className="space-y-3">
       {!res ? (
         <div className="card p-4 space-y-3">
-          <PhotoPicker photos={photos} onChange={setPhotos} max={4} folder="buypass" meId={meId} onBusy={setBusy} label="Snap it" />
+          <PhotoPicker photos={photos} onChange={setPhotos} max={4} folder="buypass" meId={meId} onBusy={setBusy} label="Pick a photo" />
           <div className="grid grid-cols-2 gap-2">
             <div><label className="label">What they&apos;re asking</label><input className="input text-xl" inputMode="decimal" placeholder="$" value={paid} onChange={(e) => setPaid(e.target.value.replace(/[^\d.]/g, ""))} /></div>
             <div><label className="label">Notes (optional)</label><input className="input" placeholder="works, missing cord…" value={hints} onChange={(e) => setHints(e.target.value)} /></div>

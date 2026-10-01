@@ -5,6 +5,13 @@ import SignOutButton from "./SignOutButton";
 import { Wordmark } from "@/components/Logo";
 import { ScreenHint } from "@/components/Help";
 
+/** Today and 3 days out, as YYYY-MM-DD in Eastern time (for the to-do badge). */
+function nyDays() {
+  const f = (t: number) => new Date(t).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  const now = Date.now();
+  return { today: f(now), soon: f(now + 3 * 86400_000) };
+}
+
 export default async function AppLayout({ children }: LayoutProps<"/app">) {
   const profile = await getProfile();
   if (!profile) redirect("/login");
@@ -19,8 +26,11 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     const { count } = await supabase.from("conversations").select("id", { count: "exact", head: true }).eq("seller_profile_id", profile.id).eq("unread_for_seller", true).neq("status", "closed");
     unread = count || 0;
   }
-  let pendingPeople = 0, pendingReview = 0;
+  let pendingPeople = 0, pendingReview = 0, todoNow = 0;
   if (staff) {
+    const { today, soon } = nyDays();
+    const { data: td } = await supabase.from("todos").select("priority, due_date, snooze_until").is("done_at", null);
+    todoNow = (td || []).filter((t) => !(t.snooze_until && t.snooze_until > today) && (t.priority === "urgent" || (t.due_date && t.due_date <= soon))).length;
     pendingReview = (await supabase.from("items").select("id", { count: "exact", head: true }).eq("status", "pending_review")).count || 0;
     const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "consignor").eq("approved", false);
     pendingPeople = count || 0;
@@ -42,6 +52,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
         { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
         { href: "/app/review", label: pendingReview ? `✅ Review (${pendingReview})` : "✅ Review" },
+        { href: "/app/todo", label: todoNow ? `📝 To-do (${todoNow})` : "📝 To-do" },
         { href: "/app/ops", label: "🎛 Operations" },
       ]
     : [
@@ -60,7 +71,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { group: "Selling", links: [{ href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" }, { href: "/app/offers", label: openOffers ? `💸 Offers (${openOffers})` : "💸 Offers" }, { href: "/tools", label: "✨ AI tools" }, { href: "/app/snap", label: "📷 List a whole pile" }] },
         { group: "You", links: [{ href: "/account/profile", label: "🙂 Profile & alerts" }, { href: "/app/taxes", label: "📊 Year summary" }, { href: "/pro", label: "⭐ Pro" }, { href: "/", label: "🏪 See the store" }, { href: "/help", label: "❓ Help" }] },
       ];
-  const urgent = !staff && (openOrders || openOffers) ? (openOrders ? { href: "/app/orders", text: `🛒 ${openOrders === 1 ? "Someone bought something!" : `${openOrders} orders to handle`} Tap to see what to do.` } : { href: "/app/offers", text: `💸 ${openOffers === 1 ? "You have an offer" : `${openOffers} offers`} waiting. Tap to answer.` }) : null;
+  const urgent = staff && todoNow ? { href: "/app/todo", text: `📝 ${todoNow} thing${todoNow === 1 ? "" : "s"} on your to-do list need${todoNow === 1 ? "s" : ""} you. Tap to see.` } : !staff && (openOrders || openOffers) ? (openOrders ? { href: "/app/orders", text: `🛒 ${openOrders === 1 ? "Someone bought something!" : `${openOrders} orders to handle`} Tap to see what to do.` } : { href: "/app/offers", text: `💸 ${openOffers === 1 ? "You have an offer" : `${openOffers} offers`} waiting. Tap to answer.` }) : null;
 
   return (
     <div className="flex-1 flex flex-col">

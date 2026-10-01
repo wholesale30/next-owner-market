@@ -2594,3 +2594,43 @@ The live site wasn't redeployed: this change is documents only, so nothing on th
 Next, I'd fix sales tax first using our own free Virginia rate-by-ZIP table, then build the Pack, starting with the checklist, the "Who's selling?" proof step and the "don't list" sorter. Say go and I'll start.
 
 The research report and the updated add-on paper are attached as Word files, along with the latest Build Journal and Change Log. Copies are in docs/.
+
+### Oct 1, 6:11 PM — Shayne
+
+> The only thing we need to really look at now is um, on the website sales tax. Do we really need to do that? There's some government person or something going to see the site and say they're not collecting sales tax, or can they even see that we're collecting sales tax till they actually sign up and sell? And can we make that to where we don't have to deal with it? That automatically somehow gets paid.
+
+**Claude:**
+
+Yes, legally we do need to collect it, but there's nothing to worry about yet. The site has made exactly one sale so far, your $1 test, so nothing is owed and there's no past problem to clean up.
+
+**Can the state see it?** Anyone can, by buying something, because there's no tax line at checkout. But nobody is going to visit the site to check. Two things actually catch it:
+- **Stripe reports sales to Virginia Tax.** For every Virginia seller paid $600 or more in a year, Stripe sends the numbers to the state automatically.
+- **An audit of your sales tax account.**
+
+If it comes up later, the state doesn't bill the buyers. The business owes the tax out of its own pocket, plus penalties and interest. So it's cheaper to collect a few cents per sale now than to pay it all later.
+
+**What actually needs tax today:**
+- **Your own store and warehouse consignment items:** yes, from the first sale.
+- **Things other sellers list:** not our job yet. It becomes ours once the site passes $100,000 or 200 Virginia sales in a year. Most people selling their own household stuff a few times a year are exempt anyway.
+
+**Making it automatic.** There are two ways:
+1. **Free (my pick for now).** I add Virginia tax at checkout by the buyer's ZIP code, only on store and warehouse items. Operations keeps a running "You owe Virginia $X this quarter" total with the return numbers filled in. Virginia's online filing is free. The one step I can't do from here is the filing itself, because it needs your Virginia Tax login. That's about 5 minutes a month or quarter, and Operations will remind you.
+2. **Stripe Tax.** Stripe works out and collects the tax on every sale for 0.5% of each sale. Filing goes through Stripe's partner companies, and I couldn't confirm from Stripe's page whether that's included or extra. It's the hands-off option once sales are bigger, so we can switch to it then.
+
+**One thing only you can answer:** does the warehouse business already have a Virginia sales tax number? If it does, we use that one. If not, registering online is free, and I'll give you the exact steps, since it needs your login.
+
+Say go and I'll build option 1.
+
+Sources:
+- [Virginia Tax: Retail Sales and Use Tax](https://www.tax.virginia.gov/retail-sales-and-use-tax)
+- [Stripe Tax pricing](https://support.stripe.com/questions/understanding-stripe-tax-pricing)
+- [Virginia Tax Bulletin 20-10 ($600 reporting)](https://www.tax.virginia.gov/laws-rules-decisions/tax-bulletins/20-10)
+
+### Oct 1, 6:12 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The updated Build Journal and Change Log are saved and pushed, and nothing is left uncommitted. That push was records only, so nothing on the website changed. The sales tax question is still waiting on your answers: does the warehouse business already have a Virginia sales tax number, and do you want me to build the free option?

@@ -8,7 +8,9 @@ export type Picked = { url: string; path: string };
 /** Gallery-first photo picker that uploads to storage and returns public URLs. */
 export default function PhotoPicker({ photos, onChange, max = 6, folder, meId, onBusy, label = "Pick photos" }: { photos: Picked[]; onChange: (p: Picked[]) => void; max?: number; folder: string; meId: string | null; onBusy?: (b: string | null) => void; label?: string }) {
   async function addFiles(files: FileList | null) {
-    if (!files?.length || !meId) return;
+    if (!files?.length) return;
+    // Signed out: never a dead button. Send them to the free account page and right back here.
+    if (!meId) { window.location.href = `/signup?buyer=1&next=${encodeURIComponent(window.location.pathname)}`; return; }
     onBusy?.("Uploading…");
     const sb = createClient();
     const next = [...photos];
@@ -28,9 +30,15 @@ export default function PhotoPicker({ photos, onChange, max = 6, folder, meId, o
     <div className="grid grid-cols-3 gap-2">
       {photos.map((p, i) => <div key={p.path} className="relative"><img src={p.url} alt="" className="aspect-square object-cover rounded-xl w-full" /><button type="button" aria-label="Remove" className="absolute top-1 right-1 pill" onClick={() => onChange(photos.filter((_, j) => j !== i))}>×</button></div>)}
       {photos.length < max && (
-        <label className="aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-sm cursor-pointer" style={{ borderColor: "var(--brand)" }}>
-          <span className="text-3xl">📷</span><span className="font-semibold">{photos.length ? "Add more" : label}</span>
-          <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => addFiles(e.target.files)} />
+        <label className="aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-sm cursor-pointer text-center" style={{ borderColor: "var(--brand)" }}>
+          <span className="text-3xl">🖼</span><span className="font-semibold">{photos.length ? "Add more" : label}</span>
+          <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+        </label>
+      )}
+      {photos.length < max && (
+        <label className="aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-sm cursor-pointer text-center" style={{ borderColor: "var(--brand)" }}>
+          <span className="text-3xl">📸</span><span className="font-semibold">Take a photo</span>
+          <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         </label>
       )}
     </div>

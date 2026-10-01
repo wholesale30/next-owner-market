@@ -17,7 +17,7 @@ export const SCREEN_HINTS: { match: RegExp; text: string; topic?: string }[] = [
   { match: /^\/app\/people/, text: "Everyone with an account. Tap a person to approve, change their plan, or pause them." },
   { match: /^\/app\/blast/, text: "Send a New Arrivals email to your subscribers. Pick items, write a line, send." },
   { match: /^\/app\/trash/, text: "Anything deleted anywhere lands here. Tap Bring it back to undo. Nothing here is ever erased." },
-  { match: /^\/app\/trash/, text: "Anything deleted anywhere lands here. Tap Bring it back to undo. Nothing here is ever erased." },
+  { match: /^\/app\/todo/, text: "Type or say anything you need to remember. Pick Urgent, Needed or Someday. Tap the green check when it's done." },
   { match: /^\/app\/pickups/, text: "Pickup appointments buyers booked." },
 ];
 

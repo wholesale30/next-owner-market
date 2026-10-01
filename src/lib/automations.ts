@@ -612,7 +612,41 @@ const heldPayouts: Automation = {
   },
 };
 
-export const AUTOMATIONS: Automation[] = [health, robot, heldMoney, payoutsReady, heldPayouts, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
+// ---------------------------------------------------------------- the owner's to-do list (assistant reminders)
+const secretary: Automation = {
+  key: "todo_reminders", name: "To-do reminders (your assistant)", schedule: "daily (full list Mondays)", sort_order: 2,
+  what: "Reads your 📝 To-do list each morning. Every Monday it sends you the whole open list, urgent first. Any other day it only writes when something needs you: due in 3 days, due tomorrow, due today, late, or urgent (every 2 days). Comes by email and by text.",
+  why: "You run a hundred things. Nothing you put on the list gets forgotten, and you aren't nagged about things that can wait.",
+  async run() {
+    const d = db();
+    const { data: rows } = await d.from("todos").select("id, title, priority, due_date, remind, snooze_until, last_reminded_at").is("done_at", null);
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    const monday = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" }) === "Monday" || process.env.FORCE_DIGEST === "1";
+    const until = (x: string) => Math.round((new Date(x + "T12:00:00").getTime() - new Date(today + "T12:00:00").getTime()) / 86400_000);
+    const open = (rows || []).filter((t) => t.remind !== "none" && !(t.snooze_until && t.snooze_until > today));
+    const label = (t: { due_date: string | null }) => { if (!t.due_date) return ""; const n = until(t.due_date); return n < 0 ? ` (${-n}d LATE)` : n === 0 ? " (due TODAY)" : n === 1 ? " (due tomorrow)" : ` (due ${t.due_date})`; };
+    const nudge = open.filter((t) => {
+      if (t.due_date) { const n = until(t.due_date); if (n < 0 || n === 0 || n === 1 || n === 3) return true; }
+      if (t.priority === "urgent") return !t.last_reminded_at || Date.now() - new Date(t.last_reminded_at).getTime() > 44 * 3600_000;
+      return false;
+    });
+    const weekly = monday ? open.filter((t) => t.remind === "weekly" || nudge.includes(t)) : [];
+    const list = monday ? weekly : nudge;
+    if (!list.length) return { open: open.length, sent: "nothing needed you today" };
+    const order = { urgent: 0, needed: 1, someday: 2 } as const;
+    list.sort((a, b) => order[a.priority as keyof typeof order] - order[b.priority as keyof typeof order] || (a.due_date || "9") .localeCompare(b.due_date || "9"));
+    const icon = { urgent: "🔴", needed: "🟡", someday: "⚪" } as Record<string, string>;
+    const body = (monday ? "Your week. Everything open on your list:\n" : "These need you:\n") + list.slice(0, 25).map((t) => `${icon[t.priority] || "•"} ${t.title}${label(t)}`).join("\n") + (list.length > 25 ? `\n…and ${list.length - 25} more` : "") + "\n\nTap ✓ when done:";
+    const urgentN = list.filter((t) => t.priority === "urgent").length; const lateN = list.filter((t) => t.due_date && until(t.due_date) <= 0).length;
+    const subject = monday ? `📝 Your to-do list: ${list.length} open${urgentN ? `, ${urgentN} urgent` : ""}` : `📝 ${lateN ? `${lateN} due now` : `${list.length} coming up`}${urgentN ? ` · ${urgentN} urgent` : ""}`;
+    const { alertStaff } = await import("@/lib/alert");
+    const ok = await alertStaff(subject, body, "/app/todo");
+    await d.from("todos").update({ last_reminded_at: new Date().toISOString() }).in("id", list.map((t) => t.id));
+    return { open: open.length, reminded: list.length, kind: monday ? "Monday rundown" : "due/urgent nudge", sent: ok };
+  },
+};
+
+export const AUTOMATIONS: Automation[] = [health, secretary, robot, heldMoney, payoutsReady, heldPayouts, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {
