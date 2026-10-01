@@ -223,3 +223,5 @@ $0 today. Vercel (hosting), Supabase (database/files), Resend (email, 3,000/mont
 - Rules for working on it: `CLAUDE.md` in the repo; the `shayne-operating-rules` skill on the owner's Claude account.
 
 **Seller "Getting started" checklist:** in real order (account made → approved → ZIP → first item → live → payouts). Numbered circles; done steps show a green check and the word "Done" (nothing crossed out); one big button on the next thing the seller can do; our steps say "waiting on us."
+
+**Running automations right now (for Claude or a developer):** besides the 9 AM daily job and the Run now buttons on Operations, there is a single-use trigger: put a random token in settings key `ops:kick` (with the list of automations, optional `catchup: true` to treat brand-new accounts as a day old, and an expiry), then call `/api/ops/kick?token=…` (the database can call it itself with pg_net). The token is erased the moment it's used. First used Sept 30, 2026 at 11:40 PM to send the first round: 6 welcome emails, 4 payout-setup reminders, 2 first-listing congratulations.

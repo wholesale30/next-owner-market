@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:31 PM from the project history (129 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:41 PM from the project history (131 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -985,3 +985,16 @@
 - **Seller / staff app:** `src/app/app/SellerStart.tsx`
 
 <sub>change id 315ae0c</sub>
+
+### 23:31 — docs: Getting started checklist; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id a24c128</sub>
+
+### 23:36 — Single-use ops trigger (token in settings, erased on use) + one-time catch-up mode so first emails go out now
+
+- **Server routes (API):** `src/app/api/ops/kick/route.ts`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id feaa983</sub>

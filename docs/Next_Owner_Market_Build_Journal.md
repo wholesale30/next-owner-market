@@ -2073,3 +2073,36 @@ The updated User Guide, Complete Guide, Build Journal and Change Log are attache
 ### Sep 30, 11:30 PM — Shayne
 
 > feedback from Janelle that signed up and she was confused and I agree. So you have three things when they sign up. List your first item. Um, we've approved your account and then your item is live or your first item is live. Stupid fucking order. Plus, I like the green check mark when, when they completed, but why is list your first item at the top? Your account is approved second and then your listing is live third. That's stupid. It should be your account is approved first. List your first item and then check mark in, in, in order. Plus, it's confusing to her and I'm sure others that you have a check mark, but then you have a line through the item. I understand it, but most people aren't going to understand that. Remember, this all has to be in layman's terms for stupid people considered stupid or don't know shit about anything. That's why there's a slice sign. That's why you see all the things. How to do all these other things. So fix that.
+
+**Claude:**
+
+The sellers' getting-started checklist is now in the order things actually happen, and nothing is crossed out. It's going live now, in about 2 minutes. I haven't seen it on screen yet, so a look from Janelle's account would confirm it.
+
+The new order is:
+1. Your account is made
+2. Your account is approved
+3. Add your ZIP code
+4. List your first item
+5. Your first item goes live in the store
+6. Set up payouts so you get paid
+
+**How it reads now:**
+- **Each step has a number in a circle.** When it's done, the number turns into a green ✓ and the step says **"Done"** in green, like "Your account is approved · Done."
+- **"Go top to bottom. A green check means that step is done"** sits right under the heading.
+- **The next thing they can do is highlighted and has one big button,** like "List an item →".
+- **Steps that are on us say "waiting on us"** with a plain line, like "Usually the same day. You can list items while you wait," so nobody sits there wondering what to tap.
+- **Payouts moved to last,** with a note that their items can sell before they do it and we hold the money until they finish.
+
+The updated User Guide, Complete Guide, Build Journal and Change Log are attached; save over your old copies.
+
+### Sep 30, 11:35 PM — Shayne
+
+> Now check, make sure everyone, the ever, no signers, Debbie Gwen, Nikki, Janelle, have all gotten their um, emails. If they haven't gotten the emails from the new stuff we just started to do now, go ahead and send all that out.
+
+**Claude:**
+
+No automatic emails have gone to anyone yet. All of these were built today and the daily run is at 9 AM, so none of them has had its first run. Trying to send them now from here.
+
+Waiting for the build, then firing it once.
+
+Vercel won't let me call it from here. I'll have the database make the call instead.
