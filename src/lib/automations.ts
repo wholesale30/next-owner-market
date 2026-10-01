@@ -419,7 +419,32 @@ const opsDigest: Automation = {
   },
 };
 
-export const AUTOMATIONS: Automation[] = [health, heldMoney, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
+
+// ---------------------------------------------------------------- payouts-ready callback
+const payoutsReady: Automation = {
+  key: "payouts_ready_notice", name: "Tell sellers when payout setup opens", schedule: "daily", sort_order: 6,
+  what: "If anyone tried Set up payouts and got the 'opening soon' message, this checks each morning whether Stripe Connect is working now (by creating and deleting a test account). The moment it is, every one of those sellers gets one email: 'Payouts are open, here's the button.'",
+  why: "The first thing a new seller hits must not be a dead end. This closes the loop without anyone remembering who was waiting.",
+  async run() {
+    const d = db();
+    const { data: waiting } = await d.from("profiles").select("id, email, full_name").not("payout_setup_requested_at", "is", null).eq("stripe_payouts_ready", false).is("stripe_account_id", null).not("email", "is", null);
+    if (!waiting?.length) return { waiting: 0 };
+    if (!process.env.STRIPE_SECRET_KEY) return { waiting: waiting.length, skipped: "no Stripe key" };
+    const { stripe } = await import("@/lib/stripe");
+    try { const a = await stripe().accounts.create({ type: "express", capabilities: { transfers: { requested: true } }, metadata: { probe: "1" } }); await stripe().accounts.del(a.id); }
+    catch (e) { return { waiting: waiting.length, still_blocked: (e instanceof Error ? e.message : String(e)).slice(0, 120) }; }
+    let n = 0; let left = await budget();
+    for (const p of waiting) {
+      if (left <= 0) break;
+      if (await alreadySent(p.id, "payouts_open")) continue;
+      await send(p.email, "Payouts are open: set yours up (2 minutes)", `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYou tried to set up payouts and it wasn't ready yet. It is now.\n\nPayouts → Set up payouts: ${site()}/app/money\n\nName, address, bank account, done. After that, buyers see Buy now on your items and every sale lands in your bank on its own. Sorry for the wait.`, { profile_id: p.id, kind: "payouts_open" }); n++; left--;
+      await d.from("profiles").update({ payout_setup_requested_at: null }).eq("id", p.id);
+    }
+    return { waiting: waiting.length, emails_sent: n };
+  },
+};
+
+export const AUTOMATIONS: Automation[] = [health, heldMoney, payoutsReady, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {

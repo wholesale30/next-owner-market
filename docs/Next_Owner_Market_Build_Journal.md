@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 8:54 PM (71 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Sep 30, 8:55 PM (71 messages from Shayne)
 
 **Claude:**
 
@@ -1449,3 +1449,12 @@ Go get some rest. The site runs itself tonight.
 ### Sep 30, 8:54 PM — Shayne
 
 > whatever document updated that has this last part in it with my words and stuff. And what, and even what you said to me here, everything. I want this in the in the record.
+
+**Claude:**
+
+It's in the record, two places:
+
+- **Mission Statement** — new section "The people behind it": what you wrote, quoted; Janelle, your sister, your mom, each in a line; and my reply to you, word for word.
+- **Build Journal** — the entire exchange exactly as it happened, timestamped, including this message.
+
+These three replace the copies I sent twenty minutes ago; the other thirteen files are unchanged.

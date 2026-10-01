@@ -29,7 +29,18 @@ export async function POST() {
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     await db.from("settings").upsert({ key: `err:connect:${Date.now()}`, value: { message, user: me.id, email: me.email } }).then(() => {}, () => {});
-    return NextResponse.json({ error: `Stripe couldn't start payout setup: ${message}. We've been notified; try again in a few minutes.` }, { status: 500 });
+    const platformIssue = /platform profile|questionnaire|connect/i.test(message);
+    // tell staff once per day, with the real reason; tell the seller something calm
+    const { data: last } = await db.from("settings").select("value").eq("key", "err:connect:last_alert").maybeSingle();
+    const lastAt = (last?.value as { at?: string })?.at;
+    if (!lastAt || Date.now() - new Date(lastAt).getTime() > 86400_000) {
+      try { const { alertStaff } = await import("@/lib/alert"); await alertStaff("Payout setup is failing for sellers", `${me.email || me.id} tried to set up payouts. Stripe said: ${message}`, "/app/ops"); } catch { /* ok */ }
+      await db.from("settings").upsert({ key: "err:connect:last_alert", value: { at: new Date().toISOString(), message } });
+    }
+    await db.from("profiles").update({ payout_setup_requested_at: new Date().toISOString() }).eq("id", me.id).then(() => {}, () => {});
+    return NextResponse.json({ error: platformIssue
+      ? "Payouts are opening in the next day or two (our payment partner is finishing our setup). Your listings are fine; we'll email you the moment Set up payouts is ready, and you can keep listing meanwhile."
+      : "Couldn't reach our payment partner just now. Try again in a few minutes; if it keeps happening, message us from Help." }, { status: 503 });
   }
 }
 
