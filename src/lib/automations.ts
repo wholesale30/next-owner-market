@@ -80,7 +80,7 @@ const nudges: Automation = {
   why: "Every nudge is a reason to open the app and act. Price drops sell stuck items; drafts become listings; payouts get set up so buyers can buy.",
   async run() {
     const d = db(); let left = await budget(); let n = 0;
-    const { data: hot } = await d.from("items").select("id, sku, title, price, view_count, save_count, owner_id, listed_at, profiles!items_owner_id_fkey(email, full_name, role, marketing_opt_out, stripe_payouts_ready)").eq("status", "active").gte("view_count", 20).order("view_count", { ascending: false }).limit(200);
+    const { data: hot } = await d.from("items").select("id, sku, title, price, view_count, save_count, owner_id, listed_at, profiles!items_owner_id_fkey(email, full_name, role, marketing_opt_out, stripe_payouts_ready)").eq("status", "active").gte("view_count", 10).order("view_count", { ascending: false }).limit(200);
     for (const it of hot || []) {
       if (left <= 0) break;
       const p = it.profiles as unknown as { email: string | null; full_name: string | null; role: string; marketing_opt_out: boolean; stripe_payouts_ready: boolean };
@@ -88,7 +88,7 @@ const nudges: Automation = {
       const { count: msgs } = await d.from("conversations").select("id", { count: "exact", head: true }).eq("item_id", it.id);
       if ((msgs || 0) === 0 && !(await alreadySent(it.owner_id, "nudge_views", it.id))) {
         await send(p.email, `${it.view_count} people looked at "${it.title.slice(0, 50)}"`, `${it.view_count} people have looked at your listing and nobody's asked about it yet. That usually means the price is a little high for what buyers see.\n\nTry dropping it $${Math.max(5, Math.round(Number(it.price) * 0.1))} (about 10%). Open it: ${site()}/app/items/${it.id}\n\nOr set it to drop by itself: on that page, "Drop the price automatically."`, { profile_id: it.owner_id, kind: "nudge_views", ref_id: it.id }); n++; left--;
-      } else if ((it.save_count || 0) >= 3 && !(await alreadySent(it.owner_id, "nudge_saves", it.id))) {
+      } else if ((it.save_count || 0) >= 2 && !(await alreadySent(it.owner_id, "nudge_saves", it.id))) {
         await send(p.email, `${it.save_count} people saved your "${it.title.slice(0, 50)}"`, `${it.save_count} buyers have saved your listing. They're waiting for something: usually a small price drop. When you lower the price, every one of them gets an email about it.\n\n${site()}/app/items/${it.id}`, { profile_id: it.owner_id, kind: "nudge_saves", ref_id: it.id }); n++; left--;
       }
     }
@@ -125,7 +125,7 @@ const milestones: Automation = {
   why: "People share wins. 'I just cleared $500 of garage junk' in a Facebook group brings the next seller. And a first sale is the moment someone decides this works.",
   async run() {
     const d = db(); let left = await budget(); let n = 0;
-    const { data: sellers } = await d.from("profiles").select("id, email, full_name, username, role, marketing_opt_out, completed_sales").in("role", ["consignor"]).not("email", "is", null).limit(1000);
+    const { data: sellers } = await d.from("profiles").select("id, email, full_name, username, referral_code, role, marketing_opt_out, completed_sales").in("role", ["consignor"]).not("email", "is", null).limit(1000);
     for (const p of sellers || []) {
       if (left <= 0) break;
       if (p.marketing_opt_out) continue;
@@ -139,6 +139,8 @@ const milestones: Automation = {
         ["ten_listings", (listings || 0) >= 10, "Ten listings. You're rolling.", `Hi ${first},\n\nTen items listed. Most people never get past one. If you're on the free plan, this is where Pro pays for itself: unlimited AI listings, all nine marketplaces, and the pile sorter. ${site()}/pro`],
         ["first_sale", sales >= 1, "You made your first sale 🎉", `Hi ${first},\n\nFirst sale done and paid. The money lands in your bank in about two business days.\n\nWant to tell someone? Here's a line you can paste:\n"Sold my first thing on Next Owner Market. Took a photo, it wrote the listing, buyer paid by card. ${site()}"`],
         ["third_sale", sales >= 3, "Three sales: your limits just came off", `Hi ${first},\n\nThree completed sales. The new-seller limits (5 listings, $500) are off your account now. List as much as you want.`],
+        ["sold_25", total >= 25, "First $25. It's real now.", `Hi ${first},\n\nYou've turned $${Math.round(total)} of stuff that was just sitting there into money in the bank. Small, but it's the proof: this works. Next box: ${site()}/pile`],
+        ["sold_50", total >= 50, "$50 sold", `Hi ${first},\n\n$${Math.round(total)} so far. Paste-able, if you want: "Sold $${Math.round(total)} of stuff from my garage this week without writing a single listing. ${site()}"`],
         ["sold_100", total >= 100, "You've sold $100 of stuff", `Hi ${first},\n\nYou've cleared $${Math.round(total)} of things that were just sitting there. Paste-able: "Turned $${Math.round(total)} of stuff I wasn't using into cash this month. ${site()}"`],
         ["sold_500", total >= 500, "$500. That's a real dent.", `Hi ${first},\n\n$${Math.round(total)} sold. That's a car payment, from a pile. Keep going: ${site()}/pile`],
         ["sold_1000", total >= 1000, "$1,000 sold. You're a reseller now.", `Hi ${first},\n\nOver a thousand dollars sold through Next Owner Market. If you haven't yet, the Year page in your app has it all added up for tax time: ${site()}/app/taxes`],
@@ -148,7 +150,8 @@ const milestones: Automation = {
         const { data: have } = await d.from("milestones").select("key").eq("profile_id", p.id).eq("key", key).maybeSingle();
         if (have) continue;
         await d.from("milestones").insert({ profile_id: p.id, key });
-        await send(p.email, subj, body, { profile_id: p.id, kind: `milestone_${key}` }); n++; left--;
+        await send(p.email, subj, body + `\n\nInvite a friend who sells: you both get a month of Pro free. Your link: ${site()}/signup?ref=${p.referral_code || ""}`, { profile_id: p.id, kind: `milestone_${key}` }); n++; left--;
+        try { const { textSeller } = await import("@/lib/sms"); const { data: sp } = await d.from("profiles").select("sms_gateway, alert_orders").eq("id", p.id).single(); if (sp) await textSeller(sp, "order", `NOM: ${subj}`); } catch { /* optional */ }
       }
     }
     return { emails_sent: n, budget_left: left };
@@ -252,7 +255,171 @@ const heldMoney: Automation = { key: "held_money_timers", name: "Held-money time
   why: "Money never gets stuck. Buyers and sellers both know exactly when it moves.",
   async run() { return { note: "runs inside the daily job before the others" }; } };
 
-export const AUTOMATIONS: Automation[] = [heldMoney, welcome, nudges, milestones, reviews, weeklyBlog, priceDrops, comps, feedPing, backups];
+
+// ---------------------------------------------------------------- buyer weekly "new near you"
+const buyerDigest: Automation = {
+  key: "buyer_digest", name: "Weekly 'new near you' for buyers", schedule: "weekly (Thursday)", sort_order: 35,
+  what: "Every Thursday, each account with a ZIP gets the newest items within 100 miles (up to 8, with photos), plus one shipped item. Only if something new exists; never twice for the same week.",
+  why: "Thursday evening is when people shop for the weekend. Buyers who get a weekly nudge come back; buyers who don't, forget the site exists.",
+  async run() {
+    const d = db(); const day = new Date().getUTCDay(); if (day !== 4 && process.env.FORCE_DIGEST !== "1") return { skipped: "not Thursday" };
+    let left = await budget(); let n = 0;
+    const since = new Date(Date.now() - 7 * 86400_000).toISOString();
+    const { data: people } = await d.from("profiles").select("id, email, full_name, zip, lat, lng, marketing_opt_out").not("email", "is", null).not("lat", "is", null).limit(2000);
+    const { data: fresh } = await d.from("items").select("sku, title, price, lat, lng, city, state, shipping_ok, item_photos(url, is_primary)").eq("status", "active").gte("listed_at", since).not("lat", "is", null).limit(500);
+    if (!fresh?.length) return { skipped: "nothing new this week" };
+    const { milesBetween } = await import("@/lib/geo");
+    for (const p of people || []) {
+      if (left <= 0) break;
+      if (p.marketing_opt_out) continue;
+      const weekKey = `digest_${new Date().toISOString().slice(0, 10)}`;
+      if (await alreadySent(p.id, "buyer_digest", null)) { const { data: last } = await d.from("email_log").select("sent_at").eq("profile_id", p.id).eq("kind", "buyer_digest").order("sent_at", { ascending: false }).limit(1).maybeSingle(); if (last && Date.now() - new Date(last.sent_at).getTime() < 6 * 86400_000) continue; }
+      const near = fresh.map((i) => ({ i, mi: milesBetween(Number(p.lat), Number(p.lng), Number(i.lat), Number(i.lng)) })).filter((x) => x.mi <= 100).sort((a, b) => a.mi - b.mi).slice(0, 8);
+      const ships = fresh.filter((i) => i.shipping_ok && !near.some((x) => x.i.sku === i.sku)).slice(0, 2);
+      if (!near.length && !ships.length) continue;
+      const lines = [...near.map((x) => `• ${x.i.title} — $${Math.round(Number(x.i.price))} · ${Math.round(x.mi)} mi (${x.i.city}, ${x.i.state})\n  ${site()}/item/${x.i.sku}`), ...ships.map((i) => `• ${i.title} — $${Math.round(Number(i.price))} · ships\n  ${site()}/item/${i.sku}`)];
+      await send(p.email, `New near ${p.zip}: ${near[0]?.i.title?.slice(0, 40) || ships[0]?.title?.slice(0, 40)}${lines.length > 1 ? ` and ${lines.length - 1} more` : ""}`, `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nNew this week near you:\n\n${lines.join("\n\n")}\n\nEverything: ${site()}/?zip=${p.zip}\n\nPay by card; your money's held until you have it.`, { profile_id: p.id, kind: "buyer_digest" }); n++; left--; void weekKey;
+    }
+    return { emails_sent: n, budget_left: left };
+  },
+};
+
+// ---------------------------------------------------------------- seller weekly report
+const sellerReport: Automation = {
+  key: "seller_report", name: "Seller weekly report", schedule: "weekly (Monday)", sort_order: 36,
+  what: "Every Monday, each seller with live items gets their week: views, saves, messages, offers, sales and money, plus the one thing to do next (drop a price, answer a message, list the drafts).",
+  why: "A seller who sees '84 people looked at your stuff this week' opens the app. It's the habit loop.",
+  async run() {
+    const d = db(); const day = new Date().getUTCDay(); if (day !== 1 && process.env.FORCE_DIGEST !== "1") return { skipped: "not Monday" };
+    let left = await budget(); let n = 0; const since = new Date(Date.now() - 7 * 86400_000).toISOString();
+    const { data: sellers } = await d.from("profiles").select("id, email, full_name, marketing_opt_out").in("role", ["consignor"]).not("email", "is", null).limit(2000);
+    for (const p of sellers || []) {
+      if (left <= 0) break; if (p.marketing_opt_out) continue;
+      const { data: items } = await d.from("items").select("id, title, view_count, save_count, status").eq("owner_id", p.id).in("status", ["active", "reserved", "draft"]);
+      const live = (items || []).filter((i) => i.status !== "draft"); if (!live.length) continue;
+      const { data: last } = await d.from("email_log").select("sent_at").eq("profile_id", p.id).eq("kind", "seller_report").order("sent_at", { ascending: false }).limit(1).maybeSingle();
+      if (last && Date.now() - new Date(last.sent_at).getTime() < 6 * 86400_000) continue;
+      const [{ count: msgs }, { count: offers }, { data: sold }] = await Promise.all([
+        d.from("conversations").select("id", { count: "exact", head: true }).eq("seller_profile_id", p.id).gte("last_message_at", since),
+        d.from("offers").select("id", { count: "exact", head: true }).eq("seller_id", p.id).gte("created_at", since),
+        d.from("orders").select("amount").eq("seller_id", p.id).in("status", ["paid", "released"]).gte("paid_at", since),
+      ]);
+      const views = live.reduce((a, i) => a + (i.view_count || 0), 0), saves = live.reduce((a, i) => a + (i.save_count || 0), 0);
+      const money = (sold || []).reduce((a, o) => a + Number(o.amount), 0);
+      const drafts = (items || []).filter((i) => i.status === "draft").length;
+      const top = [...live].sort((a, b) => (b.view_count || 0) - (a.view_count || 0))[0];
+      const next = (msgs || 0) > 0 ? `Answer your ${msgs} message${msgs === 1 ? "" : "s"}: ${site()}/app/inbox` : drafts > 0 ? `List your ${drafts} draft${drafts === 1 ? "" : "s"}: ${site()}/app?status=draft` : top && (top.view_count || 0) >= 10 ? `"${top.title.slice(0, 40)}" is getting looks; try a small price drop: ${site()}/app/items/${top.id}` : `Do the next box: ${site()}/pile`;
+      await send(p.email, `Your week: ${views} views, ${sold?.length || 0} sale${(sold?.length || 0) === 1 ? "" : "s"}`, `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYour ${live.length} live item${live.length === 1 ? "" : "s"} this week:\n• ${views} views (all time)\n• ${saves} saved\n• ${msgs || 0} message${(msgs || 0) === 1 ? "" : "s"}, ${offers || 0} offer${(offers || 0) === 1 ? "" : "s"}\n• ${sold?.length || 0} sold, $${Math.round(money)}\n\nOne thing to do: ${next}`, { profile_id: p.id, kind: "seller_report" }); n++; left--;
+    }
+    return { emails_sent: n, budget_left: left };
+  },
+};
+
+// ---------------------------------------------------------------- win-back + Pro offer
+const winback: Automation = {
+  key: "winback_and_pro", name: "Win-back at 30 days quiet; Pro offer when free credits run out", schedule: "daily", sort_order: 37,
+  what: "Two emails. (1) A seller who hasn't signed in for 30 days gets one 'your items are still here' note with their live count. (2) The day someone uses their last free AI lookup, one email explaining exactly what Pro gives for $15. Each once.",
+  why: "Quiet users are the cheapest ones to bring back. And the moment the free credits end is the moment Pro makes sense; later it's forgotten.",
+  async run() {
+    const d = db(); let left = await budget(); let n = 0;
+    const { data: quiet } = await d.from("profiles").select("id, email, full_name, marketing_opt_out, last_seen_at, created_at").in("role", ["consignor"]).not("email", "is", null).lt("created_at", new Date(Date.now() - 30 * 86400_000).toISOString()).limit(1000);
+    for (const p of quiet || []) {
+      if (left <= 0) break; if (p.marketing_opt_out) continue;
+      const seen = p.last_seen_at ? new Date(p.last_seen_at).getTime() : new Date(p.created_at).getTime();
+      if (Date.now() - seen < 30 * 86400_000) continue;
+      if (await alreadySent(p.id, "winback_30")) continue;
+      const { count: live } = await d.from("items").select("id", { count: "exact", head: true }).eq("owner_id", p.id).eq("status", "active");
+      await send(p.email, live ? `Your ${live} item${live === 1 ? "" : "s"} are still listed` : "Still have that pile?", live ? `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nIt's been a month. Your ${live} item${live === 1 ? " is" : "s are"} still live and buyers are still seeing ${live === 1 ? "it" : "them"}. Two minutes in the app keeps ${live === 1 ? "it" : "them"} fresh: check messages, drop a price, add a photo. ${site()}/app` : `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nA month ago you signed up to deal with some stuff. If it's still there, the smallest start is one photo: ${site()}/worth. No pressure; it'll be here.`, { profile_id: p.id, kind: "winback_30" }); n++; left--;
+    }
+    const { data: zero } = await d.from("profiles").select("id, email, full_name, marketing_opt_out, plan, role").eq("ai_credits", 0).eq("plan", "free").not("email", "is", null).limit(500);
+    for (const p of zero || []) {
+      if (left <= 0) break; if (p.marketing_opt_out || p.role === "admin" || p.role === "staff") continue;
+      if (await alreadySent(p.id, "pro_offer")) continue;
+      await send(p.email, "You used your free lookups. Here's what Pro is.", `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYou've used the three free AI lookups, which means you've got the hang of it. Pro is $15 a month and gets you:\n\n• Unlimited What's it worth?, Sort the pile, Buy or pass, and AI-written listings\n• Copy-and-paste versions for all nine marketplaces (eBay, Poshmark, Mercari, OfferUp, Craigslist, Vinted, Depop, Etsy, plus Facebook which is free for everyone)\n• Video on listings; unlimited live listings\n\nListing in the store stays free on any plan. Cancel any time. ${site()}/pro\n\nIf you'd rather keep going free, you still can: write listings yourself, and Facebook copy is always included.`, { profile_id: p.id, kind: "pro_offer" }); n++; left--;
+    }
+    return { emails_sent: n, budget_left: left };
+  },
+};
+
+// ---------------------------------------------------------------- Facebook Page auto-post
+const facebookPage: Automation = {
+  key: "facebook_page", name: "Post to the Facebook Page", schedule: "daily", sort_order: 55,
+  what: "If a Facebook Page token is set (Operations → Outside the site → Facebook Page), posts up to 3 new items a day (photo, price, link) and the weekly blog post to the Page. Nothing is posted twice.",
+  why: "The Page is the top of the local funnel. Posting by hand every day is the first thing that stops happening.",
+  async run() {
+    const d = db();
+    const [{ data: row }, { data: bizRow }] = await Promise.all([d.from("settings").select("value").eq("key", "facebook").maybeSingle(), d.from("settings").select("value").eq("key", "business").maybeSingle()]);
+    const biz = (bizRow?.value as { facebook_page_id?: string; facebook_page_token?: string }) || {};
+    const cfg = { ...((row?.value as { posted?: string[] }) || {}), page_id: biz.facebook_page_id, page_token: biz.facebook_page_token };
+    if (!cfg.page_id || !cfg.page_token) return { skipped: "no Facebook Page token set (Settings)" };
+    const posted = new Set(cfg.posted || []);
+    const { data: fresh } = await d.from("items").select("sku, title, price, city, state, item_photos(url, is_primary)").eq("status", "active").order("listed_at", { ascending: false }).limit(20);
+    let n = 0; const errors: string[] = [];
+    for (const i of fresh || []) {
+      if (n >= 3) break; if (posted.has(i.sku)) continue;
+      const ph = (i.item_photos as { url: string; is_primary: boolean }[]) || []; const photo = (ph.find((p) => p.is_primary) || ph[0])?.url;
+      const msg = `${i.title} — $${Math.round(Number(i.price))}${i.city ? ` · ${i.city}, ${i.state}` : ""}\nPay by card, money held until you have it.\n${site()}/item/${i.sku}`;
+      try {
+        const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/${photo ? "photos" : "feed"}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(photo ? { url: photo, caption: msg, access_token: cfg.page_token } : { message: msg, access_token: cfg.page_token }) });
+        if (r.ok) { posted.add(i.sku); n++; } else errors.push(`${i.sku}: ${(await r.text()).slice(0, 120)}`);
+      } catch (e) { errors.push(String(e)); }
+    }
+    const { data: post } = await d.from("posts").select("slug, title").not("published_at", "is", null).order("published_at", { ascending: false }).limit(1).maybeSingle();
+    if (post && !posted.has(`post:${post.slug}`)) {
+      try { const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.page_id}/feed`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: `${post.title}\n${site()}/blog/${post.slug}`, access_token: cfg.page_token }) }); if (r.ok) posted.add(`post:${post.slug}`); else errors.push("post: " + (await r.text()).slice(0, 120)); } catch (e) { errors.push(String(e)); }
+    }
+    await d.from("settings").upsert({ key: "facebook", value: { posted: [...posted].slice(-500) } });
+    return { items_posted: n, errors: errors.slice(0, 3) };
+  },
+};
+
+// ---------------------------------------------------------------- health checks + integrations status
+const health: Automation = {
+  key: "health", name: "Health check of every outside service", schedule: "daily", sort_order: 1,
+  what: "Tests each key and feed the site depends on: Stripe, Resend (email), Anthropic (AI), Shippo (labels), Facebook Page, sitemap, Google feed, IndexNow key file. Writes OK / missing / error next to each on the Operations page and emails staff if something that was working breaks.",
+  why: "If email silently stops or the AI key expires, nobody notices until a customer complains. This notices first.",
+  async run() {
+    const d = db(); const out: Record<string, string> = {}; const s = site();
+    const set = async (key: string, status: string, note?: string) => { out[key] = status; await d.from("integrations").update({ status, status_note: note || null, checked_at: new Date().toISOString() }).eq("key", key); };
+    await set("stripe", process.env.STRIPE_SECRET_KEY ? "ok" : "missing", process.env.STRIPE_SECRET_KEY ? "key present" : "STRIPE_SECRET_KEY not set");
+    await set("anthropic", process.env.ANTHROPIC_API_KEY ? "ok" : "missing");
+    await set("shippo", process.env.SHIPPO_API_KEY ? "ok" : "missing", process.env.SHIPPO_API_KEY ? "live rates and labels on" : "built-in estimate in use; labels can't be bought in-app until the key is added");
+    if (process.env.RESEND_API_KEY) { try { const r = await fetch("https://api.resend.com/domains", { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }); await set("resend", r.ok ? "ok" : "error", r.ok ? "email service answering" : `HTTP ${r.status}`); } catch (e) { await set("resend", "error", String(e)); } } else await set("resend", "missing");
+    const { data: fb } = await d.from("settings").select("value").eq("key", "business").maybeSingle(); const cfg = (fb?.value as { facebook_page_token?: string; facebook_page_id?: string }) || {};
+    if (cfg.facebook_page_token && cfg.facebook_page_id) { try { const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.facebook_page_id}?fields=name&access_token=${encodeURIComponent(cfg.facebook_page_token)}`, { signal: AbortSignal.timeout(10000) }); await set("facebook", r.ok ? "ok" : "error", r.ok ? "auto-posting on" : "token rejected; repeat the Connect the Facebook Page steps"); } catch (e) { await set("facebook", "error", String(e).slice(0, 80)); } } else await set("facebook", "manual", "no Page token; posting is by hand");
+    for (const [key, path] of [["sitemap", "/sitemap.xml"], ["google_feed", "/feed/google.xml"]] as const) { try { const r = await fetch(s + path, { signal: AbortSignal.timeout(15000) }); await set(key, r.ok ? "ok" : "error", r.ok ? `${Math.round(Number(r.headers.get("content-length") || 0) / 1024)} KB` : `HTTP ${r.status}`); } catch (e) { await set(key, "error", String(e).slice(0, 100)); } }
+    try { const { INDEXNOW_KEY } = await import("@/lib/indexnow"); const r = await fetch(`${s}/${INDEXNOW_KEY}.txt`, { signal: AbortSignal.timeout(10000) }); await set("indexnow", r.ok ? "ok" : "error"); } catch { await set("indexnow", "error"); }
+    for (const k of ["search_console", "merchant_center", "business_profile", "bing", "vercel", "supabase", "github", "reddit", "producthunt", "creators"]) await d.from("integrations").update({ checked_at: new Date().toISOString() }).eq("key", k).eq("status", "manual");
+    const broken = Object.entries(out).filter(([, v]) => v === "error").map(([k]) => k);
+    if (broken.length) { try { const { alertStaff } = await import("@/lib/alert"); await alertStaff("Something outside the site is broken", `Health check failed: ${broken.join(", ")}. See Operations → Outside the site.`, "/app/ops"); } catch { /* ok */ } }
+    return out;
+  },
+};
+
+// ---------------------------------------------------------------- weekly ops digest to staff
+const opsDigest: Automation = {
+  key: "ops_digest", name: "Weekly Operations digest to staff", schedule: "weekly (Monday)", sort_order: 95,
+  what: "Every Monday, the owner (and the alert address) gets the week's numbers, what every automation did, anything unhealthy, and the human tasks that are due, in one email.",
+  why: "So nobody has to remember to go look. If the email says 'all fine,' it's all fine.",
+  async run() {
+    const d = db(); const day = new Date().getUTCDay(); if (day !== 1 && process.env.FORCE_DIGEST !== "1") return { skipped: "not Monday" };
+    const { data: biz } = await d.from("settings").select("value").eq("key", "business").maybeSingle();
+    const b = (biz?.value as { alert_to?: string; contact_email?: string }) || {};
+    const to = (b.alert_to || b.contact_email || "").split(",").map((x) => x.trim()).filter((x) => x.includes("@"));
+    if (!to.length) return { skipped: "no alert email set in Settings" };
+    const { data: stats } = await d.rpc("ops_stats").then((r) => r, () => ({ data: null }));
+    const st = (stats as Record<string, number>) || {};
+    const { data: autos } = await d.from("automations").select("name, enabled, last_run_at, last_result").order("sort_order");
+    const { data: ints } = await d.from("integrations").select("name, status, status_note").neq("status", "ok").neq("status", "manual");
+    const { data: tasks } = await d.from("ops_tasks").select("title, frequency, done_at").order("sort_order");
+    const due = (tasks || []).filter((t) => !t.done_at || (t.frequency === "weekly" && Date.now() - new Date(t.done_at).getTime() > 6 * 86400_000) || (t.frequency === "monthly" && Date.now() - new Date(t.done_at).getTime() > 28 * 86400_000));
+    const text = `Next Owner Market, week of ${new Date().toLocaleDateString()}\n\nNUMBERS\n• New accounts this week: ${st.signups_7d ?? 0} (total ${st.signups_total ?? 0})\n• Listed this week: ${st.items_7d ?? 0} (live now ${st.items_live ?? 0})\n• Sold last 30 days: $${Math.round(st.gmv_30d ?? 0)} · our cut $${Math.round(st.commission_30d ?? 0)}\n• Paying Pro: ${st.pro_paying ?? 0} · sellers with payouts: ${st.sellers_with_payouts ?? 0} of ${st.sellers ?? 0}\n• Waiting on you: ${st.pending_review ?? 0} listings to approve, ${st.pending_sellers ?? 0} sellers, ${st.disputes_open ?? 0} problems, ${st.reports_open ?? 0} reports\n• Public valuations: ${st.valuations_public ?? 0} · automatic emails sent: ${st.emails_7d ?? 0}\n\nWHAT RAN BY ITSELF\n${(autos || []).map((a) => `• ${a.enabled ? "✓" : "○"} ${a.name}: ${a.last_result ? Object.entries(a.last_result).filter(([k]) => k !== "ms").map(([k, v]) => `${k.replace(/_/g, " ")} ${typeof v === "object" ? JSON.stringify(v) : v}`).join(", ") : "not yet"}`).join("\n")}\n\n${ints?.length ? `NEEDS ATTENTION\n${ints.map((i) => `• ${i.name}: ${i.status}${i.status_note ? ` (${i.status_note})` : ""}`).join("\n")}\n\n` : "HEALTH: everything answering.\n\n"}HUMAN TASKS DUE\n${due.length ? due.map((t) => `• ${t.title} (${t.frequency})`).join("\n") : "• none"}\n\nOperations page: ${site()}/app/ops`;
+    let n = 0; for (const t of to) { if (await send(t, `Next Owner Market: week of ${new Date().toLocaleDateString()}`, text, { kind: "ops_digest" })) n++; }
+    return { emails_sent: n, tasks_due: due.length };
+  },
+};
+
+export const AUTOMATIONS: Automation[] = [health, heldMoney, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {
@@ -282,3 +449,23 @@ export async function runAutomations(only?: string): Promise<Record<string, Resu
 }
 
 export { slugify };
+
+/** Sample text of every automatic email, so a new person knows what customers receive. */
+export const EMAIL_SAMPLES: { kind: string; when: string; subject: string; body: string }[] = [
+  { kind: "Welcome day 1", when: "1 day after sign-up", subject: "Start with one box", body: "Welcome to Next Owner Market. Here's the only tip that matters: don't look at the whole pile. Pick one box. Photograph it, go to /pile, tap Sort it…" },
+  { kind: "Welcome day 3", when: "3 days after sign-up, if nothing listed", subject: "What's the first thing you'd sell worth?", body: "Think of the first thing you'd get rid of if it were easy… Take one photo and open /worth. Thirty seconds later you'll know what it's worth…" },
+  { kind: "Welcome day 7", when: "7 days after sign-up", subject: "Two things that sell your items faster / The smallest possible start", body: "Copy them to Facebook Marketplace… make sure payouts are set up… (or, if nothing listed) one item, one photo, /worth. You don't have to sell it. Just see the number." },
+  { kind: "Nudge: views, no messages", when: "10+ views, 0 messages, once per item", subject: "N people looked at \"your item\"", body: "N people have looked at your listing and nobody's asked about it yet. That usually means the price is a little high… Try dropping it $X (about 10%)." },
+  { kind: "Nudge: saves", when: "2+ saves, once per item", subject: "N people saved your item", body: "N buyers have saved your listing. They're waiting for something: usually a small price drop. When you lower the price, every one of them gets an email about it." },
+  { kind: "Nudge: drafts", when: "drafts older than 3 days, at most every 2 weeks", subject: "N drafts waiting to go live", body: "You've got N listings written and sitting in Drafts. They can't sell from there. Open My items → Drafts, give each a quick read, tap List it." },
+  { kind: "Nudge: payouts", when: "live listing but no payouts, at most weekly", subject: "Buyers can't hit Buy on your items yet", body: "Until payouts are set up, buyers only see 'Message the seller' instead of Buy now. It's five minutes: name, address, bank account…" },
+  { kind: "Milestones", when: "first listing · 10 listings · first sale · third sale · $25 · $50 · $100 · $500 · $1,000, each once (+ a text if they turned texts on)", subject: "e.g. You made your first sale 🎉", body: "First sale done and paid… Here's a line you can paste: 'Sold my first thing on Next Owner Market…' Invite a friend who sells: you both get a month of Pro free." },
+  { kind: "Review request", when: "1 day after an order completes, both sides", subject: "How did it go?", body: "Your order is complete. One tap to rate the other person… Ratings show on profiles so the next buyer or seller knows who they're dealing with." },
+  { kind: "Buyer weekly digest", when: "Thursdays, accounts with a ZIP, if there's something new within 100 miles", subject: "New near 23220: …", body: "New this week near you: • item — $ · 12 mi … Everything: /?zip=…" },
+  { kind: "Seller weekly report", when: "Mondays, sellers with live items", subject: "Your week: 84 views, 1 sale", body: "Your 6 live items this week: views, saved, messages, offers, sold… One thing to do: …" },
+  { kind: "Win-back", when: "30 days without signing in, once", subject: "Your N items are still listed / Still have that pile?", body: "It's been a month… Two minutes in the app keeps them fresh." },
+  { kind: "Pro offer", when: "the day free credits hit zero, once", subject: "You used your free lookups. Here's what Pro is.", body: "Pro is $15 a month: unlimited lookups and listings, all nine marketplaces, video… Listing stays free on any plan." },
+  { kind: "Price drop", when: "an item someone saved gets cheaper", subject: "Price drop: item", body: "Dropped from $X to $Y. Grab it before someone else does." },
+  { kind: "Order emails (always sent)", when: "payment, shipping, problems", subject: "Order confirmed / You made a sale / etc.", body: "Transactional; not affected by the tips opt-out." },
+  { kind: "Staff digest", when: "Mondays, to the alert address", subject: "Next Owner Market: week of …", body: "Numbers, what ran, what's broken, human tasks due." },
+];

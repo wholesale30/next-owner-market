@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function SettingsForm({ business, tiers }: { business: Record<string, string | boolean>; tiers: Record<string, number> }) {
   const router = useRouter();
-  const [b, setB] = useState({ name: "", tagline: "", location: "", contact_phone: "", contact_email: "", alert_to: "", address: "", pickup_hours: "", alert_all_messages: false, zip: "", shipping_markup_pct: "20", shipping_markup_min: "1.50", photo_bg: "#ffffff", vehicle_card_max: "5000", vehicle_deposit_pct: "5", vehicle_deposit_min: "100", vehicle_deposit_max: "500", ...business });
+  const [b, setB] = useState({ name: "", tagline: "", location: "", contact_phone: "", contact_email: "", alert_to: "", address: "", pickup_hours: "", alert_all_messages: false, zip: "", shipping_markup_pct: "20", shipping_markup_min: "1.50", photo_bg: "#ffffff", vehicle_card_max: "5000", vehicle_deposit_pct: "5", vehicle_deposit_min: "100", vehicle_deposit_max: "500", facebook_page_id: "", facebook_page_token: "", ...business });
   const [t, setT] = useState({ full_service: 40, full_service_under_50: 50, drop_off: 30, self_listed: 15, ...tiers });
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -50,6 +50,11 @@ export default function SettingsForm({ business, tiers }: { business: Record<str
           <div><label className="label">Max $</label><input className="input" type="number" inputMode="numeric" value={String(b.vehicle_deposit_max)} onChange={(e) => setB({ ...b, vehicle_deposit_max: e.target.value })} /></div>
         </div>
         <p className="text-xs muted">Vehicles above the cap take a deposit by card (holds it 7 days); the balance is paid in person with the site&apos;s bill of sale. Your fee comes out of the deposit.</p>
+        <div className="grid grid-cols-2 gap-2">
+          <div><label className="label">Facebook Page ID (optional)</label><input className="input" value={String(b.facebook_page_id || "")} onChange={(e) => setB({ ...b, facebook_page_id: e.target.value })} /></div>
+          <div><label className="label">Facebook Page token</label><input className="input" type="password" value={String(b.facebook_page_token || "")} onChange={(e) => setB({ ...b, facebook_page_token: e.target.value })} /></div>
+        </div>
+        <p className="text-xs muted">With both set, new items and the weekly post go to your Facebook Page by themselves. Steps are under Operations → &quot;Connect the Facebook Page.&quot;</p>
         <div><label className="label">Pickup hours</label><input className="input" placeholder="Sat 9–3, or by appointment" value={b.pickup_hours} onChange={(e) => setB({ ...b, pickup_hours: e.target.value })} /></div>
         <div><label className="label">Contact phone (for texts)</label><input className="input" type="tel" value={b.contact_phone} onChange={(e) => setB({ ...b, contact_phone: e.target.value })} /></div>
         <div><label className="label">Contact email</label><input className="input" type="email" value={b.contact_email} onChange={(e) => setB({ ...b, contact_email: e.target.value })} /></div>

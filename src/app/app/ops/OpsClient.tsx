@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Auto = { key: string; name: string; what: string; why: string; schedule: string; enabled: boolean; last_run_at: string | null; last_result: Record<string, unknown> | null; runs_count: number };
+type Integ = { key: string; name: string; what: string; we_do: string; human_does: string; login: string; link: string | null; status: string; status_note: string | null; checked_at: string | null };
 type Task = { id: string; area: string; title: string; what: string; why: string; how: string; link: string | null; frequency: string; done_at: string | null; notes: string | null };
 
 const STAT: { key: string; label: string; meaning: string; money?: boolean }[] = [
@@ -53,7 +54,7 @@ const GLOSSARY: [string, string][] = [
 
 const KIND_LABEL: Record<string, string> = { welcome_1: "Welcome day 1", welcome_3: "Welcome day 3", welcome_7: "Welcome day 7", nudge_views: "Views, no messages", nudge_saves: "People saved it", nudge_drafts: "Drafts waiting", nudge_payouts: "Set up payouts", review_request: "Review request" };
 
-export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now }: { now: number; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
+export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples }: { now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [out, setOut] = useState<Record<string, string>>({});
@@ -71,6 +72,17 @@ export default function OpsClient({ stats, automations, tasks, emailsByKind, pos
         <h1 className="text-2xl font-bold">🎛 Operations</h1>
         <p className="text-sm muted">Everything the site does, in one place, explained so anyone can run it. Three parts: <b>the numbers</b> (what&apos;s happening), <b>what runs by itself</b> (and whether it worked), and <b>what a person still has to do</b> (with exact steps). Words you don&apos;t know are at the bottom.</p>
       </div>
+
+      <details className="card p-4" open>
+        <summary className="font-bold text-lg cursor-pointer">Read me first (new here?)</summary>
+        <div className="text-sm space-y-2 pt-2">
+          <p><b>What this business is.</b> People photograph stuff they want to get rid of. The site tells them what it&apos;s worth, writes the listing, gives them copy-and-paste versions for nine other marketplaces, and sells it in our own store where buyers pay by card and the money is held until the buyer has the item. We make money two ways: <b>Pro</b> ($15/month for the tools) and <b>commission</b> on store sales. Listing is free. Full story: <Link href="/why" className="underline">/why</Link>. Every page explained: the Complete Guide document.</p>
+          <p><b>What this page is.</b> The control room. Four parts, top to bottom: <b>the numbers</b> (tap any for its meaning), <b>what runs by itself</b> (and what each did last), <b>outside the site</b> (every other company or service we depend on, who holds the login, what&apos;s automatic there and what isn&apos;t, and whether it&apos;s healthy right now), and <b>what a person still has to do</b> (exact steps, tick when done, leave a note).</p>
+          <p><b>Your week, if you&apos;re running this.</b> Monday: read the digest email (it comes by itself) and this page; approve anything under Review and People; decide any open Problems. Thursday: send the New Arrivals email. Any day: post in three Facebook groups (the task tells you which), answer community reports. Once: the one-time tasks (Search Console, Merchant Center, Business Profile, Facebook Page, Shippo, creators).</p>
+          <p><b>If something looks wrong.</b> A red status under Outside the site, an automation whose last result says &quot;error,&quot; or a number that fell off a cliff: write down what you see and tell Claude (the AI that builds and fixes the site) in the project chat. You can also switch any automation off here while you wait.</p>
+          <p><b>Words you don&apos;t know</b> are at the bottom of this page.</p>
+        </div>
+      </details>
 
       <section className="space-y-2">
         <h2 className="font-bold text-lg">The numbers</h2>
@@ -119,6 +131,33 @@ export default function OpsClient({ stats, automations, tasks, emailsByKind, pos
             <li>Nightly backup of every table, 30 days kept.</li>
           </ul>
         </div>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="font-bold text-lg">Outside the site</h2>
+        <p className="text-sm muted">Every other company or service this business depends on. Green = checked today and fine. Yellow = a human-run thing (no automatic check). Red = broken; tell Claude. Gray = not set up yet.</p>
+        {integrations.map((i) => {
+          const color = i.status === "ok" ? "var(--ok)" : i.status === "error" ? "var(--danger)" : i.status === "manual" ? "var(--accent)" : "var(--muted)";
+          return (
+            <details key={i.key} className="card p-3" style={{ borderLeft: `4px solid ${color}` }}>
+              <summary className="cursor-pointer flex items-center justify-between gap-2"><span className="font-semibold">{i.name}</span><span className="pill" style={{ background: color, color: "#fff", borderColor: "transparent" }}>{i.status === "ok" ? "OK" : i.status === "error" ? "Broken" : i.status === "manual" ? "Human-run" : i.status === "missing" ? "Not set up" : "Unchecked"}</span></summary>
+              <div className="pt-2 text-sm space-y-1">
+                <p><b>What it is:</b> {i.what}</p>
+                <p><b>What the site does there by itself:</b> {i.we_do}</p>
+                <p><b>What a person does:</b> {i.human_does}</p>
+                <p><b>Login:</b> {i.login}</p>
+                {i.status_note && <p className="muted"><b>Status:</b> {i.status_note}{i.checked_at ? ` · checked ${ago(i.checked_at)}` : ""}</p>}
+                {i.link && (i.link.startsWith("/") ? <Link href={i.link} className="btn btn-secondary">Open →</Link> : <a href={i.link} target="_blank" rel="noreferrer" className="btn btn-secondary">Open ↗</a>)}
+              </div>
+            </details>
+          );
+        })}
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="font-bold text-lg">What customers receive, word for word</h2>
+        <p className="text-sm muted">Every automatic email the site sends, when it goes, and roughly what it says. Nothing goes twice; tips can be turned off by the person; order emails always go.</p>
+        {emailSamples.map((e) => <details key={e.kind} className="card p-3"><summary className="cursor-pointer font-semibold">{e.kind} <span className="muted font-normal text-xs">· {e.when}</span></summary><div className="pt-2 text-sm"><p><b>Subject:</b> {e.subject}</p><p className="muted">{e.body}</p></div></details>)}
       </section>
 
       <section className="space-y-2">

@@ -32,6 +32,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
   if (!staff) oq = oq.eq("seller_id", profile.id);
   const openOrders = (await oq).count || 0;
 
+  supabase.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", profile.id).then(() => {}, () => {});
   const nav = staff
     ? [
         { href: "/app", label: "Inventory" },
