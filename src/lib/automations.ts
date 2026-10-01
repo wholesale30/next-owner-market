@@ -389,6 +389,17 @@ const health: Automation = {
   async run() {
     const d = db(); const out: Record<string, string> = {}; const s = site();
     const set = async (key: string, status: string, note?: string) => { out[key] = status; await d.from("integrations").update({ status, status_note: note || null, checked_at: new Date().toISOString() }).eq("key", key); };
+    // Can a signed-out shopper actually open a listing? (Catches database permission problems that turn every item into "page not found".)
+    try {
+      const { data: one } = await d.from("items").select("sku, title").eq("status", "active").order("listed_at", { ascending: false }).limit(1).maybeSingle();
+      if (one) {
+        const r = await fetch(`${s}/item/${one.sku}`, { cache: "no-store" });
+        const html = r.ok ? await r.text() : "";
+        const good = r.ok && html.includes((one.title || "").slice(0, 20).replace(/&/g, "&amp;"));
+        out.store_pages = good ? "ok" : `BROKEN: ${one.sku} returned ${r.status}`;
+        if (!good) { const { alertStaff } = await import("@/lib/alert"); await alertStaff("Listings aren't opening for shoppers", `The site tried to open ${s}/item/${one.sku} as a signed-out shopper and got ${r.status}. Every listing may be showing "page not found." Tell Claude right away.`, "/app/ops"); }
+      }
+    } catch (e) { out.store_pages = `check failed: ${e instanceof Error ? e.message : e}`; }
     await set("stripe", process.env.STRIPE_SECRET_KEY ? "ok" : "missing", process.env.STRIPE_SECRET_KEY ? "key present" : "STRIPE_SECRET_KEY not set");
     await set("anthropic", process.env.ANTHROPIC_API_KEY ? "ok" : "missing");
     await set("shippo", process.env.SHIPPO_API_KEY ? "ok" : "missing", process.env.SHIPPO_API_KEY ? "live rates and labels on" : "built-in estimate in use; labels can't be bought in-app until the key is added");

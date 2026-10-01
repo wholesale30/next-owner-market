@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 10:35 AM from the project history (140 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 10:39 AM from the project history (141 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1060,3 +1060,9 @@
 - **Shared code (logic):** `src/lib/automations.ts`, `src/lib/sms.ts`
 
 <sub>change id 8693abc</sub>
+
+### 10:35 — docs: text alert carriers, Resend health; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id b80ef37</sub>

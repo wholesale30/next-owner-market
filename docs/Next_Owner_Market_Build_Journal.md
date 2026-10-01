@@ -2285,3 +2285,25 @@ The corrected Mission Statement, Presentation Walkthrough, Complete Guide, Build
 ### Oct 1, 10:32 AM — Shayne
 
 > a mor- my morning app report um, reported a issue. Here's uh, what it is. And maybe that other one, that delay, but I'm not sure what that is.
+
+**Claude:**
+
+Email is working; the "Broken" on your morning report was a false alarm. The "Delivery Delayed" one is a real problem, but it only affects Debbie's text alerts. Both fixes are going live now, in about 2 minutes.
+
+**"Resend (email) · Broken · HTTP 401": false alarm.** The health check asked the email service for account details. Your email key is send-only (the safer kind), so the service said "not allowed," and the check read that as broken. Your second screenshot shows every email delivered. The check now judges by whether emails are actually going out, so the red goes away after tomorrow's 9 AM run.
+
+**"Delivery Delayed" to 8043320353@txt.att.net: Debbie's text alerts.** AT&T shut off free email-to-text for good on June 17, 2025, so those texts will never arrive. T-Mobile, Cricket, Metro and Mint shut theirs off too. She still gets every alert by email, so she isn't missing anything.
+
+What changed:
+- The site no longer tries to text dead carriers.
+- On the Profile page those carriers say "(texts not available)," with a note that alerts come by email instead.
+- Your texts and Nikki's are on Verizon, which still works. Verizon plans to end this by March 31, 2027; replacing it then would mean a paid text service at about a cent a text, and I'll ask before anything that costs money.
+
+**One thing didn't happen:** I tried to clear Debbie's dead text address from her profile, mark the email check green right now, and add the Verizon 2027 reminder to Operations. That database change was declined on your side, so I left it alone. The site skips her dead address either way, and the green will show after tomorrow's 9 AM check. Say the word if you want me to run that cleanup.
+
+The updated User Guide, Complete Guide, Build Journal and Change Log are attached; save over your old copies.
+
+Sources:
+- [AT&T Email-to-Text Shutdown on June 17, 2025 (Simplified Alerts)](https://simplifiedalerts.com/att-email-to-text/)
+- [Why email-to-text stopped working: the carrier shutdown (nvrtxt)](https://www.nvrtxt.com/blog/email-to-text-shutdown)
+- [What Is txt.att.net? Gateway Status 2026 (Sigspan)](https://sigspan.com/att-email-to-text-gateway)
