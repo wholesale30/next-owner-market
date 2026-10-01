@@ -1697,3 +1697,32 @@ I don't know the numbers for that, and I'm not going to guess at pricing. The re
 What I can say in general: extra usage is billed by tokens at API-style rates, not as a copy of your plan. So $100 of credits doesn't equal another month of what you've been doing; how far it goes depends on which model and how heavy the sessions are. A session like tonight's (big code changes, many files read, long documents regenerated) burns tokens fast on a top model; the same $100 would stretch several times further on Sonnet or Haiku.
 
 My opinion, since you'll ask: for the next five days, don't buy credits for building. Everything is deployed and documented, the site runs on its own, and nothing is half-finished. If something breaks before the 5th, that's when $20–$30 of credits for one short fix session makes sense. Save the big spend for when you're back on the plan and listing the 400 pallets.
+
+### Sep 30, 9:26 PM — Shayne
+
+> describe is connected and ready for you to set up. I'm not sure about this part. Uh, Drive and make sure it's working somehow.
+
+**Claude:**
+
+Both screens are still the **Sandbox** (dark bar at the top). That's Stripe's practice tutorial, and it has no effect on real sellers. You can stop that setup guide; the two "Test connected accounts" are throwaways. Nothing you did there hurt anything, and nothing there needs finishing.
+
+The only thing that counts is in **live** mode, and the quickest way to find out if it's done is from our own site, not Stripe's:
+
+1. Open nextownermarket.com/app/ops
+2. Scroll to "What runs by itself" and find **Payouts ready notice**
+3. Tap **Run now**
+
+It tries to create a real seller account with Stripe right then. The result line underneath will say one of two things:
+- **"Stripe Connect is working"** (and it emails Nikki and anyone else who was waiting), or
+- **"Platform profile still incomplete"**, meaning the live "Confirm your integration choices → Continue" step from your first screenshot tonight didn't go through.
+
+Tell me which line you get.
+
+### Sep 30, 9:26 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+Pushed; tree is clean.
