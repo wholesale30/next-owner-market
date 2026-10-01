@@ -533,6 +533,6 @@ Built and live the same day the paper was received:
 | 3 · Seller Tax Tracker | **Built** as "Year summary" | `/app/taxes` (📊 Year in the app nav), view `tax_year_summary` over existing `sales`/`items`; per-year CSV export for the seller's own sales; plain-English panel, explicit "not tax advice, we don't file" |
 | 6 · Safe Deal | **Built** (cheap version) | "How do I spot a scam in a marketplace deal?" in Help |
 | 4 · Grade It or Skip It | **Held** | Until price-data licensing (eBay/TCGplayer/PriceCharting) is resolved |
-| 5 · Estate Pack | **Held** | Until a Virginia attorney opinion on letters/UPL |
+| 5 · Estate Pack | **Researched, ready to build** (Oct 1, 2026) | Full Virginia + federal legal research done: see *Estate & Downsizing Pack: Legal Research Report*. Six narrow questions remain for one short attorney consult; build stays inside the safe zone (checklists, official-form links, notice-only letters, no legal path chosen for the family) |
 
 Packaging as proposed: each module uses the existing AI credits (3 free, Pro unlimited); the tax page is free. All three tools are linked from the home-page tool strip, the footer, and the sitemap. Legal wording follows section 12: "estimates," ranges, expert flags, no authenticity claims, no tax advice.

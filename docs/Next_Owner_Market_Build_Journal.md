@@ -2514,3 +2514,51 @@ I checked the public pages at your Fold's cover-screen width; the top bar was cu
 6. **A repeat-visit email the next day:** "Your listing has 14 views. Here's your next item," pulling people back while the habit forms.
 
 The updated Complete Guide, User Guide, White Paper, Presentation Walkthrough, Build Journal and Change Log are attached; save over your old copies.
+
+### Oct 1, 3:11 PM — Shayne
+
+> Can you give me the rundown or report again of all the other type of businesses that we did research on to also um, build apps for that were popular, like the, the 10 things you gave me?
+
+**Claude:**
+
+I don't have that list in this conversation, so I'm looking for it in your past chats and project files.
+
+The full ranked list isn't in this project, so I'm checking your Google Drive in case the research report was saved there.
+
+I couldn't find the full ranked list of 10 anywhere I can reach. It isn't in this project, this conversation's record, or your past chats, and Google Drive won't let me search it. The research was most likely done in another chat or a file on your phone.
+
+What I can rebuild comes from the Add-On Modules white paper you uploaded, which quotes that research.
+
+**Separate apps (the research said each should get its own site and brand, not go inside Next Owner Market):**
+1. **Dealer buyer's-order scanner:** ranked #1 with a score of 97, the highest in the research. You photograph a car dealer's paperwork and it flags junk fees and add-ons before you sign. Green, meaning low legal risk.
+2. **Repair-quote checker:** ranked #2 with a score of 95. You snap a mechanic's or contractor's quote and it tells you whether the price is fair. Green, since it's a price check only.
+3. **Family scam helper:** ranked #4. Family members forward a suspicious text, email or call and get a plain "scam or not" answer. Yellow, because it handles sensitive family data.
+4. **Renter's deposit vault and letter:** ranked #9. It records move-in and move-out photos and writes the deposit-return demand letter. Yellow, because state laws differ and an attorney should review the letters.
+5. **Medical-bill fixer "Plainly":** from a separate health report. It reads medical bills, spots errors and drafts appeals. Health data makes it the most sensitive one.
+
+**The ones that fit inside Next Owner Market:**
+- **Sort the pile:** built.
+- **Buy or pass?:** built.
+- **Seller tax tracker:** built, as the Year summary.
+- **Safe deal check:** built, as the scam checklist in Help.
+- **Grade it or skip it (trading cards):** on hold until the price-data licensing question is settled.
+- **Estate and downsizing pack:** on hold until an attorney looks at it.
+
+Ranks 3, 5, 6, 7, 8 and 10, the scores beyond the top two, and the market sizes aren't in anything I can reach. If you still have the original report on your phone, attach it here and I'll turn the whole thing into one Word document with all 10 ranked. Or say "redo it" and I'll rerun the research fresh and rank them again.
+
+### Oct 1, 3:13 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The journal and change log updates are saved and pushed, and nothing is left uncommitted.
+
+### Oct 1, 4:43 PM — Shayne
+
+> Do all the legal research in the estate downsizing pack you have the entire internet and more info the 90% of any lawyer.
+
+**Claude:**
+
+I'm doing the full legal research for the Estate & Downsizing Pack now, with Virginia law first and federal rules second. You'll get it as a Word report.
