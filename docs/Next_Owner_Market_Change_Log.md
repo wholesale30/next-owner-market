@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:19 PM from the project history (167 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:44 PM from the project history (170 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1245,3 +1245,26 @@
 - **Documents:** `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Beat_The_Competition.md`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md` (+4 more)
 
 <sub>change id 8c91854</sub>
+
+### 19:39 — Sharing first: big Share this find on Buy or Pass and What's it worth; every Buy or Pass share makes a Google-findable value page; Thrift Pro $3.99/mo unlimited checks
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/buy-or-pass/route.ts`, `src/app/api/buy-or-pass/share/route.ts`, `src/app/api/stripe/subscribe/route.ts`, `src/app/api/stripe/webhook/route.ts`, `src/app/api/worth/route.ts`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/pro/page.tsx`, `src/app/valued/[slug]/page.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/ShareValuation.tsx`
+- **Database (migrations):** `supabase/migrations/034_thrift_pro_and_share_pages.sql`
+
+<sub>change id 92a340e</sub>
+
+### 19:40 — Share and Check another moved to the top of every result (What's it worth, Buy or Pass, Sort the pile); big share boxes
+
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+
+<sub>change id b6e0cbe</sub>
+
+### 19:42 — Share boxes: clear privacy line (no name, email, address or location; only the item, photo and value)
+
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`
+- **Shared UI pieces:** `src/components/ShareValuation.tsx`
+
+<sub>change id 9dabf71</sub>

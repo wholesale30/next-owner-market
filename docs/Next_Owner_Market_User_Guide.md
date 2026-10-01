@@ -394,3 +394,11 @@ Go to **nextownermarket.com/thrift**. Snap the item, type the price on the tag, 
 - **I bought it: list it now** turns the find into a listing.
 - **Show off this find** shares a picture card with your invite link.
 - **Remind me Mondays** sends a heads-up on color-tag day.
+
+## Share every find (Oct 1, 2026)
+
+Right under every answer is a big **📣 Share this find** button. Tapping it gives your find its own page that people searching Google can find, then lets you send it to Facebook, a text, or anywhere else.
+
+**🔒 It's private.** No name, no email, no address, no location. People only see the item, its photo and what it's worth.
+
+**Thrift Pro ($3.99 a month)** gives you unlimited checks if 5 a day isn't enough.

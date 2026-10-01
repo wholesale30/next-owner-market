@@ -2751,3 +2751,21 @@ Yes, Goodwill could be one of the biggest things for us. Everything we talked ab
 One test check of mine is still in the data, because the cleanup approval timed out. It's harmless.
 
 The Beat the Competition plan and the updated guides, white paper and walkthrough are attached as Word files, along with the Build Journal and Change Log.
+
+### Oct 1, 7:34 PM — Shayne
+
+> you do the fee however you think is good. And another thing, you need to have them ask them, like make it a priority to share it. Because what I'm doing, I'm in Goodwill right now, and I'm doing what's it worth, and I'm sharing every one. Because doesn't that make a, each one make a web page? And it's, it, we do this thousands of times. It just it, we're going to be all over the internet, and it'll help just build the site by by just by doing that.
+
+**Claude:**
+
+Yes, and you've spotted the big one. Every What's it worth you share already becomes its own public page on our site (nextownermarket.com/valued/…) that Google can find, so thousands of shares means thousands of pages pulling people in. I'll make sharing the main thing people see after every answer, give Buy or Pass shares the same Google pages, and set up the cheaper plan. First I'm checking how sharing works today.
+
+Writing the server side next: Buy or Pass shares will make their own Google page, and the $3.99 plan will work in checkout.
+
+Already on it. Share is now the big first button right under the answer. Now I'm moving "Check another" up next to it on all three tools.
+
+While it publishes, let me check whether your shares from Goodwill today really turned into pages.
+
+Live. Now I'm testing the new Buy or Pass share on the live site.
+
+Share works: it made the page. That one was my test, so I'm hiding it.

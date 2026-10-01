@@ -299,3 +299,15 @@ Built on how people actually decide: one obvious next step, see the value before
 - **Monday heads-up:** the "Remind me Mondays" button (`/api/thrift-reminder`) adds people to `subscribers` with interest `thrift_monday`. The automation "Monday thrift heads-up" emails them on Mondays.
 - **Page `/thrift`:** for thrift and Goodwill shoppers. It includes a "Not affiliated" line. It's linked from the home page hero and footer, and it's in the sitemap.
 - **Database:** `buy_pass_scans.owner_id` can now be empty (signed-out checks). New columns: `best_place`, `listing_title`, `shared`. Migration: `033_buy_pass_anon_share.sql`.
+
+## Sharing first, and Thrift Pro (Oct 1, 2026, evening)
+
+- **Layout:** On What's it worth, Buy or Pass and Sort the pile, the result now goes in this order: the answer, then a big **📣 Share this find** box, then **📸 Check another**, then the details. On Buy or Pass, **I bought it: list it now** sits right under Check another.
+- **Every share makes a public page** at `/valued/<slug>` that Google can find. What's it worth and Sort the pile already did this. Buy or Pass now does too, through `/api/buy-or-pass/share`. That page is built from our saved result, so nobody can post their own text. After making the page, the phone's share sheet opens with the link (the `/flip` brag card for Buy or Pass, the value page for the others).
+- **Privacy line** shown on every share box: "🔒 Private. No name, no email, no address, no location." That's true: public pages never show who shared. Photos are re-saved in the browser before upload, which removes the phone's location data.
+- **"Your shares made N pages on Google"** appears in Your finds.
+- **Thrift Pro: $3.99 a month.**
+  - Gives unlimited Buy or Pass and What's it worth checks.
+  - Checkout sets the price itself (`price_data` in `/api/stripe/subscribe` with `{plan:"thrift"}`), so nothing needs setting up in Stripe.
+  - The webhook sets `profiles.thrift_pro` and `thrift_subscription_id` and turns it off when the subscription ends.
+  - It's offered when someone runs out of free checks, and on /pro. $15 Pro stays as it is for sellers.
