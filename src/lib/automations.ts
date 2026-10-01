@@ -9,6 +9,11 @@ import { slugify } from "@/lib/md";
  * Runs from the daily job (/api/notify/send). Each one can be switched off from Operations.
  */
 const db = () => createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
+/** One-time catch-up: treat anyone under a day old as a day old, so first emails go out now. */
+let catchup = false;
+export function setCatchup(on: boolean) { catchup = on; }
+const ageDays = (created: string) => Math.max((Date.now() - new Date(created).getTime()) / 86400_000, catchup ? 1 : 0);
+
 const site = () => process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com";
 const DAILY_EMAIL_CAP = Number(process.env.AUTOMATION_EMAIL_CAP || 80);
 
@@ -57,7 +62,7 @@ const welcome: Automation = {
     for (const p of people || []) {
       if (left <= 0) break;
       if (p.marketing_opt_out || p.role === "admin" || p.role === "staff") continue;
-      const days = (Date.now() - new Date(p.created_at).getTime()) / 86400_000;
+      const days = ageDays(p.created_at);
       const first = p.full_name?.split(" ")[0] || "there";
       const { count: items } = await d.from("items").select("id", { count: "exact", head: true }).eq("owner_id", p.id);
       if (days >= 1 && !(await alreadySent(p.id, "welcome_1"))) {
@@ -109,7 +114,7 @@ const nudges: Automation = {
     const { data: noPay } = await d.from("profiles").select("id, email, full_name, created_at").eq("role", "consignor").eq("stripe_payouts_ready", false).not("email", "is", null).gte("created_at", new Date(Date.now() - 8 * 86400_000).toISOString()).limit(500);
     for (const p of noPay || []) {
       if (left <= 0) break;
-      const age = (Date.now() - new Date(p.created_at).getTime()) / 86400_000;
+      const age = ageDays(p.created_at);
       const step = age >= 5 ? 5 : age >= 3 ? 3 : age >= 1 ? 1 : 0;
       if (!step || await alreadySent(p.id, `payout_setup_${step}`)) continue;
       const first = p.full_name?.split(" ")[0] || "there";
