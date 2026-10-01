@@ -1535,3 +1535,165 @@ Two things so the handoff is clean:
 2. **Where things stand for it to pick up:** the only open item is Nikki's payouts, which depends on whether you tapped Continue on Stripe's "Confirm your integration choices" screen. If she still gets an error, the new Claude should check `/app/ops` for the Stripe alert and read `src/app/api/stripe/connect/route.ts`.
 
 Saving the last few minutes to the journal and sending the end-of-session copies now.
+
+Sent and pushed; the tree is clean, so the next session starts from a complete record. See you after the 5th.
+
+### Sep 30, 9:18 PM — Shayne
+
+> <local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>
+
+### Sep 30, 9:18 PM — Shayne
+
+> <command-name>/model</command-name>
+>             <command-message>model</command-message>
+>             <command-args>claude-opus-5-5</command-args>
+
+### Sep 30, 9:18 PM — Shayne
+
+> <local-command-stdout>Set model to `claude-opus-5-5`</local-command-stdout>
+
+### Sep 30, 9:18 PM — Shayne
+
+> <local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>
+
+### Sep 30, 9:18 PM — Shayne
+
+> <command-name>/model</command-name>
+>             <command-message>model</command-message>
+>             <command-args>claude-sonnet-5-5</command-args>
+
+### Sep 30, 9:18 PM — Shayne
+
+> <local-command-stdout>Set model to `claude-sonnet-5-5`</local-command-stdout>
+
+### Sep 30, 9:19 PM — Shayne
+
+> saying uh, when I switch to those, approaching weekly limit. So is this going to shut all the Claude down when I hit another 2% until the 5th?
+
+**Claude:**
+
+I can't see your usage meters or how your plan's limits are split between models, so I can't tell you for sure. The "approaching weekly limit" notice on Opus and Sonnet suggests they draw from the same weekly allowance you've nearly used up, so at 100% they would likely stop too. Check support.claude.com for how your plan's limits work, because I don't want to guess and send you down the wrong path.
+
+**The website keeps running either way.** The AI tools on nextownermarket.com (What's it worth?, Sort the pile, listing writer, Ask box, weekly blog post) run on the site's own Anthropic API key, not on your Claude app allowance. The daily automations, emails, payouts and Stripe also run on their own. Hitting the limit stops me from making changes, but the site keeps working for sellers and buyers.
+
+**Before the limit hits:**
+- Nothing is half-built. Everything is committed, pushed and deployed, and the journal and change log are sent.
+- Nikki's payout fix is live. Once you've tapped Continue on Stripe's screen, her button should work without any change from me.
+
+If something breaks on the site before the 5th and you can't reach me, the Operations page (/app/ops) shows what's red and the exact steps for each task.
+
+### Sep 30, 9:19 PM — Shayne
+
+> Load the shayne-operating-rules skill and read CLAUDE.md before anything else."
+
+### Sep 30, 9:19 PM — Shayne
+
+> Base directory for this skill: /root/.claude/skills/synced/bc9b0c1b-2773-4b1c-924e-3f8bc21790dc_1ed12b6c-9192-49a8-aae2-a21cee2321e7/shayne-operating-rules
+> 
+> # Working with Shayne
+> 
+> Shayne Snavely (shayne@shayneforva.com; admin of nextownermarket.com) runs a surplus/consignment business in Virginia: three 25,000 sq ft warehouses, 350–400 pallets. He builds apps and documents with Claude. He works from a Samsung Z Fold 6 phone, usually by voice, so messages read like speech. Treat him as a capable owner who wants results, not explanations of why something can't be done.
+> 
+> ## The rules (his words, in order of how often they come up)
+> 
+> 1. **Do it yourself.** If a change can be made from Claude's side (code, database, hosting, DNS, environment variables, settings via API), make it. Never send him into a dashboard or settings page to hunt for something unless there is no possible way to do it from Claude's side; if so, say that in one line first, then give exact copy-paste values and exact taps. "We don't wait and should add. We do it all now."
+> 2. **Never guess at menus or buttons in apps you can't see** (the Claude app, Google, Stripe, Facebook…). If you don't have the current screen, say so and point to the official help page or ask what he sees. Guessing wrong is the thing that makes him angry.
+> 3. **Deliverables are Word (.docx) downloads sent as files in the chat.** Never Google Drive, never links, never markdown-only. Drop a copy in the project's `docs/` folder too. At the end of a round, send the complete current set so he can replace his OneDrive copies in one go (same file names, newest wins).
+> 4. **Everything must work on a phone.** Thumb-friendly, big readable buttons (not gray-on-gray), short instructions, text boxes that grow as you talk, a mic on text boxes.
+> 5. **Keep costs at zero.** No paid services without asking. Free tiers, open source, carrier email-to-text gateways.
+> 6. **Photos: gallery/file upload first, camera second.** Background cleaning off by default.
+> 7. **After every push, trigger a production deployment** (projects are not always git-auto-linked).
+> 8. **Believe what he saw on screen.** Ask for a screenshot if needed; fix the layout so it can't be misread.
+> 9. **Bottom line first, short, honest.** Own mistakes in one sentence and fix them; no long apologies. He notices when a claim was wrong.
+> 10. **When he asks "what do you think," give an opinion with reasons, then wait for the go** unless he's already said "do it all" in that thread (he usually does). Don't build from a paper he only asked you to read.
+> 11. **Plain English for the layperson, everywhere.** No SKU/consignor/fulfillment in user-facing text. Every screen gets a one-line hint and a ?; every tool page teaches (steps, examples, FAQ); staff pages get a "Read me first" so a brand-new hire can run them. The product exists because overwhelmed people can actually do it.
+> 12. **The tool leads; the marketplace is the bonus.** In all marketing: the AI writes your listings for nine sites; listing in our store is free.
+> 13. **Automate everything that can be automated**, and put what can't in the Operations page with exact steps. Lower thresholds so small sellers feel it (milestones at first listing, first sale, $25, $50, $100…).
+> 
+> ## Records he wants kept, always — and SENT without being asked
+> 
+> - **Build Journal**: verbatim, chronological Word document of every conversation (his messages exactly as said, Claude's replies), for a book. In the Next Owner Market repo `python3 scripts/journal.py` rebuilds it; hooks run it before context is condensed and at session end. On any other project, set up the same scripts and hooks first.
+> - **Change Log**: Word document of every change (when, what, which files) from git history: `python3 scripts/changelog.py`.
+> - **No automatic process can put a file into the chat; only Claude can, in a reply. So: after every batch of work (every deploy, every document round) and at the end of every session, regenerate both and SEND both .docx files, plus any other document updated. Do not wait to be asked. If a session has run more than two hours without sending them, send them.**
+> - Keep the User Guide, White Paper, Complete Guide and Presentation Walkthrough current when the app changes. Anything he says about why he's doing this (including messages he pastes that he wrote to other people) goes into the Build Journal and the Mission Statement.
+> 
+> ## How he thinks
+> 
+> - Wants the whole thing complete, "strong as fuck," not a minimum version. Then automated. Then documented so a new hire can run it from one page.
+> - Plans to sell the business; users and volume matter more than features. Agrees when told plainly.
+> - Tests as different accounts (admin, buyer, sellers) and reports what each sees. Ask which account.
+> - Overwhelm is the enemy: "start with one box" is the method, for users and for him.
+> 
+> ## Next Owner Market: where things are
+> 
+> - Site nextownermarket.com; Vercel `next-owner-market`; GitHub `wholesale30/next-owner-market`; Supabase `efikjdiamqzqnbifauke`.
+> - Admin shayne@shayneforva.com (@wholesale30). Test buyer shayne.snavely@gmail.com. Sellers: Nikki (@nikki775), Tactical, Debbie, Jeanelle. Staff texts: 8047207910 via Verizon gateway.
+> - **🎛 Operations** (`/app/ops`): read-me-first, numbers explained, every automation (what/why/last result/on-off/run now), Outside-the-site registry with live health, every automatic email word for word, human task list with exact steps. Automations in `src/lib/automations.ts`, run from the daily job `/api/notify/send` (~9 AM Eastern).
+> - Public tools: /worth, /pile, /buy-or-pass, /valued (+ /valued/about/term hubs), /near/city-st, /start, /why, /sell-on/*, /blog, /community, /help, /embed. Feeds: /sitemap.xml, /feed/google.xml, /feed/{items,valued,blog}.xml.
+> - Docs in `docs/`; Word copies in `/home/claude/deliverables/`. Rules in `CLAUDE.md`. Project "Warehouse items" has `claude/Operating_Rules.md`.
+
+**Claude:**
+
+Both are loaded, and I'm now running as Sonnet 5.5 with your rules. The ones that matter most right now:
+
+- I do the work myself and don't send you into dashboards.
+- I never guess at screens I can't see.
+- Deliverables are Word files sent in the chat.
+- I run a production deploy after every push.
+- I send the Build Journal and Change Log after every batch without being asked.
+
+The repo is clean and everything is pushed. The only open item is Nikki's payout button, which should work now if you tapped Continue on Stripe's screen. What do you need?
+
+### Sep 30, 9:20 PM — Shayne
+
+> <local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <command-name>/model</command-name>
+>             <command-message>model</command-message>
+>             <command-args>claude-sonnet-5</command-args>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <local-command-stdout>Set model to `claude-sonnet-5`</local-command-stdout>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <command-name>/model</command-name>
+>             <command-message>model</command-message>
+>             <command-args>claude-opus-4-6</command-args>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <local-command-stdout>Set model to `claude-opus-4-6`</local-command-stdout>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <local-command-caveat>The command below was run directly in Claude Code, not sent to you as a request, and its output goes straight to the user. It's recorded here as context for later messages.</local-command-caveat>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <command-name>/model</command-name>
+>             <command-message>model</command-message>
+>             <command-args>claude-fable-5-1</command-args>
+
+### Sep 30, 9:20 PM — Shayne
+
+> <local-command-stdout>Set model to `claude-fable-5-1`</local-command-stdout>
+
+### Sep 30, 9:21 PM — Shayne
+
+> If I buy a hundred dollars worth of usage credits, what that gets me? Because my whole plan's a hundred dollars at this point.
+
+**Claude:**
+
+I don't know the numbers for that, and I'm not going to guess at pricing. The reliable answer is at support.claude.com, search "extra usage."
+
+What I can say in general: extra usage is billed by tokens at API-style rates, not as a copy of your plan. So $100 of credits doesn't equal another month of what you've been doing; how far it goes depends on which model and how heavy the sessions are. A session like tonight's (big code changes, many files read, long documents regenerated) burns tokens fast on a top model; the same $100 would stretch several times further on Sonnet or Haiku.
+
+My opinion, since you'll ask: for the next five days, don't buy credits for building. Everything is deployed and documented, the site runs on its own, and nothing is half-finished. If something breaks before the 5th, that's when $20–$30 of credits for one short fix session makes sense. Save the big spend for when you're back on the plan and listing the 400 pallets.
