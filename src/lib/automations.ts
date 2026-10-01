@@ -428,11 +428,11 @@ const payoutsReady: Automation = {
   async run() {
     const d = db();
     const { data: waiting } = await d.from("profiles").select("id, email, full_name").not("payout_setup_requested_at", "is", null).eq("stripe_payouts_ready", false).is("stripe_account_id", null).not("email", "is", null);
-    if (!waiting?.length) return { waiting: 0 };
-    if (!process.env.STRIPE_SECRET_KEY) return { waiting: waiting.length, skipped: "no Stripe key" };
+    if (!process.env.STRIPE_SECRET_KEY) return { stripe_connect: "no Stripe key set", waiting: waiting?.length || 0 };
     const { stripe } = await import("@/lib/stripe");
     try { const a = await stripe().accounts.create({ type: "express", capabilities: { transfers: { requested: true } }, metadata: { probe: "1" } }); await stripe().accounts.del(a.id); }
-    catch (e) { return { waiting: waiting.length, still_blocked: (e instanceof Error ? e.message : String(e)).slice(0, 120) }; }
+    catch (e) { return { stripe_connect: "BLOCKED: " + (e instanceof Error ? e.message : String(e)).slice(0, 140), waiting: waiting?.length || 0 }; }
+    if (!waiting?.length) return { stripe_connect: "working: sellers can set up payouts now", waiting: 0 };
     let n = 0; let left = await budget();
     for (const p of waiting) {
       if (left <= 0) break;
@@ -440,7 +440,7 @@ const payoutsReady: Automation = {
       await send(p.email, "Payouts are open: set yours up (2 minutes)", `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYou tried to set up payouts and it wasn't ready yet. It is now.\n\nPayouts → Set up payouts: ${site()}/app/money\n\nName, address, bank account, done. After that, buyers see Buy now on your items and every sale lands in your bank on its own. Sorry for the wait.`, { profile_id: p.id, kind: "payouts_open" }); n++; left--;
       await d.from("profiles").update({ payout_setup_requested_at: null }).eq("id", p.id);
     }
-    return { waiting: waiting.length, emails_sent: n };
+    return { stripe_connect: "working: sellers can set up payouts now", waiting: waiting.length, emails_sent: n };
   },
 };
 
