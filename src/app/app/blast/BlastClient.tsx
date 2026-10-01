@@ -5,7 +5,9 @@ import { money } from "@/lib/listing";
 
 interface It { id: string; sku: string; title: string; price: number; listed_at: string | null; item_photos: { url: string; is_primary: boolean }[] }
 
-export default function BlastClient({ items, subscriberCount, history }: { items: It[]; subscriberCount: number; history: { subject: string; recipients: number; sent: number; created_at: string }[] }) {
+const SOURCE: Record<string, string> = { signup: "made an account", store: "store signup box", message: "messaged a seller", pickup: "booked a pickup", ask: "asked a question" };
+
+export default function BlastClient({ items, subscriberCount, history, subscribers = [] }: { items: It[]; subscriberCount: number; history: { subject: string; recipients: number; sent: number; created_at: string }[]; subscribers?: { email: string; name: string | null; source: string | null; created_at: string; unsubscribed: boolean }[] }) {
   const [sel, setSel] = useState<Set<string>>(() => { const week = Date.now() - 7 * 86400000; return new Set(items.filter((i) => i.listed_at && new Date(i.listed_at).getTime() > week).slice(0, 12).map((i) => i.id)); });
   const [subject, setSubject] = useState("New this week at Next Owner Market");
   const [intro, setIntro] = useState("Fresh out of the warehouse. First come, first served; tap anything to grab it or message us.");
@@ -45,6 +47,9 @@ export default function BlastClient({ items, subscriberCount, history }: { items
         <button className="btn btn-primary flex-1" disabled={busy || !sel.size} onClick={() => send(false)}>{busy ? "Sending…" : `Send to ${subscriberCount}`}</button>
       </div>
       {msg && <p className="text-sm">{msg}</p>}
+      <details className="card p-3 text-sm"><summary className="font-semibold cursor-pointer">Who&apos;s on the list ({subscribers.filter((x) => !x.unsubscribed).length})</summary>
+        <ul className="mt-2 space-y-1">{subscribers.map((x, i) => <li key={i} className={x.unsubscribed ? "line-through muted" : ""}>{x.email}{x.name ? ` · ${x.name}` : ""} <span className="muted text-xs">· {SOURCE[x.source || ""] || x.source || ""} · {new Date(x.created_at).toLocaleDateString()}</span>{x.unsubscribed ? " · unsubscribed" : ""}</li>)}</ul>
+      </details>
       {history.length > 0 && <div className="text-xs muted space-y-1"><p className="font-semibold">Recent</p>{history.map((h, i) => <p key={i}>{new Date(h.created_at).toLocaleDateString()} • {h.subject} • {h.sent}/{h.recipients}</p>)}</div>}
       <p className="text-[11px] muted">Free tier sends 100 emails a day, 3,000 a month. Past that, Resend is $20/month for 50,000.</p>
     </div>
