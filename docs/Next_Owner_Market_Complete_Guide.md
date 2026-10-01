@@ -284,3 +284,5 @@ Built on how people actually decide: one obvious next step, see the value before
 **What changed:** What's it worth, Buy or Pass and Sort the pile now show two big buttons: 🖼 Pick photos first, then 📸 Take a photo. Listing and Try it free already had both.
 
 **Bug fixed:** If a signed-out visitor picked a photo on Buy or Pass or Sort the pile, nothing happened. Now they go straight to the free account page and come right back.
+
+**Publishing note for Claude (Oct 1, 2026):** Call Vercel `create_deployment` **without** a teamId. Use project `prj_VzFBDFjx5WS6ShwiQaiaQrxv08Ed` and gitSource github `wholesale30/next-owner-market` `main`. Passing the team ID now returns "not authorized". The Vercel login is shayneforva@gmail.com (username wholesale30).
