@@ -70,6 +70,8 @@ export default async function MoneyPage() {
     }, 0);
 
   const mySales = staff ? sales : sales.filter((s) => s.items?.owner_id === profile.id);
+  const { data: heldRows } = staff ? { data: [] } : await supabase.from("orders").select("seller_due").eq("seller_id", profile.id).eq("payout_pending", true);
+  const held = (heldRows || []).reduce((t, r) => t + Number((r as { seller_due: number }).seller_due || 0), 0);
 
   return (
     <div className="space-y-5">
@@ -77,6 +79,7 @@ export default async function MoneyPage() {
         <h1 className="text-2xl font-bold flex items-center gap-2">{staff ? "Money" : "Payouts"} <HelpTip topic="payouts" /></h1>
         {staff && <a href="/api/export?what=sales" className="btn btn-secondary">⬇ CSV</a>}
       </div>
+      {!staff && held > 0 && <div className="card p-4" style={{ borderLeft: "4px solid var(--ok)" }}><p className="text-xl font-extrabold">${held.toFixed(2)} is waiting for you</p><p className="text-sm">You&apos;ve sold items. Finish payout setup below and it&apos;s sent to your bank automatically.</p></div>}
       {!staff && stripeReady() && <Suspense><PayoutSetup ready={!!profile.stripe_payouts_ready} hasAccount={!!profile.stripe_account_id} address={{ address1: profile.address1 || "", address2: profile.address2 || "", city: profile.city || "", state: profile.state || "", zip: profile.zip || "" }} /></Suspense>}
       {!staff && profile.plan !== "pro" && stripeReady() && <ProBanner credits={profile.ai_credits ?? 0} price={plans.pro_monthly} features={plans.pro_features} />}
       {profile.role === "admin" && <StripeSetup ready={stripeReady()} configured={!!stripeCfg.webhook_secret} connect={!!stripeCfg.connect_enabled} />}

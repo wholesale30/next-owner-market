@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const seller = item.profiles as unknown as { id: string; role: string; stripe_payouts_ready: boolean; default_commission_pct: number | null; suspended: boolean };
   if (seller.id === me.id) return NextResponse.json({ error: "That's your own item." }, { status: 400 });
   const platformOwned = seller.role === "admin" || seller.role === "staff";
-  if (!platformOwned && (!seller.stripe_payouts_ready || seller.suspended)) return NextResponse.json({ error: "This seller hasn't finished payout setup. Message them instead." }, { status: 400 });
+  if (!platformOwned && seller.suspended) return NextResponse.json({ error: "This seller is paused right now. Message them instead." }, { status: 400 });
   const ship = fulfillment === "ship";
   if (ship && !item.shipping_ok) return NextResponse.json({ error: "This item is local pickup only." }, { status: 400 });
   if (!ship && !item.local_pickup_ok) return NextResponse.json({ error: "This item ships only." }, { status: 400 });

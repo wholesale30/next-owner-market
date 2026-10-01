@@ -15,6 +15,8 @@ const DAILY_EMAIL_CAP = Number(process.env.AUTOMATION_EMAIL_CAP || 80);
 type Result = Record<string, unknown>;
 type Automation = { key: string; name: string; what: string; why: string; schedule: string; sort_order: number; run: () => Promise<Result> };
 
+export async function sendAutoEmail(to: string, subject: string, text: string, opts: { profile_id?: string | null; kind: string; ref_id?: string | null }) { return send(to, subject, text, opts); }
+
 async function send(to: string, subject: string, text: string, opts: { profile_id?: string | null; kind: string; ref_id?: string | null }) {
   const d = db();
   if (!process.env.RESEND_API_KEY) return false;
@@ -103,16 +105,17 @@ const nudges: Automation = {
       if (last && Date.now() - new Date(last.sent_at).getTime() < 14 * 86400_000) continue;
       await send(p.email, `${cnt} draft${cnt === 1 ? "" : "s"} waiting to go live`, `You've got ${cnt} listing${cnt === 1 ? "" : "s"} written and sitting in Drafts. They can't sell from there.\n\nOpen My items → Drafts, give each one a quick read, tap List it. Takes about a minute each: ${site()}/app?status=draft`, { profile_id: owner, kind: "nudge_drafts" }); n++; left--;
     }
-    // live listing but no payouts
-    const { data: noPay } = await d.from("profiles").select("id, email, full_name, marketing_opt_out").eq("role", "consignor").eq("stripe_payouts_ready", false).not("email", "is", null).limit(300);
+    // payout setup reminders: day 1, 3 and 5 after signup, for sellers who haven't finished
+    const { data: noPay } = await d.from("profiles").select("id, email, full_name, created_at").eq("role", "consignor").eq("stripe_payouts_ready", false).not("email", "is", null).gte("created_at", new Date(Date.now() - 8 * 86400_000).toISOString()).limit(500);
     for (const p of noPay || []) {
       if (left <= 0) break;
-      if (p.marketing_opt_out) continue;
-      const { count: live } = await d.from("items").select("id", { count: "exact", head: true }).eq("owner_id", p.id).eq("status", "active");
-      if (!live) continue;
-      const { data: last } = await d.from("email_log").select("sent_at").eq("profile_id", p.id).eq("kind", "nudge_payouts").order("sent_at", { ascending: false }).limit(1).maybeSingle();
-      if (last && Date.now() - new Date(last.sent_at).getTime() < 7 * 86400_000) continue;
-      await send(p.email, "Buyers can't hit Buy on your items yet", `Your listings are live, but until payouts are set up, buyers only see "Message the seller" instead of Buy now.\n\nIt's five minutes: name, address, bank account. Handled by Stripe. ${site()}/app/money\n\nAfter that, every sale lands in your bank on its own.`, { profile_id: p.id, kind: "nudge_payouts" }); n++; left--;
+      const age = (Date.now() - new Date(p.created_at).getTime()) / 86400_000;
+      const step = age >= 5 ? 5 : age >= 3 ? 3 : age >= 1 ? 1 : 0;
+      if (!step || await alreadySent(p.id, `payout_setup_${step}`)) continue;
+      const first = p.full_name?.split(" ")[0] || "there";
+      const subj = step === 1 ? "One step left so you can get paid" : step === 3 ? "Reminder: set up payouts so your sales reach your bank" : "Last reminder: finish payout setup (5 minutes)";
+      const body = `Hi ${first},\n\nYour items can sell right now: buyers see Buy now and pay by card. To get that money in your bank, finish payout setup once: name, address, bank account. It's handled by Stripe and takes about 5 minutes.\n\n${site()}/app/money\n\nIf something sells before you finish, we hold your money safely and send it the moment you're done.`;
+      await send(p.email, subj, body, { profile_id: p.id, kind: `payout_setup_${step}` }); n++; left--;
     }
     return { emails_sent: n, budget_left: left };
   },
@@ -444,7 +447,40 @@ const payoutsReady: Automation = {
   },
 };
 
-export const AUTOMATIONS: Automation[] = [health, heldMoney, payoutsReady, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
+const heldPayouts: Automation = {
+  key: "held_payouts", name: "Send held seller money", schedule: "daily", sort_order: 7,
+  what: "When a seller sells before setting up payouts, their money is held. Each morning this sends everything owed to sellers who have finished setup, reminds the rest every 3 days how much is waiting, and tells staff about anything held 60+ days.",
+  why: "Every listing can take Buy now from day one. The seller's money waits safely, and a 'You have $55 waiting' email is the best reason there is to finish payout setup.",
+  async run() {
+    const d = db();
+    const { data: owed } = await d.from("orders").select("id, seller_id, seller_due, payout_pending_since").eq("payout_pending", true).limit(1000);
+    if (!owed?.length) return { held_orders: 0 };
+    const { payPendingFor } = await import("@/lib/orders");
+    const bySeller = new Map<string, { total: number; oldest: string }>();
+    for (const o of owed) { const g = bySeller.get(o.seller_id) || { total: 0, oldest: o.payout_pending_since || new Date().toISOString() }; g.total += Number(o.seller_due || 0); if ((o.payout_pending_since || "") < g.oldest) g.oldest = o.payout_pending_since || g.oldest; bySeller.set(o.seller_id, g); }
+    let sentSellers = 0, sentTotal = 0, reminded = 0; const old: string[] = []; let left = await budget();
+    for (const [sid, g] of bySeller) {
+      const r = await payPendingFor(sid);
+      if (r.paid) {
+        sentSellers++; sentTotal += r.total;
+        const { data: p } = await d.from("profiles").select("email, full_name").eq("id", sid).single();
+        if (p?.email && left > 0) { await send(p.email, `$${r.total.toFixed(2)} is on its way to your bank`, `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nPayouts are set up, so the money we were holding for you, $${r.total.toFixed(2)}, has been sent. It usually reaches your bank in 2 business days.\n\nFrom now on every sale goes straight through.`, { profile_id: sid, kind: "payout_sent" }); left--; }
+        continue;
+      }
+      const days = (Date.now() - new Date(g.oldest).getTime()) / 86400_000;
+      if (days >= 60) old.push(`${sid}: $${g.total.toFixed(2)}, ${Math.floor(days)} days`);
+      const { data: last } = await d.from("email_log").select("sent_at").eq("profile_id", sid).in("kind", ["payout_waiting", "payout_waiting_reminder"]).order("sent_at", { ascending: false }).limit(1).maybeSingle();
+      if (left > 0 && (!last || Date.now() - new Date(last.sent_at).getTime() >= 3 * 86400_000)) {
+        const { data: p } = await d.from("profiles").select("email, full_name").eq("id", sid).single();
+        if (p?.email) { await send(p.email, `$${g.total.toFixed(2)} is waiting for you`, `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYou've sold items on Next Owner Market and $${g.total.toFixed(2)} is being held for you. We can't send it until payouts are set up.\n\nIt takes about 5 minutes: ${site()}/app/money\n\nThe moment you finish, it's sent to your bank automatically.`, { profile_id: sid, kind: "payout_waiting_reminder" }); reminded++; left--; }
+      }
+    }
+    if (old.length) { const { alertStaff } = await import("@/lib/alert"); await alertStaff("Seller money held 60+ days", `These sellers sold but never set up payouts. Decide: keep reminding, contact them, or refund. ${old.join("; ")}`, "/app/ops"); }
+    return { held_orders: owed.length, sellers_owed: bySeller.size, sent_to: sentSellers, sent_total: Math.round(sentTotal * 100) / 100, reminders: reminded, held_60_days: old.length };
+  },
+};
+
+export const AUTOMATIONS: Automation[] = [health, heldMoney, payoutsReady, heldPayouts, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {

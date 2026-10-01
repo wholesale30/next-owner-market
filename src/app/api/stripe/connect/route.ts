@@ -51,5 +51,6 @@ export async function GET() {
   const a = await stripe().accounts.retrieve(me.stripe_account_id);
   const ready = !!a.payouts_enabled && !!(a.capabilities?.transfers === "active");
   await admin().from("profiles").update({ stripe_payouts_ready: ready }).eq("id", me.id);
+  if (ready) { try { const { payPendingFor } = await import("@/lib/orders"); await payPendingFor(me.id); } catch (e) { console.error("pay pending", e); } }
   return NextResponse.json({ ready });
 }

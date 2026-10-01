@@ -26,7 +26,7 @@ export default async function SellerPage({ params }: PageProps<"/seller/[id]">) 
           <p className="muted text-sm">
             {seller.rating_count ? `★ ${seller.rating_avg} (${seller.rating_count} ratings)` : "No ratings yet"}
             {seller.completed_sales ? ` • ${seller.completed_sales} completed sales` : ""} • Member since {new Date(seller.created_at).toLocaleDateString([], { month: "short", year: "numeric" })}
-            {!isStore && (seller.stripe_payouts_ready ? " • ✅ Verified seller, card checkout" : " • Not yet set up for checkout")}
+            {!isStore && (seller.stripe_payouts_ready ? " • ✅ Verified seller, card checkout" : " • Card checkout")}
           </p>
         </div>
         <h2 className="font-semibold">{items?.length || 0} items for sale</h2>

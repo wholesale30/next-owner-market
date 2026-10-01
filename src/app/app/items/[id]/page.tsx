@@ -43,7 +43,7 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
 
   const sp = it.profiles;
   const platformItem = sp?.role === "admin" || sp?.role === "staff";
-  const payReady = platformItem || (!!sp?.stripe_payouts_ready && !sp?.suspended);
+  const payReady = platformItem || !sp?.suspended;
   const live = it.status === "active" || it.status === "reserved";
   const it2 = it as unknown as { local_pickup_ok?: boolean; shipping_ok?: boolean; sale_type?: string };
   const buyerNotes: { ok: boolean; text: string }[] = [
@@ -52,7 +52,7 @@ export default async function ItemPage({ params }: PageProps<"/app/items/[id]">)
       : it.status === "pending_review" ? { ok: false, text: "Waiting for approval. Buyers can't see it yet; approve it under Review." }
       : { ok: false, text: "Draft. Buyers can't see it until it's listed." },
     it2.sale_type === "auction" ? { ok: true, text: "Auction: buyers see the bid box instead of Buy now." }
-      : payReady ? { ok: true, text: "Buy now is ON. Buyers can pay by card, Apple Pay, Cash App, Affirm or Klarna." }
+      : payReady ? { ok: true, text: "Buy now is ON. Buyers can pay by card, Apple Pay, Cash App, Affirm or Klarna." + (!platformItem && !sp?.stripe_payouts_ready ? " (Seller hasn't set up payouts yet: if it sells, we hold their money and send it when they finish.)" : "") }
       : { ok: false, text: sp?.suspended ? "Buy now is OFF: this seller is paused." : "Buy now is OFF: this seller hasn't finished payout setup. Buyers see a Message button and the shipping estimate instead." },
     { ok: !!(it2.local_pickup_ok || it2.shipping_ok), text: [it2.local_pickup_ok ? "pickup" : null, it2.shipping_ok ? "shipping" : null].filter(Boolean).join(" and ").replace(/^./, (c) => c.toUpperCase()) + (it2.local_pickup_ok || it2.shipping_ok ? " offered." : "Neither pickup nor shipping is turned on; buyers can't check out.") },
   ];

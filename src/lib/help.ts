@@ -47,8 +47,8 @@ export const TOPICS: HelpTopic[] = [
   ] },
   { id: "payouts", who: "seller", q: "How do I get paid?", a: [
     "Go to Payouts and tap Set up payouts. It asks for your name, address, and bank account (or debit card). Takes about 5 minutes. This is done by Stripe, the same company that handles payments for Amazon and Shopify.",
-    "After that, every time something sells, the money lands in your bank 2 business days after the buyer has the item.",
-    "Until you set this up, buyers can message you but can't hit Buy.",
+    "After that, every time something sells, the money lands in your bank about 2 business days after the buyer has the item.",
+    "Your items can sell before you set this up. If something sells first, we hold your money safely and send it the moment you finish.",
   ] },
   { id: "fees", who: "seller", q: "What does it cost?", a: [
     "Listing is free. When something sells in the store, we keep a small percentage of the sale price (shown on your item before you list). Shipping is paid by the buyer and isn't part of it.",

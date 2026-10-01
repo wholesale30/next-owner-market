@@ -70,6 +70,10 @@ export async function POST(req: Request) {
       const a = event.data.object;
       const ready = !!a.payouts_enabled && a.capabilities?.transfers === "active";
       await db.from("profiles").update({ stripe_payouts_ready: ready }).eq("stripe_account_id", a.id);
+      if (ready) {
+        const { data: p } = await db.from("profiles").select("id").eq("stripe_account_id", a.id).maybeSingle();
+        if (p) { try { const { payPendingFor } = await import("@/lib/orders"); await payPendingFor(p.id); } catch (e) { console.error("pay pending on ready", e); } }
+      }
       break;
     }
     case "customer.subscription.updated":

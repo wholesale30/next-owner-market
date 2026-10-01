@@ -61,7 +61,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
     const there = sellerIsPlatform ? lookupZip(bz.zip || (bz.address || "").match(/\b(\d{5})\b/)?.[1]) : (seller?.lat != null && seller?.lng != null ? { lat: seller.lat, lng: seller.lng } : null);
     if (here && there) miles = Math.round(milesBetween(here.lat, here.lng, there.lat, there.lng));
   }
-  const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || (seller.stripe_payouts_ready && !seller.suspended));
+  const sellerReady = stripeReady() && !!seller && (sellerIsPlatform || !seller.suspended);
   const veh = item as unknown as { year?: number | null; mileage?: number | null; title_status?: string | null; title_in_hand?: boolean };
   const { data: isVeh } = item.category_id ? await sb.rpc("is_vehicle_category", { p_cat: item.category_id }) : { data: false };
   const bz = business as unknown as { vehicle_card_max?: number; vehicle_deposit_pct?: number; vehicle_deposit_min?: number; vehicle_deposit_max?: number };
