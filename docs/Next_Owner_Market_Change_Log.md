@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 8:50 PM from the project history (104 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 8:55 PM from the project history (105 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -821,3 +821,9 @@
 - **Documents:** `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`
 
 <sub>change id 79b51c6</sub>
+
+### 20:55 — Mission Statement: the people behind it, in Shayne's words
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+
+<sub>change id 52554de</sub>
