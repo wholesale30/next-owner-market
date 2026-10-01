@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 8:57 PM from the project history (106 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 9:08 PM from the project history (107 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -833,3 +833,11 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
 
 <sub>change id dcbe6e8</sub>
+
+### 21:01 — Payout setup: calm message when Stripe Connect isn't activated, staff alert with the real reason, automatic 'payouts are open' email once Connect works
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
+- **Server routes (API):** `src/app/api/stripe/connect/route.ts`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id 3986cda</sub>
