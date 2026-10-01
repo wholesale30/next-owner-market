@@ -9,7 +9,7 @@ import { lookupZip } from "@/lib/geo";
 
 export const revalidate = 60;
 
-export const metadata = { title: "Next Owner Market: buy and sell used, surplus and vintage, money held until you have it", description: "Vintage audio, tools, electronics, furniture, vehicles and more from sellers across the country. Pay by card, pick up or ship, money held until you have the item. Sell free: photos in, listing out." };
+export const metadata = { title: "Next Owner Market: buy and sell used, surplus and vintage", description: "Vintage audio, tools, electronics, furniture, vehicles and more from sellers across the country. Pay by card, pick up or ship. Sell free: photos in, listing out." };
 
 export default async function StorePage({ searchParams }: PageProps<"/">) {
   const sp = (await searchParams) as { q?: string; cat?: string; sort?: string; state?: string; zip?: string; mi?: string };
@@ -54,7 +54,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
         <div className="max-w-5xl mx-auto px-4 pt-6 pb-5 space-y-4">
           <div className="space-y-1">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">Everything finds its next owner.</h1>
-            <p className="text-base md:text-lg opacity-90">Surplus, vintage audio, tools and more from sellers across the country. Buy by card, pick up or ship. Money held until you have it.</p>
+            <p className="text-base md:text-lg opacity-90">Surplus, vintage audio, tools and more from sellers across the country. Buy by card, pick up or ship.</p>
           </div>
           <form className="flex gap-2">
             <input className="input" name="q" placeholder="Search: turntable, drill, lamp, Technics…" defaultValue={q || ""} />
@@ -136,7 +136,7 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
           <h2 className="font-bold text-lg mb-2">How it works</h2>
           <div className="grid grid-cols-3 gap-2 text-center text-sm">
             <div><p className="text-2xl">💳</p><p className="font-semibold">Pay by card</p><p className="muted text-xs">Apple Pay, Google Pay, Cash App, Affirm, Klarna too.</p></div>
-            <div><p className="text-2xl">🔒</p><p className="font-semibold">Money&apos;s held</p><p className="muted text-xs">The seller doesn&apos;t get paid until you have it.</p></div>
+            <div><p className="text-2xl">📸</p><p className="font-semibold">Sell yours</p><p className="muted text-xs">Snap photos. The AI writes the listing. Free to list.</p></div>
             <div><p className="text-2xl">🤝</p><p className="font-semibold">Pick up or ship</p><p className="muted text-xs">Pickup code or tracked label. Problem? Full refund.</p></div>
           </div>
         </section>

@@ -16,7 +16,7 @@
 
 **Say:** "Three hundred million Americans have stuff worth money that they can't make themselves deal with. Not because they're lazy. Because listing one thing takes a photo, a title, a description, a price, and then doing it again on the next site, and a pile of two hundred things is paralyzing. So it sits, in storage units they pay for, in houses they can't sell, in warehouses like mine."
 
-**Show:** nextownermarket.com/why. Read the first three paragraphs aloud. It's the owner's story: 30 years in surplus, three warehouses, 400 pallets, couldn't start.
+**Show:** nextownermarket.com/why. Read the first three paragraphs aloud. It's the owner's story: 30 years in surplus, one 25,000-square-foot warehouse, over 300 pallets, couldn't start.
 
 ## Slide 3 · The answer, in 60 seconds
 
@@ -98,7 +98,7 @@
 
 ## Slide 12 · Where it is today
 
-**Say:** Built in two days, September 29–30, 2026, by the owner with Claude. Live at nextownermarket.com. Zero monthly cost. Stripe live. Google Search Console verified; Merchant Center feed in review. First sellers onboarded. The owner's 400 pallets are the first supply.
+**Say:** Built in two days, September 29–30, 2026, by the owner with Claude. Live at nextownermarket.com. Zero monthly cost. Stripe live. Google Search Console verified; Merchant Center feed in review. First sellers onboarded. The owner's 300+ pallets are the first supply.
 
 **Numbers to watch (on the Operations page):** sign-ups, listed this week, sellers with payouts, paying Pro, sold last 30 days, public valuations.
 

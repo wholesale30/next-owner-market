@@ -20,7 +20,7 @@
 
 **How it makes money.** Two ways. **Pro**, $15/month, for the tools (unlimited AI listings and lookups, the nine marketplace copies, Sort the pile, video). **Commission** on store sales (15% of the item price, set per seller; 0% on the owner's own items). Listing is always free. Shipping labels carry a small margin.
 
-**Why it can win.** The big marketplaces can't help you list on each other. The crosslisting apps have no store, no payments, no held money, no beginner guidance. And nobody has built the whole thing around the feeling of being overwhelmed. The owner has 30 years in surplus and 400 pallets; the site was built for him first.
+**Why it can win.** The big marketplaces can't help you list on each other. The crosslisting apps have no store, no payments, no held money, no beginner guidance. And nobody has built the whole thing around the feeling of being overwhelmed. The owner has 30 years in surplus, one 25,000-square-foot warehouse and over 300 pallets; the site was built for him first.
 
 **Where it lives.** Website only (works as a phone app from the home screen). Hosted on Vercel; database and files on Supabase; payments by Stripe; email by Resend; AI by Anthropic. Everything runs on free tiers until there's real volume.
 
@@ -164,7 +164,7 @@ Email volume is capped per day so the free tier is never exceeded; nothing is ev
 
 ## Part 5 · How it grows (the flywheel)
 
-1. **Supply:** Sort the pile and Worth turn overwhelmed people into listings. The owner's own 400 pallets seed it.
+1. **Supply:** Sort the pile and Worth turn overwhelmed people into listings. The owner's own 300+ pallets seed it.
 2. **Pages:** every listing, valuation, hub, city, guide, category and weekly post is a page Google can rank. The sitemap, feeds and pings make sure Google and Bing see them within hours.
 3. **Links:** the embed widget, creator deals, Product Hunt and Reddit bring backlinks, which is what moves rankings.
 4. **Retention:** welcome series, nudges, milestones, Year summary and the community bring people back.
