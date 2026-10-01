@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:01 PM from the project history (155 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:07 PM from the project history (157 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1163,3 +1163,15 @@
 - **Shared code (logic):** `src/lib/automations.ts`
 
 <sub>change id 6f20ed3</sub>
+
+### 13:01 — docs: new-visitor redesign in all guides; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md` (+2 more)
+
+<sub>change id d66490d</sub>
+
+### 13:03 — Fix: Google Shopping feed (and other feeds/sitemap) were baked at build time and came out empty; now made fresh on request with edge caching, and a database hiccup returns 503 (Google keeps its last good copy) instead of an empty feed
+
+- **Public site pages:** `src/app/feed/blog.xml/route.ts`, `src/app/feed/google.xml/route.ts`, `src/app/feed/items.xml/route.ts`, `src/app/feed/valued.xml/route.ts`, `src/app/sitemap.ts`
+
+<sub>change id d597806</sub>
