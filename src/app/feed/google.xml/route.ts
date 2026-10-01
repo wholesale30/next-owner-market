@@ -1,15 +1,16 @@
 import { createClient as createAdmin } from "@supabase/supabase-js";
 
-export const revalidate = 1800;
+export const dynamic = "force-dynamic"; // built fresh on request (cached at the edge), never baked empty at build time
 
 /** Google Merchant Center product feed (free listings). Add this URL as a scheduled fetch feed in Merchant Center. */
 export async function GET() {
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com";
   const db = createAdmin(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
-  const [{ data: items }, { data: biz }] = await Promise.all([
+  const [{ data: items, error: itemsErr }, { data: biz }] = await Promise.all([
     db.from("items").select("sku, title, description, price, condition, brand, model, shipping_ok, shipping_mode, weight_lbs, category_id, item_photos(url, is_primary), categories(name)").eq("status", "active").not("price", "is", null).order("listed_at", { ascending: false }).limit(5000),
     db.from("settings").select("value").eq("key", "business").maybeSingle(),
   ]);
+  if (itemsErr) return new Response("feed temporarily unavailable", { status: 503, headers: { "Retry-After": "600" } });
   const name = (biz?.value as { name?: string })?.name || "Next Owner Market";
   const esc = (s: string) => String(s || "").replace(/[<>&'"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" })[c]!);
   const cond = (c: string | null) => (c === "new" ? "new" : c === "for_parts" ? "used" : c === "like_new" ? "refurbished" : "used");
@@ -43,5 +44,5 @@ ${i.shipping_ok ? (i.shipping_mode === "free" ? `<g:shipping><g:country>US</g:co
 ${entries.join("\n")}
 </channel>
 </rss>`;
-  return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=1800" } });
+  return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600" } });
 }

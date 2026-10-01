@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { createClient as createAdmin } from "@supabase/supabase-js";
 import { OWNER_LOC, withLoc } from "@/lib/item-location";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic"; // fresh on request; never baked at build time
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com";
