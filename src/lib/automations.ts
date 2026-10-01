@@ -403,6 +403,26 @@ const health: Automation = {
         if (!good) { const { alertStaff } = await import("@/lib/alert"); await alertStaff("Listings aren't opening for shoppers", `The site tried to open ${s}/item/${one.sku} as a signed-out shopper and got ${r.status}. Every listing may be showing "page not found." Tell Claude right away.`, "/app/ops"); }
       }
     } catch (e) { out.store_pages = `check failed: ${e instanceof Error ? e.message : e}`; }
+    // Daily sweep: open every page in the sitemap (up to 120) as a signed-out visitor, plus the feeds; report anything broken or empty.
+    try {
+      const sm = await (await fetch(`${s}/sitemap.xml`, { cache: "no-store" })).text();
+      const urls = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]).slice(0, 120);
+      const bad: string[] = [];
+      for (let i = 0; i < urls.length; i += 8) {
+        await Promise.all(urls.slice(i, i + 8).map(async (u) => {
+          try { const r = await fetch(u, { cache: "no-store" }); if (!r.ok) bad.push(`${u.replace(s, "")} ${r.status}`); else { const t = await r.text(); if (/Application error|Something went wrong/i.test(t)) bad.push(`${u.replace(s, "")} error screen`); } }
+          catch { bad.push(`${u.replace(s, "")} no answer`); }
+        }));
+      }
+      const { count: live } = await d.from("items").select("id", { count: "exact", head: true }).eq("status", "active");
+      for (const f of ["/feed/items.xml", "/feed/google.xml"]) {
+        const t = await (await fetch(`${s}${f}`, { cache: "no-store" })).text();
+        const n = (t.match(/<item>/g) || []).length;
+        if ((live || 0) > 0 && n === 0) bad.push(`${f} has 0 items but ${live} are live`);
+      }
+      out.site_sweep = bad.length ? `BROKEN (${bad.length} of ${urls.length}): ${bad.slice(0, 6).join("; ")}` : `ok: ${urls.length} pages + feeds`;
+      if (bad.length) { const { alertStaff } = await import("@/lib/alert"); await alertStaff(`${bad.length} page(s) broken on the site`, `The morning sweep opened ${urls.length} pages as a signed-out visitor. Broken:\n${bad.slice(0, 20).join("\n")}\n\nTell Claude.`, "/app/ops"); }
+    } catch (e) { out.site_sweep = `sweep failed: ${e instanceof Error ? e.message : e}`; }
     await set("stripe", process.env.STRIPE_SECRET_KEY ? "ok" : "missing", process.env.STRIPE_SECRET_KEY ? "key present" : "STRIPE_SECRET_KEY not set");
     await set("anthropic", process.env.ANTHROPIC_API_KEY ? "ok" : "missing");
     await set("shippo", process.env.SHIPPO_API_KEY ? "ok" : "missing", process.env.SHIPPO_API_KEY ? "live rates and labels on" : "built-in estimate in use; labels can't be bought in-app until the key is added");
