@@ -24,12 +24,14 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
   }
   const d = admin();
   const weekAgo = since(7 * 86400_000);
-  const [{ count: weekChecks }, mine] = await Promise.all([
+  const [{ count: weekChecks }, mine, myPages] = await Promise.all([
     d.from("buy_pass_scans").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
     me ? d.from("buy_pass_scans").select("id, what, verdict, net_low, net_high, paid, bought, item_id, photo_url, created_at").eq("owner_id", me.id).order("created_at", { ascending: false }).limit(200) : Promise.resolve({ data: null }),
+    me ? d.from("valuations").select("id", { count: "exact", head: true }).eq("owner_id", me.id) : Promise.resolve({ count: 0 }),
   ]);
+  const pages = myPages.count || 0;
   const finds = mine.data || [];
-  const unlimited = !!me && (me.plan === "pro" || me.role === "admin" || me.role === "staff");
+  const unlimited = !!me && (me.plan === "pro" || !!me.thrift_pro || me.role === "admin" || me.role === "staff");
   const today = finds.filter((f) => f.created_at > since(86400_000)).length;
   const freeLeft = me && !unlimited ? Math.max(0, BP_FREE_DAILY - today) : null;
   const buys = finds.filter((f) => f.verdict === "buy");
@@ -53,6 +55,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
               <div><p className="text-xl font-extrabold">{buys.length}</p><p className="text-xs muted">BUYs found</p></div>
               <div><p className="text-xl font-extrabold">{money(avoided)}</p><p className="text-xs muted">not wasted on PASSes</p></div>
             </div>
+            <p className="text-sm">📣 {pages ? <>Your shares made <b>{pages}</b> page{pages === 1 ? "" : "s"} people can find on Google. Keep sharing!</> : "Share a find and it gets its own page on Google."}</p>
             {badge < 10 ? <div><p className="text-xs font-semibold">🏅 Flipper badge: {badge} of 10 checks</p><div className="h-2 rounded-full mt-1" style={{ background: "var(--line)" }}><div className="h-2 rounded-full" style={{ width: `${badge * 10}%`, background: "var(--ok)" }} /></div></div> : <p className="text-sm font-semibold">🏅 Flipper badge earned. You check before you buy.</p>}
             <details><summary className="text-xs underline cursor-pointer">See them</summary>
               <div className="space-y-1 pt-2">{finds.slice(0, 30).map((f) => <div key={f.id} className="flex items-center gap-2 text-sm">{f.photo_url && <img src={f.photo_url} alt="" className="w-9 h-9 rounded object-cover" />}<span className="flex-1 truncate">{f.what}</span><b style={{ color: f.verdict === "buy" ? "var(--ok)" : f.verdict === "pass" ? "var(--danger)" : "var(--accent)" }}>{String(f.verdict).toUpperCase()}</b>{f.item_id ? <Link href={`/app/items/${f.item_id}/edit`} className="text-xs underline">listing</Link> : null}</div>)}</div>

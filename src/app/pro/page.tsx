@@ -26,6 +26,12 @@ export default async function ProPage() {
           <p className="text-xs muted">No card to start. Pro is ${p.pro_monthly}/month, cancel any time. <Link href="/why" className="underline">Why we built this</Link> · <Link href="/start" className="underline">Start with one box</Link></p>
         </section>
 
+        <section className="card p-4 space-y-1 text-center" style={{ borderColor: "var(--ok)", borderWidth: 2 }}>
+          <p className="font-bold text-lg">Just checking thrift finds? Thrift Pro, $3.99 a month</p>
+          <p className="text-sm muted">Unlimited Buy or Pass and What&apos;s it worth checks. Everyone gets 5 free checks a day; this removes the limit. No trial tricks, cancel in one tap.</p>
+          <Link href="/thrift" className="btn btn-secondary w-full">Try a check first, free</Link>
+        </section>
+
         <section className="grid grid-cols-1 gap-3">
           {[
             ["🖼 Dump a batch", "Pick a pile of photos from your gallery. The AI figures out which photos are the same item. Fix any with one tap."],

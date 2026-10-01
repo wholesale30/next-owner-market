@@ -13,9 +13,9 @@ export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Sign in first (it's free)." }, { status: 401 });
-  const { data: me } = await admin().from("profiles").select("ai_credits").eq("id", user.id).single();
-  const { data: ok } = await admin().rpc("spend_ai_credit", { p_profile: user.id });
-  if (!ok) return NextResponse.json({ error: "You've used your free lookups. Pro gives you unlimited for $15/month.", upgrade: true }, { status: 402 });
+  const { data: me } = await admin().from("profiles").select("ai_credits, thrift_pro").eq("id", user.id).single();
+  const { data: ok } = me?.thrift_pro ? { data: true } : await admin().rpc("spend_ai_credit", { p_profile: user.id });
+  if (!ok) return NextResponse.json({ error: "You've used your free lookups. Thrift Pro gives you unlimited for $3.99 a month.", upgrade: true, thrift: true }, { status: 402 });
   if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "Not available right now." }, { status: 500 });
   const { photoUrls, hints } = (await req.json()) as { photoUrls: string[]; hints?: string };
   if (!photoUrls?.length) return NextResponse.json({ error: "Add at least one photo." }, { status: 400 });

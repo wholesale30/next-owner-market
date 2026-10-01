@@ -61,7 +61,9 @@ export async function POST(req: Request) {
         await alertStaff("New order paid", `$${((cs.amount_total || 0) / 100).toFixed(2)} order paid in the store (${o?.fulfillment}).`, `/account/orders/${cs.metadata.order_id}`);
         await sendOrderEmails(cs.metadata.order_id);
       }
-      if (cs.mode === "subscription" && cs.metadata?.profile_id) {
+      if (cs.mode === "subscription" && cs.metadata?.profile_id && cs.metadata?.plan === "thrift") {
+        await db.from("profiles").update({ thrift_pro: true, stripe_customer_id: typeof cs.customer === "string" ? cs.customer : cs.customer?.id, thrift_subscription_id: typeof cs.subscription === "string" ? cs.subscription : cs.subscription?.id }).eq("id", cs.metadata.profile_id);
+      } else if (cs.mode === "subscription" && cs.metadata?.profile_id) {
         await db.from("profiles").update({ plan: "pro", stripe_customer_id: typeof cs.customer === "string" ? cs.customer : cs.customer?.id, stripe_subscription_id: typeof cs.subscription === "string" ? cs.subscription : cs.subscription?.id }).eq("id", cs.metadata.profile_id);
       }
       break;
@@ -81,6 +83,10 @@ export async function POST(req: Request) {
       const sub = event.data.object;
       const active = sub.status === "active" || sub.status === "trialing";
       const renews = sub.items.data[0]?.current_period_end;
+      if (sub.metadata?.plan === "thrift") {
+        await db.from("profiles").update({ thrift_pro: active, thrift_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("thrift_subscription_id", sub.id);
+        break;
+      }
       await db.from("profiles").update({ plan: active ? "pro" : "free", plan_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("stripe_subscription_id", sub.id).eq("comped", false);
       break;
     }

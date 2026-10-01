@@ -44,8 +44,8 @@ export async function POST(req: Request) {
     if (!(await bump(`bp:day:${nyDay()}`, 500))) return NextResponse.json({ error: "Lots of people are checking finds today. Make a free account and go right now.", signup: true }, { status: 429 });
     if (!(await bump(anonKey, 3))) return NextResponse.json({ error: "That was your free check for today. Make a free account and you get 5 free checks every day.", signup: true }, { status: 429 });
   } else {
-    const { data: me } = await d.from("profiles").select("plan, role").eq("id", user.id).single();
-    const unlimited = me?.plan === "pro" || me?.role === "admin" || me?.role === "staff";
+    const { data: me } = await d.from("profiles").select("plan, role, thrift_pro").eq("id", user.id).single();
+    const unlimited = me?.plan === "pro" || !!me?.thrift_pro || me?.role === "admin" || me?.role === "staff";
     if (!unlimited) {
       const start = new Date(Date.now() - 24 * 3600_000).toISOString(); // rolling day
       const { count } = await d.from("buy_pass_scans").select("id", { count: "exact", head: true }).eq("owner_id", user.id).gte("created_at", start);
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
   });
   if (!r.ok) {
     if (anonKey) await d.from("settings").delete().eq("key", anonKey).then(() => {}, () => {});
-    return NextResponse.json({ error: r.upgrade ? `You've used today's ${BP_FREE_DAILY} free checks. They come back tomorrow, or go Pro for unlimited.` : r.error, upgrade: r.upgrade }, { status: r.status });
+    return NextResponse.json({ error: r.upgrade ? `You've used today's ${BP_FREE_DAILY} free checks. They come back tomorrow, or get unlimited checks with Thrift Pro for $3.99 a month.` : r.error, upgrade: r.upgrade, thrift: r.upgrade }, { status: r.status });
   }
   const o = r.result;
   const cost = Number(paid || 0);
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
   const net_low = best.net_low, net_high = best.net_high;
   const verdict = net_low >= 15 ? "buy" : net_high >= 15 && net_low >= 0 ? "maybe" : "pass";
   const max_pay = Math.max(0, Math.floor(net_low + cost - 15)); // the most you can pay and still clear about $15 at the low end
-  const { data: scan } = await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, what: o.what, paid: cost || null, resale_low: o.resale_low, resale_high: o.resale_high, net_low, net_high, verdict, photo_url: photoUrls[0] || null, best_place: best.key, listing_title: o.listing_title }).select("id").single();
+  const { data: scan } = await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, what: o.what, paid: cost || null, resale_low: o.resale_low, resale_high: o.resale_high, net_low, net_high, verdict, photo_url: photoUrls[0] || null, best_place: best.key, listing_title: o.listing_title, why: o.why, condition_guess: o.condition_guess, watch_out: o.watch_out || null, ship_or_local: o.ship_or_local }).select("id").single();
   const fee = FEES.find((f) => f.key === best.key) || FEES[0];
   const res = NextResponse.json({ ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note }, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key });
   if (!user) res.cookies.set("nom_bp", nyDay(), { maxAge: 60 * 60 * 26, httpOnly: true, sameSite: "lax", path: "/" });

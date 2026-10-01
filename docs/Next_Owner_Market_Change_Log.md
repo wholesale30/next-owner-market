@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:14 PM from the project history (166 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:19 PM from the project history (167 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1239,3 +1239,9 @@
 - **Server routes (API):** `src/app/api/buy-or-pass/route.ts`
 
 <sub>change id fbb4ad2</sub>
+
+### 19:14 — Beat the Competition plan; guides, white paper and walkthrough updated for Buy or Pass growth build
+
+- **Documents:** `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Beat_The_Competition.md`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md` (+4 more)
+
+<sub>change id 8c91854</sub>
