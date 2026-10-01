@@ -2258,3 +2258,7 @@ I also checked the live listings. Nikki's Thomas lamp had no weight at all, so I
 Two of her other lamps look light: the porcelain pair at 2 lb and the GT500 lamp at 1.5 lb. If they're too light, the postage costs more than the buyer paid. Want me to have the AI re-guess every live listing's weight and correct any that look too low?
 
 The updated User Guide, Complete Guide, Build Journal and Change Log are attached; save over your old copies.
+
+### Oct 1, 1:36 AM — Shayne
+
+> on the why we built this on the page. I don't have three warehouses, three warehouses, 25,000 square feet. I have one. I never said three. I don't know how that got there. And on the, we hold the money till you get the item. I think we should remove that. I think that's a buzzkill for the very first fucking page so they get going. They can learn that later.

@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 12:54 AM from the project history (136 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 1:38 AM from the project history (138 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1033,3 +1033,16 @@
 - **Seller / staff app:** `src/app/app/items/ItemForm.tsx`
 
 <sub>change id 8f82e27</sub>
+
+### 00:54 — docs: weight guess; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id ad4a53c</sub>
+
+### 01:37 — Why page: one 25,000 sq ft warehouse, over 300 pallets (was wrong); remove 'money held' from home and why pages (that's for later, not the first impression); fix the same facts in all docs
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Public site pages:** `src/app/page.tsx`, `src/app/why/page.tsx`
+
+<sub>change id aea3dd4</sub>
