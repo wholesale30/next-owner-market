@@ -5,6 +5,9 @@ import StoreHeader from "../../StoreHeader";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
 import ToolPitch from "@/components/ToolPitch";
+import { createClient as createAdminLoc } from "@supabase/supabase-js";
+import { OWNER_LOC, withLoc } from "@/lib/item-location";
+const adminLoc = () => createAdminLoc(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
 
 /** Category landing pages: real text + the items, so "vintage receivers for sale" has a page to rank. */
 export async function generateMetadata({ params }: PageProps<"/c/[slug]">): Promise<Metadata> {
@@ -28,7 +31,8 @@ export default async function CategoryPage({ params }: PageProps<"/c/[slug]">) {
   const kids = (cats || []).filter((x) => x.parent_id === c.id);
   const parent = c.parent_id ? cats?.find((x) => x.id === c.parent_id) : null;
   const ids = [c.id, ...kids.map((k) => k.id)];
-  const { data: items } = await supabase.from("items").select("id, sku, title, price, status, city, state, shipping_ok, shipping_mode, item_photos(url, is_primary)").in("category_id", ids).in("status", ["active", "reserved"]).order("listed_at", { ascending: false }).limit(60);
+  const { data: rawItems } = await adminLoc().from("items").select(`id, sku, title, price, status, shipping_ok, shipping_mode, item_photos(url, is_primary), ${OWNER_LOC}`).in("category_id", ids).in("status", ["active", "reserved"]).order("listed_at", { ascending: false }).limit(60);
+  const items = withLoc(rawItems as never[] as { owner?: unknown; id: string; sku: string; title: string; price: number; status: string; shipping_ok: boolean; shipping_mode: string | null; item_photos: unknown }[]);
   const { count: soldCount } = await supabase.from("items").select("id", { count: "exact", head: true }).in("category_id", ids).eq("status", "sold");
   const business = (biz?.value as { name: string }) || { name: "Next Owner Market" };
   const jsonLd = { "@context": "https://schema.org", "@type": "CollectionPage", name: `${c.name} for sale`, url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com"}/c/${c.slug}`, hasPart: (items || []).slice(0, 20).map((i) => ({ "@type": "Product", name: i.title, offers: { "@type": "Offer", price: i.price, priceCurrency: "USD" } })) };

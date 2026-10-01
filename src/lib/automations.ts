@@ -1,6 +1,7 @@
 import { createClient as createAdmin } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
 import { slugify } from "@/lib/md";
+import { OWNER_LOC, withLoc } from "@/lib/item-location";
 
 /**
  * Everything the site does by itself. Each automation is a small function that:
@@ -274,7 +275,8 @@ const buyerDigest: Automation = {
     let left = await budget(); let n = 0;
     const since = new Date(Date.now() - 7 * 86400_000).toISOString();
     const { data: people } = await d.from("profiles").select("id, email, full_name, zip, lat, lng, marketing_opt_out").not("email", "is", null).not("lat", "is", null).limit(2000);
-    const { data: fresh } = await d.from("items").select("sku, title, price, lat, lng, city, state, shipping_ok, item_photos(url, is_primary)").eq("status", "active").gte("listed_at", since).not("lat", "is", null).limit(500);
+    const { data: rawFresh } = await d.from("items").select(`sku, title, price, shipping_ok, item_photos(url, is_primary), ${OWNER_LOC}`).eq("status", "active").gte("listed_at", since).limit(500);
+    const fresh = withLoc(rawFresh as never[] as { owner?: unknown; sku: string; title: string; price: number; shipping_ok: boolean; item_photos: unknown }[]).filter((i) => i.lat != null && i.lng != null);
     if (!fresh?.length) return { skipped: "nothing new this week" };
     const { milesBetween } = await import("@/lib/geo");
     for (const p of people || []) {
@@ -361,7 +363,8 @@ const facebookPage: Automation = {
     const cfg = { ...((row?.value as { posted?: string[] }) || {}), page_id: biz.facebook_page_id, page_token: biz.facebook_page_token };
     if (!cfg.page_id || !cfg.page_token) return { skipped: "no Facebook Page token set (Settings)" };
     const posted = new Set(cfg.posted || []);
-    const { data: fresh } = await d.from("items").select("sku, title, price, city, state, item_photos(url, is_primary)").eq("status", "active").order("listed_at", { ascending: false }).limit(20);
+    const { data: rawFb } = await d.from("items").select(`sku, title, price, item_photos(url, is_primary), ${OWNER_LOC}`).eq("status", "active").order("listed_at", { ascending: false }).limit(20);
+    const fresh = withLoc(rawFb as never[] as { owner?: unknown; sku: string; title: string; price: number; item_photos: unknown }[]);
     let n = 0; const errors: string[] = [];
     for (const i of fresh || []) {
       if (n >= 3) break; if (posted.has(i.sku)) continue;

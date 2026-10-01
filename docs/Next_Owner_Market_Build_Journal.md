@@ -2321,3 +2321,35 @@ Debbie's listing page is returning "not found." Checking whether every listing i
 Found the cause: logged-out visitors are being blocked by a permission check in the database. Looking at when it changed.
 
 Item pages are working again. Debbie's cot now loads with Buy now for signed-out visitors, and so does the home page. Adding a daily check so this gets caught automatically next time.
+
+**Debbie's 404 is fixed, and it wasn't just her listing.** Anyone not signed in was getting "page not found" on every listing. I loaded her cot page as a signed-out shopper afterward, and it now opens with the title and Buy now.
+
+**What happened:** the rule that lets anyone see live listings also asks "is this person staff?" Signed-out visitors weren't allowed to ask that question, so the whole page failed. Signed-in people never hit it, which is why it looked fine to you and to sellers inside the app. I let signed-out visitors run that check; it simply answers "no" for them.
+
+**So it can't sneak up again:** every morning the health check now opens a live listing as a signed-out shopper. If it ever fails, you get an alert right away.
+
+**The "database declined":** nothing is wrong with your database. Some of my database changes ask for your approval in the app before they run. Those prompts ended up cancelled, probably because nobody was there to answer them. Since then:
+- Debbie's dead AT&T text address is cleared. She gets every alert by email.
+- The Verizon March 2027 reminder is now on your Operations page under Later.
+- Turning the email check green right now was cancelled again. I left it; tomorrow's 9 AM check sets it green on its own.
+
+**Why the carriers stopped free email-to-text:**
+- **Scammers abused it.** Anyone could send a text by email with no identity check, so it became a spam and phishing channel.
+- **New rules since 2023** require businesses that text people to register, and these gateways had no way to do that.
+- **Carriers made no money from it,** so they shut it off instead of fixing it.
+
+AT&T and Cricket ended it June 17, 2025, T-Mobile around December 2024, and Verizon plans to by March 2027.
+
+The updated Complete Guide, White Paper, Build Journal and Change Log are attached; save over your old copies.
+
+Sources:
+- [Why email-to-text stopped working: the carrier shutdown (nvrtxt)](https://www.nvrtxt.com/blog/email-to-text-shutdown)
+- [AT&T Email-to-Text Shutdown on June 17, 2025 (Simplified Alerts)](https://simplifiedalerts.com/att-email-to-text/)
+
+### Oct 1, 10:56 AM — Shayne
+
+> Ok is there some things you can run to look for other issues we dont know about yet?
+
+**Claude:**
+
+Yes. I'll run a full sweep now: open every public page as a signed-out shopper, check the database for permission problems like the one that hit Debbie, look at the server error logs and the database's own warnings, check the data for broken listings, and rebuild the code from scratch. Then I'll make the page check run every day.

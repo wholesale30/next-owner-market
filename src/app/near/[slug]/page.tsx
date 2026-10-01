@@ -5,6 +5,9 @@ import StoreHeader from "../../StoreHeader";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/listing";
 import ToolPitch from "@/components/ToolPitch";
+import { createClient as createAdminLoc } from "@supabase/supabase-js";
+import { OWNER_LOC_INNER, withLoc } from "@/lib/item-location";
+const adminLoc = () => createAdminLoc(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
 
 /** City pages that build themselves from where items actually are: /near/richmond-va */
 export const revalidate = 1800;
@@ -18,11 +21,12 @@ export async function generateMetadata({ params }: PageProps<"/near/[slug]">): P
 export default async function NearPage({ params }: PageProps<"/near/[slug]">) {
   const { slug } = await params; const p = parse(slug); if (!p) notFound();
   const supabase = await createClient();
-  const [{ data: items }, { data: biz }, { data: { user } }] = await Promise.all([
-    supabase.from("items").select("id, sku, title, price, status, city, state, shipping_ok, shipping_mode, item_photos(url, is_primary), categories(name)").ilike("city", p.city).eq("state", p.state).in("status", ["active", "reserved"]).order("listed_at", { ascending: false }).limit(60),
+  const [{ data: rawItems }, { data: biz }, { data: { user } }] = await Promise.all([
+    adminLoc().from("items").select(`id, sku, title, price, status, shipping_ok, shipping_mode, item_photos(url, is_primary), categories(name), ${OWNER_LOC_INNER}`).ilike("owner.city", p.city).eq("owner.state", p.state).in("status", ["active", "reserved"]).order("listed_at", { ascending: false }).limit(60),
     supabase.from("settings").select("value").eq("key", "business").maybeSingle(), supabase.auth.getUser(),
   ]);
-  if (!items?.length) notFound();
+  const items = withLoc(rawItems as never[] as { owner?: unknown; id: string; sku: string; title: string; price: number; status: string; shipping_ok: boolean; shipping_mode: string | null; item_photos: unknown; categories: unknown }[]);
+  if (!items.length) notFound();
   const business = (biz?.value as { name: string }) || { name: "Next Owner Market" };
   const cats = new Map<string, number>(); for (const i of items) { const c = (i.categories as unknown as { name: string } | null)?.name; if (c) cats.set(c, (cats.get(c) || 0) + 1); }
   return (

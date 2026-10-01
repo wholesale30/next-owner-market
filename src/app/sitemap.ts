@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createClient as createAdmin } from "@supabase/supabase-js";
+import { OWNER_LOC, withLoc } from "@/lib/item-location";
 
 export const revalidate = 3600;
 
@@ -11,7 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const hubCount = new Map<string, number>();
   for (const v of vals || []) { const ws = String(v.title).toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 2).slice(0, 2); if (ws.length === 2) { const k = ws.join("-"); hubCount.set(k, (hubCount.get(k) || 0) + 1); } }
   const hubs = [...hubCount.entries()].filter(([, n]) => n >= 2).map(([k]) => k);
-  const { data: cities } = await db.from("items").select("city, state").in("status", ["active", "reserved"]).not("city", "is", null).not("state", "is", null);
+  const { data: rawCities } = await db.from("items").select(OWNER_LOC).in("status", ["active", "reserved"]);
+  const cities = withLoc(rawCities as never[] as { owner?: unknown }[]).filter((c) => c.city && c.state);
   const citySet = new Map<string, number>(); for (const c of cities || []) { const k = `${String(c.city).toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${String(c.state).toLowerCase()}`; citySet.set(k, (citySet.get(k) || 0) + 1); }
   const cityPages = [...citySet.entries()].filter(([, n]) => n >= 1).map(([k]) => k);
   const [{ data: items }, { data: cats }, { data: posts }, { data: sellers }] = await Promise.all([
