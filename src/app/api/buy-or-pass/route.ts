@@ -99,7 +99,9 @@ export async function POST(req: Request) {
     };
     return { key: f.key, label: f.label, pct: f.pct, fixed: f.fixed, note: f.note, net_low: net(o.resale_low), net_high: net(o.resale_high) };
   }).filter(Boolean) as { key: string; label: string; pct: number; fixed: number; note: string; net_low: number; net_high: number }[];
-  const best = places.find((p) => p.key === o.best_place) || places[0];
+  // Best place = where you keep the most (the AI's pick wins ties)
+  const aiPick = places.find((p) => p.key === o.best_place) || places[0];
+  const best = places.reduce((a, p) => (p.net_low > a.net_low + 0.5 ? p : a), aiPick);
   const net_low = best.net_low, net_high = best.net_high;
   const verdict = net_low >= 15 ? "buy" : net_high >= 15 && net_low >= 0 ? "maybe" : "pass";
   const max_pay = Math.max(0, Math.floor(net_low + cost - 15)); // the most you can pay and still clear about $15 at the low end
