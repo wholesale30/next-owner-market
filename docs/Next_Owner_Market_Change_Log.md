@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:41 PM from the project history (131 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 11:54 PM from the project history (134 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -998,3 +998,21 @@
 - **Shared code (logic):** `src/lib/automations.ts`
 
 <sub>change id feaa983</sub>
+
+### 23:41 — docs: single-use trigger, first email round; journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 0f522d4</sub>
+
+### 23:50 — docs: regenerate journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 322db5c</sub>
+
+### 23:53 — Rules: never send the owner to look something up that Claude can reach
+
+- **Project rules:** `CLAUDE.md`
+
+<sub>change id 27d7be4</sub>
