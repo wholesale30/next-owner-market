@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 9:11 PM from the project history (108 changes).*
+*Every change to the code, database, and documents, oldest first. Generated September 30, 2026 9:11 PM from the project history (109 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -847,3 +847,10 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`
 
 <sub>change id 7e2a261</sub>
+
+### 21:11 — Journal: keep captured text across context condensing (append-only cache + archive); restore full session record
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.archive.json`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.archive.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Automation scripts:** `scripts/journal.py`
+
+<sub>change id dc7608e</sub>
