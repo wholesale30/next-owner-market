@@ -2262,3 +2262,22 @@ The updated User Guide, Complete Guide, Build Journal and Change Log are attache
 ### Oct 1, 1:36 AM — Shayne
 
 > on the why we built this on the page. I don't have three warehouses, three warehouses, 25,000 square feet. I have one. I never said three. I don't know how that got there. And on the, we hold the money till you get the item. I think we should remove that. I think that's a buzzkill for the very first fucking page so they get going. They can learn that later.
+
+**Claude:**
+
+The site and documents are fixed. Your account-wide rules still say "three warehouses," so I'm correcting that too.
+
+I've fixed the Why page and taken the held-money lines off your first pages; it goes live in about 2 minutes. You never said three warehouses. That got written in by mistake and then copied forward.
+
+**Why we built this (/why)** now says one 25,000-square-foot warehouse with over 300 pallets. "Over 300" is the count you gave in your own message; the page had said 350–400 and "four hundred." I also took out "the money is held until you hand the thing over, so nobody gets burned."
+
+**Home page:**
+- The "Money held until you have it" line under the search bar is gone.
+- In the three how-it-works boxes, I swapped "🔒 Money's held" for **"📸 Sell yours: Snap photos. The AI writes the listing. Free to list."**
+- Removed it from the description Google shows in search results.
+
+The held-money explanation still lives in Help and on the order pages, where people learn it once they're buying.
+
+**The same facts are corrected everywhere else:** the Mission Statement, Presentation Walkthrough and Complete Guide. Your account-wide rules still said "three warehouses"; the card above fixes that and adds a note never to repeat it. Tap save. The User Guide and White Paper already had it right.
+
+The corrected Mission Statement, Presentation Walkthrough, Complete Guide, Build Journal and Change Log are attached; save over your old copies.

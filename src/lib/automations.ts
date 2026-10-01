@@ -392,7 +392,16 @@ const health: Automation = {
     await set("stripe", process.env.STRIPE_SECRET_KEY ? "ok" : "missing", process.env.STRIPE_SECRET_KEY ? "key present" : "STRIPE_SECRET_KEY not set");
     await set("anthropic", process.env.ANTHROPIC_API_KEY ? "ok" : "missing");
     await set("shippo", process.env.SHIPPO_API_KEY ? "ok" : "missing", process.env.SHIPPO_API_KEY ? "live rates and labels on" : "built-in estimate in use; labels can't be bought in-app until the key is added");
-    if (process.env.RESEND_API_KEY) { try { const r = await fetch("https://api.resend.com/domains", { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }); await set("resend", r.ok ? "ok" : "error", r.ok ? "email service answering" : `HTTP ${r.status}`); } catch (e) { await set("resend", "error", String(e)); } } else await set("resend", "missing");
+    if (process.env.RESEND_API_KEY) { try { const r = await fetch("https://api.resend.com/domains", { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }); if (r.ok) await set("resend", "ok", "email service answering");
+        else {
+          // A send-only key (the safe kind) gets 401 here even though sending works. Judge by real sends instead.
+          const since = new Date(Date.now() - 3 * 86400_000).toISOString();
+          const { count: good } = await db().from("email_log").select("id", { count: "exact", head: true }).eq("ok", true).gte("sent_at", since);
+          const { count: bad } = await db().from("email_log").select("id", { count: "exact", head: true }).eq("ok", false).gte("sent_at", since);
+          if (r.status === 401 && (good || 0) > 0 && (bad || 0) <= (good || 0)) await set("resend", "ok", `sending works (${good} sent in 3 days${bad ? `, ${bad} failed` : ""}); send-only key`);
+          else if (r.status === 401 && !good && !bad) await set("resend", "ok", "send-only key; nothing sent yet to check");
+          else await set("resend", "error", `HTTP ${r.status}${bad ? `, ${bad} emails failed in 3 days` : ""}`);
+        } } catch (e) { await set("resend", "error", String(e)); } } else await set("resend", "missing");
     const { data: fb } = await d.from("settings").select("value").eq("key", "business").maybeSingle(); const cfg = (fb?.value as { facebook_page_token?: string; facebook_page_id?: string }) || {};
     if (cfg.facebook_page_token && cfg.facebook_page_id) { try { const r = await fetch(`https://graph.facebook.com/v19.0/${cfg.facebook_page_id}?fields=name&access_token=${encodeURIComponent(cfg.facebook_page_token)}`, { signal: AbortSignal.timeout(10000) }); await set("facebook", r.ok ? "ok" : "error", r.ok ? "auto-posting on" : "token rejected; repeat the Connect the Facebook Page steps"); } catch (e) { await set("facebook", "error", String(e).slice(0, 80)); } } else await set("facebook", "manual", "no Page token; posting is by hand");
     for (const [key, path] of [["sitemap", "/sitemap.xml"], ["google_feed", "/feed/google.xml"]] as const) { try { const r = await fetch(s + path, { signal: AbortSignal.timeout(15000) }); await set(key, r.ok ? "ok" : "error", r.ok ? `${Math.round(Number(r.headers.get("content-length") || 0) / 1024)} KB` : `HTTP ${r.status}`); } catch (e) { await set(key, "error", String(e).slice(0, 100)); } }

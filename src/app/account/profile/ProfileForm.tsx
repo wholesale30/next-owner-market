@@ -63,7 +63,8 @@ export default function ProfileForm({ me }: { me: Me }) {
           <label className="flex items-center gap-2 font-semibold"><input type="checkbox" checked={al.on} onChange={(e) => setAl({ ...al, on: e.target.checked })} /> 📱 Text me (free) when something happens</label>
           {al.on && (
             <>
-              <div><label className="label">Your phone carrier</label><select className="input" value={al.carrier} onChange={(e) => setAl({ ...al, carrier: e.target.value })}><option value="">Pick one…</option>{CARRIERS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></div>
+              <div><label className="label">Your phone carrier</label><select className="input" value={al.carrier} onChange={(e) => setAl({ ...al, carrier: e.target.value })}><option value="">Pick one…</option>{CARRIERS.map((c) => <option key={c.key} value={c.key}>{c.label}{c.dead ? " (texts not available)" : ""}</option>)}</select></div>
+              {CARRIERS.find((c) => c.key === al.carrier)?.dead && <p className="text-sm" style={{ color: "var(--danger)" }}>{CARRIERS.find((c) => c.key === al.carrier)!.dead}, so we can&apos;t text you. You&apos;ll still get every alert by email.</p>}
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={al.messages} onChange={(e) => setAl({ ...al, messages: e.target.checked })} /> New message from a buyer</label>
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={al.orders} onChange={(e) => setAl({ ...al, orders: e.target.checked })} /> Someone bought or made an offer</label>
               <p className="text-xs muted">Uses the phone number above. Texts come from our alert address; standard message rates from your carrier may apply. You always get email too.</p>
