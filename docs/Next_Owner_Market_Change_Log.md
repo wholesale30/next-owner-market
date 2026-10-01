@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 10:49 AM from the project history (143 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 12:15 PM from the project history (145 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1080,3 +1080,18 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id a939669</sub>
+
+### 12:10 — Fix: category pages, city pages, new-items feed, share images, buyer digest and Facebook posts all read a 'city' column listings don't have, so they came up empty; location now comes from the seller's profile. Item page pickup pill links to the city page.
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Public site pages:** `src/app/c/[slug]/page.tsx`, `src/app/feed/items.xml/route.ts`, `src/app/near/[slug]/page.tsx`, `src/app/sitemap.ts`
+- **Public item page:** `src/app/item/[sku]/opengraph-image.tsx`, `src/app/item/[sku]/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`, `src/lib/item-location.ts`
+
+<sub>change id 654b5c6</sub>
+
+### 12:11 — Daily health: sweep every sitemap page + feeds as a signed-out visitor; alert staff with the list if anything is broken or empty
+
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id 3b40dd0</sub>

@@ -2353,3 +2353,19 @@ Sources:
 **Claude:**
 
 Yes. I'll run a full sweep now: open every public page as a signed-out shopper, check the database for permission problems like the one that hit Debbie, look at the server error logs and the database's own warnings, check the data for broken listings, and rebuild the code from scratch. Then I'll make the page check run every day.
+
+### Oct 1, 12:07 PM — Shayne
+
+> Continue from where you left off.
+
+**Claude:**
+
+The database scan found nothing broken, just two loose permissions to tighten. Now the big one: opening every page on the site as a shopper.
+
+While those 183 pages load, checking the data for broken listings and stuck orders.
+
+Every one of the 183 pages loaded (status 200). Checking inside them for hidden error screens.
+
+Found one: the "new items" feed is empty even though 8 items are live. Checking the Google Shopping feed too, since that one feeds Merchant Center.
+
+While that builds, I'm adding the sweep itself to the daily health check, so it opens the site's pages every morning without anyone asking.
