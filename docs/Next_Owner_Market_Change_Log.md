@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 12:12 PM from the project history (182 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 12:24 PM from the project history (183 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1350,3 +1350,9 @@
 - **Automation scripts:** `scripts/changelog.py`, `scripts/journal.py`
 
 <sub>change id 1f468b7</sub>
+
+### 12:12 — Update build journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 5208a3b</sub>
