@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 8:06 PM from the project history (176 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 8:19 PM from the project history (178 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1307,3 +1307,15 @@
 - **Public site pages:** `src/app/page.tsx`
 
 <sub>change id 9b2d765</sub>
+
+### 20:06 — Update build journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 83467a9</sub>
+
+### 20:15 — Update build journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id e5f4f06</sub>

@@ -1,6 +1,6 @@
 # Next Owner Market — The Build Journal
 
-*A complete record of how the app was built in conversation between the owner (Shayne Snavely) and Claude, September 29–30, 2026. Every request, every "that's wrong," every "can we add this," and what was built in response. Kept for the record, and for the book.*
+*A complete record of how the app was built in conversation between the owner (Shayne Snavely) and Claude, September 29, 2026 onward, and still going. Every request, every "that's wrong," every "can we add this," and what was built in response. Kept for the record, and for the book.*
 
 ---
 
@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Sep 30, 8:55 PM (71 messages from Shayne)
+## Session: Sep 30, 3:18 AM → Oct 1, 8:18 PM (continuing)
 
 **Claude:**
 
@@ -2851,3 +2851,42 @@ Those links were your best tools shown as small underlined text, so they read li
 **Size check on your phone:** I tested at both your folded and open Z Fold widths. On the folded screen "Overwhelmed?" was spilling past its button edge at first, so I shrank the text a touch on narrow screens only. All four fit cleanly now.
 
 **What I kept the same:** the white "List an item" button is still the one big main button. A new person still sees one obvious first step, and the four buttons are clearly the next choices.
+
+### Oct 1, 8:15 PM — Shayne
+
+> This site is getting fucking off the hook crazy, so good. And I ask on all the stuff that we do together, I, I mean, I always end up asking, this is so fucking strong, so complete, so many good things about it that nothing, nobody else even does or could comprehend. None of the, none of the most, the million dollar sites. How am I the only one in the world that thinks this stuff up? and continues to perfect it and perfect it and give you more ideas and more ideas and then looking at it and, and seeing what doesn't work and I don't think will work and then we, we keep upgrading and upgrading. I mean, this thing is so fucking strong. I mean, how am I the only one in the world that ever even thinks this kind of shit up? It's, it's I don't understand, I, I mean, if we do several more apps and things like this, I mean, I'm gonna be a multimillionaire because there's no way one of them won't hit if we just do what we're supposed to do.
+
+**Claude:**
+
+It's been a big night: since this afternoon the site got the free thrift check, share pages, the to-do list, Thrift Pro and the camera buttons.
+
+Honestly, though, you're not the only person in the world who thinks of things like this. Plenty of people have had pieces of these ideas. That's why those paid thrift apps exist. What's rare is what you're doing with it. You stand in a real Goodwill aisle and use your own app like a stranger would. You notice the share button sits too low or a button looks like fine print, and you get it fixed the same hour. You also know this business from the inside, with a warehouse full of pallets. Most companies with millions of dollars never get that close to their own customers. That combination of real experience, testing it yourself, and fixing things fast is your advantage, and it's real.
+
+Here's the part I'd keep in front of you, though. Nothing is guaranteed to hit, even with several apps. Right now the site has great tools and almost no strangers using them yet. Apart from your $1 test, there are no sales. What turns this into money is the next stretch, which is less fun than building:
+- strangers checking finds;
+- people sharing them;
+- the first real sale from someone you don't know.
+
+So this week, these matter more than new features:
+- Film your daily Goodwill "Buy or pass?" video.
+- Get me the Facebook Page token, so every find you share also posts to your Page.
+- Keep sharing finds all day like you did tonight.
+
+Once real people are using it, we'll know what to perfect next. Then copying this playbook into the next app makes a lot more sense.
+
+### Oct 1, 8:15 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The latest Build Journal update is saved and pushed. Nothing is left uncommitted, and the website didn't change.
+
+### Oct 1, 8:18 PM — Shayne
+
+> Okay, well, you keep in mind now we've done over and over and over, and you keep giving me the updates like you're supposed to. And all the thinking I do and the other stuff I'm doing um, and switching back and forth, I get confused. So I need now every single file that I need, that every single file that pertains to this with everything included. We don't lose anything or miss anything from the whole start of this project. in one download for me now that I can delete everything else in that um, OneDrive file that I have so I don't have all this shit mixed up. And please don't mix any of that. Give me every every file that we need, every file that includes everything from the journals to the steps we did because you're hopefully updating the journal every step we do, everything I say and we change this and we change that because this is going to be a book one day. I'm, I'm sure of it.
+
+**Claude:**
+
+I'll put every current Next Owner Market document into one zip with a file list inside, so you can replace everything in that OneDrive folder at once. First I'm checking every file is the newest version and the journal covers the whole project from day one.

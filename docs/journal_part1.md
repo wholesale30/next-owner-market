@@ -1,6 +1,6 @@
 # Next Owner Market — The Build Journal
 
-*A complete record of how the app was built in conversation between the owner (Shayne Snavely) and Claude, September 29–30, 2026. Every request, every "that's wrong," every "can we add this," and what was built in response. Kept for the record, and for the book.*
+*A complete record of how the app was built in conversation between the owner (Shayne Snavely) and Claude, September 29, 2026 onward, and still going. Every request, every "that's wrong," every "can we add this," and what was built in response. Kept for the record, and for the book.*
 
 ---
 

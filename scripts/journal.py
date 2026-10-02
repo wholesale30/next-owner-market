@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 """Rebuild docs/Next_Owner_Market_Build_Journal.md (+ .docx) from the chat transcript.
 
 Usage:
@@ -93,6 +94,8 @@ def main():
         end = json.load(open(meta))["end"] if os.path.exists(meta) else "0000"
         fresh = [r for r in rows if r[1] > end]
         text = a + ("\n" + render(fresh, "continued").split("\n", 2)[2] if fresh else "")
+        # keep the session heading's end time current (the archive was written with its old end time)
+        text = re.sub(r"(## Session: [^→\n]+→ )[^\n]+", lambda m: m.group(1) + local(rows[-1][1]) + " (continuing)", text, count=1)
     else:
         label = f"{local(rows[0][1])} → {local(rows[-1][1])} ({len([r for r in rows if r[0]=='U'])} messages from Shayne)"
         text = render(rows, label)

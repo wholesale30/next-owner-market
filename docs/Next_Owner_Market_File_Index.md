@@ -1,24 +1,47 @@
-# Next Owner Market — File Index
+# Next Owner Market: Every File (File Index)
 
-*The complete, current set. September 30, 2026 (night). Replace every older copy with these; same names, newest wins. Delete anything not on this list (the old Marketing_Plan and Facebook_Group_Handoff are folded into the Tool Marketing Plan and Launch Kit).*
+*October 1, 2026, 8:30 PM. This is the complete, current set. Every document from the start of the project is in here, newest versions only. You can delete everything else in your OneDrive Next Owner Market folder and keep just these. When Claude sends an updated file later, it has the same name. Replace the old one; the newest always wins.*
 
-| # | File | What it is | Changes when |
-|---|---|---|---|
-| 1 | Next_Owner_Market_Complete_Guide.docx | Everything: what the site is, every public page and app screen (where, how to get there, what, why), what runs by itself, how it grows, trust, costs, where things are kept, the Operations page explained | Whenever the app changes |
-| 2 | Next_Owner_Market_Presentation_Walkthrough.docx | A 14-slide script for presenting the site to anyone, what to show and say, plus every address in one table | Whenever the app changes |
-| 3 | Next_Owner_Market_User_Guide.docx | The instruction book for buyers, sellers and staff, screen by screen, with What's New sections | Whenever the app changes |
-| 4 | Next_Owner_Market_White_Paper.docx | Technical build record: architecture, database, keys (where they live), rebuild steps, addenda | Whenever the app changes |
-| 5 | Next_Owner_Market_Mission_Statement.docx | Why we built this, full and short versions, in the owner's voice | When the owner adds to it |
-| 6 | Next_Owner_Market_Tool_Marketing_Plan.docx | Getting eBay/Poshmark/Mercari/Facebook/Etsy sellers to use the tool: where, what to say, content, creators, search, 60-day cadence | Stable |
-| 7 | Next_Owner_Market_Launch_Kit.docx | 30-day launch: demo video, groups, creators, Product Hunt, calendar, targets | Stable |
-| 8 | Next_Owner_Market_AddOn_Modules_White_Paper.docx | The add-on modules research paper, with status (four of six built) | When modules change |
-| 9 | Next_Owner_Market_Seller_Terms.docx | Seller terms | Stable |
-| 10 | Next_Owner_Market_Share_Message.docx | Ready-to-send announcement | Stable |
-| 11 | Next_Owner_Market_Build_Journal.docx | Every conversation, verbatim, for the book | Every session |
-| 12 | Next_Owner_Market_Change_Log.docx | Every change to the code and docs, when, what, which files | Every session |
-| 13 | Next_Owner_Market_File_Index.docx | This list | When files are added |
-| 14 | Their_Record_Outreach_Plan.docx | Outreach plan for the Their Record project (separate project) | Stable |
-| 15 | Record_and_Turntable_Refurbish.docx | Turntable restoration guide (separate) | Stable |
-| 16 | next-owner-market-source.zip | Source code snapshot (the live code is on GitHub; this is a convenience copy and may lag) | On request |
+*Not mixed in: the "Their Record" political project and the turntable restoration guide. Those are separate projects. The website's code lives safely on GitHub (wholesale30/next-owner-market), so it isn't in here.*
 
-Operating rules for working with Claude: the `shayne-operating-rules` skill on the Claude account (every chat, every project) and `CLAUDE.md` in the code.
+## Start here
+
+| # | File | What it is |
+|---|---|---|
+| 1 | Next_Owner_Market_File_Index.docx | This list |
+| 2 | Next_Owner_Market_Operating_Rules.docx | How we work: the rules Claude follows, and the facts never to get wrong |
+| 3 | Next_Owner_Market_Mission_Statement.docx | Why you built this, in your voice: full version plus short versions for posts |
+
+## The book
+
+| # | File | What it is |
+|---|---|---|
+| 4 | Next_Owner_Market_Build_Journal.docx | Every conversation since day one (September 29, 2026), your words and Claude's word for word, in order. Kept for the book. |
+| 5 | Next_Owner_Market_Change_Log.docx | Every change to the site and documents: when, what, and which files |
+
+## How the site works
+
+| # | File | What it is |
+|---|---|---|
+| 6 | Next_Owner_Market_Complete_Guide.docx | Everything: every page and screen, what runs by itself, the Operations page, where things are kept |
+| 7 | Next_Owner_Market_User_Guide.docx | Instruction book for buyers, sellers and staff, screen by screen |
+| 8 | Next_Owner_Market_Presentation_Walkthrough.docx | Script for showing the site to anyone, including the thrift store demo |
+| 9 | Next_Owner_Market_White_Paper.docx | Technical build record: how it's built and how to rebuild it |
+| 10 | Next_Owner_Market_Seller_Terms.docx | The seller terms |
+
+## Growth and money
+
+| # | File | What it is |
+|---|---|---|
+| 11 | Next_Owner_Market_Beat_The_Competition.docx | How Buy or Pass beats the paid thrift apps, how we make money, Thrift Pro |
+| 12 | Next_Owner_Market_Thrift_Shopper_Growth_Plan.docx | Reaching Goodwill and thrift shoppers: audience, where they gather, free tactics |
+| 13 | Next_Owner_Market_Tool_Marketing_Plan.docx | Getting eBay, Poshmark, Mercari, Facebook and Etsy sellers to use the tool |
+| 14 | Next_Owner_Market_Launch_Kit.docx | The 30-day launch plan: demo video, groups, creators, calendar |
+| 15 | Next_Owner_Market_Share_Message.docx | Ready-to-send announcement message |
+
+## Research for future add-ons
+
+| # | File | What it is |
+|---|---|---|
+| 16 | Next_Owner_Market_AddOn_Modules_White_Paper.docx | The add-on modules research and their status |
+| 17 | Next_Owner_Market_Estate_Pack_Legal_Research.docx | Full Virginia and federal legal research for the Estate and Downsizing Pack |
