@@ -8,16 +8,26 @@ import { askWithTool } from "@/lib/ai-tool";
 export const maxDuration = 60;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
 
-/** POST { photoUrls: string[], hints?: string } → appraisal. Uses one AI credit (Pro/staff unlimited). */
+/** POST { photoUrls: string[], hints?: string, correction?, previous? } → appraisal. Uses one AI credit (Pro/staff unlimited); a correction of an earlier answer is free. */
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Sign in first (it's free)." }, { status: 401 });
+  const { photoUrls, hints, correction, previous } = (await req.json()) as { photoUrls: string[]; hints?: string; correction?: string; previous?: { what?: string; value_low?: number; value_high?: number; era?: string | null } };
+  const fixing = !!(correction && correction.trim() && previous);
   const { data: me } = await admin().from("profiles").select("ai_credits, thrift_pro").eq("id", user.id).single();
-  const { data: ok } = me?.thrift_pro ? { data: true } : await admin().rpc("spend_ai_credit", { p_profile: user.id });
-  if (!ok) return NextResponse.json({ error: "You've used your free lookups. Thrift Pro gives you unlimited for $3.99 a month.", upgrade: true, thrift: true }, { status: 402 });
+  if (fixing) {
+    // Corrections are free (it's our answer being fixed), capped so it can't be used as unlimited lookups
+    const key = `fix:${user.id}:${new Date().toISOString().slice(0, 10)}`;
+    const { data: c } = await admin().from("settings").select("value").eq("key", key).maybeSingle();
+    const n = Number((c?.value as { n?: number } | null)?.n || 0);
+    if (n >= 30) return NextResponse.json({ error: "That's a lot of fixes for one day. Start a fresh lookup instead." }, { status: 429 });
+    await admin().from("settings").upsert({ key, value: { n: n + 1 } });
+  } else {
+    const { data: ok } = me?.thrift_pro ? { data: true } : await admin().rpc("spend_ai_credit", { p_profile: user.id });
+    if (!ok) return NextResponse.json({ error: "You've used your free lookups. Thrift Pro gives you unlimited for $3.99 a month.", upgrade: true, thrift: true }, { status: 402 });
+  }
   if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "Not available right now." }, { status: 500 });
-  const { photoUrls, hints } = (await req.json()) as { photoUrls: string[]; hints?: string };
   if (!photoUrls?.length) return NextResponse.json({ error: "Add at least one photo." }, { status: 400 });
 
   const client = new Anthropic();
@@ -44,7 +54,7 @@ export async function POST(req: Request) {
   } as const;
   const content: Anthropic.MessageParam["content"] = [
     ...photoUrls.slice(0, 6).map((url) => ({ type: "image", source: { type: "url", url } }) as Anthropic.ImageBlockParam),
-    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${hints}". ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. Record your appraisal with the appraise tool.` },
+    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. Record your appraisal with the appraise tool.` },
   ];
   let raw = "";
   try {

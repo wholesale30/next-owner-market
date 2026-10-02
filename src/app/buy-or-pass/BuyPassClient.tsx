@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
 import InstallPrompt from "@/components/InstallPrompt";
+import FixBox from "@/components/FixBox";
 import { compressImage } from "@/lib/photo";
 
 type Place = { key: string; label: string; pct: number; fixed: number; note: string; net_low: number; net_high: number };
@@ -46,6 +47,15 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
     setRes(j); setShared(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+  async function fix(correction: string): Promise<string | null> {
+    if (!res?.id) return "Nothing to fix yet.";
+    const r = await fetch("/api/buy-or-pass", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ correction, prev_id: res.id, paid: res.paid, hints, photoUrls: res.photo_urls }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.verdict) return j.error || "Couldn't update it. Try again.";
+    setRes(j); setShared(false); setPage(null); setHints((h) => (h ? h + ". " : "") + correction);
+    return null;
+  }
+
   async function listIt() {
     if (!res?.id) return;
     if (!meId) { router.push(`/signup?buyer=1${refQ}&next=${encodeURIComponent(`/buy-or-pass?claim=${res.id}&list=1`)}`); return; }
@@ -132,6 +142,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
         {r.verdict === "pass" && <p className="text-base font-semibold">{r.net_high < 0 ? `Buy it and you'd lose about ${money(-r.net_high)} after fees.` : `Only about ${money(r.net_low)}–${money(r.net_high)} left after fees. Not worth your time.`}</p>}
         <p className="text-xs muted">{r.condition_guess} · how sure: {r.confidence}</p>
       </div>
+      <FixBox onFix={fix} examples="it's the 1978 model · missing the remote · that's real Pyrex" />
 
       <div className="card p-3 space-y-2" style={{ background: "color-mix(in srgb, var(--brand) 8%, var(--surface))", borderColor: "var(--brand)", borderWidth: 2 }}>
         {shared && page ? (

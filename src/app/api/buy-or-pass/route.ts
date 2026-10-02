@@ -28,7 +28,7 @@ async function bump(key: string, max: number) {
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  const { photoUrls: urls, image, paid, hints } = (await req.json()) as { photoUrls?: string[]; image?: string; paid?: number; hints?: string };
+  const { photoUrls: urls, image, paid, hints, correction, prev_id } = (await req.json()) as { photoUrls?: string[]; image?: string; paid?: number; hints?: string; correction?: string; prev_id?: string };
   const d = admin();
   const base = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/item-photos/`;
   let photoUrls = (urls || []).filter((u) => typeof u === "string" && u.startsWith(base)); // only our own uploaded photos
@@ -36,7 +36,21 @@ export async function POST(req: Request) {
   const jar = await cookies();
   let anonKey: string | null = null;
 
-  if (!user) {
+  // "Something wrong? Tell it": re-check the SAME check with the person's correction. Free, updates the same check.
+  type Prev = { id: string; owner_id: string | null; what: string; resale_low: number; resale_high: number; photo_url: string | null; created_at: string };
+  let prev: Prev | null = null;
+  if (correction && correction.trim() && prev_id && /^[0-9a-f-]{36}$/.test(prev_id)) {
+    const { data } = await d.from("buy_pass_scans").select("id, owner_id, what, resale_low, resale_high, photo_url, created_at").eq("id", prev_id).maybeSingle();
+    const mine = data && (data.owner_id ? data.owner_id === user?.id : Date.now() - new Date(data.created_at).getTime() < 6 * 3600_000);
+    if (!data || !mine) return NextResponse.json({ error: "Couldn't find that check to fix. Start a new one." }, { status: 404 });
+    if (!(await bump(`fix:bp:${prev_id}`, 5))) return NextResponse.json({ error: "That one's been fixed a lot already. Start a fresh check." }, { status: 429 });
+    prev = data as Prev;
+    if (prev.photo_url && !photoUrls.includes(prev.photo_url)) photoUrls = [prev.photo_url, ...photoUrls];
+  }
+
+  if (prev) {
+    // no limits or charges for a correction
+  } else if (!user) {
     if (jar.get("nom_bp")?.value === nyDay()) return NextResponse.json({ error: "That was your free check for today. Make a free account and you get 5 free checks every day.", signup: true }, { status: 429 });
     const h = await headers();
     const ip = (h.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
@@ -53,7 +67,7 @@ export async function POST(req: Request) {
     }
   }
 
-  if (image) {
+  if (image && !prev) {
     const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(image);
     if (!m) return NextResponse.json({ error: "Pick a photo first." }, { status: 400 });
     const bytes = Buffer.from(m[2], "base64");
@@ -67,7 +81,7 @@ export async function POST(req: Request) {
 
   const r = await runVision<Out>({
     name: "buy_or_pass", userId: user?.id || "anon", photoUrls, maxPhotos: 4, maxTokens: 1200, charge,
-    prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.`,
+    prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}${prev ? `Your earlier answer said this was "${String(prev.what).slice(0, 200)}", reselling for about $${Math.round(Number(prev.resale_low))}-$${Math.round(Number(prev.resale_high))}. The person says that's not right: "${String(correction).slice(0, 600)}". Look again with this correction. Trust what they tell you about the item (exact model, what's missing or broken, condition, what it came with) unless the photo clearly shows otherwise, and redo everything from scratch. In "why", say in one sentence what changed. ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.`,
     schema: { type: "object", properties: {
       what: { type: "string" }, condition_guess: { type: "string" },
       resale_low: { type: "number" }, resale_high: { type: "number" },
@@ -105,9 +119,13 @@ export async function POST(req: Request) {
   const net_low = best.net_low, net_high = best.net_high;
   const verdict = net_low >= 15 ? "buy" : net_high >= 15 && net_low >= 0 ? "maybe" : "pass";
   const max_pay = Math.max(0, Math.floor(net_low + cost - 15)); // the most you can pay and still clear about $15 at the low end
-  const { data: scan } = await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, what: o.what, paid: cost || null, resale_low: o.resale_low, resale_high: o.resale_high, net_low, net_high, verdict, photo_url: photoUrls[0] || null, best_place: best.key, listing_title: o.listing_title, why: o.why, condition_guess: o.condition_guess, watch_out: o.watch_out || null, ship_or_local: o.ship_or_local }).select("id").single();
+  const row = { what: o.what, paid: cost || null, resale_low: o.resale_low, resale_high: o.resale_high, net_low, net_high, verdict, photo_url: photoUrls[0] || null, best_place: best.key, listing_title: o.listing_title, why: o.why, condition_guess: o.condition_guess, watch_out: o.watch_out || null, ship_or_local: o.ship_or_local };
+  // A correction updates the same check (same share link); a shared page gets remade from the corrected answer next time it's shared
+  const { data: scan } = prev
+    ? await d.from("buy_pass_scans").update({ ...row, valuation_slug: null, shared: false }).eq("id", prev.id).select("id").single()
+    : await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, ...row }).select("id").single();
   const fee = FEES.find((f) => f.key === best.key) || FEES[0];
   const res = NextResponse.json({ ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note }, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key });
-  if (!user) res.cookies.set("nom_bp", nyDay(), { maxAge: 60 * 60 * 26, httpOnly: true, sameSite: "lax", path: "/" });
+  if (!user && !prev) res.cookies.set("nom_bp", nyDay(), { maxAge: 60 * 60 * 26, httpOnly: true, sameSite: "lax", path: "/" });
   return res;
 }

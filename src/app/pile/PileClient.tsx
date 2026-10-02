@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
+import FixBox from "@/components/FixBox";
 import Mic from "@/components/Mic";
 
 
@@ -29,6 +30,14 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
     setBusy(null);
     if (!r.ok) return setErr({ msg: j.error || "Couldn't sort that.", upgrade: j.upgrade });
     setRes(j); setPicked(new Set(j.items.map((x: Item, i: number) => (x.action === "sell" ? i : -1)).filter((i: number) => i >= 0)));
+  }
+  async function fix(correction: string): Promise<string | null> {
+    if (!res) return "Nothing to fix yet.";
+    const r = await fetch("/api/pile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints, correction, prev_scan_id: res.scanId, previous: res.items.map((x) => ({ name: x.name, low: x.low, high: x.high, action: x.action })) }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.items) return j.error || "Couldn't update it. Try again.";
+    setRes(j); setPicked(new Set(j.items.map((x: Item, i: number) => (x.action === "sell" ? i : -1)).filter((i: number) => i >= 0))); setHints((h) => (h ? h + ". " : "") + correction);
+    return null;
   }
   function setAction(i: number, action: Item["action"]) { if (!res) return; const items = res.items.map((x, j) => (j === i ? { ...x, action } : x)); setRes({ ...res, items }); const p = new Set(picked); if (action === "sell") p.add(i); else p.delete(i); setPicked(p); }
   async function listPicked() {
@@ -65,6 +74,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
         <p className="text-sm">{res.summary}</p>
         <p className="text-xs muted">{Object.entries(counts).filter(([, n]) => n).map(([k, n]) => `${ACT[k].emoji} ${n} ${ACT[k].label.toLowerCase()}`).join(" · ")}</p>
       </div>
+      <FixBox onFix={fix} examples="the lamp is brass, not plastic · you missed the drill · the radio doesn't work" />
       <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
       <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); }}>📸 Sort another pile</button>
       {res.items.map((x, i) => (

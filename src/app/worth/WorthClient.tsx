@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/photo";
 import ShareValuation from "@/components/ShareValuation";
+import FixBox from "@/components/FixBox";
 
 type Result = {
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
@@ -24,6 +25,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean } | null>(null);
   const [res, setRes] = useState<Result | null>(null);
   const [left, setLeft] = useState(credits);
+  const [fixes, setFixes] = useState(0); // remounts the share box after a fix so it shares the corrected answer
 
   async function addFiles(files: FileList | null) {
     if (!files?.length) return;
@@ -52,6 +54,15 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
     if (left != null) setLeft(Math.max(0, left - 1));
   }
 
+  async function fix(correction: string): Promise<string | null> {
+    if (!res) return "Nothing to fix yet.";
+    const r = await fetch("/api/worth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints, correction, previous: { what: res.what, value_low: res.value_low, value_high: res.value_high, era: res.era } }) });
+    const j = (await r.json().catch(() => ({}))) as { result?: Result; error?: string };
+    if (!r.ok || !j.result) return j.error || "Couldn't update it. Try again.";
+    setRes(j.result); setHints((h) => (h ? h + ". " : "") + correction); setFixes((n) => n + 1);
+    return null;
+  }
+
   async function listIt() {
     if (!res || !meId) return;
     setBusy("Setting up your listing…");
@@ -68,7 +79,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
     router.push(`/app/items/${data.id}/edit`);
   }
 
-  function reset() { setPhotos([]); setRes(null); setHints(""); setErr(null); }
+  function reset() { setPhotos([]); setRes(null); setHints(""); setErr(null); setFixes(0); }
 
   return (
     <div className="space-y-4">
@@ -114,7 +125,8 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
             <p className="text-sm">{res.why}</p>
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
-          <ShareValuation photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
+          <FixBox onFix={fix} />
+          <ShareValuation key={fixes} photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
           <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={reset}>📸 Check another item</button>
           <div className="card p-4 space-y-2 text-sm">
             <p className="font-semibold">Where it sells best</p>

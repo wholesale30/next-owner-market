@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 2:31 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 2:37 PM (continuing)
 
 **Claude:**
 
@@ -6879,3 +6879,34 @@ I kept this file out of the Next Owner Market folder and file set on purpose, so
 ### Oct 2, 2:31 PM — Shayne
 
 > Is everything if everything that chat's asking for already in this file you just gave me to download? Here's what it's asking.I couldn't find the "replacement fuses for audio receivers" chat. My searches only return your Virginia politics chats, and nothing from before Sept 18 shows up. I couldn't read Next Owner Market's own operating files or its journal from here either, because it was never attached to this project. If you open that chat and send me its journal and procedures docs, or add them to this project, I'll fold them in.
+
+**Claude:**
+
+No, the white paper doesn't have what that chat is asking for. But it doesn't need most of it. That chat lives in your Virginia Politics project, so it can only search those chats. That's why it couldn't find anything older or any Next Owner Market files. Here's how I'd handle each thing it asked for:
+
+**1. "Procedures docs": give it this one.** Upload **Next_Owner_Market_Operating_Rules.docx** into your Virginia Politics project. That's how we work: do it yourself, Word files, phone-first, record both sides word for word, and the rest. It's what that chat needs to work the same way.
+
+**2. Next Owner Market's journal: don't put it there.** That's the store's book, and you asked me to keep the projects from mixing. The Virginia Politics chat should start its **own** journal of its own conversations, following the same rule. Tell it: "Start a Virginia Politics build journal, both sides word for word, same as the Operating Rules."
+
+**3. The "replacement fuses" chat: that one belongs to the store's story, not politics.** It's from September 26: the Nikko fuses, the Technics receivers, the VHS cart you sold for $35, and the Game Boys. I was missing it from the Prologue, along with two other warehouse chats from September 22 and 28, so I added all three word for word. The updated **Next_Owner_Market_Build_Journal.docx** is attached. It goes in your OneDrive with the store files, not in the politics project.
+
+So the only file that goes into Virginia Politics is the Operating Rules, plus the white paper you already have.
+
+### Oct 2, 2:37 PM — Shayne
+
+> So I should give it these two files and they'll understand everything we've done and, and what to do in the future for that particular chat and for their record.
+
+**Claude:**
+
+Almost. Give it these two:
+
+1. **Next_Owner_Market_Operating_Rules.docx**, which covers *how* to work with you: do it yourself, Word files, phone-first, plain English, the journal both sides word for word, and the rest.
+2. **Shayne_Snavely_Daily_Political_Posts_White_Paper.docx**, which covers *what* to build next there: the 3-a-day post program, with your background and page numbers.
+
+**Don't** give it the Build Journal I just sent. That's the store's book and stays in your Next Owner Market folder.
+
+With those two, it'll know how you work and what the daily post program is. It won't know the store's history, and it doesn't need to.
+
+**Their Record is already covered.** The report standard (the Suetterlein model, with the Word report, PDF, voting record, donor spreadsheet and fact-review packet) is saved on your account as its own set of rules, so any chat can use it when you ask for a Their Record report.
+
+**One more thing that makes it automatic everywhere:** if you saved the rules card I showed you earlier, every chat in every project already follows these rules, including recording both sides word for word. The two files are the backup and the specifics.
