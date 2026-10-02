@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:32 PM from the project history (194 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:35 PM from the project history (195 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1428,3 +1428,9 @@
 - **Shared code (logic):** `src/lib/parts.ts`
 
 <sub>change id ca0638c</sub>
+
+### 19:35 — Docs: Missing a part? Find it (guides, white paper, walkthrough)
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md` (+2 more)
+
+<sub>change id c2ef04f</sub>

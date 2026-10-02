@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 7:31 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 7:35 PM (continuing)
 
 **Claude:**
 
@@ -6976,3 +6976,7 @@ Good idea, and it doesn't have to cost us anything extra. Here's how I'd do it.
 Doing it. The parts box goes on all three lookups, and Amazon signup goes on your to-do list as urgent.
 
 Live. Testing it for real with your Hunter air purifier photo, telling it the filter is missing, signed out like a stranger.
+
+While that builds, I'll update the guides.
+
+Meanwhile, I'll commit the docs and rebuild the records.
