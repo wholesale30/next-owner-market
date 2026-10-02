@@ -13,7 +13,9 @@ interface AuctionRow { id: string; starting_bid: number; reserve_price: number |
 
 export default async function ItemPage({ params, searchParams }: PageProps<"/app/items/[id]">) {
   const { id } = await params;
-  const welcome = !!((await searchParams) as { welcome?: string }).welcome;
+  const sq = (await searchParams) as { welcome?: string; written?: string };
+  const welcome = !!sq.welcome;
+  const written = !!sq.written && !welcome;
   const supabase = await createClient();
   const profile = (await getProfile())!;
   const staff = profile.role === "admin" || profile.role === "staff";
@@ -71,6 +73,16 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
           <p className="text-sm">Then copy it to Facebook and the other sites with the tabs further down.</p>
         </div>
       )}
+      {written && (
+        <div className="card p-4 space-y-2" style={{ borderLeft: "4px solid var(--ok)" }}>
+          <p className="text-xl font-extrabold">🎉 Your listing is written.</p>
+          <ol className="text-sm list-decimal pl-5 space-y-1">
+            <li><a href="#copy" className="underline font-semibold">Copy the Facebook post</a> (and the other sites) further down.</li>
+            <li>Tap <b>List it in the store</b> to put it on our site too. Free.</li>
+            <li>Want to change the words, price or photos? Tap <b>Edit</b>. Each photo has ✨ Touch up.</li>
+          </ol>
+        </div>
+      )}
       {(
         <div className="card p-3 space-y-2" style={{ borderLeft: "4px solid var(--brand)" }}>
           <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -116,7 +128,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
         {it.status === "active" && <Link href={`/item/${it.sku}`} className="btn btn-secondary flex-1" target="_blank">View in store</Link>}
       </div>
 
-      <section className="space-y-3">
+      <section id="copy" className="space-y-3 scroll-mt-4">
         <h2 className="font-semibold">Copy &amp; paste listings</h2>
         <CopyTabs isPro={staff || profile.plan === "pro"} tabs={[
           { key: "facebook", label: "Facebook Marketplace / Group", short: "Facebook", text: facebookCopy(copyInput), howto: HOWTO.facebook },

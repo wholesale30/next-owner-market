@@ -6,7 +6,7 @@ import { scrubPriceTalk } from "@/lib/listing";
 import { askWithTool } from "@/lib/ai-tool";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
 
 /** POST { photoUrls: string[], hints?: string, correction?, previous? } → appraisal. Uses one AI credit (Pro/staff unlimited); a correction of an earlier answer is free. */
@@ -51,20 +51,35 @@ export async function POST(req: Request) {
       weight_lbs: { type: "number", description: "packed shipping weight estimate" },
       box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
       missing_parts: PART_SCHEMA,
+      pieces: {
+        type: "array", maxItems: 20,
+        description: "ONLY when the photos show 2 or more separate sellable items (a stack, a box, a set that can be split). One entry per piece; identical pieces can share an entry with qty. Leave empty for a single item. When filled, value_low/value_high and listing are for selling them ALL together as one lot.",
+        items: { type: "object", properties: {
+          name: { type: "string", description: "brand + model, e.g. 'General Instrument 4DTV DSR922'" },
+          qty: { type: "number" },
+          value_low: { type: "number", description: "each, sold alone" }, value_high: { type: "number", description: "each, sold alone" },
+          note: { type: "string", description: "one short sentence: why it's worth that (demand, rarity, condition)" },
+          listing_title: { type: "string", description: "max 80 chars" },
+          listing_description: { type: "string", description: "2-4 honest sentences for selling this one alone" },
+        }, required: ["name", "qty", "value_low", "value_high", "note", "listing_title", "listing_description"] },
+      },
+      sell_advice: { type: ["string", "null"], description: "when pieces is filled: one sentence, sell as a lot or one by one, and why (time, shipping, which pieces to pull out and sell alone)" },
     },
     required: ["what", "condition_guess", "value_low", "value_high", "confidence", "why", "raise_value", "best_places", "ship_or_local", "listing", "weight_lbs", "box"],
   } as const;
   const content: Anthropic.MessageParam["content"] = [
     ...photoUrls.slice(0, 6).map((url) => ({ type: "image", source: { type: "url", url } }) as Anthropic.ImageBlockParam),
-    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly.${PART_PROMPT} Record your appraisal with the appraise tool.` },
+    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. If the photos show several separate items (a stack of receivers, a box of tools, a set of dishes that can be split), price the whole lot AND list every piece in "pieces" with its own value sold alone; a lot usually sells for less than the pieces added up, so be realistic about both.${PART_PROMPT} Record your appraisal with the appraise tool.` },
   ];
   let raw = "";
   try {
-    const input = await askWithTool(client, { model: MODEL, max_tokens: 2600, messages: [{ role: "user", content }], tool: { name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema } });
+    const input = await askWithTool(client, { model: MODEL, max_tokens: 5000, messages: [{ role: "user", content }], tool: { name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema } });
     raw = JSON.stringify(input);
     const call = { input };
     const out = call.input as { listing?: { title: string; description: string }; missing_parts?: MissingPart[] };
     if (out.listing) out.listing.description = scrubPriceTalk(out.listing.description);
+    const o2 = out as { pieces?: { listing_description: string }[] };
+    if (Array.isArray(o2.pieces)) { if (o2.pieces.length < 2 && !o2.pieces.some((x) => Number((x as { qty?: number }).qty) > 1)) o2.pieces = []; o2.pieces.forEach((x) => { x.listing_description = scrubPriceTalk(x.listing_description || ""); }); }
     const parts = await withPartLinks(out.missing_parts);
     return NextResponse.json({ result: { ...out, missing_parts: parts } });
   } catch (e) {

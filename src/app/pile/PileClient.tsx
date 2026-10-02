@@ -46,14 +46,14 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
     setBusy("Creating your listings…");
     const sb = createClient();
     if (role === "buyer") await fetch("/api/become-seller", { method: "POST" });
-    let n = 0;
+    let n = 0, last = "";
     for (const i of picked) {
       const x = res.items[i];
       const { data } = await sb.from("items").insert({ owner_id: meId, created_by: meId, title: (x.listing_title || x.name).slice(0, 80), description: x.listing_description || x.reason, condition_notes: x.condition || null, price: Math.round((x.low + x.high) / 2), price_min_suggested: x.low, price_max_suggested: x.high, status: "draft", ai_generated: true, local_pickup_ok: true, shipping_ok: x.box !== "freight", weight_lbs: x.weight_lbs || null, box: x.box === "freight" ? "xl" : x.box || "medium", shipping_mode: "calculated" }).select("id").single();
-      if (data) { const p = photos[x.photo_index] || photos[0]; if (p) await sb.from("item_photos").insert({ item_id: data.id, storage_path: p.path, url: p.url, sort_order: 0, is_primary: true }); n++; }
+      if (data) { const p = photos[x.photo_index] || photos[0]; if (p) await sb.from("item_photos").insert({ item_id: data.id, storage_path: p.path, url: p.url, sort_order: 0, is_primary: true }); n++; last = data.id; }
     }
     setBusy(null);
-    router.push(`/app?status=draft&made=${n}`);
+    router.push(n === 1 && last ? `/app/items/${last}?written=1#copy` : `/app?status=draft&made=${n}`);
   }
   if (!res) return (
     <div className="card p-4 space-y-3">
@@ -75,6 +75,10 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
         <p className="text-sm">{res.summary}</p>
         <p className="text-xs muted">{Object.entries(counts).filter(([, n]) => n).map(([k, n]) => `${ACT[k].emoji} ${n} ${ACT[k].label.toLowerCase()}`).join(" · ")}</p>
       </div>
+      <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
+        <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!picked.size || !!busy} onClick={listPicked}>{busy || (picked.size ? `📝 Write ${picked.size === 1 ? "the listing" : `${picked.size} listings`}` : "Mark something Sell to list it")}</button>
+        <p className="text-xs muted text-center">For everything marked 💰 Sell below: photo, title, description and price written, plus the Facebook post and 8 more sites. Free to list here. Each listing has ✨ Touch up for its photos.</p>
+      </div>
       <FixBox onFix={fix} examples="the lamp is brass, not plastic · you missed the drill · the radio doesn't work" />
       <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
       <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); }}>📸 Sort another pile</button>
@@ -91,11 +95,6 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
           </div>
         </div>
       ))}
-      <div className="card p-4 space-y-2 text-center" style={{ borderColor: "var(--brand)" }}>
-        <p className="font-bold">List the {picked.size} marked Sell</p>
-        <p className="text-sm muted">Each becomes a draft with a photo, title, description and price already written. You check them and tap List. Free.</p>
-        <button type="button" className="btn btn-primary w-full text-lg" disabled={!picked.size || !!busy} onClick={listPicked}>{busy || `List ${picked.size} item${picked.size === 1 ? "" : "s"}`}</button>
-      </div>
       <p className="text-xs muted">Estimates from photos, not appraisals. Ranges, because the market moves. Anything marked ⚠ deserves a specialist.</p>
     </div>
   );

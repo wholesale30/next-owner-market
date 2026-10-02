@@ -20,7 +20,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
   const claim = typeof sp.claim === "string" ? sp.claim : null;
   if (me && claim) {
     await claimScan(me.id, claim);
-    if (sp.list === "1") { const r = await listFromScan(me, claim); if (r.item_id) redirect(`/app/items/${r.item_id}/edit`); }
+    if (sp.list === "1") { const r = await listFromScan(me, claim); if (r.item_id) redirect(`/app/items/${r.item_id}?written=1`); }
   }
   const d = admin();
   const weekAgo = since(7 * 86400_000);
@@ -58,7 +58,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
             <p className="text-sm">📣 {pages ? <>Your shares made <b>{pages}</b> page{pages === 1 ? "" : "s"} people can find on Google. Keep sharing!</> : "Share a find and it gets its own page on Google."}</p>
             {badge < 10 ? <div><p className="text-xs font-semibold">🏅 Flipper badge: {badge} of 10 checks</p><div className="h-2 rounded-full mt-1" style={{ background: "var(--line)" }}><div className="h-2 rounded-full" style={{ width: `${badge * 10}%`, background: "var(--ok)" }} /></div></div> : <p className="text-sm font-semibold">🏅 Flipper badge earned. You check before you buy.</p>}
             <details><summary className="text-xs underline cursor-pointer">See them</summary>
-              <div className="space-y-1 pt-2">{finds.slice(0, 30).map((f) => <div key={f.id} className="flex items-center gap-2 text-sm">{f.photo_url && <img src={f.photo_url} alt="" className="w-9 h-9 rounded object-cover" />}<span className="flex-1 truncate">{f.what}</span><b style={{ color: f.verdict === "buy" ? "var(--ok)" : f.verdict === "pass" ? "var(--danger)" : "var(--accent)" }}>{String(f.verdict).toUpperCase()}</b>{f.item_id ? <Link href={`/app/items/${f.item_id}/edit`} className="text-xs underline">listing</Link> : null}</div>)}</div>
+              <div className="space-y-1 pt-2">{finds.slice(0, 30).map((f) => <div key={f.id} className="flex items-center gap-2 text-sm">{f.photo_url && <img src={f.photo_url} alt="" className="w-9 h-9 rounded object-cover" />}<span className="flex-1 truncate">{f.what}</span><b style={{ color: f.verdict === "buy" ? "var(--ok)" : f.verdict === "pass" ? "var(--danger)" : "var(--accent)" }}>{String(f.verdict).toUpperCase()}</b>{f.item_id ? <Link href={`/app/items/${f.item_id}`} className="text-xs underline">listing</Link> : null}</div>)}</div>
             </details>
           </div>
         )}

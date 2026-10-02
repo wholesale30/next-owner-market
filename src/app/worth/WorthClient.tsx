@@ -10,9 +10,11 @@ import { compressImage } from "@/lib/photo";
 import ShareValuation from "@/components/ShareValuation";
 import FixBox from "@/components/FixBox";
 import PartsBox, { type PartView } from "@/components/PartsBox";
+import PhotoEditor from "@/components/PhotoEditor";
 
+type Piece = { name: string; qty: number; value_low: number; value_high: number; note: string; listing_title: string; listing_description: string };
 type Result = {
-  missing_parts?: PartView[];
+  missing_parts?: PartView[]; pieces?: Piece[]; sell_advice?: string | null;
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
   raise_value: string[]; best_places: { place: string; why: string }[]; ship_or_local: string; watch_out: string | null; listing: { title: string; description: string }; weight_lbs: number; box: string;
 };
@@ -27,6 +29,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean } | null>(null);
   const [res, setRes] = useState<Result | null>(null);
   const [left, setLeft] = useState(credits);
+  const [editing, setEditing] = useState<number | null>(null);
   const [fixes, setFixes] = useState(0); // remounts the share box after a fix so it shares the corrected answer
 
   async function addFiles(files: FileList | null) {
@@ -44,6 +47,15 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
       } catch (e) { setErr({ msg: e instanceof Error ? e.message : "Upload failed" }); }
     }
     setBusy(null);
+  }
+
+  async function saveEdit(i: number, blob: Blob) {
+    const sb = createClient();
+    const path = `worth/${meId}/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+    const { error } = await sb.storage.from("item-photos").upload(path, blob, { contentType: "image/jpeg" });
+    if (error) throw error;
+    setPhotos((p) => p.map((x, j) => (j === i ? { url: sb.storage.from("item-photos").getPublicUrl(path).data.publicUrl, path } : x)));
+    setEditing(null);
   }
 
   async function appraise() {
@@ -65,30 +77,41 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
     return null;
   }
 
-  async function listIt() {
+  async function listIt(piece?: Piece) {
     if (!res || !meId) return;
-    setBusy("Setting up your listing…");
+    setBusy(piece ? `Writing ${piece.name}…` : "Setting up your listing…");
     const sb = createClient();
     if (role === "buyer") { const r = await fetch("/api/become-seller", { method: "POST" }); if (!r.ok) { setBusy(null); return setErr({ msg: "Couldn't switch your account to selling. Message us." }); } }
-    const price = Math.round((res.value_low + res.value_high) / 2);
+    const lo = piece ? piece.value_low : res.value_low, hi = piece ? piece.value_high : res.value_high;
+    const price = Math.round((lo + hi) / 2);
     const { data, error } = await sb.from("items").insert({
-      owner_id: meId, created_by: meId, title: res.listing.title.slice(0, 80), description: res.listing.description, condition_notes: res.condition_guess,
-      price, price_min_suggested: res.value_low, price_max_suggested: res.value_high, status: "draft", ai_generated: true,
+      owner_id: meId, created_by: meId, title: (piece ? piece.listing_title || piece.name : res.listing.title).slice(0, 80), description: piece ? piece.listing_description : res.listing.description, condition_notes: res.condition_guess,
+      price, price_min_suggested: lo, price_max_suggested: hi, status: "draft", ai_generated: true,
       shipping_ok: res.ship_or_local !== "local" && res.box !== "freight", local_pickup_ok: true, weight_lbs: res.weight_lbs || null, box: res.box === "freight" ? "xl" : res.box || "medium", shipping_mode: "calculated",
     }).select("id").single();
     if (error || !data) { setBusy(null); return setErr({ msg: error?.message || "Couldn't create the listing." }); }
     await sb.from("item_photos").insert(photos.map((p, i) => ({ item_id: data.id, storage_path: p.path, url: p.url, sort_order: i, is_primary: i === 0 })));
-    router.push(`/app/items/${data.id}/edit`);
+    router.push(`/app/items/${data.id}?written=1#copy`);
   }
+
+  const lot = !!res?.pieces?.length;
+  const count = (res?.pieces || []).reduce((a, x) => a + (Number(x.qty) || 1), 0);
+  const apart = (res?.pieces || []).reduce((a, x) => [a[0] + x.value_low * (Number(x.qty) || 1), a[1] + x.value_high * (Number(x.qty) || 1)], [0, 0]);
 
   function reset() { setPhotos([]); setRes(null); setHints(""); setErr(null); setFixes(0); }
 
   return (
     <div className="space-y-4">
+      {editing != null && photos[editing] && <PhotoEditor src={photos[editing].url} onClose={() => setEditing(null)} onSave={(b) => saveEdit(editing, b)} />}
       {!res && (
         <div className="card p-4 space-y-3">
           <div className="grid grid-cols-3 gap-2">
-            {photos.map((p) => <img key={p.path} src={p.url} alt="" className="aspect-square object-cover rounded-xl" />)}
+            {photos.map((p, i) => (
+              <button key={p.path} type="button" onClick={() => setEditing(i)} className="relative aspect-square">
+                <img src={p.url} alt="" className="w-full h-full object-cover rounded-xl" />
+                <span className="absolute bottom-1 inset-x-1 text-xs font-bold rounded-lg py-1" style={{ background: "rgba(0,0,0,.65)", color: "#fff" }}>✨ Touch up</span>
+              </button>
+            ))}
             {photos.length < 6 && (
               <label className="aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center text-sm cursor-pointer" style={{ borderColor: "var(--brand)" }}>
                 <span className="text-3xl">🖼</span><span className="font-semibold">{photos.length ? "Add more" : "Pick photos"}</span>
@@ -120,13 +143,46 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
               <div className="min-w-0"><p className="font-bold leading-tight">{res.what}</p>{res.era && <p className="text-xs muted">{res.era}</p>}<p className="text-sm muted">{res.condition_guess}</p></div>
             </div>
             <div className="text-center py-2">
-              <p className="text-xs muted uppercase tracking-wide">Worth about</p>
+              <p className="text-xs muted uppercase tracking-wide">{lot ? `All ${count} together, sold as one lot` : "Worth about"}</p>
               <p className="text-4xl font-extrabold">{money(res.value_low)} – {money(res.value_high)}</p>
               <p className="text-xs muted">{res.retail_new ? `New today: ${money(res.retail_new)} · ` : ""}Confidence: {res.confidence}</p>
             </div>
             <p className="text-sm">{res.why}</p>
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
+          <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
+            <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!!busy} onClick={() => listIt()}>{busy || (lot ? "📝 Write the listing for the lot" : "📝 Write my listing")}</button>
+            <p className="text-xs muted text-center">One tap: your Facebook post is written, plus eBay, OfferUp, Mercari and 5 more. Free to list here.</p>
+            <div className="flex gap-2 overflow-x-auto pt-1">
+              {photos.map((p, i) => (
+                <button key={p.path} type="button" onClick={() => setEditing(i)} className="relative shrink-0">
+                  <img src={p.url} alt="" className="w-16 h-16 object-cover rounded-lg" />
+                  <span className="absolute -bottom-1 -right-1 text-xs rounded-full px-1" style={{ background: "var(--brand)", color: "#fff" }}>✨</span>
+                </button>
+              ))}
+              <p className="text-xs muted self-center">Tap a photo to clean off dust and fix the light first.</p>
+            </div>
+          </div>
+          {lot && (
+            <div className="card p-4 space-y-2">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="font-bold">Sold one at a time</p>
+                <p className="text-xl font-extrabold whitespace-nowrap">{money(apart[0])} – {money(apart[1])}</p>
+              </div>
+              {res.sell_advice && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--brand) 10%, var(--surface))" }}>💡 {res.sell_advice}</p>}
+              {res.pieces!.map((x, i) => (
+                <div key={i} className="border-t pt-2 space-y-1" style={{ borderColor: "var(--line)" }}>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold leading-tight">{x.name}{x.qty > 1 ? ` ×${x.qty}` : ""}</p>
+                    <p className="font-bold whitespace-nowrap">{money(x.value_low)}–{money(x.value_high)}{x.qty > 1 ? " each" : ""}</p>
+                  </div>
+                  <p className="text-sm muted">{x.note}</p>
+                  <details className="text-sm"><summary className="underline cursor-pointer">Its own description</summary><p className="pt-1 font-semibold">{x.listing_title}</p><p className="whitespace-pre-wrap">{x.listing_description}</p></details>
+                  <button type="button" className="btn btn-secondary w-full" disabled={!!busy} onClick={() => listIt(x)}>📝 List this one by itself</button>
+                </div>
+              ))}
+            </div>
+          )}
           <PartsBox parts={res.missing_parts} nowLow={res.value_low} nowHigh={res.value_high} />
           <FixBox onFix={fix} />
           <ShareValuation key={fixes} photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
@@ -139,11 +195,6 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
           {res.raise_value?.length > 0 && (
             <div className="card p-4 text-sm"><p className="font-semibold mb-1">Get more for it</p><ul className="list-disc pl-5 space-y-1">{res.raise_value.map((t, i) => <li key={i}>{t}</li>)}</ul></div>
           )}
-          <div className="card p-4 space-y-2 text-center" style={{ borderColor: "var(--brand)" }}>
-            <p className="font-bold">Want to sell it?</p>
-            <p className="text-sm muted">One tap. Photos, title, description, and price are already written. You just check it and hit List. Listing here is free; you also get the Facebook version to paste, and Pro gets all nine marketplaces.</p>
-            <button type="button" className="btn btn-primary w-full text-lg" disabled={!!busy} onClick={listIt}>{busy || "List it now"}</button>
-          </div>
         </div>
       )}
     </div>

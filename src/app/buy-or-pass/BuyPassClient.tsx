@@ -65,7 +65,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
     const j = await r.json().catch(() => ({}));
     setBusy(null);
     if (!r.ok || !j.item_id) return setErr({ msg: j.error || "Couldn't make the listing." });
-    router.push(`/app/items/${j.item_id}/edit`);
+    router.push(`/app/items/${j.item_id}?written=1#copy`);
   }
   // Step 1: put it on our site (no popup). Step 2 (optional button): send the brag card to Facebook or a friend.
   async function share() {
@@ -164,7 +164,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
 
       <div className="grid gap-2">
         <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={again}>📸 Check the next one</button>
-        {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: list it now"}</button>}
+        {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: write my listing"}</button>}
       </div>
 
       <div className="card p-4 text-sm space-y-2">

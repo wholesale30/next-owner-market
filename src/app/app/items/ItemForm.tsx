@@ -12,6 +12,8 @@ import type { Category, Item, ItemPhoto, ItemVideo, Location, Profile, Tier } fr
 import { CONDITION_LABELS, TIER_LABELS } from "@/lib/types";
 import { money } from "@/lib/listing";
 import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/photo";
+import { touchUp } from "@/lib/photo-edit";
+import PhotoEditor from "@/components/PhotoEditor";
 import { useEffect } from "react";
 
 interface Props {
@@ -91,6 +93,9 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   const videoRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<"photos" | "details">(mode === "edit" ? "details" : "photos");
   const [clean, setClean] = useState(false);
+  const [tidy, setTidy] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [photoNote, setPhotoNote] = useState<string | null>(null);
   useEffect(() => { if (clean) preloadBackgroundModel(); }, [clean]);
 
   const [d, setD] = useState<Draft>({
@@ -155,7 +160,8 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       const preview = URL.createObjectURL(file);
       setPhotos((p) => [...p, { id: tempId, file, url: preview, uploading: true }]);
       try {
-        const blob = clean ? (await cleanBackground(file, photoBg)).blob : await compressImage(file);
+        let blob = clean ? (await cleanBackground(file, photoBg)).blob : await compressImage(file);
+        if (tidy) blob = await touchUp(blob).catch(() => blob);
         const path = `${profile.id}/${Date.now()}-${tempId}.jpg`;
         const { error: upErr } = await supabase.storage.from("item-photos").upload(path, blob, { contentType: "image/jpeg", upsert: false });
         if (upErr) throw upErr;
@@ -200,6 +206,16 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
     setVideos((v) => v.filter((x) => x.id !== id));
   }
 
+  async function saveEdited(id: string, blob: Blob) {
+    const path = `${profile.id}/${Date.now()}-${crypto.randomUUID()}.jpg`;
+    const { error: upErr } = await supabase.storage.from("item-photos").upload(path, blob, { contentType: "image/jpeg", upsert: false });
+    if (upErr) throw upErr;
+    const { data } = supabase.storage.from("item-photos").getPublicUrl(path);
+    // same photo id, new file: Save updates it in place
+    setPhotos((p) => p.map((x) => (x.id === id ? { ...x, url: data.publicUrl, storage_path: path } : x)));
+    setEditId(null);
+    setPhotoNote(mode === "edit" ? "Photo touched up. Tap Save at the bottom to keep it." : "Photo touched up.");
+  }
   function removePhoto(id: string) {
     setPhotos((p) => p.filter((x) => x.id !== id));
   }
@@ -399,7 +415,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       <section className="card p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Photos {photos.length ? `(${photos.length})` : ""}</h2>
-          <span className="text-xs muted">First photo is the cover. Tap a photo to make it first.</span>
+          <span className="text-xs muted">First photo is the cover. Tap a photo to make it first. ✨ cleans it up.</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {photos.map((p, i) => (
@@ -408,6 +424,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
                 <img src={p.url} alt="" className={`w-full h-full object-cover ${p.uploading ? "opacity-50" : ""}`} />
               </button>
               {i === 0 && <span className="absolute left-1 top-1 pill pill-active">Cover</span>}
+              {!p.uploading && p.storage_path && <button type="button" onClick={() => setEditId(p.id)} className="absolute bottom-1 inset-x-1 rounded-lg py-1 text-xs font-bold" style={{ background: "rgba(0,0,0,.65)", color: "#fff" }}>✨ Touch up</button>}
               <button type="button" onClick={() => removePhoto(p.id)} className="absolute right-1 top-1 w-7 h-7 rounded-full text-white text-sm" style={{ background: "rgba(0,0,0,.6)" }} aria-label="Remove">×</button>
             </div>
           ))}
@@ -422,7 +439,10 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         </div>
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+        {photoNote && <p className="text-sm" style={{ color: "var(--ok)" }}>✓ {photoNote}</p>}
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={tidy} onChange={(e) => setTidy(e.target.checked)} /> ✨ Touch up new photos (clean off dust, fix the light)</label>
         <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos (studio look; off = your photo as-is)</label>
+        {editId && photos.find((x) => x.id === editId) && <PhotoEditor src={photos.find((x) => x.id === editId)!.url} bg={photoBg} onClose={() => setEditId(null)} onSave={(b) => saveEdited(editId, b)} />}
 
         {isPro && <div className="space-y-2">
           <h2 className="font-semibold">Video {videos.length ? `(${videos.length})` : ""} <span className="muted font-normal text-xs">optional; a clip of it working sells faster</span></h2>

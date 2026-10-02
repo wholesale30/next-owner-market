@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/photo";
+import { touchUp } from "@/lib/photo-edit";
 
 /**
  * Snap mode. Two ways in:
@@ -26,6 +27,7 @@ export default function SnapClient({ userId, bins, photoBg }: { userId: string; 
   const [bin, setBin] = useState("");
   const [tier, setTier] = useState<"owned" | "full_service" | "drop_off">("owned");
   const [clean, setClean] = useState(false);
+  const [tidy, setTidy] = useState(true);
   const [progress, setProgress] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
   const [sorting, setSorting] = useState(false);
@@ -124,6 +126,7 @@ export default function SnapClient({ userId, bins, photoBg }: { userId: string; 
         let cleanedCount = 0;
         for (let j = 0; j < g.shots.length; j++) {
           const res = clean ? await cleanBackground(g.shots[j].file, photoBg) : { blob: await compressImage(g.shots[j].file), cleaned: false };
+          if (tidy) res.blob = await touchUp(res.blob).catch(() => res.blob);
           if (res.cleaned) cleanedCount++;
           const path = `${userId}/${Date.now()}-${item.id}-${j}.jpg`;
           const up = await supabase.storage.from("item-photos").upload(path, res.blob, { contentType: "image/jpeg" });
@@ -165,6 +168,7 @@ export default function SnapClient({ userId, bins, photoBg }: { userId: string; 
           <option value="drop_off">Consignment (drop-off)</option>
         </select>
       </div>
+      <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={tidy} onChange={(e) => setTidy(e.target.checked)} /> ✨ Touch up every photo (cleans off dust specks, fixes dull light; free, on your phone)</label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean backgrounds (cuts the item out onto a plain background; studio look with a soft shadow; first use downloads about 45MB once)</label>
 
       <button type="button" className="btn btn-primary w-full" disabled={busy} onClick={() => uploadRef.current?.click()}>🖼 Upload photos from gallery</button>

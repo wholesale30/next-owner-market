@@ -21,7 +21,7 @@ export async function listFromScan(me: Me, scanId: string, extraPhotos: string[]
   const photos = [...new Set([s.photo_url, ...extraPhotos].filter((u): u is string => !!u && u.startsWith(base)))].slice(0, 6);
   const price = Math.round((Number(s.resale_low) + Number(s.resale_high)) / 2);
   const { data: item, error } = await d.from("items").insert({
-    owner_id: me.id, created_by: me.id, title: String(s.listing_title || s.what).slice(0, 80), description: "", price,
+    owner_id: me.id, created_by: me.id, title: String(s.listing_title || s.what).slice(0, 80), description: [s.what, s.condition_guess ? `Condition: ${s.condition_guess}.` : "", s.ship_or_local === "local" ? "Local pickup." : "Can ship or pick up locally."].filter(Boolean).join("\n\n"), condition_notes: s.condition_guess || null, price,
     price_min_suggested: s.resale_low, price_max_suggested: s.resale_high, cost: s.paid, status: "draft", ai_generated: true,
     local_pickup_ok: true, shipping_ok: true, shipping_mode: "calculated",
   }).select("id").single();
