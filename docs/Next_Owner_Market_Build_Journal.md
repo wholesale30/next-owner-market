@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 7:17 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 7:19 PM (continuing)
 
 **Claude:**
 
@@ -6926,3 +6926,5 @@ Another session pushed changes to the code while I was working, so my save was r
 Publishing. Meanwhile I'm setting up a live test: a fresh signed-out check I can then correct.
 
 While it waits its turn to publish, I'm updating the guides.
+
+Live. Now a real test as a stranger: a fresh check, then a correction on it.
