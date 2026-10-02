@@ -408,3 +408,14 @@ Right under every answer is a big **📣 Share this find** button. Tapping it gi
 If What's it worth, Buy or Pass or Sort the pile gets something wrong, tap **✏️ Something wrong? Tell it and it re-checks**, right under the answer. Type or tap the mic and say what's wrong ("it's the 1978 model," "the lid is missing," "that's real gold"), then tap **🔄 Update the answer**.
 
 It re-checks your same photos with your correction. It's free and doesn't use one of your lookups.
+
+## Missing a part? Find it (Oct 2, 2026)
+
+If the item is missing a part or has a worn-out one (a filter, a remote, a charger, a lid, a cord), the answer shows a **🔧 Missing** box under it:
+
+- what the part is, and its part number when known;
+- about what the part costs;
+- what the item is worth **with** the part versus as-is;
+- on Buy or Pass, whether it's a BUY once you add the part.
+
+Tap **🛒 Find it on Amazon** or **Find it on eBay** to see the part for sale. Tip: if you know something is missing, say so in the notes or with **✏️ Something wrong?** ("the filter is missing") and it checks for the part.

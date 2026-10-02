@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:20 PM from the project history (191 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:32 PM from the project history (194 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1407,3 +1407,24 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id 1971536</sub>
+
+### 19:20 — Update build journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 3f0912e</sub>
+
+### 19:29 — Missing a part? Find it: every lookup (What's it worth, Buy or Pass, Sort the pile) names missing/worn parts, part price, value with the part, profit with it, and Amazon/eBay search buttons (affiliate IDs slot in from settings)
+
+- **Server routes (API):** `src/app/api/buy-or-pass/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/worth/route.ts`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/PartsBox.tsx`
+- **Shared code (logic):** `src/lib/parts.ts`
+
+<sub>change id 95bc65b</sub>
+
+### 19:32 — Parts: clean search phrases (no notes or parentheses)
+
+- **Shared code (logic):** `src/lib/parts.ts`
+
+<sub>change id ca0638c</sub>

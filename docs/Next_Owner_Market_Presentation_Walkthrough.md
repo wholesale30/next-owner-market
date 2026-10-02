@@ -158,3 +158,7 @@
 2. Tap **Take a photo** and photograph something with a price tag. Type the price and tap **Buy or pass?**
 3. Show the big BUY, MAYBE or PASS, the "what you keep" line for each site, and "worth it at $X or less."
 4. Tap **Show off this find** to show the share card, then **I bought it: list it now** to show it become a listing.
+
+## Missing a part? Find it (Oct 2, 2026)
+
+Every lookup now spots missing or worn-out parts, such as a purifier with no filter. It shows the part number, what the part costs and what the item is worth with it, then links straight to the part on Amazon and eBay. The buyer fixes the item and makes more, and those links earn affiliate commissions once the Amazon and eBay accounts are approved. That's a new revenue stream at zero cost.

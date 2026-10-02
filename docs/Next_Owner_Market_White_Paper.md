@@ -259,3 +259,7 @@ Next Owner Market gives the check away. The first one needs no account, and a fr
 The answer shows what you keep at each place to sell, and one tap turns a BUY into a listing. Share cards and a Monday reminder bring people back and bring in new ones.
 
 Full plan: *Beating the Thrift Apps* and *Reaching Goodwill and Thrift Shoppers*.
+
+## Missing a part? Find it (Oct 2, 2026)
+
+Every lookup now spots missing or worn-out parts, such as a purifier with no filter. It shows the part number, what the part costs and what the item is worth with it, then links straight to the part on Amazon and eBay. The buyer fixes the item and makes more, and those links earn affiliate commissions once the Amazon and eBay accounts are approved. That's a new revenue stream at zero cost.

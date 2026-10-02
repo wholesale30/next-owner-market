@@ -344,3 +344,20 @@ Built on how people actually decide: one obvious next step, see the value before
 **What the AI is told:** trust what the person says about the item (model, condition, what's missing) unless the photos clearly show otherwise, and say in one sentence what changed.
 
 **Where it lives:** `src/components/FixBox.tsx`.
+
+## "Missing a part? Find it" (Oct 2, 2026)
+
+**What it is:** every lookup (What's it worth, Buy or Pass, Sort the pile) also checks for missing or worn-out parts and shows up to 3 (1 per item on Sort the pile). For each part it shows:
+
+- the part and its part number;
+- why it matters;
+- the part's price range;
+- the item's value with the part.
+
+Buy Or Pass also shows what you'd keep with the part and whether the verdict becomes BUY.
+
+**Buttons:** "🛒 Find it on Amazon" and "Find it on eBay" are search links (`amazon.com/s?k=…`, `ebay.com/sch/i.html?_nkw=…`). Search words are cleaned: parentheses and notes like "verify model" are stripped.
+
+**Money:** once approved, put the Amazon Associates tag in settings `business.amazon_tag` and the eBay Partner Network campaign ID in `business.ebay_campid` (or env `AMAZON_TAG` / `EBAY_CAMPID`). Links pick them up within 5 minutes. A "we may earn a commission" line appears only when an ID is set. Amazon closes new accounts that don't make 3 sales in 180 days. Signing up is an urgent item on the to-do list.
+
+**Where it lives:** `src/lib/parts.ts` (schema, prompt, links), `src/components/PartsBox.tsx`.
