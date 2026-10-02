@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 11:29 AM from the project history (181 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 12:12 PM from the project history (182 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1338,3 +1338,15 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id e9fbcd1</sub>
+
+
+## Friday, October 2, 2026
+
+### 11:29 — Journal: Prologue (Sept 7-29 chats) and day one word for word, both sides, with passwords and keys removed; journey section in Mission Statement; record rules updated everywhere
+
+- **Other:** `.gitignore`
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`, `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/Next_Owner_Market_Operating_Rules.docx`, `docs/Next_Owner_Market_Operating_Rules.md`, `docs/journal_part1.md`, `docs/journal_prologue.md` (+4 more)
+- **Automation scripts:** `scripts/changelog.py`, `scripts/journal.py`
+
+<sub>change id 1f468b7</sub>
