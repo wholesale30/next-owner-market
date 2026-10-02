@@ -3338,7 +3338,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 12:24 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 12:37 PM (continuing)
 
 **Claude:**
 
@@ -6252,6 +6252,38 @@ Your list is in the app: the **📝 To-do** tab in your menu. The email you got 
 I took the "Thrift Pro price" decision off the list, since you told me to set it and it's live at $3.99. There's nothing waiting on you in the app right now: no listings to approve, no new sellers and no unread messages.
 
 ### Oct 2, 12:24 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The journal and change log updates are saved and pushed, and nothing is left uncommitted. The website didn't change.
+
+### Oct 2, 12:36 PM — Shayne
+
+> Should I do the Facebook as a group or a business page?
+
+**Claude:**
+
+Make it a **business Page**. A group won't work for this.
+
+**Why:** in 2024 Meta shut off outside apps' ability to post into Facebook groups. Our site can only post automatically to a Page, so a group would mean posting every find by hand. A Page also:
+- shows up on Google under your business name;
+- can be found by anyone, not just members;
+- gives you a "Message" button for buyers;
+- can run ads later if you ever want to.
+
+**Groups still have a use.** Later you can start a "Next Owner Market Finds" group for regulars, and share the Page's posts into it by hand when you feel like it. The automatic posting happens on the Page.
+
+If you don't have a business Page yet, make one first, named **Next Owner Market**. Then say "Facebook steps" and I'll give you the exact taps to get me the Page ID and token, checked against Facebook's own help pages.
+
+Sources:
+- [Sprinklr: Meta deprecates the Facebook Groups API](https://www.sprinklr.com/help/articles/getting-started-facebook/meta-deprecates-facebook-groups-api/66229eb25f9dd9599d632712)
+- [GIGAZINE: Meta cuts third-party access to Facebook groups](https://gigazine.net/gsc_news/en/20240206-meta-cuts-third-party-access-facebook-groups/)
+- [Zoho: Discontinuing Facebook Groups due to API deprecation](https://help.zoho.com/portal/en/community/topic/discontinuing-facebook-groups-due-to-api-deprecation)
+
+### Oct 2, 12:37 PM — Shayne
 
 > Stop hook feedback:
 > [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
