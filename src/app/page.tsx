@@ -57,12 +57,18 @@ export default async function StorePage({ searchParams }: PageProps<"/">) {
             <p className="text-base md:text-lg opacity-90">Title, description and price, plus ready-to-paste versions for Facebook, eBay and 7 more sites. About 30 seconds. Free to try, no account.</p>
           </div>
           <Link href={user ? "/app/items/new" : "/try"} className="btn btn-white w-full text-lg py-4 font-extrabold block text-center">📸 {user ? "List an item" : "Try it free: pick a photo"}</Link>
-          <div className="grid grid-cols-3 gap-2 text-center text-xs opacity-95">
-            <Link href="/worth" className="underline">💰 What&apos;s it worth?</Link>
-            <Link href="/pile" className="underline">📦 List a whole box</Link>
-            <Link href="/start" className="underline">😮‍💨 Overwhelmed? Start here</Link>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { href: "/worth", icon: "💰", label: "What's it worth?" },
+              { href: "/thrift", icon: "🛒", label: "Thrift store? Buy or pass" },
+              { href: "/pile", icon: "📦", label: "List a whole box" },
+              { href: "/start", icon: "😮‍💨", label: "Overwhelmed? Start here" },
+            ].map((t) => (
+              <Link key={t.href} href={t.href} className="flex items-center gap-2 rounded-2xl px-2.5 font-bold text-[14px] min-[400px]:text-[15px] min-[440px]:text-base leading-tight text-left" style={{ minHeight: 64, background: "rgba(255,255,255,0.14)", border: "2px solid rgba(255,255,255,0.55)", color: "#fff" }}>
+                <span className="text-xl min-[400px]:text-2xl min-[440px]:text-3xl shrink-0">{t.icon}</span><span className="min-w-0">{t.label}</span>
+              </Link>
+            ))}
           </div>
-          <Link href="/thrift" className="block text-center text-sm font-semibold underline opacity-95">🛒 In a thrift store? Check it before you buy it →</Link>
         </div>
       </section>
       <section className="max-w-5xl mx-auto px-4 pt-4">
