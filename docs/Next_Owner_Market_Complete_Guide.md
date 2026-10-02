@@ -361,3 +361,26 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 **Money:** once approved, put the Amazon Associates tag in settings `business.amazon_tag` and the eBay Partner Network campaign ID in `business.ebay_campid` (or env `AMAZON_TAG` / `EBAY_CAMPID`). Links pick them up within 5 minutes. A "we may earn a commission" line appears only when an ID is set. Amazon closes new accounts that don't make 3 sales in 180 days. Signing up is an urgent item on the to-do list.
 
 **Where it lives:** `src/lib/parts.ts` (schema, prompt, links), `src/components/PartsBox.tsx`.
+
+## Write my listing, photo touch-up, lots (Oct 2, 2026)
+
+**Write my listing:**
+- What's it worth: the button is right under the answer. It creates the draft (title, description, price range, photos, weight, box) and opens `/app/items/<id>?written=1#copy`.
+- That page shows "🎉 Your listing is written" and jumps to the copy-and-paste tabs. Facebook is first; eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop and Etsy are free for staff and Pro.
+- Buy or Pass ("I bought it: write my listing") lands on the same page. The draft now gets a description built from the check.
+- Sort the pile: the button sits at the top. With 1 item it lands on that listing; with more, on Drafts.
+
+**Photo touch-up** (`src/components/PhotoEditor.tsx`, `src/lib/photo-edit.ts`):
+- Runs in the browser. It's free and nothing uploads until Save.
+- **Dust:** a brightness median filter finds marks that differ from the surface. It removes only small blobs whose surroundings are plain surface.
+- **Lettering guard:** a row of similar-height marks side by side counts as text and stays, so model numbers and serials survive. Two passes catch clumps.
+- **Light:** a gentle 65% contrast stretch (never crushes black), a lift for dark photos, and +6% color.
+- **Tested** on a heavy-dust test image (1200×900, two passes in about 0.45 s): about 95% of the specks are removed, and all text plus a small indicator light are intact.
+- **Where:** What's it worth photos, every photo on the item Edit page ("✨ Touch up", plus a "Touch up new photos" checkbox), and Snap mode ("Touch up every photo", on by default).
+- It doesn't remove caked grime or stains. AI "deep clean" (Gemini image edit, about 3.4¢ a photo, no free tier) is offered but not built without the owner's OK.
+
+**Lots** (`/api/worth`):
+- The AI returns `pieces[]` (name, qty, value each, note, listing_title, listing_description) and `sell_advice` when the photos show 2 or more separate items. `value_low/high` and `listing` are then the whole-lot price.
+- The page shows "All N together, sold as one lot," "Sold one at a time" (the total), and each piece with "List this one by itself."
+- max_tokens is 5000 and maxDuration 120 s.
+- **Test:** the owner's photo of 6 satellite receivers took 20 s. Lot $120–400; pieces $20–120 each, with the Drake ESR 1224 the most valuable. Advice: pull out the Drake and the Chaparral for eBay, and sell the rest locally as a lot.

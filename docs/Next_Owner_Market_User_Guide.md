@@ -419,3 +419,18 @@ If the item is missing a part or has a worn-out one (a filter, a remote, a charg
 - on Buy or Pass, whether it's a BUY once you add the part.
 
 Tap **🛒 Find it on Amazon** or **Find it on eBay** to see the part for sale. Tip: if you know something is missing, say so in the notes or with **✏️ Something wrong?** ("the filter is missing") and it checks for the part.
+
+## Write my listing, touch up photos, and lots (Oct 2, 2026)
+
+**📝 Write my listing** is now right under the answer on What's it worth, Buy or Pass ("I bought it: write my listing") and Sort the pile. One tap opens your finished listing with the **Facebook post ready to copy**, plus eBay, OfferUp, Mercari and 5 more. No second lookup.
+
+**✨ Touch up a photo:** tap any photo (on What's it worth, or on any listing's Edit page) and tap **✨ Touch up**. Big buttons:
+- **✨ Fix it up**: one tap for both of the next two;
+- **🧽 Clean off dust**: wipes dust specks, lint and crumbs. Labels and model numbers stay sharp;
+- **☀️ Fix the light**: dull or dark photos look bright and clean;
+- **⬜ Clean background** and **↻ Turn**;
+- **↩ Undo** any time, and nothing changes until you tap **✓ Save**.
+
+It runs on your phone and it's free. It doesn't hide scratches, chips or stains, so buyers get what they see. Wipe the item down before it ships.
+
+**Lots of things (a stack, a box, a set):** What's it worth gives the price **all together as one lot** and **sold one at a time**. You get each piece's value, why it's worth that, its own description, and a tip on which pieces to pull out and sell alone. Tap **📝 Write the listing for the lot**, or **📝 List this one by itself** under any piece.

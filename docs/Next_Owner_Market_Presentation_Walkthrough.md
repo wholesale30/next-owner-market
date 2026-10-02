@@ -162,3 +162,9 @@
 ## Missing a part? Find it (Oct 2, 2026)
 
 Every lookup now spots missing or worn-out parts, such as a purifier with no filter. It shows the part number, what the part costs and what the item is worth with it, then links straight to the part on Amazon and eBay. The buyer fixes the item and makes more, and those links earn affiliate commissions once the Amazon and eBay accounts are approved. That's a new revenue stream at zero cost.
+
+## Write my listing, photo touch-up and lots (Oct 2, 2026)
+
+- **One tap from a value to a finished listing,** with the Facebook post ready to paste plus 8 more sites.
+- **A free photo touch-up** that cleans dust and dull light off photos on the phone, so thousands of warehouse items can be listed now and cleaned only when they sell.
+- **Lot pricing:** a stack or box gets a lot price and each piece's own value and description, with advice on which pieces to sell alone.
