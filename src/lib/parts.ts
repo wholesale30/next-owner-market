@@ -11,8 +11,8 @@ export const PART_SCHEMA = {
   items: {
     type: "object",
     properties: {
-      part: { type: "string", description: "the exact replacement part a buyer would search for, with brand and model it fits, e.g. 'Hunter 30930 HEPA filter'" },
-      part_number: { type: ["string", "null"], description: "OEM or common replacement part number if known" },
+      part: { type: "string", description: "a short search phrase for the replacement part, brand + model it fits + what it is, e.g. 'Hunter HP600 HEPA filter'. No notes, no parentheses, max 8 words" },
+      part_number: { type: ["string", "null"], description: "just the part number, e.g. '30966', or null. No notes" },
       why: { type: "string", description: "one short sentence: what's missing or worn and why it matters to buyers" },
       price_low: { type: "number", description: "typical price of the replacement part, new or used, USD" },
       price_high: { type: "number" },
@@ -42,10 +42,13 @@ export async function withPartLinks(parts: MissingPart[] | null | undefined): Pr
   const list = (parts || []).filter((p) => p && p.part).slice(0, 3);
   if (!list.length) return [];
   const t = await tags();
-  return list.map((p) => {
-    const q = [p.part, p.part_number].filter(Boolean).join(" ").slice(0, 120);
+  // keep searches clean even if the AI adds notes like "(confirm model on label)"
+  const clean = (x: string | null | undefined) => String(x || "").replace(/\([^)]*\)/g, " ").replace(/\b(verify|confirm|check|likely|approx\.?|possibly)\b.*$/i, "").replace(/\s+/g, " ").trim();
+  return list.map((raw) => {
+    const p = { ...raw, part: clean(raw.part) || raw.part, part_number: clean(raw.part_number) || null };
+    const q = [p.part, p.part_number && !p.part.includes(p.part_number) ? p.part_number : null].filter(Boolean).join(" ").slice(0, 100);
     const amazon = `https://www.amazon.com/s?k=${encodeURIComponent(q)}${t.amazon ? `&tag=${encodeURIComponent(t.amazon)}` : ""}`;
     const ebay = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}${t.ebay ? `&mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=${encodeURIComponent(t.ebay)}&toolid=10001&mkevt=1` : ""}`;
-    return { ...p, part_number: p.part_number || null, amazon, ebay, affiliate: !!(t.amazon || t.ebay) };
+    return { ...p, amazon, ebay, affiliate: !!(t.amazon || t.ebay) };
   });
 }
