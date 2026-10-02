@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:35 PM from the project history (195 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:57 PM from the project history (198 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1434,3 +1434,31 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md` (+2 more)
 
 <sub>change id c2ef04f</sub>
+
+### 19:35 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Operating_Rules.docx`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id bf7b82a</sub>
+
+### 19:55 — Photo touch-up (dust, light, background, turn) everywhere you list; Write my listing at the top; lots priced together and piece by piece
+
+- PhotoEditor + lib/photo-edit: on-phone dust/speck removal that leaves lettering and model numbers alone, gentle light fix, background clean, rotate, undo
+- What's it worth: Write my listing near the top, lands on the written listing with the Facebook copy; touch up photos first
+- Lots: whole-lot price plus each piece's value, note, own description and List this one by itself
+- Item edit: Touch up on every photo, Touch up new photos option; Snap mode touches up every photo by default
+- Buy or Pass and Sort the pile: listing button up top, land on the written listing
+
+- **Server routes (API):** `src/app/api/worth/route.ts`
+- **Seller / staff app:** `src/app/app/items/ItemForm.tsx`, `src/app/app/items/[id]/page.tsx`, `src/app/app/snap/SnapClient.tsx`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/PhotoEditor.tsx`
+- **Shared code (logic):** `src/lib/photo-edit.ts`, `src/lib/thrift.ts`
+
+<sub>change id decc4a9</sub>
+
+### 19:57 — Docs: Write my listing, photo touch-up, lot pricing
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.docx`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.docx`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.docx`, `docs/Next_Owner_Market_White_Paper.md`
+
+<sub>change id 0e36be7</sub>
