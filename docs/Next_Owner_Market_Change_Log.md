@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 7:58 PM from the project history (174 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 8:06 PM from the project history (176 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1295,3 +1295,15 @@
 - **Shared code (logic):** `src/lib/automations.ts`
 
 <sub>change id 6379fd4</sub>
+
+### 19:58 — Guide: branded Facebook pictures
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 5a17ca8</sub>
+
+### 20:04 — Home: the four tool links are now big tap buttons (2x2), fit folded and open Z Fold widths
+
+- **Public site pages:** `src/app/page.tsx`
+
+<sub>change id 9b2d765</sub>
