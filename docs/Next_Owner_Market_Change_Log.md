@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 12:37 PM from the project history (184 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 2:35 PM from the project history (187 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1362,3 +1362,21 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id 1452b6b</sub>
+
+### 12:37 — Update build journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 70de934</sub>
+
+### 12:38 — Facebook Page cover (1640x924, safe zone centered) and profile picture (720x720)
+
+- **Documents:** `docs/brand/Next_Owner_Market_Facebook_Cover.png`, `docs/brand/Next_Owner_Market_Facebook_Profile.png`
+
+<sub>change id d60a122</sub>
+
+### 12:45 — Facebook Page Kit: bio, categories, about, button, pinned post
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.md`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 9e2c29c</sub>

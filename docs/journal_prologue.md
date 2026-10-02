@@ -431,6 +431,288 @@ Looking through all twelve photos, this is a big mixed lot — mostly 1970s–90
 - List the standouts (Keithley, Marantz, Nikko, Technics, JVC) individually — that's where the real money is. Bundle the low-tier stuff as a "vintage stereo lot" for pickers.
 - FB Marketplace tends to run below eBay "sold" prices for this category since it's local/cash — treat the ranges above as a ceiling rather than a promise, unless your area has an active vintage-audio crowd.
 
+## Identifying unknown plastic housings with metal discs (Sep 22, 2026)
+
+### Shayne
+> (sent photos)
+
+### Claude
+Looking at the photo, I see two matching clear plastic (or glass) housings, each with a dusty white gasket ring and a shiny metal disc at the center. The one on the right has some rust or mineral-colored staining on its ring that the left one doesn't have.
+
+My best guess: these look like ultrasonic mist-maker discs — the kind used in fountain or humidifier kits, where the metal disc is a small transducer that vibrates to atomize water (the staining would fit mineral buildup from water exposure). They could also be small speaker drivers seen from the back, especially given that coiled white cable behind them.
+
+What are you trying to figure out here — what device these came from, whether they still work, or something else?
+
+### Shayne
+> these apple are these apple speakers valuable um, i have four of them like new but they could be easily cleaned up and new.
+
+### Claude
+I think I've found a match — those look like Apple's original **AppleDesign Powered Speakers** (model M6082) from 1993, or possibly the slightly restyled "II" version from a year later. The comparison photos above show the same round driver face and clear plastic housing as yours. Apple launched them in 1993 alongside its PowerCD player, first in a platinum-gray finish, then in a curvier, darker-gray version the following year to match the PowerBook line. That coiled cable with the small oval pod in your first photo is a good match too — those speakers had an inline volume/balance control on the cable running between the two units.
+
+What you're actually looking at in this photo is the driver face with the grille off: the shiny center is the dust cap, and the cream ring around it is the foam surround — the part that yellows or discolors with age, which is probably what's showing on the right one.
+
+**On value:** one owner on a vintage-Mac forum described these as closer to small hi-fi monitor speakers than typical PC speakers, with real RCA and 3.5mm inputs plus a built-in headphone jack, so there's a genuine small collector market. Right now, tested-working pairs are selling for roughly $25–70, with most landing around $30–50. The power supply matters a lot for that number, since these run on an unusual 15V DC adapter with a center-pin barrel connector rather than anything standard today — pairs missing it sell for noticeably less.
+
+Before assuming "like new" means sellable as-is:
+- Check for a model number stamped on the back/bottom (M6082 vs M2497) to confirm the exact version
+- Power all four on and test both channels — owners note the volume/balance control can get scratchy with age, and drivers or their foam surrounds can fail even when the housing still looks fine
+- Handle the foam gently either way — decades-old foam can crumble even when it looks intact
+
+Four units is most likely two complete pairs rather than a mismatched set. If everything tests clean and you've kept the power supplies, two full pairs could realistically be worth somewhere in the $60–140 range combined — but you'll generally do better listing them as two separate tested, complete pairs than as one lot of four.
+
+### Shayne
+> These are the little round speakers. Those comparison photos don't even have a fucking anything close to looking the same.
+
+### Claude
+You're right, and I clearly guessed wrong — those AppleDesign speakers are wedge-shaped on a stand, not flat round pucks like yours. My mistake, sorry about that.
+
+Let me actually dig into this properly instead of pattern-matching to the wrong thing.
+Honestly — from just this top-down shot, I'm looking at a clear plastic rim, a foam/rubber ring, and a metallic cone or dust cap. That basic layout (foam surround + driver) was used by dozens of manufacturers in cheap computer speakers through the 90s and 2000s, so I was pattern-matching to a shape without actually confirming it, which isn't good enough for you to make a decision on.
+
+To actually nail this down, the most useful thing would be:
+
+1. **A photo of the whole speaker from the side or front** — the housing shape/color tells me far more than the driver face does
+2. **Any text, logo, or model number** printed on the back, bottom, or housing — even worn/faint text helps
+3. Roughly how big they are (diameter in inches)
+
+If you can get me any of those, I can actually search for the right thing instead of guessing at rings in a photo.
+
+### Shayne
+> (sent photos)
+
+### Claude
+That's the same top-down angle as the first photo — I still can't see the shape, depth, or any markings from this.
+
+What would actually let me identify these:
+- Flip one over and show me the back or bottom — that's almost always where a label or model number lives
+- Step back so the whole thing is in frame from the side, so I can see if it's a flat puck, has a grille, ports, or sits on a stand
+- Any text or logo anywhere on the plastic, even faint or worn
+
+If a better photo isn't easy right now, even telling me where these came from (pulled out of an old computer, bought as a set, found with other gear) would help me narrow it down instead of guessing again.
+
+### Shayne
+> Yeah, how hard is it to understand what these are? They're little small round speakers. They go with the apples. And you're getting, how can you look at those pictures and get some bunch of shit that doesn't even look even close to the same stuff?
+
+### Claude
+Fair point — take a look at those two sets of images above (SoundSticks stand up tall like eggs on a base; the Monsoon ones are metallic UFO-shaped discs on an arm). Does either shape match what's in your hand?
+
+If not, here's the fastest way forward with zero more photos needed — that ring-and-metal-dot pattern is basically identical across dozens of different clear plastic speaker drivers from that era, so a straight-down photo can't tell them apart. The housing shape is what actually differs, and that's the one thing I can't see from your angle. So, just in words:
+
+- When you pick one up, is it flat like a hockey puck, round like a ball, or does it taper to a point/cone?
+- Any text or numbers stamped anywhere on it — front, back, bottom edge, even if faint or tiny?
+
+Either of those tells me more than another photo would.
+
+## Replacement fuses for audio receivers (Sep 26, 2026)
+
+### Shayne
+> I'm looking for replacement fuses for receivers and stuff. Like I'd like to have an assortment. I like this one is an OKA 3 amp out of a Nico NR615 amp receiver.
+
+### Claude
+"Nico NR615" is almost certainly the **Nikko NR-615** — a Japanese-made stereo receiver from 1977, 30 watts/channel. And "OKA" is very likely **Okaya** (Okaya Electric Industries, 岡谷電機産業) — a Tokyo-based circuit-protection manufacturer that's been making fuses since 1939, so it checks out as a period-correct factory-original part for a Japanese receiver of that vintage.
+
+For a general spares assortment that'll cover most vintage receivers and amps, a few things matter more than the brand on any individual fuse:
+
+- **Physical size** — Japanese and European gear from this era mostly takes 5×20mm glass fuses. American-made or US-market units often use 6.3×32mm (the "3AG" size). Worth having both on hand; you can tell which you need just by measuring the glass tube itself.
+- **Amperage range** — vintage receivers and integrated amps mostly fall between 0.5A and 8A, so a kit spanning roughly 0.25A up through 10–15A covers nearly everything you'll run into.
+- **Fast-blow vs. slow-blow** — the one that trips people up. Internal fuses (power rails, output stage) are usually fast-blow ("F"). The AC mains fuse is very often slow-blow/time-delay ("T"), because the transformer and filter caps pull a brief surge at power-on that would pop a fast fuse for no reason. Whatever's in there now, match its rating, speed, and physical size exactly — sizing up "so it stops blowing" defeats the point of having a fuse there at all.
+
+A few solid kits that'll get you most of the way to a good assortment:
+All three of those are fast-blow only, which covers most internal fuses but not a slow-blow mains fuse. If you want that covered too, look for something like the "RS PRO Fast and Slow Glass Fuse Kit" (RS Components part 893-8530 in 5×20mm, or 893-8534 in 6.3×32mm) — a smaller 180-piece kit split evenly between fast and slow-blow ratings, good for topping up whichever kit above you go with.
+
+### Shayne
+> Whats this worth tested working
+
+### Claude
+Somewhere around **$60–80** for a tested-working SA-EX310 with no major cosmetic issues — toward the higher end if the remote's included, lower without one.
+
+It's a 1996 AV control stereo receiver rated at 100 watts per channel, made in Japan — a mass-market mid-90s home-theater piece rather than a sought-after vintage one, so value stays modest rather than collectible. That lines up with what's actually listed for this exact model right now: one recent listing, tested but without a remote, is priced at $78, another described as tested and working is asking $88, and completed listings for the model have spanned roughly $55 to $96.
+
+I also see a SA-AX730 stacked underneath it — want me to price that one too?
+
+### Shayne
+> Is there a buffet in Winston-Salem, North Carolina or near there that has all you can eat crab legs on the weekends?
+
+### Claude
+This confirms Umi Hotpot Sushi & Seafood Buffet in Winston-Salem is exactly what you're looking for:
+
+**Umi Hotpot Sushi & Seafood Buffet** — 1237 Silas Creek Pkwy, Winston-Salem, NC 27127 · (336) 999-9888
+
+It's a Japanese-style AYCE seafood buffet with snow crab legs as one of the unlimited seafood-bar items, alongside sushi, hot pot, hibachi, and dessert. Weekends specifically get called out for unlimited crab legs and lobster, on top of everything else on the regular buffet. It's rated 4.5★ and reviewers specifically mention the crab legs and seafood spread as a highlight.
+
+- **Hours:** Fri–Sat 11am–11pm, Sun 11am–10pm
+- Weekday lunch runs around $22/adult, with weekend/dinner pricing higher (worth calling ahead to confirm current pricing, since it varies by day and time)
+
+Worth calling first since it's a newer, popular spot (opened this spring) and can get a wait, especially on weekends.
+
+### Shayne
+> What are these worth as a lot. And are these any high dollar.
+
+### Shayne
+> (sent photos)
+
+### Claude
+Quick close on the receivers: the SA-AX730 lands in a similar range to the EX310 — roughly **$60–90** tested working — so as a pair I'd put the two together around **$120–160**. Neither is high-dollar; both are common consumer AV receivers from the 90s, not sought-after separates.
+
+**For the VHS lot in these new photos: also not high-dollar — I'd put the whole cart at roughly $15–30 as a bulk lot.**
+
+The eye-popping VHS prices you sometimes hear about (Ghostbusters selling for $20,000+, a sealed Goonies for $125,000) are specifically for **factory-sealed, still-shrinkwrapped** copies — often professionally graded, specific first-print/watermark variants. Everything in your cart is used and previously viewed (a couple even have rental store stickers on them), so that market doesn't apply here.
+
+These are all titles that were mass-produced and turn up in every thrift bin: the Disney reissues, Barney, Fisher-Price, Scooby-Doo, and holiday specials are basically fifty-cent-to-a-dollar filler individually. Even Ghostbusters, Ghostbusters II, and the Pulp Fiction "collector's edition" were printed in the millions as used retail copies — common, not rare. The Dragon Ball Z FUNimation tape is the closest thing to a standout since there's a small anime-VHS collector niche, but current eBay lots of 7–9 DBZ tapes are only fetching $10–16 total, so one loose tape is worth maybe $3–5, not a jackpot.
+
+Realistically: this is $1–2-a-tape bulk material as a whole cart, worth more to someone buying for nostalgia/decor than as an investment.
+
+### Shayne
+> Sold the lot for 35
+
+### Claude
+Nice — that's a solid outcome, right in line with (actually a bit above) what I'd have guessed for a mixed cart like that. Good flip.
+
+### Shayne
+> What's top dollar I could get for excellent shape Game Boy colors? I have three blue, a lime green, two of the the the grayish clear ones, the purple clear ones, and then I have Game Boy Advances. I have four that are the the clearer white ones, and one that's a blue, and the blue one is a Target branded one.
+
+### Claude
+Rough breakdown for **excellent condition, tested-and-working** units — individual sale prices (selling as singles gets meaningfully more than a bulk lot):
+
+**Game Boy Color (7 units)**
+- Solid colors (your blues, the lime green): **$70–100 each**
+- Translucent/clear colors (the grayish clear ones, and especially the clear purple — that's the popular "Atomic Purple") tend to run higher: **$90–150 each**
+
+**Game Boy Advance (5 units)**
+- White/clear ones (likely Arctic White): **$60–100 each**
+- The Target-branded blue is the wildcard — Target's *documented* exclusive colors for the original GBA were red and a purple/"grape" shade, not blue. So one of two things is going on: it's a regular blue GBA that happens to have a Target price sticker/tag (worth the normal $60–90), or it's actually a **Game Boy Advance SP** (the flip-open clamshell one) in "Pearl Blue," which *was* a real Target exclusive and is worth a lot more — those have been going for $150–300+.
+
+Worth checking whether yours is the brick-shaped original GBA or the flip SP model, since that one item alone swings your total by a couple hundred dollars.
+
+Ballpark for the whole collection sold piece-by-piece in top shape: somewhere around **$900–1,400+**, weighted heavily by what that Target blue turns out to be. To actually get near the top end, sell individually (not as a lot) on eBay with clean photos and "tested working" clearly stated — bulk lots tank the per-unit price the same way your VHS cart did.
+
+### Shayne
+> (sent photos)
+
+### Claude
+That confirms it — this is the real deal: the **Target Grape** exclusive original Game Boy Advance, one of only two documented Target store-exclusive colorways for the original (non-SP) GBA. So "blue" was just how the indigo/grape shade reads in some light — makes sense.
+
+That said, I have to adjust my estimate down from what I guessed earlier, because this specific unit isn't in excellent shape — it's visibly dusty/grimy, the screen has noticeable scratches, and there's a discolored/worn patch on the top-left shell. That's meaningfully below "mint," and condition is what swings Target-exclusive prices the most.
+
+- Cleaned up, tested working, but with that screen wear and shell blemish as-is: roughly **$60–120**
+- If a good cleaning + retrobrite (fixes yellowing) gets the shell looking better, and it powers on/plays cleanly: more like **$100–180**
+- A genuinely mint, pristine example of this exact variant can push toward $200+, but that's not what's in this photo
+
+So it's still your best individual piece in the collection, just not quite the $150–300 range I floated before that assumed near-mint cosmetic condition. Worth giving it an actual cleaning and confirming it powers on and holds a charge before listing — that alone could move it up a tier.
+
+### Shayne
+> This one can be cleaned. It's not bad.
+
+### Claude
+That'll help a fair amount — a proper clean plus retrobrite on that discolored patch could realistically get it toward the $120–180 range instead of the lower end. Good luck with it, and with the rest of the lot.
+
+### Shayne
+> What is retro bright? I have a uh, Novus scratch remover and plastic polish. I have one, two, and three of the Novus polish, plastic stuff.
+
+### Claude
+Retrobright (often written retr0bright) is a technique for reversing the yellowing that happens to old ABS plastic — the yellow/brown discoloration on things like your GBA shell isn't dirt, it's UV light slowly breaking down the flame-retardant chemicals baked into the plastic. The fix is a hydrogen peroxide treatment: you coat the plastic in a peroxide cream (the same stuff used in hair developer, usually 12%+) or a paste, wrap it in plastic film, and let it sit in sunlight or under a UV lamp for a few hours to a couple days. The UV catalyzes the peroxide and bleaches the discoloration back out.
+
+Your Novus kit is a different tool for a different job. Novus #1/#2/#3 is a mechanical polish system — #3 cuts heavy scratches, #2 handles finer ones, #1 is a final polish/shine — and it's great for exactly what you've got on that screen and shell surface. But it won't touch the yellowing, since that's a chemical change inside the plastic, not a surface scratch or haze.
+
+For that GBA, the order that makes sense:
+1. Clean off the dust/grime first (soap, water, cotton swabs for the crevices)
+2. Retrobright the yellowed patch if you want it looking uniform
+3. Novus #3 → #2 → #1 on the screen and shell for scratches and shine
+
+Doing both will get you noticeably closer to that $120–180 range than either one alone.
+
+### Shayne
+> Uh, how do you start them up? I put batteries in them. They start up. It says Game Boy, Nintendo R on the screen. And I have a game in it when I start it up. I've done it without a game in it and start it up. And it has the line that, the line where you can see it's like it's starting up like a computer. And then it says Game Boy, Nintendo, but it's not going any further than that. And I've had two that did the exact same thing. So I'm wondering if it's something I'm doing.
+
+### Claude
+Good news first: **without a cartridge, hanging at the Nintendo logo is completely normal** — the GBA has no built-in menu or system software like later handhelds do. With nothing inserted, there's simply nothing for it to load, so it's supposed to just sit there after the logo chime. That's not a fault.
+
+With a cartridge inserted and it still won't go past the logo, that's almost always dirty or oxidized contacts — extremely common after decades in storage, and very fixable:
+
+1. Power off, pop the cartridge out
+2. Dip a cotton swab in isopropyl alcohol (91%+ is ideal) and gently scrub the gold contact strip on the cartridge until it looks bright/shiny again, no tarnish
+3. Do the same inside the console's cartridge slot — a dry or lightly dampened swab works, just don't force it or bend anything
+4. Let everything dry a minute, then reinsert the cartridge **firmly, all the way until it clicks/seats flush** — a lot of "won't boot" cases are just the cart sitting slightly crooked or not fully seated
+5. Power on
+
+Since two different units did this, my guess is either the same cartridge(s) have dirty contacts (so it follows the game, not the console), or both consoles just have oxidized slots from sitting for years — both are the same fix either way. If you've got more than one game, try swapping carts between units to see whether the problem "follows" the cartridge or stays with the console — that'll tell you where the actual fault is.
+
+If you clean both contacts and it still hangs, that points to something more serious (bent pins in the slot, or a solder joint issue), but that's a smaller percentage of cases — try the alcohol clean first.
+
+### Shayne
+> Find me the best place to buy replacement bottles, 8 fluid ounces. Just empty bottles. For this. Hold on.
+
+### Claude
+Best match is likely **Specialty Bottle** — they carry an 8oz flip-top HDPE squeeze bottle that's a close shape match to your Novus bottle (flexible HDPE, flip cap), and they have no minimum order, so you can grab just a couple.
+Here's the rundown without the card tool available:
+
+- **Specialty Bottle** (specialtybottle.com) — 8oz flip-top HDPE squeeze bottle, closest shape/cap match to your Novus bottle, and no minimum order, so you can buy just one or two.
+- **Uline** — 8oz cylinder squeeze bottles, soft LDPE, but they come with a pointed "Yorker" spout cap rather than a flip-top, sold in packs.
+- **SKS Bottle & Packaging** — huge selection of 8oz shapes/caps if neither of the above fits exactly, but often sold by the case.
+
+For just replacing one or two damaged bottles, Specialty Bottle is your best bet — it's the only one of the three with no minimum order and the cap style is the closest match.
+
+### Shayne
+> Just, just Amazon or something. I don't need to go that, that deep into work. They ain't gonna sell me three bottles.
+
+### Claude
+Yeah, just search "empty squeeze bottles 8 oz" on Amazon — plenty of options that don't make you buy a case:
+
+- **BRIGHTFROM 8 oz Empty Squirt Bottles, 3-pack** — twist-top cap, BPA-free, sold specifically as a 3-pack
+- **New Star Foodservice 8 oz Squeeze Bottles, pack of 6**
+- **12-pack 8 oz multipurpose squeeze bottles** — if you want extras on hand
+
+Any of these will hold the polish fine — search "empty squeeze bottles 8 oz" and you'll get a full page of small-pack options right on Amazon, no case minimums.
+
+### Shayne
+> I'm looking for a nice razor to fit these blades. I have literally hundreds of these blades. Probably 50, 50 or more packs at least. Well, I have probably, yeah, at least 50 packs of these because I used to buy stuff that was confiscated at the airports after 9/11. And I'd like to get a really nice razor, or maybe two, to fit these blades so I can shave and never have to, I wouldn't have to buy another razor the rest of my life.
+
+### Claude
+That Feather blade is a standard double-edge (DE) safety razor blade — the format hasn't changed in decades, so any classic safety razor will fit it, and a good one genuinely will last the rest of your life (they're mostly solid brass/stainless, no motors or cartridges to wear out). Worth knowing: Feather Hi-Stainless blades are considered some of the sharpest, most aggressive DE blades made, so pairing them with a milder razor head actually gives the smoothest, most forgiving shave — you don't need an "aggressive" razor on top of an aggressive blade.
+
+Two solid picks:
+
+- **Merkur 34C ("HD")** — ~$35–45. The benchmark DE razor for good reason: solid brass under chrome, mild-to-medium head, been the standard recommendation for decades, will outlive you if you take care of it.
+- **Rockwell 6S** — ~$90–100. Stainless steel, adjustable head (6 plates from very mild to fairly aggressive), so it's really "several razors in one" — great if you want to dial in different closeness on different days rather than owning multiple fixed razors.
+
+If you want just one and genuinely never think about it again, the 34C is the safe, proven call. If you like having options and want the nicer of the two, the Rockwell 6S is the one I'd get as the "forever" razor. Either will happily eat through your Feather stash for the rest of your life.
+
+### Shayne
+> Can you give me links to them? And then can you give me, can you look up like cheaper Chinese equivalents that are really nice? I'm sure there are some really super nice ones that I don't need the brand.
+
+### Claude
+Links to the two I mentioned:
+
+- **Merkur 34C** — [amazon.com/dp/B002A8JO1Q](https://www.amazon.com/Merkur-Mk34c-Double-Razor-Handle/dp/B002A8JO1Q)
+- **Rockwell 6S** — official site has the full lineup: [getrockwell.com](https://getrockwell.com), or [search it on Amazon](https://www.amazon.com/rockwell-6s/s?k=rockwell+6s) (didn't want to hand you a guessed product link for this one)
+
+For the Chinese-made side: the name that comes up constantly in wet-shaving circles for "surprisingly excellent for the price" is **Yaqi**. Two worth a look:
+
+- **Yaqi Final Cut Adjustable** — a well-regarded clone of the $150+ Merkur Futur, chrome-plated brass, adjustable dial. [amazon.com/dp/B0FM5ZSQT3](https://www.amazon.com/Chrome-Adjustable-Final-Safety-Razor/dp/B0FM5ZSQT3)
+- **Yaqi 316 stainless steel razors** (their "Tile," "Pagoda," "Cerberus" lines, etc.) — solid stainless construction, genuinely nice fit and finish according to the wet-shaving forums, running a fraction of what a Western stainless razor costs. Search "Yaqi stainless steel safety razor" on Amazon — there are several fixed-head and adjustable versions depending on finish/style you like.
+
+Also worth knowing: the **Ming Shi 2000S** is another Chinese razor that regularly gets called "practically as good as the real Merkur Futur for way less money" in shaving forums — worth a search if the Yaqi doesn't grab you.
+
+Given the size of your blade stash, I'd honestly say get one of each category (a mild fixed-head Yaqi stainless and the Final Cut adjustable) — you'll spend less than one Rockwell 6S and end up with more versatility to figure out what you actually like.
+
+## Dollar Tree lubricant options (Sep 28, 2026)
+
+### Shayne
+> Is there any Dollar Tree uh, lotions or anything that's safe and good for, like, lubricating for sex or masturbation?
+
+### Claude
+**For penis masturbation (external only):** a plain, unscented lotion or oil is generally fine. Avoid anything with fragrance, menthol, or "tingling/warming" ingredients, since those can sting or irritate, especially near the urethra.
+
+**For vaginal or anal use, or sex:** lotions aren't a good idea. Their fragrances, alcohols, and preservatives can cause irritation and raise the risk of yeast infections or BV.
+
+**Budget options that work better:**
+- **Water-based personal lubricant.** Dollar Tree stores often carry one in the health or family-planning aisle near the condoms, but stock varies by location. Store brands at Walmart or pharmacies are also cheap (a few dollars). This is the safest all-purpose choice and works with condoms and toys.
+- **Coconut oil or plain vegetable oil.** These are cheap and slippery, and fine for external use. But **oils break down latex condoms**, so don't use them with condoms. For some people they can also contribute to vaginal infections.
+
+**Avoid:** petroleum jelly (Vaseline) and baby oil for internal use. Both weaken condoms, are hard to wash out, and are linked to infections. Also skip anything scented, soap, or shampoo.
+
+If you're using condoms, a water-based lube is really the only budget choice to go with.
+
 ## Item identification and value (Sep 29, 2026)
 
 ### Shayne
