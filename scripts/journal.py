@@ -32,6 +32,18 @@ def local(ts):
     d = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(datetime.timezone(datetime.timedelta(hours=-4)))
     return d.strftime("%b %-d, %-I:%M %p")
 
+SECRET_PATTERNS = [
+    r"sk-ant-[A-Za-z0-9_\-]{20,}", r"sb_secret_[A-Za-z0-9_\-]{10,}", r"sb_publishable_[A-Za-z0-9_\-]{10,}",
+    r"gh[pousr]_[A-Za-z0-9]{20,}", r"github_pat_[A-Za-z0-9_]{20,}",
+    r"(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{10,}", r"whsec_[A-Za-z0-9]{10,}", r"re_[A-Za-z0-9]{8,}_[A-Za-z0-9]{8,}",
+    r"eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}", r"vcp_[A-Za-z0-9]{20,}", r"shippo_(?:live|test)_[A-Za-z0-9]{10,}",
+    r"AIza[0-9A-Za-z_\-]{30,}", r"EAA[A-Za-z0-9]{40,}",
+]
+def redact(txt):
+    """The book never contains passwords or keys (he sometimes pastes them into chat)."""
+    for pat in SECRET_PATTERNS: txt = re.sub(pat, "[key removed]", txt)
+    return txt
+
 def rows_from(path):
     rows = []
     for line in open(path):
@@ -43,10 +55,10 @@ def rows_from(path):
             txt = c if isinstance(c, str) else "\n".join(x.get("text", "") for x in c if isinstance(x, dict) and x.get("type") == "text") if isinstance(c, list) else None
             if txt:
                 txt = re.sub(r"<system-reminder>.*?</system-reminder>", "", txt, flags=re.S).strip()
-                if txt and not txt.startswith("This session is being continued"): rows.append(("U", ts, txt))
+                if txt and not txt.startswith("This session is being continued"): rows.append(("U", ts, redact(txt)))
         elif t == "assistant" and isinstance(c, list):
             txt = "\n".join(x.get("text", "") for x in c if isinstance(x, dict) and x.get("type") == "text").strip()
-            if txt: rows.append(("A", ts, txt))
+            if txt: rows.append(("A", ts, redact(txt)))
     return rows
 
 def render(rows, session_label):
@@ -73,6 +85,7 @@ def merge_rows(cache_path, rows):
     for r in rows:
         k = (r[0], r[1], r[2][:120])
         if k not in seen: old.append(list(r)); seen.add(k)
+    old = [[r[0], r[1], redact(r[2])] for r in old]
     old.sort(key=lambda r: r[1])
     json.dump(old, open(cache_path, "w"))
     return [tuple(r) for r in old]
@@ -99,14 +112,22 @@ def main():
     else:
         label = f"{local(rows[0][1])} → {local(rows[-1][1])} ({len([r for r in rows if r[0]=='U'])} messages from Shayne)"
         text = render(rows, label)
-    open(os.path.join(sess_dir, f"{sid}.md"), "w").write(text)
+    open(os.path.join(sess_dir, f"{sid}.md"), "w").write(redact(text))
+    for extra in glob.glob(os.path.join(sess_dir, "*.md")) + [os.path.join(DOCS, "journal_prologue.md"), PART1]:
+        if os.path.exists(extra):
+            t = open(extra).read(); r = redact(t)
+            if r != t: open(extra, "w").write(r)
     sessions = sorted(glob.glob(os.path.join(sess_dir, "*.md")), key=os.path.getmtime)
     sessions = [s for s in sessions if not s.endswith(".archive.md")]
-    body = part1 + "\n\n---\n\n## Part 2 · Verbatim sessions\n" + "".join(open(s).read() for s in sessions)
-    open(OUT_MD, "w").write(body)
+    # Day one (Sep 29, the first build session, saved from its own transcript) always comes first
+    sessions.sort(key=lambda s: 0 if os.path.basename(s) == "day1.md" else 1)
+    prologue_path = os.path.join(DOCS, "journal_prologue.md")
+    prologue = ("\n\n---\n\n" + open(prologue_path).read()) if os.path.exists(prologue_path) else ""
+    body = part1 + prologue + "\n\n---\n\n## Part 2 · Verbatim sessions: every word, both sides\n" + "".join(open(s).read() for s in sessions)
+    open(OUT_MD, "w").write(redact(body))
     try:
         docx = os.path.join(DOCS, "Next_Owner_Market_Build_Journal.docx")
-        subprocess.run(["pandoc", OUT_MD, "-o", docx, "--from", "gfm", "--to", "docx"], check=True)
+        subprocess.run(["pandoc", OUT_MD, "-o", docx, "--from", "gfm-tex_math_dollars", "--to", "docx"], check=True)
         if os.path.isdir("/home/claude/deliverables"): subprocess.run(["cp", docx, "/home/claude/deliverables/"], check=False)
         print("journal updated:", docx)
     except Exception as e:

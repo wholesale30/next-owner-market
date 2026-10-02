@@ -14,7 +14,9 @@ Times are Eastern.
 
 ---
 
-## Part 1 · Day one: from nothing to a marketplace (reconstructed)
+## Part 1 · Day one at a glance (summary)
+
+*A short overview. Day one word for word, both sides, is at the start of Part 2. The chats that led to the idea are in the Prologue.*
 
 ### The starting point
 The owner runs a surplus/consignment warehouse in Virginia and wanted a phone-first marketplace, nextownermarket.com, that he could scale nationally and eventually sell. He works from a Samsung Z Fold 6, so every screen had to be thumb-friendly and every instruction short. He set the rules early, and they were written into the project so no future session forgets them:

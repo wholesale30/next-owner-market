@@ -42,7 +42,7 @@ def main():
             out.append(f"\n<sub>change id {h}</sub>\n")
     open(OUT, "w").write("\n".join(out))
     docx = OUT.replace(".md", ".docx")
-    subprocess.run(["pandoc", OUT, "-o", docx, "--from", "gfm", "--to", "docx"], check=False)
+    subprocess.run(["pandoc", OUT, "-o", docx, "--from", "gfm-tex_math_dollars", "--to", "docx"], check=False)
     if os.path.isdir("/home/claude/deliverables"): subprocess.run(["cp", docx, "/home/claude/deliverables/"], check=False)
     print("change log updated:", docx, len(commits), "changes")
 

@@ -1,6 +1,6 @@
 # Next Owner Market: Every File (File Index)
 
-*October 1, 2026, 8:30 PM. This is the complete, current set. Every document from the start of the project is in here, newest versions only. You can delete everything else in your OneDrive Next Owner Market folder and keep just these. When Claude sends an updated file later, it has the same name. Replace the old one; the newest always wins.*
+*October 2, 2026. This is the complete, current set. Every document from the start of the project is in here, newest versions only. You can delete everything else in your OneDrive Next Owner Market folder and keep just these. When Claude sends an updated file later, it has the same name. Replace the old one; the newest always wins.*
 
 *Not mixed in: the "Their Record" political project and the turntable restoration guide. Those are separate projects. The website's code lives safely on GitHub (wholesale30/next-owner-market), so it isn't in here.*
 
@@ -16,7 +16,7 @@
 
 | # | File | What it is |
 |---|---|---|
-| 4 | Next_Owner_Market_Build_Journal.docx | Every conversation since day one (September 29, 2026), your words and Claude's word for word, in order. Kept for the book. |
+| 4 | Next_Owner_Market_Build_Journal.docx | The book: every conversation, both sides word for word. It starts with the Prologue (the warehouse chats of September 7–29 that led to the idea), then day one (September 29), then every session since, including the arguments, the cussing and the fixes. |
 | 5 | Next_Owner_Market_Change_Log.docx | Every change to the site and documents: when, what, and which files |
 
 ## How the site works

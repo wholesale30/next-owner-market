@@ -29,9 +29,10 @@
     - Everything deleted can be brought back.
 17. **Test like a stranger:** signed out, at phone width, with real data.
 18. **Records are kept and sent without being asked.**
-    - **Build Journal:** every conversation, word for word, for the book.
+    - **Build Journal:** every conversation, both sides word for word (your messages and Claude's replies). It includes the arguments, the cussing, the corrections, the compliments and the back-and-forth, because how you and AI work together is the heart of the book. It runs from the first warehouse chats (Prologue, September 7–29), through day one (September 29), to now. Nothing is summarized in place of the real words.
     - **Change Log:** every change.
     - Both are sent after every batch of work, at the end of every session, and at least every two hours.
+    - Anything you say about AI, the journey or why you do this goes into the Mission Statement, with Claude's reply.
     - The User Guide, White Paper, Complete Guide and Presentation Walkthrough stay current.
 
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."

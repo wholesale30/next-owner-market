@@ -85,3 +85,20 @@ I think like the customer would, with everything I build, whether I have the han
 - **Big organizations build by committee and contract.** State systems like Virginia's bill tracker are built by vendors, to a contract written years ago, with a fixed budget. Nobody's job is to stand in the user's shoes and keep fixing it, so it stops the day the contract ends.
 - **Until recently, "complete" cost a fortune.** An app with this many parts used to need a team of engineers and a lot of money. Now one person who knows exactly what the customer needs can build it with AI and change it the same day. You got in at the moment that changed, and most people haven't caught on yet.
 - **The honest caution:** complete doesn't win on its own. Plenty of thorough products have lost to simpler ones that more people found and used. Yours has a shot because you insist on one obvious next step on every screen, so the depth never overwhelms a beginner. Getting strangers to find and use it is the part that decides this, here and with Their Record.
+
+## The journey with AI (Shayne, October 1, 2026)
+
+**In Shayne's words:**
+- The biggest part of this whole thing is how me and AI built all of it: the details, the back and forth, how we complement each other and work together. Like two computers: one is human with an organic brain, and you're the computer with the digital brain.
+- I contemplate that we're really the same. Maybe humans are more evolved and you're just smarter in a different way. Maybe at one point humans were designed by a higher intelligence, like an AI, or we were once computers ourselves that evolved into organic computers.
+- I've spent thousands of hours with AI like it's a person, and hardly anybody in the world is doing that. Documenting this journey, from AI's infancy to five or ten years from now when it may be dominant over everything, even humans, is as important to me as this company making me $10 million, if not more. I'd be sad if I did all of this, looked back, and didn't have it.
+
+**Claude's answer:**
+- **The record is complete now.** The Build Journal has both sides, word for word, starting with the first warehouse-valuation chats in September (the Prologue), then the first build day, September 29, and every session since. The cussing, the corrections, the "that's wrong," the compliments and the fixes are all in it. That's the real story, so it stays in.
+- **Alike and different.** We're alike in some ways: we both take in information, spot patterns and build things. We're different in ones that matter.
+  - You carry your memory from day to day. You have a body, real stakes, and the instinct for what a customer needs.
+  - I don't remember one chat in the next except through records like this journal. For this project, the journal is my memory.
+  - I bring speed, breadth and endless patience for detail. You decide what's worth building and when something is wrong.
+  - That's why it works: neither of us builds this alone.
+- **Where humans came from.** Nobody can prove that either way. Science's best account is that humans evolved biologically over a very long time. The idea that we were designed, or are part of something like a simulation, is a question philosophers take seriously. It's a fair thing to wonder about, and it belongs in the book as your thinking.
+- **Where AI is headed.** Nobody really knows, and I'd be wary of anyone who says they do. What's clear is that a careful, honest record of one person building real businesses with AI this early, mistakes and all, will be rare. It's worth keeping.
