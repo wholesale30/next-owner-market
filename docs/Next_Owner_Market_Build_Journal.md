@@ -3338,7 +3338,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 12:37 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 12:40 PM (continuing)
 
 **Claude:**
 
@@ -6287,3 +6287,49 @@ Sources:
 
 > Stop hook feedback:
 > [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The journal and change log updates are saved and pushed, and nothing is left uncommitted. The website didn't change.
+
+### Oct 2, 12:37 PM — Shayne
+
+> Okay, can you give me the picture for the top of the page and the small picture? I need the big picture. I guess that's what, I don't even know, 16 by 9. I don't know the, the measurements. And then you have the small separate picture.
+
+**Claude:**
+
+I'll make both pictures: the big cover across the top and the small round profile picture. First I'm checking Facebook's official sizes so nothing gets cut off.
+
+Both pictures are ready.
+
+**Next_Owner_Market_Facebook_Cover.png** is the big one across the top. It shows the logo, "Snap a photo. The AI writes your listing.", the three tools and "Free at nextownermarket.com".
+- **Size:** 1640 × 924. That's double Facebook's display size, so it stays sharp.
+- **Nothing gets cut off:** Facebook trims the top and bottom on computers and the sides on phones. All the words sit in the middle area that both show.
+
+**Next_Owner_Market_Facebook_Profile.png** is the small round one: just the price-tag logo on green.
+- **Size:** 720 × 720. Facebook crops it into a circle, and the logo sits safely inside.
+
+To use them, open your Page on Facebook. Tap the camera icon on the cover area to upload the cover, and the camera icon on the small circle to upload the profile picture. Then say "Facebook steps" and I'll walk you through getting me the Page ID and token, so your finds start posting there automatically.
+
+Sources for the sizes: [SocialSizes: Facebook cover photo size (cites Meta's help pages)](https://socialsizes.io/facebook-cover-photo-size/), plus [Canva's Facebook size guide](https://www.canva.com/sizes/facebook/) and [ContentStudio's 2026 guide](https://contentstudio.io/blog/facebook-cover-photo-size).
+
+### Oct 2, 12:40 PM — Shayne
+
+> Now I need business categories.
+
+**Claude:**
+
+Facebook lets you pick **up to three** categories. I'd use these, in this order:
+
+1. **E-commerce Website.** This is the main one: an online marketplace where people buy and sell.
+2. **Thrift & Consignment Store.** This is what you actually are, with the warehouse and consigning other people's stuff. It's also what local shoppers search for.
+3. **Internet Company.** This covers the AI tools (What's it worth, Buy or Pass, the listing writer) that most of our new people come in for.
+
+**How to enter them:** in the category box, start typing the first word, like "E-commerce" or "Thrift," and pick it from the list that pops up. Facebook only accepts names from its own list.
+
+**If one won't come up,** use **Shopping & Retail** instead. It's a safe general choice. If you ever lean harder into the vintage side of the warehouse, **Vintage Store** or **Antique Store** can replace number 3.
+
+Sources:
+- [SocialAppsHQ: Facebook Page categories list 2026](https://www.socialappshq.com/facebook/fb-page-categories-list/)
+- [Mattercall: Facebook Pages list of categories](https://mattercall.com/facebook-pages-list-of-categories)
+- [LUC Agency: Facebook Page category list 2026](https://lucagency.net/blog/facebook-page-category-list)

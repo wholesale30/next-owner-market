@@ -38,6 +38,7 @@
 | 13 | Next_Owner_Market_Tool_Marketing_Plan.docx | Getting eBay, Poshmark, Mercari, Facebook and Etsy sellers to use the tool |
 | 14 | Next_Owner_Market_Launch_Kit.docx | The 30-day launch plan: demo video, groups, creators, calendar |
 | 15 | Next_Owner_Market_Share_Message.docx | Ready-to-send announcement message |
+| 15a | Next_Owner_Market_Facebook_Page_Kit.docx | Everything to paste into the Facebook Page: name, categories, bio, About, button, first post (plus the cover and profile pictures) |
 
 ## Research for future add-ons
 
