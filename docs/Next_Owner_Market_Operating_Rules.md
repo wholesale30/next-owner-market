@@ -34,5 +34,18 @@
     - Both are sent after every batch of work, at the end of every session, and at least every two hours.
     - Anything you say about AI, the journey or why you do this goes into the Mission Statement, with Claude's reply.
     - The User Guide, White Paper, Complete Guide and Presentation Walkthrough stay current.
+19. **One complete answer, first time, every field spelled out (added Oct 2, 2026).**
+    - If something is knowable, the first answer is the final answer. Look it up first and check the real current state, including who controls it.
+    - Give ONE message with the exact count up front ("6 new, 2 edits"), then every item with every field written out (type, name, value, priority) and what to leave alone.
+    - Never change the list midstream, and keep the same order every time. If something has to change, say what changed and that you do not have to redo anything.
+    - Know how the screen behaves before you hit it (gray text in a box is a hint, not a value; Save stays gray until every opened form is filled or deleted). Read every field of your screenshots and spot empty required boxes before you have to ask.
+    - After you save, Claude checks it live and tells you. You are never sent to check.
+    - Why this exists: the shayneforva.com DNS fix took over 30 minutes and should have taken 5.
+20. **Send the records after EVERY batch, however small (added Oct 2, 2026).**
+    - No "too small to send." After any deploy or change, the Build Journal, Change Log and Operating Rules .docx files come into the chat.
+    - The back and forth is the book, and the updated files are what gets passed to the next app.
+    - These rules live in the master files (this document, the Claude skill, each project's CLAUDE.md), not only in Claude's memory.
+    - On the political posting app a Stop hook blocks Claude from ending a turn if there is a change newer than the last send. Every new project gets the same scripts and hook first.
+    - Why this exists: a fix on Oct 2 at 6:14 PM was deployed and the files were not sent until he pointed it out.
 
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."
