@@ -328,3 +328,19 @@ Built on how people actually decide: one obvious next step, see the value before
 - **Facebook Page posts** use the branded card, not the bare photo. The card shows the item's photo, its value or price, "Next Owner Market" and nextownermarket.com: `/valued/<slug>/opengraph-image` for finds and `/item/<sku>/opengraph-image` for listings.
 - **Captions** link to the page and to the free tool (/thrift or /worth).
 - **Link previews:** when anyone pastes a find's link into Facebook, a text or Messenger, the same branded card shows as the preview.
+
+## "Something wrong? Tell it" (Oct 2, 2026)
+
+**What it is:** a box right under the answer on What's it worth, Buy or Pass and Sort the pile. The person types or talks a correction, for example "it's the 1978 model," "missing the remote" or "you missed the drill." The same photos are checked again with that correction and the answer updates in place. No starting over, and it doesn't use a free lookup.
+
+**How each tool handles it:**
+
+| Tool | What the correction does | Limit |
+|---|---|---|
+| What's it worth (`/api/worth`) | Sends `correction` plus the previous answer. No charge. | 30 fixes per person per day |
+| Buy or Pass (`/api/buy-or-pass`) | Sends `correction` plus `prev_id`. Updates the **same** check, so its share link stays the same. A share page gets remade from the corrected answer the next time it's shared. Works signed out, within 6 hours of the check. | 5 fixes per check |
+| Sort the pile (`/api/pile`) | Sends `correction` plus the previous list and `prev_scan_id`. Re-sorts the same scan. | 20 fixes per day |
+
+**What the AI is told:** trust what the person says about the item (model, condition, what's missing) unless the photos clearly show otherwise, and say in one sentence what changed.
+
+**Where it lives:** `src/components/FixBox.tsx`.

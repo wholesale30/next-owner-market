@@ -402,3 +402,9 @@ Right under every answer is a big **📣 Share this find** button. Tapping it gi
 **🔒 It's private.** No name, no email, no address, no location. People only see the item, its photo and what it's worth.
 
 **Thrift Pro ($3.99 a month)** gives you unlimited checks if 5 a day isn't enough.
+
+## Fix a wrong answer (Oct 2, 2026)
+
+If What's it worth, Buy or Pass or Sort the pile gets something wrong, tap **✏️ Something wrong? Tell it and it re-checks**, right under the answer. Type or tap the mic and say what's wrong ("it's the 1978 model," "the lid is missing," "that's real gold"), then tap **🔄 Update the answer**.
+
+It re-checks your same photos with your correction. It's free and doesn't use one of your lookups.

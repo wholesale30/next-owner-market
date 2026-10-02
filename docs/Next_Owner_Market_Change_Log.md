@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 2:35 PM from the project history (187 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 7:17 PM from the project history (190 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1380,3 +1380,24 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.md`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id 9e2c29c</sub>
+
+### 14:35 — Prologue: add the Sept 22, 26 and 28 warehouse chats word for word
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_prologue.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id c3e44e1</sub>
+
+### 18:21 — Operating rules: add rule 19 (one complete answer) and rule 20 (send records after every batch)
+
+- **Documents:** `docs/Next_Owner_Market_Operating_Rules.docx`, `docs/Next_Owner_Market_Operating_Rules.md`
+
+<sub>change id bfee1fc</sub>
+
+### 19:14 — Something wrong? Tell it: fix box under every AI answer (What's it worth, Buy or Pass, Sort the pile). Type or talk a correction, same photos re-checked, free, updates the same check
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/buy-or-pass/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/worth/route.ts`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/FixBox.tsx`
+
+<sub>change id 3756bc5</sub>
