@@ -9,8 +9,10 @@ import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/photo";
 import ShareValuation from "@/components/ShareValuation";
 import FixBox from "@/components/FixBox";
+import PartsBox, { type PartView } from "@/components/PartsBox";
 
 type Result = {
+  missing_parts?: PartView[];
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
   raise_value: string[]; best_places: { place: string; why: string }[]; ship_or_local: string; watch_out: string | null; listing: { title: string; description: string }; weight_lbs: number; box: string;
 };
@@ -125,6 +127,7 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
             <p className="text-sm">{res.why}</p>
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
+          <PartsBox parts={res.missing_parts} nowLow={res.value_low} nowHigh={res.value_high} />
           <FixBox onFix={fix} />
           <ShareValuation key={fixes} photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
           <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={reset}>📸 Check another item</button>

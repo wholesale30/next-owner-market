@@ -8,8 +8,9 @@ import { runVision, FEES } from "@/lib/ai-engine";
 export const maxDuration = 60;
 
 import { BP_FREE_DAILY } from "@/lib/thrift";
+import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 
-type Out = { what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: "ship" | "local" | "either"; shipping_est: number; confidence: "high" | "medium" | "low"; why: string; watch_out: string | null; weight_lbs: number; box: string; listing_title: string };
+type Out = { missing_parts?: MissingPart[]; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: "ship" | "local" | "either"; shipping_est: number; confidence: "high" | "medium" | "low"; why: string; watch_out: string | null; weight_lbs: number; box: string; listing_title: string };
 
 const nyDay = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 async function bump(key: string, max: number) {
@@ -80,8 +81,8 @@ export async function POST(req: Request) {
   if (!photoUrls.length) return NextResponse.json({ error: "Add a photo first." }, { status: 400 });
 
   const r = await runVision<Out>({
-    name: "buy_or_pass", userId: user?.id || "anon", photoUrls, maxPhotos: 4, maxTokens: 1200, charge,
-    prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}${prev ? `Your earlier answer said this was "${String(prev.what).slice(0, 200)}", reselling for about $${Math.round(Number(prev.resale_low))}-$${Math.round(Number(prev.resale_high))}. The person says that's not right: "${String(correction).slice(0, 600)}". Look again with this correction. Trust what they tell you about the item (exact model, what's missing or broken, condition, what it came with) unless the photo clearly shows otherwise, and redo everything from scratch. In "why", say in one sentence what changed. ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.`,
+    name: "buy_or_pass", userId: user?.id || "anon", photoUrls, maxPhotos: 4, maxTokens: 1700, charge,
+    prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}${prev ? `Your earlier answer said this was "${String(prev.what).slice(0, 200)}", reselling for about $${Math.round(Number(prev.resale_low))}-$${Math.round(Number(prev.resale_high))}. The person says that's not right: "${String(correction).slice(0, 600)}". Look again with this correction. Trust what they tell you about the item (exact model, what's missing or broken, condition, what it came with) unless the photo clearly shows otherwise, and redo everything from scratch. In "why", say in one sentence what changed. ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.${PART_PROMPT}`,
     schema: { type: "object", properties: {
       what: { type: "string" }, condition_guess: { type: "string" },
       resale_low: { type: "number" }, resale_high: { type: "number" },
@@ -93,6 +94,7 @@ export async function POST(req: Request) {
       watch_out: { type: ["string", "null"] },
       weight_lbs: { type: "number" }, box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
       listing_title: { type: "string", description: "max 80 chars" },
+      missing_parts: PART_SCHEMA,
     }, required: ["what", "condition_guess", "resale_low", "resale_high", "best_place", "ship_or_local", "shipping_est", "confidence", "why", "weight_lbs", "box", "listing_title"] },
   });
   if (!r.ok) {
@@ -118,14 +120,24 @@ export async function POST(req: Request) {
   const best = places.reduce((a, p) => (p.net_low > a.net_low + 0.5 ? p : a), aiPick);
   const net_low = best.net_low, net_high = best.net_high;
   const verdict = net_low >= 15 ? "buy" : net_high >= 15 && net_low >= 0 ? "maybe" : "pass";
-  const max_pay = Math.max(0, Math.floor(net_low + cost - 15)); // the most you can pay and still clear about $15 at the low end
+  const max_pay = Math.max(0, Math.floor(net_low + cost - 15));
+  // Missing a part? What you'd keep at the same place if you buy the part (its high price) and sell it complete
+  const bestFee = FEES.find((f) => f.key === best.key) || FEES[0];
+  const netAt = (price: number, partCost: number) => {
+    const fee = bestFee.key === "poshmark" && price < 15 ? 2.95 : price * bestFee.pct / 100 + bestFee.fixed;
+    return r2(price - fee - (bestFee.key === "facebook" || bestFee.key === "nom" ? 0 : ship) - cost - partCost);
+  };
+  const parts = (await withPartLinks(o.missing_parts)).map((p) => {
+    const lo = netAt(p.value_with_low, p.price_high), hi = netAt(p.value_with_high, p.price_high);
+    return { ...p, net_with_low: lo, net_with_high: hi, verdict_with: lo >= 15 ? "buy" : hi >= 15 && lo >= 0 ? "maybe" : "pass" };
+  }); // the most you can pay and still clear about $15 at the low end
   const row = { what: o.what, paid: cost || null, resale_low: o.resale_low, resale_high: o.resale_high, net_low, net_high, verdict, photo_url: photoUrls[0] || null, best_place: best.key, listing_title: o.listing_title, why: o.why, condition_guess: o.condition_guess, watch_out: o.watch_out || null, ship_or_local: o.ship_or_local };
   // A correction updates the same check (same share link); a shared page gets remade from the corrected answer next time it's shared
   const { data: scan } = prev
     ? await d.from("buy_pass_scans").update({ ...row, valuation_slug: null, shared: false }).eq("id", prev.id).select("id").single()
     : await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, ...row }).select("id").single();
   const fee = FEES.find((f) => f.key === best.key) || FEES[0];
-  const res = NextResponse.json({ ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note }, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key });
+  const res = NextResponse.json({ ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note }, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key, missing_parts: parts });
   if (!user && !prev) res.cookies.set("nom_bp", nyDay(), { maxAge: 60 * 60 * 26, httpOnly: true, sameSite: "lax", path: "/" });
   return res;
 }
