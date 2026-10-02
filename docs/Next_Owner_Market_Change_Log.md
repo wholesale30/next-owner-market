@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 8:19 PM from the project history (178 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 1, 2026 8:31 PM from the project history (180 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1319,3 +1319,16 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id e5f4f06</sub>
+
+### 20:19 — Complete file set: Operating Rules doc, new File Index, Launch Kit and Share Message Word copies in docs; journal dates run through today
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Operating_Rules.docx`, `docs/Next_Owner_Market_Operating_Rules.md`, `docs/Next_Owner_Market_Share_Message.docx`, `docs/journal_part1.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md` (+1 more)
+- **Automation scripts:** `scripts/journal.py`
+
+<sub>change id 2f09e5c</sub>
+
+### 20:28 — Mission Statement: how I build (think like the customer)
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Mission_Statement.docx`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id b6bdd56</sub>

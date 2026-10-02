@@ -67,3 +67,21 @@ What Shayne wrote the night the site came together, to the people closest to him
 ## How I build (Shayne, October 1, 2026)
 
 I think like the customer would, with everything I build, whether I have the hands-on experience or not. Other people build one little piece, like a scan app for thrift stores, and most of it is half done. I build the whole thing, everything the person needs in one place, and I keep using it, seeing what doesn't work, and upgrading it until it's complete and precise. I build my political project, Their Record, the same way.
+
+## The conversation behind it (October 1, 2026, evening)
+
+**Shayne asked:** How am I the only one in the world who thinks this stuff up, keeps perfecting it, keeps coming up with more ideas, sees what doesn't work and keeps upgrading?
+
+**Claude's answer:**
+- You're not the only person who's had pieces of these ideas. That's why the paid thrift apps exist.
+- What's rare is what you do with them. You stand in a real Goodwill aisle and use your own app like a stranger would. You notice the share button sits too low or a button looks like fine print, and you get it fixed the same hour. You know the business from the inside, with a warehouse full of pallets.
+- Most companies with millions of dollars never get that close to their own customers. That combination is a real advantage.
+- The honest caution: nothing is guaranteed to hit, even with several apps. What turns this into money is the less exciting part: strangers checking finds, people sharing them, and the first real sale from someone you don't know. Once real people are using it, we know what to perfect next, and copying the playbook into the next app makes sense.
+
+**Shayne added:** It isn't just the hands-on experience. I do this with everything, whether I have the hands-on or not; I think how the customer would think. Somebody builds a little scan app for thrift stores, each company thinks about one little thing and most of it is half done, but nobody builds the whole thing with every feature in one. It's the same with Their Record: political people can't believe it. Groups spend hundreds of millions on politics, and the state of Virginia's own bill tracker does a hundredth of what mine will do, and isn't even complete.
+
+**Claude's answer, on why the people with money don't build like this.** It's mostly how they're set up, not that they can't think of it:
+- **Companies build one small thing on purpose.** Investors and advice books say pick one feature, launch fast and see if it sticks. So you get a scan app, a listing app and a fee calculator, each from a different company, and none of them talk to each other.
+- **Big organizations build by committee and contract.** State systems like Virginia's bill tracker are built by vendors, to a contract written years ago, with a fixed budget. Nobody's job is to stand in the user's shoes and keep fixing it, so it stops the day the contract ends.
+- **Until recently, "complete" cost a fortune.** An app with this many parts used to need a team of engineers and a lot of money. Now one person who knows exactly what the customer needs can build it with AI and change it the same day. You got in at the moment that changed, and most people haven't caught on yet.
+- **The honest caution:** complete doesn't win on its own. Plenty of thorough products have lost to simpler ones that more people found and used. Yours has a shot because you insist on one obvious next step on every screen, so the depth never overwhelms a beginner. Getting strangers to find and use it is the part that decides this, here and with Their Record.
