@@ -63,3 +63,7 @@ What Shayne wrote the night the site came together, to the people closest to him
 - nextownermarket.com/why — the full statement
 - nextownermarket.com/start — the eight-step "Start with one box" path
 - Linked from the home page hero, the Pro page, every tool page, and the footer
+
+## How I build (Shayne, October 1, 2026)
+
+I think like the customer would, with everything I build, whether I have the hands-on experience or not. Other people build one little piece, like a scan app for thrift stores, and most of it is half done. I build the whole thing, everything the person needs in one place, and I keep using it, seeing what doesn't work, and upgrading it until it's complete and precise. I build my political project, Their Record, the same way.

@@ -112,7 +112,7 @@ Shipping lockdown deployed. The owner refreshed Nikki's GT500 lamp as a test buy
 
 ## Part 2 · Verbatim sessions
 
-## Session: Sep 30, 3:18 AM → Oct 1, 8:18 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 1, 8:20 PM (continuing)
 
 **Claude:**
 
@@ -2890,3 +2890,18 @@ The latest Build Journal update is saved and pushed. Nothing is left uncommitted
 **Claude:**
 
 I'll put every current Next Owner Market document into one zip with a file list inside, so you can replace everything in that OneDrive folder at once. First I'm checking every file is the newest version and the journal covers the whole project from day one.
+
+The download is **Next_Owner_Market_All_Files_Oct_1_2026.zip**: every Next Owner Market document, newest versions only, 17 Word files. I opened each one to make sure it works. Delete everything in that OneDrive folder, unzip this, and that's your whole set.
+
+**What's in it:**
+- **Start here:** the File Index (one line on what each file is), Operating Rules (how we work, plus the facts never to get wrong, like your one 25,000 sq ft warehouse), and your Mission Statement.
+- **The book:** the Build Journal, with every conversation word for word from day one (September 29) through tonight, your messages exactly as you said them. Also the Change Log of every change.
+- **How the site works:** Complete Guide, User Guide, Presentation Walkthrough, White Paper and Seller Terms.
+- **Growth and money:** Beat the Competition, the Thrift Shopper Growth Plan, the Tool Marketing Plan, the Launch Kit and the Share Message.
+- **Future add-ons:** the Add-On Modules research and the Estate Pack legal research.
+
+**Left out on purpose, so nothing gets mixed:**
+- The "Their Record" political project and the turntable guide. Those are separate projects.
+- The website's code. It's stored safely on GitHub.
+
+**From now on,** when I send an updated file it keeps the same name. Just replace the old one; the newest always wins. The journal keeps adding every step we take, so it's always the full record for the book.
