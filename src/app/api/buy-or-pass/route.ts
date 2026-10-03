@@ -9,10 +9,11 @@ export const maxDuration = 60;
 
 import { BP_FREE_DAILY } from "@/lib/thrift";
 import { saveLookup } from "@/lib/lookups";
+import { ORIGIN_SCHEMA, ORIGIN_PROMPT, cleanOrigin } from "@/lib/origin";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 import { LADDER_SCHEMA, LADDER_PROMPT, cleanLadder, type Ladder } from "@/lib/ladder";
 
-type Out = { condition_ladder?: Partial<Ladder>; missing_parts?: MissingPart[]; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: "ship" | "local" | "either"; shipping_est: number; confidence: "high" | "medium" | "low"; why: string; watch_out: string | null; weight_lbs: number; box: string; listing_title: string };
+type Out = { origin?: unknown; condition_ladder?: Partial<Ladder>; missing_parts?: MissingPart[]; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: "ship" | "local" | "either"; shipping_est: number; confidence: "high" | "medium" | "low"; why: string; watch_out: string | null; weight_lbs: number; box: string; listing_title: string };
 
 const nyDay = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 /** Count one more against `key`; returns the new count, or 0 when it's already at `max`. */
@@ -86,7 +87,7 @@ export async function POST(req: Request) {
 
   const r = await runVision<Out>({
     name: "buy_or_pass", userId: user?.id || "anon", photoUrls, maxPhotos: 4, maxTokens: 1700, charge,
-    prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}${prev ? `Your earlier answer said this was "${String(prev.what).slice(0, 200)}", reselling for about $${Math.round(Number(prev.resale_low))}-$${Math.round(Number(prev.resale_high))}. The person says that's not right: "${String(correction).slice(0, 600)}". Look again with this correction. Trust what they tell you about the item (exact model, what's missing or broken, condition, what it came with) unless the photo clearly shows otherwise, and redo everything from scratch. In "why", say in one sentence what changed. ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.${LADDER_PROMPT}${PART_PROMPT}`,
+    prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}${prev ? `Your earlier answer said this was "${String(prev.what).slice(0, 200)}", reselling for about $${Math.round(Number(prev.resale_low))}-$${Math.round(Number(prev.resale_high))}. The person says that's not right: "${String(correction).slice(0, 600)}". Look again with this correction. Trust what they tell you about the item (exact model, what's missing or broken, condition, what it came with) unless the photo clearly shows otherwise, and redo everything from scratch. In "why", say in one sentence what changed. ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.${LADDER_PROMPT}${ORIGIN_PROMPT}${PART_PROMPT}`,
     schema: { type: "object", properties: {
       what: { type: "string" }, condition_guess: { type: "string" },
       resale_low: { type: "number" }, resale_high: { type: "number" },
@@ -100,7 +101,8 @@ export async function POST(req: Request) {
       listing_title: { type: "string", description: "max 80 chars" },
       missing_parts: PART_SCHEMA,
       condition_ladder: LADDER_SCHEMA,
-    }, required: ["condition_ladder", "what", "condition_guess", "resale_low", "resale_high", "best_place", "ship_or_local", "shipping_est", "confidence", "why", "weight_lbs", "box", "listing_title"] },
+      origin: ORIGIN_SCHEMA,
+    }, required: ["origin", "condition_ladder", "what", "condition_guess", "resale_low", "resale_high", "best_place", "ship_or_local", "shipping_est", "confidence", "why", "weight_lbs", "box", "listing_title"] },
   });
   if (!r.ok) {
     if (anonKey) await d.from("settings").delete().eq("key", anonKey).then(() => {}, () => {});
@@ -147,7 +149,7 @@ export async function POST(req: Request) {
     ? await d.from("buy_pass_scans").update({ ...row, valuation_slug: null, shared: false }).eq("id", prev.id).select("id").single()
     : await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, ...row }).select("id").single();
   const fee = FEES.find((f) => f.key === best.key) || FEES[0];
-  const body = { ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key, missing_parts: parts, ladder, condition_ladder: undefined, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note } };
+  const body = { ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key, missing_parts: parts, ladder, condition_ladder: undefined, origin: cleanOrigin(o.origin), fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note } };
   const lookupId = user && scan?.id ? await saveLookup({ ownerId: user.id, tool: "buy_or_pass", title: o.what, photoUrls, hints, result: body, low: o.resale_low, high: o.resale_high, refId: scan.id }) : null;
   const res = NextResponse.json({ ...body, lookup_id: lookupId });
   if (!user && !prev) res.cookies.set("nom_bp", nyDay(), { maxAge: 60 * 60 * 26, httpOnly: true, sameSite: "lax", path: "/" });

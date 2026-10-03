@@ -455,3 +455,11 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - **`/api/ai-listing/revise`:** text only, Sonnet, about 0.5–1¢, free, 60 a day per person, logged as `listing_rewrite`. It rewrites title, description and condition from a spoken or typed instruction.
 - **`RewriteBox`** sits at the top of the Edit details (`#rewrite`) with mic, Rewrite and Undo. On the listing page, a "✨ Change the words" button sits by the description.
 - **Tested** on a messy note-filled listing ("Seller notes… dusty… buyer says they will clean up… AI first thought"). It came back as "Lot of 4 Dell OptiPlex 7070 Desktop Computers - New Takeoffs, Never Used", with a clean 4-sentence description and the condition "New takeoffs, never used. Untested."
+
+## "About it" origin facts (Oct 3, 2026)
+
+- **`src/lib/origin.ts`:** `ORIGIN_SCHEMA` (maker, made_in, year_made, original_price plus its year, new_today plus a note, and `how_known`: label, model_records or estimate) and `ORIGIN_PROMPT`.
+- **Where it's used:** added to `/api/worth` and `/api/buy-or-pass` in the same call. `/api/pile` gets the light version (`year_made`, `price_new` per item). Pieces of a lot get `year_made` and `original_price`.
+- **`cleanOrigin`** tidies the answer (text-for-object, "unknown", zeros). `inTodaysDollars` converts the original price using US CPI-U annual averages (BLS, 1982–84 = 100): every 5 years from 1950, then yearly from 2020 to 2025, interpolated. It only shows when it's more than 10% higher.
+- **UI:** `OriginCard` sits under the main answer on What's it worth (before Write my listing) and on Buy or Pass. The pile shows one line per item.
+- **Tested** on the owner's photos. Lasko Cascade humidifier: Lasko, USA, about 1998–2002, sold new for $80 in 2000 (about $149 today), replacement about $90. The receiver stack gave makers and years; prices come per piece.

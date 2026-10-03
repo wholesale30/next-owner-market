@@ -491,3 +491,14 @@ The owner gets every one right away. Your own sends show on that page with where
 Don't like how the listing reads? On any listing tap **✨ Change the words**, or open **Edit**. At the top is **✨ Tell it what to change**. Tap the mic and say it, for example "take out the part about dust, they're new and never used, make it a good listing." Then tap **🔄 Rewrite it**. The title, description and condition line are rewritten. Check them and tap **Save**. **↩ Undo** puts the old words back. It's free.
 
 **Your notes stay out of the listing:** what you tell the AI ("they're dusty from the warehouse but new") is used as facts. The listing just says "New, never used." It never says "seller says…" or repeats your notes.
+
+## 📋 About it: who made it, when, and what it cost new (Oct 3, 2026)
+
+Every What's it worth and Buy or Pass answer now has an **📋 About it** card right under the price. It shows:
+
+- **Made by** and **Made in**;
+- **Year made**;
+- **Sold new for**, with the year and about what that is in today's money;
+- **New today**, or what replaced it.
+
+It says how it knows: read off the label in your photo, known for that model, or a best estimate. **Tip:** photograph the label or model plate to make it exact. On a lot, each piece shows its year and what it sold for new. On Sort the pile, each item's line shows "made 1990 · new $250" when it can tell.

@@ -8,6 +8,7 @@ import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib
 import { LADDER_SCHEMA, LADDER_PROMPT, LISTING_HONESTY, BUYER_VOICE, cleanLadder, type Ladder } from "@/lib/ladder";
 import { createHash } from "crypto";
 import { saveLookup } from "@/lib/lookups";
+import { ORIGIN_SCHEMA, ORIGIN_PROMPT, cleanOrigin } from "@/lib/origin";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 export const maxDuration = 120;
@@ -80,6 +81,7 @@ export async function POST(req: Request) {
       box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
       missing_parts: PART_SCHEMA,
       condition_ladder: LADDER_SCHEMA,
+      origin: ORIGIN_SCHEMA,
       pieces: {
         type: "array", maxItems: 20,
         description: "ONLY when the photos show 2 or more separate sellable items (a stack, a box, a set that can be split). One entry per piece; identical pieces can share an entry with qty. Leave empty for a single item. When filled, value_low/value_high and listing are for selling them ALL together as one lot.",
@@ -90,15 +92,17 @@ export async function POST(req: Request) {
           note: { type: "string", description: "one short sentence: why it's worth that (demand, rarity, condition)" },
           listing_title: { type: "string", description: "max 80 chars" },
           listing_description: { type: "string", description: "2-4 honest sentences for selling this one alone" },
+          year_made: { type: ["string", "null"], description: "year or range this piece was made, if you can tell" },
+          original_price: { type: ["number", "null"], description: "what this piece sold for new when it came out, USD, if known" },
         }, required: ["name", "qty", "value_low", "value_high", "note", "listing_title", "listing_description"] },
       },
       sell_advice: { type: ["string", "null"], description: "when pieces is filled: one sentence, sell as a lot or one by one, and why (time, shipping, which pieces to pull out and sell alone)" },
     },
-    required: ["what", "condition_guess", "value_low", "value_high", "confidence", "why", "raise_value", "best_places", "ship_or_local", "listing", "weight_lbs", "box", "condition_ladder"],
+    required: ["what", "condition_guess", "value_low", "value_high", "confidence", "why", "raise_value", "best_places", "ship_or_local", "listing", "weight_lbs", "box", "condition_ladder", "origin"],
   } as const;
   const content: Anthropic.MessageParam["content"] = [
     ...(await aiImages(photoUrls.slice(0, 6))),
-    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. If the photos show several separate items (a stack of receivers, a box of tools, a set of dishes that can be split), price the whole lot AND list every piece in "pieces" with its own value sold alone; a lot usually sells for less than the pieces added up, so be realistic about both.${LADDER_PROMPT}${LISTING_HONESTY}${BUYER_VOICE}${PART_PROMPT} Record your appraisal with the appraise tool.` },
+    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. If the photos show several separate items (a stack of receivers, a box of tools, a set of dishes that can be split), price the whole lot AND list every piece in "pieces" with its own value sold alone; a lot usually sells for less than the pieces added up, so be realistic about both.${LADDER_PROMPT}${ORIGIN_PROMPT}${LISTING_HONESTY}${BUYER_VOICE}${PART_PROMPT} Record your appraisal with the appraise tool.` },
   ];
   let raw = "";
   try {
@@ -115,7 +119,7 @@ export async function POST(req: Request) {
     const parts = await withPartLinks(out.missing_parts);
     const o3 = out as { condition_ladder?: Partial<Ladder>; value_low?: number; value_high?: number };
     const ladder = cleanLadder(o3.condition_ladder, Number(o3.value_low || 0), Number(o3.value_high || 0));
-    const result = { ...out, missing_parts: parts, condition_ladder: ladder };
+    const result = { ...out, missing_parts: parts, condition_ladder: ladder, origin: cleanOrigin((out as { origin?: unknown }).origin) };
     const r2 = result as { what?: string; value_low?: number; value_high?: number };
     const lookupId = await saveLookup({ id: lookup_id, ownerId: user.id, tool: "worth", title: r2.what || "", photoUrls, hints: [hints, fixing ? correction : null].filter(Boolean).join(". "), result, low: r2.value_low, high: r2.value_high });
     return NextResponse.json({ result, lookup_id: lookupId });

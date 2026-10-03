@@ -13,10 +13,11 @@ import PartsBox, { type PartView } from "@/components/PartsBox";
 import PhotoEditor from "@/components/PhotoEditor";
 import OutOfUses from "@/components/OutOfUses";
 import ConditionLadder, { type LadderView } from "@/components/ConditionLadder";
+import OriginCard, { type OriginView } from "@/components/OriginCard";
 
-type Piece = { name: string; qty: number; value_low: number; value_high: number; note: string; listing_title: string; listing_description: string };
+type Piece = { year_made?: string | null; original_price?: number | null; name: string; qty: number; value_low: number; value_high: number; note: string; listing_title: string; listing_description: string };
 type Result = {
-  missing_parts?: PartView[]; condition_ladder?: LadderView | null; pieces?: Piece[]; sell_advice?: string | null;
+  missing_parts?: PartView[]; condition_ladder?: LadderView | null; origin?: OriginView | null; pieces?: Piece[]; sell_advice?: string | null;
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
   raise_value: string[]; best_places: { place: string; why: string }[]; ship_or_local: string; watch_out: string | null; listing: { title: string; description: string; condition?: string }; weight_lbs: number; box: string;
 };
@@ -173,11 +174,12 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
             <div className="text-center py-2">
               <p className="text-xs muted uppercase tracking-wide">{lot ? `All ${count} together, sold as one lot` : "Worth about"}</p>
               <p className="text-4xl font-extrabold">{money(res.value_low)} – {money(res.value_high)}</p>
-              <p className="text-xs muted">{res.retail_new ? `New today: ${money(res.retail_new)} · ` : ""}Confidence: {res.confidence}</p>
+              <p className="text-xs muted">{res.retail_new && !res.origin ? `New today: ${money(res.retail_new)} · ` : ""}Confidence: {res.confidence}</p>
             </div>
             <p className="text-sm">{res.why}</p>
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
+          <OriginCard o={res.origin} fallbackNew={res.retail_new} />
           <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
             <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!!busy} onClick={() => listIt()}>{busy || (lot ? "📝 Write the listing for the lot" : "📝 Write my listing")}</button>
             <p className="text-xs muted text-center">One tap: your Facebook post is written, plus eBay, OfferUp, Mercari and 5 more. Free to list here.</p>
@@ -221,6 +223,7 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
                     <p className="font-bold whitespace-nowrap">{money(x.value_low)}–{money(x.value_high)}{x.qty > 1 ? " each" : ""}</p>
                   </div>
                   <p className="text-sm muted">{x.note}</p>
+                  {(x.year_made || x.original_price) && <p className="text-xs muted">{[x.year_made ? `Made ${x.year_made}` : null, x.original_price ? `sold new for ${money(x.original_price)}` : null].filter(Boolean).join(" · ")}</p>}
                   <details className="text-sm"><summary className="underline cursor-pointer">Its own description</summary><p className="pt-1 font-semibold">{x.listing_title}</p><p className="whitespace-pre-wrap">{x.listing_description}</p></details>
                   <button type="button" className="btn btn-secondary w-full" disabled={!!busy} onClick={() => listIt(x)}>📝 List this one by itself</button>
                 </div>

@@ -11,7 +11,7 @@ import PartsBox, { type PartView } from "@/components/PartsBox";
 import Mic from "@/components/Mic";
 
 
-type Item = { fixup?: string; fixup_low?: number | null; fixup_high?: number | null; fixup_tip?: string | null; missing_parts?: PartView[]; name: string; category?: string; condition?: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: string; needs_expert: boolean; listing_title?: string; listing_description?: string; weight_lbs?: number; box?: string; photo_index: number };
+type Item = { year_made?: string | null; price_new?: number | null; fixup?: string; fixup_low?: number | null; fixup_high?: number | null; fixup_tip?: string | null; missing_parts?: PartView[]; name: string; category?: string; condition?: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: string; needs_expert: boolean; listing_title?: string; listing_description?: string; weight_lbs?: number; box?: string; photo_index: number };
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 const ACT: Record<string, { label: string; color: string; emoji: string }> = { sell: { label: "Sell", color: "var(--ok)", emoji: "💵" }, keep: { label: "Keep", color: "var(--brand)", emoji: "🏠" }, donate: { label: "Donate", color: "var(--accent)", emoji: "🎁" }, toss: { label: "Toss", color: "var(--muted)", emoji: "🗑" } };
 
@@ -92,7 +92,7 @@ export default function PileClient({ meId, role, initial }: { meId: string | nul
       {res.items.map((x, i) => (
         <div key={i} className="card p-3 space-y-1" style={{ borderLeft: `4px solid ${ACT[x.action].color}` }}>
           <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0"><p className="font-bold leading-tight">{x.name}</p><p className="text-xs muted">{[x.category, x.condition].filter(Boolean).join(" · ")}</p></div>
+            <div className="min-w-0"><p className="font-bold leading-tight">{x.name}</p><p className="text-xs muted">{[x.category, x.condition, x.year_made ? `made ${x.year_made}` : null, x.price_new ? `new ${money(x.price_new)}` : null].filter(Boolean).join(" · ")}</p></div>
             <p className="font-extrabold whitespace-nowrap">{x.action === "toss" ? "—" : `${money(x.low)}–${money(x.high)}`}</p>
           </div>
           <p className="text-sm">{x.reason}{x.needs_expert ? " ⚠ Get an expert look before selling." : ""}</p>
