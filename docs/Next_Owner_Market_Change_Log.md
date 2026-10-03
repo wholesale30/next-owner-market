@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 8:43 PM from the project history (206 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 9:07 PM from the project history (211 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1522,3 +1522,41 @@
 - **Server routes (API):** `src/app/api/ask/route.ts`
 
 <sub>change id 05aadc7</sub>
+
+### 20:44 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id 265c991</sub>
+
+### 20:51 — Records: journal
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 71b3380</sub>
+
+### 20:58 — As-is vs cleaned up vs tested: price ladder on What's it worth and Buy or Pass (with profit and verdict per step), fix-up line per item on Sort the pile; listings say untested honestly
+
+- **Server routes (API):** `src/app/api/ai-listing/route.ts`, `src/app/api/buy-or-pass/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/ConditionLadder.tsx`
+- **Shared code (logic):** `src/lib/ladder.ts`
+
+<sub>change id 6b919e2</sub>
+
+### 21:05 — My lookups: every What's it worth, Buy or Pass and Sort the pile answer saved until deleted; List it / List all / Open / Delete with Undo; add, remove and touch up photos on a saved lookup with Re-check; Change photos on every listing; Check another jumps to the top
+
+- **Buyer account & orders:** `src/app/account/page.tsx`
+- **Server routes (API):** `src/app/api/buy-or-pass/route.ts`, `src/app/api/lookups/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/worth/route.ts`
+- **Seller / staff app:** `src/app/app/items/ItemForm.tsx`, `src/app/app/items/[id]/page.tsx`, `src/app/app/layout.tsx`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/lookups/LookupsClient.tsx`, `src/app/lookups/page.tsx`, `src/app/pile/PileClient.tsx`, `src/app/pile/page.tsx`, `src/app/worth/WorthClient.tsx`, `src/app/worth/page.tsx`
+- **Shared code (logic):** `src/lib/lookups.ts`, `src/lib/thrift.ts`
+- **Database (migrations):** `supabase/migrations/036_lookups.sql`
+
+<sub>change id 1fae69a</sub>
+
+### 21:07 — Docs: price ladder, My lookups; Mission Statement: why nobody else thinks of these
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.md`
+
+<sub>change id ed730f8</sub>
