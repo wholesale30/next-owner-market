@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 8:11 PM from the project history (200 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 8:13 PM from the project history (201 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1474,3 +1474,9 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md`, `docs/Next_Owner_Market_Pro_Membership_Cost_Review.docx`, `docs/Next_Owner_Market_Pro_Membership_Cost_Review.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id abb2c64</sub>
+
+### 20:11 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id 0e042fa</sub>

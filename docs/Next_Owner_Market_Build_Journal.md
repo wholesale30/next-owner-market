@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 8:10 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 8:12 PM (continuing)
 
 **Claude:**
 
@@ -7143,3 +7143,59 @@ I'll inventory every feature that costs us money, pull real usage numbers from t
 I have everything I need. Writing the Word report now.
 
 The sed didn't match because of the escaped dollar signs. I'll fix it directly:
+
+Most $15 Pro members make us money, but "unlimited" lets one heavy user cost more than they pay. I ran the main lookups on your own photos today to get real numbers, and the full report is in **Next_Owner_Market_Pro_Membership_Cost_Review.docx**.
+
+**What one Pro member costs us a month:**
+
+| | AI cost | We keep |
+|---|---|---|
+| Light seller (about 20 listings) | $1.29 | $12.87 (86%) |
+| Typical (about 60 listings, 40 lookups) | $4.32 | $9.84 (66%) |
+| Heavy (300 listings, 200 lookups, lots of fixes) | about $26 | **we lose about $12** |
+
+Those figures are after the card fee of about 84¢ a member.
+
+**What each use costs:** a What's it worth lookup is 2¢, a lot is 3.6¢, an AI listing about 2.7¢, Buy or Pass about 1.5¢ and Sort the pile 5–10¢. Each extra photo adds 0.5¢. The "Something wrong?" fix costs the same as the lookup it re-runs. Photo touch-up costs nothing.
+
+**Three leaks I found:**
+- The free fix button allows 30 re-checks a day, which could cost about $27 a month for one person.
+- Thrift Pro at $3.99 loses about $5 on someone who scans 20 items every day.
+- Each help question costs 1.3¢, because the AI re-reads the whole User Guide every time.
+
+**Bills coming:**
+- **Vercel Pro, $20 a month:** needed before real sales; it's already on your to-do list.
+- **Supabase Pro, $25 a month:** the free plan holds about 5,000 photos, and your warehouse will pass that soon.
+
+Five to seven typical Pro members cover both.
+
+**What I'd do:**
+1. **Keep Pro at $15, but swap "unlimited" for 300 AI uses a month.** That's double what a typical member uses, so most never see the limit. Show it as "214 of 300 used" and give the first 2 fixes on each lookup free.
+2. **Sell top-ups:**
+   - 100 more uses for $6.99, which keeps about $3.49.
+   - A $39 "Power Seller" plan with 1,000 uses a month.
+   - Deep clean photos at 20 for $2.99, which keeps $1.92.
+   - All free for you, staff and anyone you comp.
+3. **Cut the AI bill 30–40%** with cheaper settings nobody will notice:
+   - the help AI remembers the User Guide between questions;
+   - Buy or Pass runs on the cheaper model;
+   - the AI reads a smaller copy of each photo, while buyers still see the full size;
+   - Snap mode runs overnight at half price.
+4. **Show real AI spending on the Operations page**, broken down by feature and by member, with an alert if anyone passes $10 in a month.
+
+Say **"go on the plan"** and I'll build all four, or change any number first.
+
+Sources:
+- [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing)
+- [Stripe Billing pricing](https://stripe.com/billing/pricing)
+- [Supabase pricing](https://supabase.com/pricing)
+- [Resend pricing](https://resend.com/pricing.md)
+- [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing)
+
+### Oct 2, 8:12 PM — Shayne
+
+> Now I want to change in the files when we keep doing these updated downloads. I want you to give everything in a zip file. That way I just keep downloading, but I don't have to go keep deleting them and stuff. And then I can see which one's the latest one in my downloads without having to go and look at each individual document. So make sure that's put into the overall operating files.
+
+**Claude:**
+
+I'll make it one dated zip every time: everything goes in, and the newest file name sorts to the top of your downloads. Then I'll write the rule into every master file.

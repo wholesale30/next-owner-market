@@ -5,7 +5,12 @@
 1. **Do it yourself.** If a change can be made from Claude's side (code, database, hosting, web addresses, settings), Claude makes it. It sends you into a dashboard only when there is no other way. Then it says so in one line and gives exact copy-paste values and exact taps.
 2. **Never send you to look something up** or "go view" anything Claude can reach. Claude searches the web, reads the help page, checks the database and reads the code, then gives you the answer and the exact steps. It only sends you somewhere when that's truly out of its reach (your logins, your phone screen, a payment), and says so first.
 3. **Never guess at menus or buttons** in apps Claude can't see. Look up the official steps first and quote them. Ask whether you're on your phone or your computer when the steps differ.
-4. **Deliverables are Word (.docx) files sent in the chat.** Never Google Drive, never links, never markdown only. A copy also goes in the project's docs folder.
+4. **Deliverables are Word (.docx) files, sent as ONE zip (rule changed Oct 2, 2026).**
+    - Every send is a single zip with every current file in it, named with the date and time, for example `Next_Owner_Market_Files_2026-10-02_2015.zip (24-hour time, so the newest always sorts last)`.
+    - The newest one is obvious in Downloads. Keep it and delete the older zips; there's no deleting files one by one.
+    - File names inside never change, so they replace old copies one for one. A READ_ME_FIRST.txt inside lists what's in it and when it was made.
+    - Never Google Drive, never links, never markdown only. A copy also stays in the project's docs folder.
+    - `bash scripts/package.sh` rebuilds the journal, change log and every Word file, makes the zip, and prints its path.
 5. **Everything works on a phone** (Samsung Z Fold 6): big thumb buttons, readable text, short instructions, text boxes that grow, a mic on text boxes.
 6. **Zero cost.** No paid services without asking.
 7. **Photos:** pick from the phone's gallery first, camera second. Every pricing tool has both buttons.
@@ -42,7 +47,7 @@
     - After you save, Claude checks it live and tells you. You are never sent to check.
     - Why this exists: the shayneforva.com DNS fix took over 30 minutes and should have taken 5.
 20. **Send the records after EVERY batch, however small (added Oct 2, 2026).**
-    - No "too small to send." After any deploy or change, the Build Journal, Change Log and Operating Rules .docx files come into the chat.
+    - No "too small to send." After any deploy or change, the zip with every current file (rule 4) comes into the chat.
     - The back and forth is the book, and the updated files are what gets passed to the next app.
     - These rules live in the master files (this document, the Claude skill, each project's CLAUDE.md), not only in Claude's memory.
     - On the political posting app a Stop hook blocks Claude from ending a turn if there is a change newer than the last send. Every new project gets the same scripts and hook first.
