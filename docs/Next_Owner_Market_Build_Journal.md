@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 8:12 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 8:13 PM (continuing)
 
 **Claude:**
 
@@ -7199,3 +7199,7 @@ Sources:
 **Claude:**
 
 I'll make it one dated zip every time: everything goes in, and the newest file name sorts to the top of your downloads. Then I'll write the rule into every master file.
+
+The zip works: 22 documents, the 2 Facebook pictures and a READ_ME_FIRST, 1.3 MB. Next I'll update the shared project copy of the rules and your master skill.
+
+Now the master skill, which every chat loads:
