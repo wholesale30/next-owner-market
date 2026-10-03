@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 8:14 PM from the project history (202 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 8:43 PM from the project history (206 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1488,3 +1488,37 @@
 - **Automation scripts:** `scripts/package.sh`
 
 <sub>change id 3222b68</sub>
+
+### 20:15 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id f91b881</sub>
+
+### 20:33 — AI allowance and costs: Pro 300/month, Power Seller $39 for 1,000, packs of 100/300, Thrift Pro 30 a day, 2 free fixes per lookup; real cost log, AI spending page, 80% heads-up, $10 alert; help guide cached; AI reads half-size photos
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Dependencies:** `package-lock.json`, `package.json`
+- **Server routes (API):** `src/app/api/ai-listing/group/route.ts`, `src/app/api/ai-listing/route.ts`, `src/app/api/ask/route.ts`, `src/app/api/buy-or-pass/route.ts`, `src/app/api/guess-weight/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/stripe/subscribe/route.ts`, `src/app/api/stripe/topup/route.ts`, `src/app/api/stripe/webhook/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Seller / staff app:** `src/app/app/items/ItemForm.tsx`, `src/app/app/items/[id]/CopyTabs.tsx`, `src/app/app/ops/OpsClient.tsx`, `src/app/app/ops/ai/page.tsx`, `src/app/app/ops/page.tsx`, `src/app/app/page.tsx`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/pile/PileClient.tsx`, `src/app/pile/page.tsx`, `src/app/pro/PlanButton.tsx`, `src/app/pro/page.tsx`, `src/app/start/page.tsx`, `src/app/terms/page.tsx`, `src/app/thrift/page.tsx`, `src/app/tools/page.tsx`, `src/app/worth/WorthClient.tsx`, `src/app/worth/page.tsx`
+- **Shared UI pieces:** `src/components/FixBox.tsx`, `src/components/OutOfUses.tsx`, `src/components/ToolPitch.tsx`, `src/components/UsesMeter.tsx`
+- **Shared code (logic):** `src/lib/ai-engine.ts`, `src/lib/ai-tool.ts`, `src/lib/automations.ts`, `src/lib/help.ts`, `src/lib/usage.ts`
+- **Database (migrations):** `supabase/migrations/035_ai_allowance.sql`
+
+<sub>change id e94fe03</sub>
+
+### 20:37 — Cost log: finish writing before the answer goes out (serverless was dropping it); guides and cost review updated
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_Pro_Membership_Cost_Review.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.md`
+- **Server routes (API):** `src/app/api/ai-listing/group/route.ts`, `src/app/api/ai-listing/route.ts`, `src/app/api/ask/route.ts`
+- **Shared code (logic):** `src/lib/ai-tool.ts`, `src/lib/automations.ts`
+
+<sub>change id 058a3fb</sub>
+
+### 20:41 — Help questions: send only the matching guide sections (about 0.5c instead of 1.3-1.8c); caching dropped because it costs more at low traffic
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Pro_Membership_Cost_Review.md`
+- **Server routes (API):** `src/app/api/ask/route.ts`
+
+<sub>change id 05aadc7</sub>
