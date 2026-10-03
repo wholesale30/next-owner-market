@@ -113,7 +113,7 @@ That's how we know for sure instead of estimating.
 
 # Built October 2, 2026
 
-The owner said go. Sections 1, 2 (except deep clean, which waits for the Google key), 3 (help caching and smaller photos) and 4 are live.
+The owner said go. Sections 1, 2 (except deep clean, which waits for the Google key), 3 and 4 are live. For section 3: photos for the AI are half size, and help questions send only the matching parts of the guide, about 0.5¢ each. Caching was tried and dropped: at our traffic it costs more than it saves.
 
 - **Measured after the change:** a photo now costs the AI 1,213 tokens instead of 2,507.
 - **That lowers every figure above:** a typical Pro member costs about \$3.50 instead of \$4.32, and a full 300-use month costs about \$5–7 instead of \$9.

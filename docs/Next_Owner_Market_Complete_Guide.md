@@ -415,7 +415,7 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 
 **Cost cuts:**
 - **Smaller photos for the AI** (`aiImage`, sharp, 1100px) cut each photo from 2,507 to 1,213 tokens, measured.
-- **Help questions** cache the User Guide (`cache_control`), so repeat questions read it at a tenth of the price.
+- **Help questions** send only the 5 User Guide sections that match the question (about 3,000 tokens instead of 14,000): about 0.5¢ a question instead of 1.3–1.8¢. Caching was tried and dropped. It saves 90% on a repeat within 5 minutes, but costs 25% extra otherwise, and our questions come far apart.
 - **Buy or Pass stays on the better model.** Accuracy is the edge over the thrift apps, and the cheaper model would save only about 0.6¢ a check.
 - **Overnight batch for Snap mode** (half price) is not built yet. Snap is staff-only, so it costs about $40 per 3,000 items, and batching would make you wait until morning. It's available if wanted.
 
