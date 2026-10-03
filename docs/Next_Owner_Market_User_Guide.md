@@ -467,7 +467,7 @@ On Buy or Pass each step also shows what you'd keep and whether it becomes a BUY
 
 ## My lookups: everything you check is saved (Oct 2, 2026)
 
-Every What's it worth, Buy or Pass and Sort the pile check is saved in **📂 My lookups** until you delete it. It's in the menu, on your account page, and under each tool. You can check a whole pallet now and list later.
+Every What's it worth, Buy or Pass and Sort the pile check is saved in **📂 My lookups** until you delete it. It's on your **Inventory / My stuff** page: a box at the top shows the ones not listed yet, with a 📝 List them button, plus a 📂 Lookups tab next to Drafts and Listed. It's also in the menu, on your account page, and under each tool. You can check a whole pallet now and list later.
 
 - **📝 List it** writes the listing (Facebook post plus 8 more sites) right from the list. **📝 List all** does every one at once, as drafts you check first.
 - **Open** brings the result back, with the fix box, the price ladder and your photos.

@@ -11,6 +11,21 @@ import { saveLookup } from "@/lib/lookups";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 export const maxDuration = 120;
+
+/** Accept the listing as an object, JSON text, or the AI's "<parameter name=...>" text; fall back to what/why. */
+function toListing(v: unknown, what?: string, why?: string): { title: string; description: string } {
+  if (v && typeof v === "object" && typeof (v as { title?: unknown }).title === "string") {
+    const o = v as { title: string; description?: string };
+    return { title: o.title, description: String(o.description || why || "") };
+  }
+  if (typeof v === "string") {
+    try { const j = JSON.parse(v); if (j && typeof j.title === "string") return { title: j.title, description: String(j.description || why || "") }; } catch { /* not JSON */ }
+    const grab = (k: string) => (new RegExp(`<parameter name="${k}">([\\s\\S]*?)(?:</parameter>|<parameter|$)`).exec(v)?.[1] || "").trim();
+    const title = grab("title"), description = grab("description");
+    if (title) return { title: title.slice(0, 80), description: description || String(why || "") };
+  }
+  return { title: String(what || "Item").slice(0, 80), description: String(why || "") };
+}
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
 
 /** POST { photoUrls: string[], hints?: string, correction?, previous? } → appraisal. Uses one AI use; the first 2 fixes of a lookup are free, after that a fix counts as a use. */
@@ -90,8 +105,11 @@ export async function POST(req: Request) {
     const input = await askWithTool(client, { model: MODEL, max_tokens: 5000, messages: [{ role: "user", content }], tool: { name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema }, log: { ownerId: user.id, feature: fixing ? "worth_fix" : "worth" } });
     raw = JSON.stringify(input);
     const call = { input };
-    const out = call.input as { listing?: { title: string; description: string }; missing_parts?: MissingPart[] };
-    if (out.listing) out.listing.description = scrubPriceTalk(out.listing.description);
+    const out = call.input as { what?: string; why?: string; listing?: { title: string; description: string } | string; missing_parts?: MissingPart[]; condition_ladder?: unknown };
+    // Now and then the AI hands a nested field back as text instead of an object. Rescue it instead of failing.
+    out.listing = toListing(out.listing, out.what, out.why);
+    if (typeof out.condition_ladder === "string") { try { out.condition_ladder = JSON.parse(out.condition_ladder); } catch { out.condition_ladder = null; } }
+    out.listing.description = scrubPriceTalk(out.listing.description);
     const o2 = out as { pieces?: { listing_description: string }[] };
     if (Array.isArray(o2.pieces)) { if (o2.pieces.length < 2 && !o2.pieces.some((x) => Number((x as { qty?: number }).qty) > 1)) o2.pieces = []; o2.pieces.forEach((x) => { x.listing_description = scrubPriceTalk(x.listing_description || ""); }); }
     const parts = await withPartLinks(out.missing_parts);

@@ -6,6 +6,7 @@ import SellerStart from "./SellerStart";
 import AskBox from "@/app/help/AskBox";
 import UsesMeter from "@/components/UsesMeter";
 import { allowanceFor } from "@/lib/usage";
+import { admin } from "@/lib/stripe";
 
 export const metadata = { title: "Inventory" };
 
@@ -38,6 +39,8 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
   const now = new Date().getTime();
   const [{ data: items, error }, { data: locations }] = await Promise.all([query, staff ? supabase.from("locations").select("id, code").order("code") : Promise.resolve({ data: [] })]);
 
+  // Saved lookups waiting to be listed: show them right here, where people look for their stuff
+  const { data: waiting, count: waitingN } = await admin().from("lookups").select("id, title, photo_urls, value_low, value_high, tool", { count: "exact" }).eq("owner_id", profile.id).is("deleted_at", null).is("item_id", null).eq("listed_count", 0).order("created_at", { ascending: false }).limit(3);
   let start: React.ReactNode = null;
   if (!staff) {
     const [{ count: total }, { count: live }] = await Promise.all([
@@ -50,6 +53,22 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
     <div className="space-y-4">
       {start}
       {!staff && <UsesMeter a={allowanceFor(profile)} />}
+      {(waitingN || 0) > 0 && (
+        <section className="card p-3 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-bold">📂 Saved lookups, not listed yet ({waitingN})</p>
+            <Link href="/lookups" className="text-sm underline whitespace-nowrap">See all</Link>
+          </div>
+          {(waiting || []).map((w) => (
+            <Link key={w.id} href={`/${w.tool === "buy_or_pass" ? "buy-or-pass" : w.tool}?open=${w.id}`} className="flex items-center gap-2 text-sm">
+              {(w.photo_urls || [])[0] ? <img src={w.photo_urls[0]} alt="" className="w-10 h-10 rounded object-cover shrink-0" /> : null}
+              <span className="flex-1 min-w-0 truncate">{w.title}</span>
+              <b className="whitespace-nowrap">${Math.round(Number(w.value_low || 0))}–${Math.round(Number(w.value_high || 0))}</b>
+            </Link>
+          ))}
+          <Link href="/lookups" className="btn btn-primary w-full" style={{ minHeight: 48 }}>📝 List them</Link>
+        </section>
+      )}
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-bold">{staff ? "Inventory" : "My items"}</h1>
         <div className="flex gap-2">{staff && <Link href="/app/bins" className="btn btn-secondary">Bins</Link>}<Link href="/app/items/new" className="btn btn-primary">+ Add item</Link></div>
@@ -62,6 +81,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
       </form>
 
       <div className="flex gap-1 overflow-x-auto">
+        <Link href="/lookups" className="pill px-3 py-2 whitespace-nowrap">📂 Lookups{waitingN ? ` (${waitingN})` : ""}</Link>
         {STATUS_FILTERS.map((f) => (
           <Link key={f.key} href={`/app?status=${f.key}${q ? `&q=${encodeURIComponent(q)}` : ""}`} className={`pill px-3 py-2 whitespace-nowrap ${(status || "active") === f.key ? "pill-active" : ""}`}>
             {f.label}
