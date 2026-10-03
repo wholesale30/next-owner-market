@@ -7439,3 +7439,23 @@ Good idea. I'll add an easy-to-see "💡 Ideas & problems" button for everyone. 
 Now the staff side: a page to read them and mark Planned or Done, with an optional reply the person sees.
 
 Live. I'll send one test as a stranger to prove it lands. You'll get a "💡 New idea" alert marked as a test.
+
+Works end to end. Records zip:
+
+Your 9:24 PM test was saved; it just wasn't anywhere you'd look. It's the black hard-shell equipment case. I had put saved lookups under a separate 📂 Lookups tab, but you went to your inventory, which is where anyone would go first. My mistake. Now they show up there.
+
+**Inventory / My stuff now shows your saved lookups:**
+- **A box at the top:** "📂 Saved lookups, not listed yet." It shows the latest 3 with photo and price, and a 📝 List them button.
+- **A 📂 Lookups tab** next to Drafts and Listed, so the full list is one tap away.
+
+Your four lookups from 8:50–9:00 PM ran before saving went live at 9:07, so those weren't kept. Everything from 9:07 on is saved.
+
+**A bug I fixed while checking:** your 8:43 PM sandblaster lookup failed with an error. Once in a while the AI sends the listing back in a scrambled format, and the page gave up. Now it pulls the title and description out of that scramble instead of failing.
+
+**💡 Ideas & problems is live:**
+- **Where to find it:** the menu, the account page, two buttons at the top of Help, and the bottom of the home page.
+- **How it works:** two big choices, 💡 Suggest an upgrade or 🐞 Something's not working. Type or talk, add a screenshot if you want, and tap Send it. It works signed out too.
+- **Your side:** you get an alert on every one. Your menu shows "💡 Ideas (N new)", where you tap On it or Done and can add a note. The sender sees where theirs stands, like "✅ Done – Fixed, thanks!"
+- **The test:** I sent one test as a stranger and it landed. I already marked it Done, so ignore the "💡 New idea" alert from it.
+
+Everything's in **Next_Owner_Market_Files_2026-10-02_2136.zip**.

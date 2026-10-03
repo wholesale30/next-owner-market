@@ -485,3 +485,9 @@ Have an idea that would make the site better, or something isn't working? Tap **
 - Tap **Send it**.
 
 The owner gets every one right away. Your own sends show on that page with where they stand: 📬 Got it, 🛠 We're on it, ✅ Done or ⏸ Not right now, plus any note from us.
+
+## Change the words by talking (Oct 2, 2026)
+
+Don't like how the listing reads? On any listing tap **✨ Change the words**, or open **Edit**. At the top is **✨ Tell it what to change**. Tap the mic and say it, for example "take out the part about dust, they're new and never used, make it a good listing." Then tap **🔄 Rewrite it**. The title, description and condition line are rewritten. Check them and tap **Save**. **↩ Undo** puts the old words back. It's free.
+
+**Your notes stay out of the listing:** what you tell the AI ("they're dusty from the warehouse but new") is used as facts. The listing just says "New, never used." It never says "seller says…" or repeats your notes.

@@ -79,7 +79,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
           <ol className="text-sm list-decimal pl-5 space-y-1">
             <li><a href="#copy" className="underline font-semibold">Copy the Facebook post</a> (and the other sites) further down.</li>
             <li>Tap <b>List it in the store</b> to put it on our site too. Free.</li>
-            <li>Want to change the words, price or photos? Tap <b>Edit</b>. Each photo has ✨ Touch up.</li>
+            <li>Want different words? Tap <b>✨ Change the words</b> below and just say what to change. Photos have ✨ Touch up.</li>
           </ol>
         </div>
       )}
@@ -149,7 +149,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
       </section>
 
       <section className="card p-4 text-sm space-y-1">
-        <p className="label">Description</p>
+        <div className="flex items-center justify-between gap-2"><p className="label">Description</p><Link href={`/app/items/${it.id}/edit#rewrite`} className="btn btn-secondary text-sm">✨ Change the words</Link></div>
         <p className="whitespace-pre-wrap">{it.description}</p>
         {Object.keys(it.specs || {}).length > 0 && (
           <ul className="mt-2">{Object.entries(it.specs).map(([k, v]) => <li key={k}><b>{k}:</b> {v}</li>)}</ul>

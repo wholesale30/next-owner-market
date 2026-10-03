@@ -18,7 +18,7 @@ type Piece = { name: string; qty: number; value_low: number; value_high: number;
 type Result = {
   missing_parts?: PartView[]; condition_ladder?: LadderView | null; pieces?: Piece[]; sell_advice?: string | null;
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
-  raise_value: string[]; best_places: { place: string; why: string }[]; ship_or_local: string; watch_out: string | null; listing: { title: string; description: string }; weight_lbs: number; box: string;
+  raise_value: string[]; best_places: { place: string; why: string }[]; ship_or_local: string; watch_out: string | null; listing: { title: string; description: string; condition?: string }; weight_lbs: number; box: string;
 };
 
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
@@ -112,7 +112,7 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
     const lo = piece ? piece.value_low : res.value_low, hi = piece ? piece.value_high : res.value_high;
     const price = Math.round((lo + hi) / 2);
     const { data, error } = await sb.from("items").insert({
-      owner_id: meId, created_by: meId, title: (piece ? piece.listing_title || piece.name : res.listing.title).slice(0, 80), description: piece ? piece.listing_description : res.listing.description, condition_notes: res.condition_guess,
+      owner_id: meId, created_by: meId, title: (piece ? piece.listing_title || piece.name : res.listing.title).slice(0, 80), description: piece ? piece.listing_description : res.listing.description, condition_notes: res.listing.condition || res.condition_guess,
       price, price_min_suggested: lo, price_max_suggested: hi, status: "draft", ai_generated: true,
       shipping_ok: res.ship_or_local !== "local" && res.box !== "freight", local_pickup_ok: true, weight_lbs: res.weight_lbs || null, box: res.box === "freight" ? "xl" : res.box || "medium", shipping_mode: "calculated",
     }).select("id").single();

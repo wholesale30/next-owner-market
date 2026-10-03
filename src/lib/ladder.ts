@@ -47,3 +47,10 @@ export function cleanLadder(l: Partial<Ladder> | null | undefined, low: number, 
 // Untested matters most ("doesn't work" is a common "not as described" return). Dust isn't forced into the words:
 // sellers often clean an item when it sells, so the listing describes damage and function, not dust.
 export const LISTING_HONESTY = " Be honest about whether it works: if the owner hasn't said it works, say plainly in the condition notes and description that it's untested. Never claim it works unless the owner said so. Mention real damage (cracks, chips, missing pieces).";
+
+/**
+ * Owner notes are facts for the AI, not words for the buyer (Oct 2, 2026, after "it puts all my shit in there").
+ * Every listing writer adds this so corrections like "they're dusty from the warehouse but new, they'll clean up"
+ * become "New, never used." and never "Seller says they're dusty but will clean up."
+ */
+export const BUYER_VOICE = " Write for the BUYER, as a confident seller would. The owner's notes and corrections are facts for you to use, not text to repeat: never quote or paraphrase the conversation, never write 'seller says', 'owner notes', 'buyer says', 'per the seller', 'AI', or anything about an earlier answer being wrong. Turn notes into plain facts (\"new, never used\", \"tested, works\", \"untested\", \"missing the remote\"). Leave out storage dust, cleaning plans and 'will clean up' unless it's real damage the buyer must know about; the seller cleans it before it goes out.";

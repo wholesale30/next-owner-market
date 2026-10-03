@@ -447,3 +447,11 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - **API:** `/api/feedback` saves to the `feedback` table (migration `037_feedback.sql`), stores the screenshot under `item-photos/feedback/`, limits 20 an hour per IP, and alerts staff right away (email and text).
 - **Staff page:** `/app/feedback`, shown as "💡 Ideas (N new)" in the staff menu. Tabs are Open and All; each entry shows the page, screenshot and email, a note box, and 📬 New / 🛠 On it / ✅ Done / ⏸ Not now. The note and status show to the sender on `/feedback`.
 - **Links:** the seller menu ("💡 Ideas & problems"), the account page, two buttons at the top of /help, and the home page footer.
+
+## Buyer voice and "Tell it what to change" (Oct 2, 2026)
+
+- **`BUYER_VOICE`** (`src/lib/ladder.ts`) is added to every listing writer: What's it worth, Sort the pile, the AI listing and the try-it demo. Owner notes and corrections are facts, never quoted ("seller says", "owner notes", "buyer says", earlier-answer talk). Storage dust and cleaning plans stay out unless it's real damage.
+- **Condition line:** What's it worth's `listing.condition` is a buyer-facing condition line, used for the item's condition notes instead of the appraisal's `condition_guess`.
+- **`/api/ai-listing/revise`:** text only, Sonnet, about 0.5–1¢, free, 60 a day per person, logged as `listing_rewrite`. It rewrites title, description and condition from a spoken or typed instruction.
+- **`RewriteBox`** sits at the top of the Edit details (`#rewrite`) with mic, Rewrite and Undo. On the listing page, a "✨ Change the words" button sits by the description.
+- **Tested** on a messy note-filled listing ("Seller notes… dusty… buyer says they will clean up… AI first thought"). It came back as "Lot of 4 Dell OptiPlex 7070 Desktop Computers - New Takeoffs, Never Used", with a clean 4-sentence description and the condition "New takeoffs, never used. Untested."

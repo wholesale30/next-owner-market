@@ -15,6 +15,7 @@ import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/ph
 import { touchUp } from "@/lib/photo-edit";
 import PhotoEditor from "@/components/PhotoEditor";
 import OutOfUses from "@/components/OutOfUses";
+import RewriteBox from "@/components/RewriteBox";
 import { useEffect } from "react";
 
 interface Props {
@@ -506,6 +507,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
           {d.warning && <div className="card p-3 text-sm" style={{ borderColor: "var(--danger)" }}>⚠️ {d.warning}</div>}
           {d.worth_listing === false && <div className="card p-3 text-sm" style={{ borderColor: "var(--accent)" }}>AI thinks this is probably worth under $10 on its own. Consider adding it to a lot instead.</div>}
 
+          {(d.title || d.description) && <RewriteBox current={{ title: d.title, description: d.description, condition_notes: d.condition_notes }} onApply={(w) => set({ title: w.title, description: w.description, condition_notes: w.condition_notes })} />}
           <section className="card p-4 space-y-3">
             <div><label className="label">Title</label><input className="input" value={d.title} onChange={(e) => set({ title: e.target.value })} maxLength={120} /></div>
             <div><div className="flex items-center justify-between"><label className="label">Description</label><Mic onText={(t) => set({ description: (d.description ? d.description.trimEnd() + " " : "") + t })} /></div><textarea className="input" rows={6} value={d.description} onChange={(e) => set({ description: e.target.value })} /></div>

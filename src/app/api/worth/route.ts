@@ -5,7 +5,7 @@ import { admin } from "@/lib/stripe";
 import { scrubPriceTalk } from "@/lib/listing";
 import { askWithTool } from "@/lib/ai-tool";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
-import { LADDER_SCHEMA, LADDER_PROMPT, LISTING_HONESTY, cleanLadder, type Ladder } from "@/lib/ladder";
+import { LADDER_SCHEMA, LADDER_PROMPT, LISTING_HONESTY, BUYER_VOICE, cleanLadder, type Ladder } from "@/lib/ladder";
 import { createHash } from "crypto";
 import { saveLookup } from "@/lib/lookups";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
@@ -13,10 +13,10 @@ import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage"
 export const maxDuration = 120;
 
 /** Accept the listing as an object, JSON text, or the AI's "<parameter name=...>" text; fall back to what/why. */
-function toListing(v: unknown, what?: string, why?: string): { title: string; description: string } {
+function toListing(v: unknown, what?: string, why?: string): { title: string; description: string; condition?: string } {
   if (v && typeof v === "object" && typeof (v as { title?: unknown }).title === "string") {
-    const o = v as { title: string; description?: string };
-    return { title: o.title, description: String(o.description || why || "") };
+    const o = v as { title: string; description?: string; condition?: string };
+    return { title: o.title, description: String(o.description || why || ""), condition: o.condition ? String(o.condition) : undefined };
   }
   if (typeof v === "string") {
     try { const j = JSON.parse(v); if (j && typeof j.title === "string") return { title: j.title, description: String(j.description || why || "") }; } catch { /* not JSON */ }
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       best_places: { type: "array", items: { type: "object", properties: { place: { type: "string" }, why: { type: "string" } }, required: ["place", "why"] }, description: "2-3 entries, best first: eBay, Facebook Marketplace, OfferUp, Craigslist, Mercari, Poshmark, Etsy, Local auction, Scrap, Donate" },
       ship_or_local: { type: "string", enum: ["ship", "local", "either"] },
       watch_out: { type: ["string", "null"], description: "recalls, fakes, common scams" },
-      listing: { type: "object", properties: { title: { type: "string", description: "max 80 chars, brand + model + what it is" }, description: { type: "string", description: "3-5 honest sentences a buyer wants" } }, required: ["title", "description"] },
+      listing: { type: "object", properties: { title: { type: "string", description: "max 80 chars, brand + model + what it is" }, description: { type: "string", description: "3-5 honest sentences a buyer wants, in the seller's voice" }, condition: { type: "string", description: "one short line for the buyer, e.g. 'New, never used. Untested.' or 'Used, works, light wear.'" } }, required: ["title", "description", "condition"] },
       weight_lbs: { type: "number", description: "packed shipping weight estimate" },
       box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
       missing_parts: PART_SCHEMA,
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
   } as const;
   const content: Anthropic.MessageParam["content"] = [
     ...(await aiImages(photoUrls.slice(0, 6))),
-    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. If the photos show several separate items (a stack of receivers, a box of tools, a set of dishes that can be split), price the whole lot AND list every piece in "pieces" with its own value sold alone; a lot usually sells for less than the pieces added up, so be realistic about both.${LADDER_PROMPT}${LISTING_HONESTY}${PART_PROMPT} Record your appraisal with the appraise tool.` },
+    { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. If the photos show several separate items (a stack of receivers, a box of tools, a set of dishes that can be split), price the whole lot AND list every piece in "pieces" with its own value sold alone; a lot usually sells for less than the pieces added up, so be realistic about both.${LADDER_PROMPT}${LISTING_HONESTY}${BUYER_VOICE}${PART_PROMPT} Record your appraisal with the appraise tool.` },
   ];
   let raw = "";
   try {
