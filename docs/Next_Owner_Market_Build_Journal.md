@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 2, 9:08 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 2, 9:36 PM (continuing)
 
 **Claude:**
 
@@ -7423,3 +7423,19 @@ I couldn't sign in as you from here, so the first time you use My lookups yourse
 The honest part: pieces of this exist elsewhere, and anything people can see can be copied. What's hard to copy is all of it working together for a beginner, the habit of finding the next ten ideas, and people already using the site. That last one is what decides it, so getting strangers in the door is where the energy should go now. Your question and this answer are in the Mission Statement for the book.
 
 Everything's in **Next_Owner_Market_Files_2026-10-02_2107.zip**.
+
+### Oct 2, 9:25 PM — Shayne
+
+> Why, when I go to look up, um, like in my stuff, why isn't there a place for the stuff I looked at what it's worth or sort a pile and all that? Why aren't those things in there? Because I just did want to test it and on what it's worth, and there, it isn't anywhere that I can find.
+
+**Claude:**
+
+I'll check whether your test lookup was saved, then make it impossible to miss.
+
+The parser pulls the right title and description out of that broken answer. Now the inventory page:
+
+Good idea. I'll add an easy-to-see "💡 Ideas & problems" button for everyone. First, checking whether anything like it exists:
+
+Now the staff side: a page to read them and mark Planned or Done, with an optional reply the person sees.
+
+Live. I'll send one test as a stranger to prove it lands. You'll get a "💡 New idea" alert marked as a test.
