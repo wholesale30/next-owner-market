@@ -453,3 +453,25 @@ It runs on your phone and it's free. It doesn't hide scratches, chips or stains,
 **Fixing an answer** with "Something wrong?" is free twice for each lookup. After that, a fix counts as a use.
 
 **If you run out,** the box that pops up has one button: Add 100 AI uses. Plans are one tap below it.
+
+## As-is, cleaned up or tested (Oct 2, 2026)
+
+Every lookup shows the honest **as-is** price first. If it looks dusty, or it plugs in and nobody's said it works, you'll see **💡 Worth more with a little work**:
+
+- **As it is now** (dusty, untested), for example $60–180;
+- **🧽 Cleaned up**, for example $80–220, with how to clean it;
+- **🔌 Tested and working**, for example $150–400, with how to test it;
+- **✨ Both**, for example $180–480.
+
+On Buy or Pass each step also shows what you'd keep and whether it becomes a BUY. On Sort the pile, each item gets one line, like "🔌 If it works: $35–45 (+$20)". Tested it already? Say "it works" in **Something wrong?** and the price updates. Listings written by the AI say "untested" plainly unless you said it works.
+
+## My lookups: everything you check is saved (Oct 2, 2026)
+
+Every What's it worth, Buy or Pass and Sort the pile check is saved in **📂 My lookups** until you delete it. It's in the menu, on your account page, and under each tool. You can check a whole pallet now and list later.
+
+- **📝 List it** writes the listing (Facebook post plus 8 more sites) right from the list. **📝 List all** does every one at once, as drafts you check first.
+- **Open** brings the result back, with the fix box, the price ladder and your photos.
+- **Add photos to a saved lookup:** tap 🖼 Add or 📸 Camera, ✨ touch any up, or × to remove one. Then tap **🔄 Re-check with the new photos**.
+- **🗑 Delete** has an Undo.
+- **On any listing**, tap **📷 Add, change or ✨ touch up photos**.
+- **Check another item** now jumps you back to the top.

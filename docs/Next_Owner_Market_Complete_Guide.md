@@ -420,3 +420,21 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - **Overnight batch for Snap mode** (half price) is not built yet. Snap is staff-only, so it costs about $40 per 3,000 items, and batching would make you wait until morning. It's available if wanted.
 
 **Prices in the terms** (`/terms` section 5) match all of the above.
+
+## Price ladder and saved lookups (Oct 2, 2026)
+
+**Price ladder** (`src/lib/ladder.ts`, `src/components/ConditionLadder.tsx`):
+- **Same AI call, a few more fields.** `condition_ladder` holds `looks_dirty`, `needs_test`, the tips, and cleaned, tested and both ranges.
+- **The main price is AS-IS.** `cleanLadder` drops any step that doesn't apply or adds nothing.
+- **Buy or Pass** returns `ladder.{cleaned,tested,both}` with `net_low/high` and the verdict at the best place.
+- **Sort the pile:** per-item `fixup`, `fixup_low/high`, `fixup_tip`.
+- **Listing writers** (`/api/ai-listing`, `/api/try`, pile and worth listings) add `LISTING_HONESTY`: they say "untested" unless the owner said it works, and mention real damage. They don't force dust into the words, because sellers clean when it sells.
+- **Tested on the owner's photos:** 6 receivers as-is $60–180, both $180–480. Lasko humidifier as-is $12–30, both $35–60.
+
+**Saved lookups:**
+- **The table:** `lookups` (owner, tool, title, photo_urls, hints, the full result, values, `ref_id` to buy_pass_scans or pile_scans, `item_id`, `listed_count`, soft `deleted_at`). The migration is `036_lookups.sql`.
+- **Saving:** `saveLookup` in `src/lib/lookups.ts` runs from `/api/worth`, `/api/buy-or-pass` (signed in, plus claimed anonymous checks) and `/api/pile`. A fix updates the same saved lookup (by `lookup_id`, or by the scan id).
+- **The page:** `/lookups`, with tabs To list, Listed and All; List it, List all, Open and 🗑 with Undo. The 📂 Lookups link is in the seller and staff menus and on the account page, plus "📂 My saved lookups (N)" under each tool.
+- **Actions:** `/api/lookups` handles delete, restore, photos, listed and list. List works for worth (whole lot or one piece) and Buy or Pass (`listFromScan`). A pile opens so the owner picks what to sell.
+- **Reopening:** `/worth?open=<id>`, `/buy-or-pass?open=<id>`, `/pile?open=<id>` load the saved result. On What's it worth, photos can be added (gallery or camera), removed or touched up, then "Re-check with the new photos" (a fix: first 2 free).
+- **Older data:** existing Buy or Pass checks and piles that had an owner were copied in. What's it worth checks before Oct 2 weren't saved anywhere.

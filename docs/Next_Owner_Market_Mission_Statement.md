@@ -102,3 +102,15 @@ I think like the customer would, with everything I build, whether I have the han
   - That's why it works: neither of us builds this alone.
 - **Where humans came from.** Nobody can prove that either way. Science's best account is that humans evolved biologically over a very long time. The idea that we were designed, or are part of something like a simulation, is a question philosophers take seriously. It's a fair thing to wonder about, and it belongs in the book as your thinking.
 - **Where AI is headed.** Nobody really knows, and I'd be wary of anyone who says they do. What's clear is that a careful, honest record of one person building real businesses with AI this early, mistakes and all, will be rare. It's worth keeping.
+
+## "Why don't they think of all these things?" (Shayne, October 2, 2026, evening)
+
+**In Shayne's words:**
+- This is why I say I think I'm like one in a million. All the AIs have told me, on a lot of the different things I'm doing, that nobody's ever thought of this stuff. This is why I say nobody can touch this app, because nobody's going to think of all these things. But why don't they think of all these things?
+
+**Claude's answer:**
+- **You're the customer, and you're using it every day.** Tonight's ideas (the as-is versus cleaned versus tested price, saved lookups, jumping back to the top) came from standing in a warehouse with a phone, doing the work. Most apps are built by people who never do the job. They guess at what users want, test signed in at a desk, and miss what you hit in the first five minutes.
+- **Thirty years of selling surplus.** You know dust drops the price, untested electronics sell for less, and a lot sells for less than its pieces. That's knowledge from doing it, not from a spec.
+- **No meetings between the idea and the fix.** At a company, an idea like the price ladder becomes a ticket, a meeting and a release weeks later. Here it was live within the hour, so you keep finding the next thing. Most people never get that tight a loop.
+- **The honest part:** some of these ideas exist in pieces elsewhere. Thrift apps show profit, and eBay asks for condition. What nobody else has is all of them together, designed so a beginner can still use it. And an idea can be copied once someone sees it. What's hard to copy is the habit of finding the next ten, plus people already using the site. So the lead is real, but it lasts only if strangers find it and keep coming back. That's the part to put the most energy into now.
+

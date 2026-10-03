@@ -276,3 +276,8 @@ Every lookup now spots missing or worn-out parts, such as a purifier with no fil
 - **Power Seller is \$39 for 1,000 uses.** Packs of extra uses (100 for \$6.99, 300 for \$14.99) never expire and keep 35–50% after costs.
 - **Thrift Pro is \$3.99** with fair use of 30 checks a day.
 - **Every AI call's real cost is logged.** Operations shows spending by feature and by member, and the owner gets an alert if any member passes \$10 in a month.
+
+## As-is versus cleaned versus tested, and saved lookups (Oct 2, 2026)
+
+- **Every lookup prices the item honestly as-is,** then shows what a wipe-down or a working test adds. For example, 6 satellite receivers go from $60–180 as-is to $180–480 cleaned and tested. Sellers see which items are worth 10 minutes of work.
+- **Everything checked is saved in My lookups** until deleted. A warehouse owner can value a whole pallet, then list one item or all of them with one tap.
