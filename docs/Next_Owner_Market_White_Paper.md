@@ -269,3 +269,10 @@ Every lookup now spots missing or worn-out parts, such as a purifier with no fil
 - **One tap from a value to a finished listing,** with the Facebook post ready to paste plus 8 more sites.
 - **A free photo touch-up** that cleans dust and dull light off photos on the phone, so thousands of warehouse items can be listed now and cleaned only when they sell.
 - **Lot pricing:** a stack or box gets a lot price and each piece's own value and description, with advice on which pieces to sell alone.
+
+## Pricing that always makes money (Oct 2, 2026)
+
+- **Pro stays \$15, with 300 AI uses a month.** A typical member uses about 150. A full 300-use month costs us about \$5–7 of AI (after the photo-size cut), so every Pro member is profitable.
+- **Power Seller is \$39 for 1,000 uses.** Packs of extra uses (100 for \$6.99, 300 for \$14.99) never expire and keep 35–50% after costs.
+- **Thrift Pro is \$3.99** with fair use of 30 checks a day.
+- **Every AI call's real cost is logged.** Operations shows spending by feature and by member, and the owner gets an alert if any member passes \$10 in a month.

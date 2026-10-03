@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     system: [{ type: "text", cache_control: { type: "ephemeral" }, text: `You answer questions for people using Next Owner Market (nextownermarket.com), a marketplace where anyone can list stuff, buyers pay by card, and money is held until the buyer has the item. Many users have never sold online. Answer in plain, friendly English at an 8th-grade level, 2-5 short sentences, no jargon, no bullet lists unless steps. Say exactly what to tap ("Tap + Add"). If the answer isn't in the material below, say you're not sure and suggest messaging us from the Wanted page or emailing the store. Never invent fees, dates, or policies.\n\n=== HELP TOPICS ===\n${faq}\n\n=== USER GUIDE ===\n${guide.slice(0, 60000)}` }],
     messages: [{ role: "user", content: q.trim().slice(0, 500) }],
   });
-  void logUsage(null, "help_question", MODEL, r.usage);
+  await logUsage(null, "help_question", MODEL, r.usage);
   const text = r.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
   return NextResponse.json({ answer: text });
 }

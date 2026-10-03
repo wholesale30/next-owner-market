@@ -434,3 +434,22 @@ Tap **🛒 Find it on Amazon** or **Find it on eBay** to see the part for sale. 
 It runs on your phone and it's free. It doesn't hide scratches, chips or stains, so buyers get what they see. Wipe the item down before it ships.
 
 **Lots of things (a stack, a box, a set):** What's it worth gives the price **all together as one lot** and **sold one at a time**. You get each piece's value, why it's worth that, its own description, and a tip on which pieces to pull out and sell alone. Tap **📝 Write the listing for the lot**, or **📝 List this one by itself** under any piece.
+
+## Plans and AI uses (Oct 2, 2026)
+
+**An AI use** is one listing written by the AI, one What's it worth lookup, one pile sorted, or one Buy or Pass check after your 5 free ones each day. Listing in our store is always free.
+
+| Plan | Price | What you get |
+|---|---|---|
+| Free | $0 | 3 AI uses to try it, 5 Buy or Pass checks a day |
+| Thrift Pro | $3.99/month | Up to 30 checks a day |
+| **Pro** | $15/month | **300 AI uses a month** (most people use about half), all 9 marketplaces, video |
+| Power Seller | $39/month | 1,000 AI uses a month, for people listing every day |
+
+**Need a few more?** Add **100 for $6.99** or **300 for $14.99**. They never expire.
+
+**Your meter:** your Items page shows "214 of 300 AI uses this month." At 80% it turns gold and offers more, and you get one email. Uses reset on the 1st.
+
+**Fixing an answer** with "Something wrong?" is free twice for each lookup. After that, a fix counts as a use.
+
+**If you run out,** the box that pops up has one button: Add 100 AI uses. Plans are one tap below it.

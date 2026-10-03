@@ -49,7 +49,7 @@ Return ONLY JSON: {"groups": [[0,1,2],[3],[4,5]]}`,
       max_tokens: 600,
       messages: [{ role: "user", content }],
     });
-    void logUsage(user.id, "snap_sort", process.env.CLAUDE_GROUP_MODEL || "claude-sonnet-5-5", msg.usage);
+    await logUsage(user.id, "snap_sort", process.env.CLAUDE_GROUP_MODEL || "claude-sonnet-5-5", msg.usage);
     const text = msg.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
     const parsed = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)) as { groups: number[][] };
     // sanity: cover every index exactly once, in order; otherwise fall back to one-per-photo

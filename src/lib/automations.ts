@@ -289,7 +289,7 @@ const weeklyBlog: Automation = {
       model: process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001", max_tokens: 1800,
       messages: [{ role: "user", content: `Write this week's post for the Next Owner Market blog (a marketplace where people photograph their stuff, an AI values it and writes the listing, buyers pay by card with money held until hand-off). Plain, friendly, 8th-grade English, first person plural ("we"), no hype, no "AI-powered". 350-550 words. Use ONLY the real data below; do not invent items or numbers. Structure: a short opener about the week; "What people found out their stuff is worth" (3-6 items with the ranges, link each as [title](/valued/slug) when a slug exists); "What sold" (if any, titles and prices); "New this week" (3-5 listed items as [title](/item/SKU)); one practical tip for someone overwhelmed by a pile; a closing line pointing to /pile or /worth. Markdown. Return only the post body, no title.\n\nDATA:\n${JSON.stringify(data).slice(0, 12000)}` }],
     });
-    void (await import("@/lib/usage")).logUsage(null, "weekly_blog", process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001", msg.usage);
+    await (await import("@/lib/usage")).logUsage(null, "weekly_blog", process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001", msg.usage);
     const body = msg.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
     const dt = new Date();
     const title = `This week on Next Owner Market: ${dt.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;

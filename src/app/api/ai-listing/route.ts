@@ -75,7 +75,7 @@ Return ONLY a JSON object with these fields:
       max_tokens: 1200,
       messages: [{ role: "user", content }],
     });
-    void logUsage(user.id, "listing", MODEL, msg.usage);
+    await logUsage(user.id, "listing", MODEL, msg.usage);
     const text = msg.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
@@ -87,7 +87,7 @@ Return ONLY a JSON object with these fields:
     catch {
       // second try: ask the model to fix its own JSON
       const fix = await client.messages.create({ model: MODEL, max_tokens: 1500, messages: [{ role: "user", content: `Return ONLY this as valid JSON, nothing else:\n${text.slice(jsonStart, jsonEnd + 1)}` }] });
-      void logUsage(user.id, "listing", MODEL, fix.usage);
+      await logUsage(user.id, "listing", MODEL, fix.usage);
       const t2 = fix.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
       parsed = JSON.parse(t2.slice(t2.indexOf("{"), t2.lastIndexOf("}") + 1));
     }

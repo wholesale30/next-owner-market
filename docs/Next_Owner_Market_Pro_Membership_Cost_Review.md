@@ -111,7 +111,17 @@ Free for **you, staff, and anyone you comp**. The "comped" switch already exists
 
 That's how we know for sure instead of estimating.
 
-# Your decision
+# Built October 2, 2026
+
+The owner said go. Sections 1, 2 (except deep clean, which waits for the Google key), 3 (help caching and smaller photos) and 4 are live.
+
+- **Measured after the change:** a photo now costs the AI 1,213 tokens instead of 2,507.
+- **That lowers every figure above:** a typical Pro member costs about \$3.50 instead of \$4.32, and a full 300-use month costs about \$5–7 instead of \$9.
+- **Two items changed after a second look:**
+  - Buy or Pass stays on the better model, because accuracy is our edge.
+  - The Snap overnight batch is held, because it's staff-only and would make you wait until morning.
+
+# Your decision (made)
 
 Say **"go on the plan"** and I'll build sections 1–4: the allowance, top-ups and Power Seller, the cost cuts, and the spending log on Operations. Change any number first if you want ("make it 500," "\$4.99 packs").
 

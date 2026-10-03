@@ -384,3 +384,39 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - The page shows "All N together, sold as one lot," "Sold one at a time" (the total), and each piece with "List this one by itself."
 - max_tokens is 5000 and maxDuration 120 s.
 - **Test:** the owner's photo of 6 satellite receivers took 20 s. Lot $120–400; pieces $20–120 each, with the Drake ESR 1224 the most valuable. Advice: pull out the Drake and the Chaparral for eBay, and sell the rest locally as a lot.
+
+## AI allowance, packs, Power Seller and AI spending (Oct 2, 2026)
+
+**The rule lives in one place:** the database function `spend_ai_credit(profile)` is called by every AI tool before it runs.
+
+| Who | What happens |
+|---|---|
+| Admin, staff, **comped** | Always allowed, never counted |
+| Pro (`plan='pro'`) | `uses_count` against **300** a month (`power=true`: 1,000), reset by `uses_month` (Eastern) |
+| Thrift Pro | `uses_day_count` against **30** a day |
+| Free | `ai_credits` (3 at signup) |
+| Everyone, after the above runs out | `extra_uses` (bought packs, never expire) |
+
+- `refund_ai_credit` gives a use back when the AI call fails. Users can't call either function (execute revoked); the new profile columns can't be edited by users (column grants).
+- **Buy or Pass:** 5 free a day for everyone signed in; checks after that are one AI use. Signed out: 1 a day per device, site cap 500.
+- **Fixes:** the first 2 per lookup are free on all three tools; after that each fix is a use. Daily caps stay (30 / 20).
+- **Limit reached:** the API returns 402 with `topup: true` and a plain message. The screen shows `OutOfUses` with one big "➕ Add 100 AI uses: $6.99" button, then "300 for $14.99 · See plans".
+- **Meter:** `UsesMeter` on /app (sellers) and /pro, plus "N AI uses left" on What's it worth.
+
+**Money:**
+- **Packs:** `/api/stripe/topup` `{pack:100|300}` opens one-time Checkout. The webhook adds `extra_uses` once per session (`topup:<session>` in settings) and alerts staff.
+- **Power Seller:** `/api/stripe/subscribe` `{plan:"power"}` charges $39/month; the price is set in code. The webhook sets `plan='pro'`, `power=true`, `power_subscription_id`, and cancels an old $15 Pro subscription so nobody pays twice.
+- **Thrift Pro** checkout now reads "up to 30 checks a day."
+
+**Real costs:**
+- Every AI call writes to `ai_usage` (feature, model, tokens, cost in USD) through `logUsage` in `src/lib/usage.ts`.
+- **🤖 AI spending:** `/app/ops/ai`, linked from the card at the top of Operations. It shows today, 7, 30 or 90 days, by feature and by person; tap a person to see every call. ⚠ marks anyone costing more than 60% of what they pay.
+- **Automation "AI uses watch"** (daily): emails Pro members once a month at 80%, and alerts the owner once per member per month over $10.
+
+**Cost cuts:**
+- **Smaller photos for the AI** (`aiImage`, sharp, 1100px) cut each photo from 2,507 to 1,213 tokens, measured.
+- **Help questions** cache the User Guide (`cache_control`), so repeat questions read it at a tenth of the price.
+- **Buy or Pass stays on the better model.** Accuracy is the edge over the thrift apps, and the cheaper model would save only about 0.6¢ a check.
+- **Overnight batch for Snap mode** (half price) is not built yet. Snap is staff-only, so it costs about $40 per 3,000 items, and batching would make you wait until morning. It's available if wanted.
+
+**Prices in the terms** (`/terms` section 5) match all of the above.
