@@ -22,7 +22,7 @@ export default function CopyTabs({ tabs, isPro }: { tabs: CopyTab[]; isPro: bool
       {t.locked ? (
         <div className="card p-4 text-sm space-y-2" style={{ borderColor: "var(--brand)" }}>
           <p className="font-semibold">🔒 {t.label} is part of Pro</p>
-          <p className="muted">Ready-to-paste versions for eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy, each with a step-by-step how-to, plus unlimited AI listings. $15/month.</p>
+          <p className="muted">Ready-to-paste versions for eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy, each with a step-by-step how-to, plus 300 AI uses a month. $15/month.</p>
           {!isPro && <Link href="/app/money" className="btn btn-primary">Upgrade to Pro</Link>}
         </div>
       ) : (

@@ -11,6 +11,7 @@ import ShareValuation from "@/components/ShareValuation";
 import FixBox from "@/components/FixBox";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import PhotoEditor from "@/components/PhotoEditor";
+import OutOfUses from "@/components/OutOfUses";
 
 type Piece = { name: string; qty: number; value_low: number; value_high: number; note: string; listing_title: string; listing_description: string };
 type Result = {
@@ -21,12 +22,12 @@ type Result = {
 
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 
-export default function WorthClient({ meId, role, credits }: { meId: string | null; role: string | null; credits: number | null }) {
+export default function WorthClient({ meId, role, credits, plan }: { meId: string | null; role: string | null; credits: number | null; plan?: string | null }) {
   const router = useRouter();
   const [photos, setPhotos] = useState<{ url: string; path: string }[]>([]);
   const [hints, setHints] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
-  const [err, setErr] = useState<{ msg: string; upgrade?: boolean } | null>(null);
+  const [err, setErr] = useState<{ msg: string; upgrade?: boolean; topup?: boolean } | null>(null);
   const [res, setRes] = useState<Result | null>(null);
   const [left, setLeft] = useState(credits);
   const [editing, setEditing] = useState<number | null>(null);
@@ -61,9 +62,9 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
   async function appraise() {
     setBusy("Looking it over…"); setErr(null); setRes(null);
     const r = await fetch("/api/worth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints }) });
-    const j = (await r.json()) as { result?: Result; error?: string; upgrade?: boolean };
+    const j = (await r.json()) as { result?: Result; error?: string; upgrade?: boolean; topup?: boolean };
     setBusy(null);
-    if (!r.ok || !j.result) return setErr({ msg: j.error || "Couldn't get an answer.", upgrade: j.upgrade });
+    if (!r.ok || !j.result) return setErr({ msg: j.error || "Couldn't get an answer.", upgrade: j.upgrade, topup: j.topup });
     setRes(j.result);
     if (left != null) setLeft(Math.max(0, left - 1));
   }
@@ -71,7 +72,8 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
   async function fix(correction: string): Promise<string | null> {
     if (!res) return "Nothing to fix yet.";
     const r = await fetch("/api/worth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints, correction, previous: { what: res.what, value_low: res.value_low, value_high: res.value_high, era: res.era } }) });
-    const j = (await r.json().catch(() => ({}))) as { result?: Result; error?: string };
+    const j = (await r.json().catch(() => ({}))) as { result?: Result; error?: string; topup?: boolean };
+    if (r.status === 402) { setErr({ msg: j.error || "You're out of AI uses.", topup: true }); return "You're out of AI uses for now. See the box below."; }
     if (!r.ok || !j.result) return j.error || "Couldn't update it. Try again.";
     setRes(j.result); setHints((h) => (h ? h + ". " : "") + correction); setFixes((n) => n + 1);
     return null;
@@ -128,12 +130,12 @@ export default function WorthClient({ meId, role, credits }: { meId: string | nu
           <p className="text-xs muted">Get the whole thing in one photo, then close-ups of any label, model number, or damage. Up to 6.</p>
           <div className="space-y-1"><textarea className="input" rows={3} style={{ minHeight: 72, fieldSizing: "content" } as React.CSSProperties} placeholder="Anything we should know? (works, missing the lid, grandma's…)" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h.trimEnd() + " " : "") + t)} /></div>
           <button type="button" className="btn btn-primary w-full text-lg" disabled={!photos.length || !!busy} onClick={appraise}>{busy || "What's it worth?"}</button>
-          {left != null && meId && <p className="text-xs muted text-center">{left} free lookup{left === 1 ? "" : "s"} left · <Link href="/pro" className="underline">Pro = unlimited</Link></p>}
+          {left != null && meId && <p className="text-xs muted text-center">{plan === "free" ? `${left} free lookup${left === 1 ? "" : "s"} left` : plan === "thrift" ? `${left} checks left today` : `${left} AI uses left this month`}{plan === "free" && <> · <Link href="/pro#plans" className="underline">Get more</Link></>}</p>}
           {!meId && <p className="text-xs muted text-center">Free. You&apos;ll make a free account first so we can save your results.</p>}
         </div>
       )}
 
-      {err && <div className="card p-3 text-sm" style={{ borderColor: "var(--danger)" }}>{err.msg}{err.upgrade && <div className="pt-2 space-y-2"><button type="button" className="btn btn-primary w-full" onClick={async () => { const r = await fetch("/api/stripe/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan: "thrift", back: "/worth" }) }); const j = (await r.json().catch(() => ({}))) as { url?: string }; if (j.url) window.location.assign(j.url); }}>Unlimited checks: Thrift Pro, $3.99 a month</button><p className="text-xs muted text-center">Or <Link href="/pro" className="underline">Pro</Link> ($15) for unlimited listings for nine sites too.</p></div>}</div>}
+      {err && (err.topup ? <OutOfUses message={err.msg} back="/worth" thrift={plan === "free"} /> : <div className="card p-3 text-sm" style={{ borderColor: "var(--danger)" }}>{err.msg}</div>)}
 
       {res && (
         <div className="space-y-3">

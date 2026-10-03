@@ -31,7 +31,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
   ]);
   const pages = myPages.count || 0;
   const finds = mine.data || [];
-  const unlimited = !!me && (me.plan === "pro" || !!me.thrift_pro || me.role === "admin" || me.role === "staff");
+  const unlimited = !!me && (me.role === "admin" || me.role === "staff" || !!me.comped);
   const today = finds.filter((f) => f.created_at > since(86400_000)).length;
   const freeLeft = me && !unlimited ? Math.max(0, BP_FREE_DAILY - today) : null;
   const buys = finds.filter((f) => f.verdict === "buy");
@@ -62,7 +62,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
             </details>
           </div>
         )}
-        <BuyPassClient meId={me?.id || null} refCode={(me as { referral_code?: string } | null)?.referral_code || null} freeLeft={freeLeft} inRef={typeof sp.ref === "string" ? sp.ref.replace(/[^a-z0-9_-]/gi, "").slice(0, 32) : ""} />
+        <BuyPassClient plan={me ? (me.role === "admin" || me.role === "staff" || me.comped ? "staff" : me.plan === "pro" ? "pro" : me.thrift_pro ? "thrift" : "free") : null} meId={me?.id || null} refCode={(me as { referral_code?: string } | null)?.referral_code || null} freeLeft={freeLeft} inRef={typeof sp.ref === "string" ? sp.ref.replace(/[^a-z0-9_-]/gi, "").slice(0, 32) : ""} />
         {(weekChecks || 0) >= 20 && <p className="text-center text-sm muted">{(weekChecks || 0).toLocaleString()} finds checked this week</p>}
         <ToolGuide
           intro={[
@@ -84,7 +84,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
             { q: "Where do the fees come from?", a: "A fee table we keep current for eBay, Mercari, Poshmark, Facebook Marketplace, and our own store. It's shown under every result so you can check our math. Marketplaces change fees; we re-check them regularly." },
             { q: "How accurate is the resale range?", a: "Good for common stuff (tools, kitchen, electronics, brand-name goods). Weaker for vintage, pottery, and toys, where a maker's mark can change everything. Look at the confidence and the warning line." },
             { q: "What does MAYBE mean?", a: "It could clear $15 if everything goes right, but the low end doesn't. Worth it if you can negotiate the price down or you already know the item." },
-            { q: "Does it cost anything?", a: `Your first check is free with no account. With a free account you get ${BP_FREE_DAILY} free checks every day, forever, with no card. Pro is unlimited and also writes unlimited listings for nine marketplaces. No trial tricks: cancel in one tap.` },
+            { q: "Does it cost anything?", a: `Your first check is free with no account. With a free account you get ${BP_FREE_DAILY} free checks every day, forever, with no card. Need more? Thrift Pro ($3.99 a month) gives you up to 30 a day, and Pro ($15) gives you 300 AI uses a month plus listings for nine marketplaces. No trial tricks: cancel in one tap.` },
             { q: "Why is this free when other thrift apps charge $10 a week?", a: "We make money when you sell, not when you scan. If you buy it, one tap turns the photo into a listing on our store (free to list) and on eBay, Facebook and more." },
           ]}
           related={[{ href: "/worth", label: "What's it worth?" }, { href: "/pile", label: "Sort the pile" }, { href: "/sell-on", label: "How to sell on each marketplace" }]}

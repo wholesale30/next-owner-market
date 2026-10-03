@@ -38,7 +38,7 @@ export default async function PilePage() {
             { q: "How many items can it find in one go?", a: "Up to about 25 per scan. For a big shelf, take more photos from closer; for a whole room, do it in sections." },
             { q: "What do the labels mean?", a: "Sell: worth listing, usually $15 and up. Keep: sentimental or worth more to a person than the market pays. Donate: usable but not worth your time to list. Toss: broken, unsafe, or worthless. You can change any of them." },
             { q: "It marked something Toss that I know is valuable", a: "Tap Sell. It's working from a photo; you have the history. If it's possibly rare, it should have flagged it for an expert; if it didn't, take a close-up and run that item alone through What's it worth?" },
-            { q: "Does listing them cost anything?", a: "No. Listing in the store is free on any plan; we only get paid when something sells. The scan itself uses one AI lookup (three free, then Pro for unlimited)." },
+            { q: "Does listing them cost anything?", a: "No. Listing in the store is free on any plan; we only get paid when something sells. The scan itself uses one AI use (three free, then Pro gives you 300 a month)." },
             { q: "I'm cleaning out a parent's house. Where do I start?", a: "Start with one box, the one nearest the door. Read Start with one box: it's the eight-step path, written for exactly this." },
             { q: "Can I just donate or toss it all?", a: "You can, and for some boxes that's the right call; it'll tell you. But most garages have a few hundred dollars hiding in them, and this finds it in a minute." },
           ]}

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
 import { TOPICS } from "@/lib/help";
+import { logUsage } from "@/lib/usage";
 
 export const maxDuration = 30;
 const MODEL = process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001";
@@ -26,9 +27,11 @@ export async function POST(req: Request) {
   const r = await client.messages.create({
     model: MODEL,
     max_tokens: 400,
-    system: `You answer questions for people using Next Owner Market (nextownermarket.com), a marketplace where anyone can list stuff, buyers pay by card, and money is held until the buyer has the item. Many users have never sold online. Answer in plain, friendly English at an 8th-grade level, 2-5 short sentences, no jargon, no bullet lists unless steps. Say exactly what to tap ("Tap + Add"). If the answer isn't in the material below, say you're not sure and suggest messaging us from the Wanted page or emailing the store. Never invent fees, dates, or policies.\n\n=== HELP TOPICS ===\n${faq}\n\n=== USER GUIDE ===\n${guide.slice(0, 60000)}`,
+    // The guide is the same for every question, so it's cached: repeat questions read it at a tenth of the price.
+    system: [{ type: "text", cache_control: { type: "ephemeral" }, text: `You answer questions for people using Next Owner Market (nextownermarket.com), a marketplace where anyone can list stuff, buyers pay by card, and money is held until the buyer has the item. Many users have never sold online. Answer in plain, friendly English at an 8th-grade level, 2-5 short sentences, no jargon, no bullet lists unless steps. Say exactly what to tap ("Tap + Add"). If the answer isn't in the material below, say you're not sure and suggest messaging us from the Wanted page or emailing the store. Never invent fees, dates, or policies.\n\n=== HELP TOPICS ===\n${faq}\n\n=== USER GUIDE ===\n${guide.slice(0, 60000)}` }],
     messages: [{ role: "user", content: q.trim().slice(0, 500) }],
   });
+  void logUsage(null, "help_question", MODEL, r.usage);
   const text = r.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
   return NextResponse.json({ answer: text });
 }

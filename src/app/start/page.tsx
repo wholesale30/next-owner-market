@@ -43,7 +43,7 @@ export default async function StartPage() {
         <div className="card p-4 text-center space-y-2" style={{ borderColor: "var(--brand)" }}>
           <p className="font-bold text-lg">Ready? Box, photos, go.</p>
           <Link href="/pile" className="btn btn-primary w-full text-lg">Sort my first box</Link>
-          <p className="text-xs muted">Free. Three AI lookups on us; $15/month for unlimited when you&apos;re rolling. <Link href="/why" className="underline">Why we built this</Link>.</p>
+          <p className="text-xs muted">Free. Three AI lookups on us; $15/month for 300 a month when you&apos;re rolling. <Link href="/why" className="underline">Why we built this</Link>.</p>
         </div>
       </main>
     </div>

@@ -72,7 +72,7 @@ export async function POST(req: Request) {
   try {
     const client = new Anthropic();
     const input = await askWithTool(client, {
-      model: MODEL, max_tokens: 1500,
+      model: MODEL, max_tokens: 1500, log: { ownerId: null, feature: "try_demo" },
       tool: { name: "listing", description: "Record the listing.", input_schema: schema as unknown as Anthropic.Tool.InputSchema },
       messages: [{ role: "user", content: [
         { type: "image", source: { type: "base64", media_type: `image/${m[1]}` as "image/jpeg", data: m[2] } },

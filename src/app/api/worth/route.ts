@@ -5,29 +5,40 @@ import { admin } from "@/lib/stripe";
 import { scrubPriceTalk } from "@/lib/listing";
 import { askWithTool } from "@/lib/ai-tool";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
+import { createHash } from "crypto";
+import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 export const maxDuration = 120;
 const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
 
-/** POST { photoUrls: string[], hints?: string, correction?, previous? } → appraisal. Uses one AI credit (Pro/staff unlimited); a correction of an earlier answer is free. */
+/** POST { photoUrls: string[], hints?: string, correction?, previous? } → appraisal. Uses one AI use; the first 2 fixes of a lookup are free, after that a fix counts as a use. */
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Sign in first (it's free)." }, { status: 401 });
   const { photoUrls, hints, correction, previous } = (await req.json()) as { photoUrls: string[]; hints?: string; correction?: string; previous?: { what?: string; value_low?: number; value_high?: number; era?: string | null } };
   const fixing = !!(correction && correction.trim() && previous);
-  const { data: me } = await admin().from("profiles").select("ai_credits, thrift_pro").eq("id", user.id).single();
+  let charged = false;
+  const spend = async () => {
+    const { data: ok } = await admin().rpc("spend_ai_credit", { p_profile: user.id });
+    if (ok) charged = true;
+    return !!ok;
+  };
+  const noUses = async () => NextResponse.json({ error: outOfUsesMessage(await allowanceOf(user.id)), upgrade: true, topup: true }, { status: 402 });
   if (fixing) {
-    // Corrections are free (it's our answer being fixed), capped so it can't be used as unlimited lookups
-    const key = `fix:${user.id}:${new Date().toISOString().slice(0, 10)}`;
-    const { data: c } = await admin().from("settings").select("value").eq("key", key).maybeSingle();
-    const n = Number((c?.value as { n?: number } | null)?.n || 0);
+    // Fixes: the first 2 on each lookup are free (it's our answer being fixed); after that each counts as a use. Never more than 30 a day.
+    const day = new Date().toISOString().slice(0, 10);
+    const dayKey = `fix:${user.id}:${day}`;
+    const lookKey = `fix:w:${createHash("sha256").update(user.id + (photoUrls || []).slice().sort().join("|")).digest("hex").slice(0, 20)}`;
+    const [{ data: c }, { data: l }] = await Promise.all([
+      admin().from("settings").select("value").eq("key", dayKey).maybeSingle(),
+      admin().from("settings").select("value").eq("key", lookKey).maybeSingle(),
+    ]);
+    const n = Number((c?.value as { n?: number } | null)?.n || 0), k = Number((l?.value as { n?: number } | null)?.n || 0);
     if (n >= 30) return NextResponse.json({ error: "That's a lot of fixes for one day. Start a fresh lookup instead." }, { status: 429 });
-    await admin().from("settings").upsert({ key, value: { n: n + 1 } });
-  } else {
-    const { data: ok } = me?.thrift_pro ? { data: true } : await admin().rpc("spend_ai_credit", { p_profile: user.id });
-    if (!ok) return NextResponse.json({ error: "You've used your free lookups. Thrift Pro gives you unlimited for $3.99 a month.", upgrade: true, thrift: true }, { status: 402 });
-  }
+    if (k >= 2 && !(await spend())) return noUses();
+    await admin().from("settings").upsert([{ key: dayKey, value: { n: n + 1 } }, { key: lookKey, value: { n: k + 1 } }]);
+  } else if (!(await spend())) return noUses();
   if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "Not available right now." }, { status: 500 });
   if (!photoUrls?.length) return NextResponse.json({ error: "Add at least one photo." }, { status: 400 });
 
@@ -68,12 +79,12 @@ export async function POST(req: Request) {
     required: ["what", "condition_guess", "value_low", "value_high", "confidence", "why", "raise_value", "best_places", "ship_or_local", "listing", "weight_lbs", "box"],
   } as const;
   const content: Anthropic.MessageParam["content"] = [
-    ...photoUrls.slice(0, 6).map((url) => ({ type: "image", source: { type: "url", url } }) as Anthropic.ImageBlockParam),
+    ...(await aiImages(photoUrls.slice(0, 6))),
     { type: "text", text: `You are an experienced US resale appraiser (30 years of estate sales, surplus, eBay, and Facebook Marketplace). Identify what is in the photos: read every label, model number, brand mark, and sticker. ${hints ? `The owner says: "${String(hints).slice(0, 500)}". ` : ""}${fixing ? `Your earlier answer said this was "${String(previous?.what || "").slice(0, 200)}"${previous?.era ? ` (${String(previous.era).slice(0, 60)})` : ""}, worth about $${Math.round(Number(previous?.value_low || 0))}-$${Math.round(Number(previous?.value_high || 0))}. The owner says that's not right: "${String(correction).slice(0, 600)}". Look at the photos again with this correction. Trust what the owner tells you about the item (exact model, year, what's missing or broken, condition, what it came with) unless the photos clearly show otherwise, and redo the identification and value from scratch. In "why", say in one sentence what changed. ` : ""}Be honest and specific; a wrong "it's worth $500" costs people money. If it's common junk, say so kindly. If the photos show several separate items (a stack of receivers, a box of tools, a set of dishes that can be split), price the whole lot AND list every piece in "pieces" with its own value sold alone; a lot usually sells for less than the pieces added up, so be realistic about both.${PART_PROMPT} Record your appraisal with the appraise tool.` },
   ];
   let raw = "";
   try {
-    const input = await askWithTool(client, { model: MODEL, max_tokens: 5000, messages: [{ role: "user", content }], tool: { name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema } });
+    const input = await askWithTool(client, { model: MODEL, max_tokens: 5000, messages: [{ role: "user", content }], tool: { name: "appraise", description: "Record the appraisal.", input_schema: schema as unknown as Anthropic.Tool.InputSchema }, log: { ownerId: user.id, feature: fixing ? "worth_fix" : "worth" } });
     raw = JSON.stringify(input);
     const call = { input };
     const out = call.input as { listing?: { title: string; description: string }; missing_parts?: MissingPart[] };
@@ -85,7 +96,7 @@ export async function POST(req: Request) {
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     await admin().from("settings").upsert({ key: `err:worth:${Date.now()}`, value: { message, raw: raw.slice(0, 2000), photos: photoUrls.slice(0, 3), user: user.id } }).then(() => {}, () => {});
-    if (!fixing && !me?.thrift_pro) await admin().from("profiles").update({ ai_credits: (me?.ai_credits ?? 0) + 1 }).eq("id", user.id).then(() => {}, () => {}); // give back the lookup that failed
+    if (charged) await refundUse(user.id); // give back the use that failed
     return NextResponse.json({ error: "Couldn't read that one. Try a clearer photo of the whole item, or add a note about what it is." }, { status: 500 });
   }
 }

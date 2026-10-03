@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
+import { aiImages, allowanceOf, logUsage, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 export const maxDuration = 60;
 
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
   {
     const { admin } = await import("@/lib/stripe");
     const { data: ok } = await admin().rpc("spend_ai_credit", { p_profile: user.id });
-    if (!ok) return NextResponse.json({ error: "You've used your free AI listings. Upgrade to Pro for unlimited.", upgrade: true }, { status: 402 });
+    if (!ok) return NextResponse.json({ error: outOfUsesMessage(await allowanceOf(user.id)), upgrade: true, topup: true }, { status: 402 });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -38,13 +39,7 @@ export async function POST(req: Request) {
   const catList = categories.map((c) => `${c.name} (${c.id})`).join("; ");
 
   const content: Anthropic.MessageParam["content"] = [
-    ...photoUrls.slice(0, 6).map(
-      (url) =>
-        ({
-          type: "image",
-          source: { type: "url", url },
-        }) as Anthropic.ImageBlockParam
-    ),
+    ...(await aiImages(photoUrls.slice(0, 6))),
     {
       type: "text",
       text: `You are writing a resale listing for a surplus/used-goods business in Virginia. Look at the photos carefully: read every label, model number, brand mark, and sticker you can see.
@@ -80,6 +75,7 @@ Return ONLY a JSON object with these fields:
       max_tokens: 1200,
       messages: [{ role: "user", content }],
     });
+    void logUsage(user.id, "listing", MODEL, msg.usage);
     const text = msg.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
@@ -91,6 +87,7 @@ Return ONLY a JSON object with these fields:
     catch {
       // second try: ask the model to fix its own JSON
       const fix = await client.messages.create({ model: MODEL, max_tokens: 1500, messages: [{ role: "user", content: `Return ONLY this as valid JSON, nothing else:\n${text.slice(jsonStart, jsonEnd + 1)}` }] });
+      void logUsage(user.id, "listing", MODEL, fix.usage);
       const t2 = fix.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
       parsed = JSON.parse(t2.slice(t2.indexOf("{"), t2.lastIndexOf("}") + 1));
     }
@@ -102,6 +99,7 @@ Return ONLY a JSON object with these fields:
     return NextResponse.json({ draft: d, usage: msg.usage });
   } catch (e) {
     const message = e instanceof Error ? e.message : "AI request failed";
+    await refundUse(user.id); // the listing didn't come out: give the use back
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

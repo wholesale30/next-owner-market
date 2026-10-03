@@ -61,7 +61,26 @@ export async function POST(req: Request) {
         await alertStaff("New order paid", `$${((cs.amount_total || 0) / 100).toFixed(2)} order paid in the store (${o?.fulfillment}).`, `/account/orders/${cs.metadata.order_id}`);
         await sendOrderEmails(cs.metadata.order_id);
       }
-      if (cs.mode === "subscription" && cs.metadata?.profile_id && cs.metadata?.plan === "thrift") {
+      // AI use top-up packs (one-time). Stored per session so a retried event never adds twice.
+      if (cs.mode === "payment" && cs.metadata?.topup && cs.metadata?.profile_id && cs.payment_status === "paid") {
+        const n = Number(cs.metadata.topup) || 0;
+        const key = `topup:${cs.id}`;
+        const { data: seen } = await db.from("settings").select("key").eq("key", key).maybeSingle();
+        if (n > 0 && !seen) {
+          await db.from("settings").insert({ key, value: { profile_id: cs.metadata.profile_id, uses: n, amount: cs.amount_total } });
+          const { data: pr } = await db.from("profiles").select("extra_uses, email").eq("id", cs.metadata.profile_id).single();
+          await db.from("profiles").update({ extra_uses: Number(pr?.extra_uses || 0) + n }).eq("id", cs.metadata.profile_id);
+          await alertStaff("AI uses pack sold", `${n} more AI uses bought for $${((cs.amount_total || 0) / 100).toFixed(2)}.`, `/app/people`);
+        }
+      }
+      if (cs.mode === "subscription" && cs.metadata?.profile_id && cs.metadata?.plan === "power") {
+        const subId = typeof cs.subscription === "string" ? cs.subscription : cs.subscription?.id;
+        const { data: pr } = await db.from("profiles").select("stripe_subscription_id").eq("id", cs.metadata.profile_id).single();
+        const old = pr?.stripe_subscription_id && pr.stripe_subscription_id !== subId ? pr.stripe_subscription_id : null;
+        await db.from("profiles").update({ plan: "pro", power: true, stripe_customer_id: typeof cs.customer === "string" ? cs.customer : cs.customer?.id, stripe_subscription_id: subId, power_subscription_id: subId }).eq("id", cs.metadata.profile_id);
+        // moving up from Pro: stop the old $15 subscription so they're never billed twice
+        if (old) { try { await stripe().subscriptions.cancel(old); } catch (e) { console.error("cancel old pro", e); } }
+      } else if (cs.mode === "subscription" && cs.metadata?.profile_id && cs.metadata?.plan === "thrift") {
         await db.from("profiles").update({ thrift_pro: true, stripe_customer_id: typeof cs.customer === "string" ? cs.customer : cs.customer?.id, thrift_subscription_id: typeof cs.subscription === "string" ? cs.subscription : cs.subscription?.id }).eq("id", cs.metadata.profile_id);
       } else if (cs.mode === "subscription" && cs.metadata?.profile_id) {
         await db.from("profiles").update({ plan: "pro", stripe_customer_id: typeof cs.customer === "string" ? cs.customer : cs.customer?.id, stripe_subscription_id: typeof cs.subscription === "string" ? cs.subscription : cs.subscription?.id }).eq("id", cs.metadata.profile_id);
@@ -85,6 +104,10 @@ export async function POST(req: Request) {
       const renews = sub.items.data[0]?.current_period_end;
       if (sub.metadata?.plan === "thrift") {
         await db.from("profiles").update({ thrift_pro: active, thrift_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("thrift_subscription_id", sub.id);
+        break;
+      }
+      if (sub.metadata?.plan === "power") {
+        await db.from("profiles").update({ plan: active ? "pro" : "free", power: active, plan_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("power_subscription_id", sub.id).eq("comped", false);
         break;
       }
       await db.from("profiles").update({ plan: active ? "pro" : "free", plan_renews_at: renews ? new Date(renews * 1000).toISOString() : null }).eq("stripe_subscription_id", sub.id).eq("comped", false);

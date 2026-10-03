@@ -4,6 +4,8 @@ import type { Item, ItemStatus } from "@/lib/types";
 import InventoryList from "./InventoryList";
 import SellerStart from "./SellerStart";
 import AskBox from "@/app/help/AskBox";
+import UsesMeter from "@/components/UsesMeter";
+import { allowanceFor } from "@/lib/usage";
 
 export const metadata = { title: "Inventory" };
 
@@ -47,6 +49,7 @@ export default async function InventoryPage({ searchParams }: PageProps<"/app">)
   return (
     <div className="space-y-4">
       {start}
+      {!staff && <UsesMeter a={allowanceFor(profile)} />}
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-bold">{staff ? "Inventory" : "My items"}</h1>
         <div className="flex gap-2">{staff && <Link href="/app/bins" className="btn btn-secondary">Bins</Link>}<Link href="/app/items/new" className="btn btn-primary">+ Add item</Link></div>

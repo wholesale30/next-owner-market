@@ -2,6 +2,7 @@ import StoreHeader from "../StoreHeader";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import WorthClient from "./WorthClient";
 import ToolGuide from "@/components/ToolGuide";
+import { allowanceFor } from "@/lib/usage";
 
 export const metadata = { title: "What's it worth?", description: "Take a photo of anything in your house and find out what it's worth and where to sell it. Free." };
 
@@ -9,7 +10,7 @@ export default async function WorthPage() {
   const supabase = await createClient();
   const [me, { data: biz }] = await Promise.all([getProfile(), supabase.from("settings").select("value").eq("key", "business").maybeSingle()]);
   const business = (biz?.value as { name: string }) || { name: "Next Owner Market" };
-  const staff = me?.role === "admin" || me?.role === "staff";
+  const a = me ? allowanceFor(me) : null;
   return (
     <div className="flex-1">
       <StoreHeader business={business} signedIn={!!me} />
@@ -20,7 +21,7 @@ export default async function WorthPage() {
         </div>
       </section>
       <main className="max-w-2xl mx-auto p-4 space-y-4">
-        <WorthClient meId={me?.id || null} role={me?.role || null} credits={staff || me?.plan === "pro" ? null : me?.ai_credits ?? 3} />
+        <WorthClient meId={me?.id || null} role={me?.role || null} credits={!a || a.left == null ? null : a.left} plan={a?.kind || null} />
         <ToolGuide
           intro={[
             "Everybody has a thing they've wondered about. The stereo in the basement. Grandma's lamp. The drill in the garage with the dead battery. Is it worth anything? Is it worth the trouble of selling? This page answers that in about thirty seconds, from a photo, for free.",
@@ -40,7 +41,7 @@ export default async function WorthPage() {
           faq={[
             { q: "Is this a real appraisal?", a: "No. It's an estimate from photos, the way an experienced dealer would eyeball it. It's good enough to decide whether to sell and roughly what to ask. For jewelry, art, coins, or anything possibly rare, it will tell you to get a specialist, and you should." },
             { q: "Why a range instead of one number?", a: "Because that's the truth. The same item sells for different amounts depending on the day, the buyer, the photos, and whether it's local or shipped. The low end is a quick sale; the high end is patience and a good listing." },
-            { q: "Does it cost anything?", a: "Your first three lookups are free with a free account. After that, Pro is $15 a month for unlimited lookups, unlimited AI-written listings, and the copy-and-paste versions for nine marketplaces. Listing in our store is free on any plan." },
+            { q: "Does it cost anything?", a: "Your first three lookups are free with a free account. After that, Pro is $15 a month for 300 AI uses (lookups and AI-written listings) plus the copy-and-paste versions for nine marketplaces. Fixing an answer with Something wrong? is free twice per lookup. Listing in our store is free on any plan." },
             { q: "What happens to my photos?", a: "They're stored so the result can be saved to your account. Nothing is public unless you tick \"share it,\" and even then there's no name on it." },
             { q: "What if it's wrong?", a: "Take a clearer photo of the label or add a note about what it is. It reads what it can see. And it's honest: if it can't tell, it says so with a lower confidence." },
             { q: "I have a whole pile, not one thing", a: "Use Sort the pile instead. Photograph the box or shelf and it lists every item with what it's worth and whether to sell, keep, donate, or toss it." },

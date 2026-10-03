@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
 import InstallPrompt from "@/components/InstallPrompt";
 import FixBox from "@/components/FixBox";
+import OutOfUses from "@/components/OutOfUses";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import { compressImage } from "@/lib/photo";
 
@@ -14,7 +15,7 @@ type Out = { missing_parts?: PartView[]; id: string | null; what: string; condit
 const money = (n: number) => `${n < 0 ? "-" : ""}$${Math.abs(Math.round(n)).toLocaleString()}`;
 const V = { buy: { label: "BUY", color: "var(--ok)" }, maybe: { label: "MAYBE", color: "var(--accent)" }, pass: { label: "PASS", color: "var(--danger)" } };
 
-export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: { meId: string | null; refCode?: string | null; freeLeft?: number | null; inRef?: string }) {
+export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", plan = null }: { meId: string | null; refCode?: string | null; freeLeft?: number | null; inRef?: string; plan?: string | null }) {
   const refQ = inRef ? `&ref=${encodeURIComponent(inRef)}` : "";
   const router = useRouter();
   const [photos, setPhotos] = useState<Picked[]>([]);
@@ -117,15 +118,9 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "" }: {
         <div><label className="label">Notes (optional)</label><input className="input" placeholder="works, missing cord…" value={hints} onChange={(e) => setHints(e.target.value)} /></div>
       </div>
       <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!ready || !!busy} onClick={run}>{busy || "Buy or pass?"}</button>
-      {err?.upgrade && (
-        <div className="card p-3 text-center space-y-2" style={{ borderColor: "var(--ok)", borderWidth: 2 }}>
-          <p className="font-bold">Unlimited checks: $3.99 a month</p>
-          <p className="text-xs muted">Thrift Pro. Other thrift apps charge $10 a week. No trial tricks; cancel in one tap.</p>
-          <button type="button" className="btn btn-primary w-full" onClick={thriftPro}>Get Thrift Pro</button>
-        </div>
-      )}
-      {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err.msg}{err.signup && <> <Link href={`/signup?buyer=1${refQ}&next=/buy-or-pass`} className="underline font-semibold">Make a free account</Link></>}</p>}
-      <p className="text-xs muted text-center">{meId ? (freeLeft != null ? `${freeLeft} free check${freeLeft === 1 ? "" : "s"} left today · Pro is unlimited` : "Unlimited checks") : "Free. No account, no app, no card. Try it right now."}</p>
+      {err?.upgrade && <OutOfUses message={err.msg} back="/buy-or-pass" thrift={plan === "free"} />}
+      {err && !err.upgrade && <p className="text-sm" style={{ color: "var(--danger)" }}>{err.msg}{err.signup && <> <Link href={`/signup?buyer=1${refQ}&next=/buy-or-pass`} className="underline font-semibold">Make a free account</Link></>}</p>}
+      <p className="text-xs muted text-center">{meId ? (freeLeft != null ? `${freeLeft} free check${freeLeft === 1 ? "" : "s"} left today` : "Free for you") : "Free. No account, no app, no card. Try it right now."}</p>
     </div>
   );
 

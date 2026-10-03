@@ -2,6 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import StoreHeader from "../StoreHeader";
 import StartSelling from "../StartSelling";
+import PlanButton from "./PlanButton";
+import UsesMeter from "@/components/UsesMeter";
+import { ALLOW_SELECT, allowanceFor } from "@/lib/usage";
 
 export const metadata = { title: "Next Owner Pro: photos in, listings out", description: "Upload a pile of photos. The AI sorts them into items, cleans the backgrounds, writes every listing, and gives you ready-to-paste versions for eBay, Facebook, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, and Etsy. $15/month." };
 
@@ -13,7 +16,8 @@ export default async function ProPage() {
   ]);
   const business = (biz?.value as { name: string; tagline?: string }) || { name: "Next Owner Market" };
   const { data: { user } } = await supabase.auth.getUser();
-  const { data: me } = user ? await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle() : { data: null };
+  const { data: me } = user ? await supabase.from("profiles").select(`${ALLOW_SELECT}`).eq("id", user.id).maybeSingle() : { data: null };
+  const a = me ? allowanceFor(me) : null;
   const p = (plans?.value as { pro_monthly: number; pro_features: string[] }) || { pro_monthly: 15, pro_features: [] };
   return (
     <div className="flex-1">
@@ -23,14 +27,10 @@ export default async function ProPage() {
           <h1 className="text-3xl font-extrabold leading-tight">Photograph the pile.<br />Get the listings.</h1>
           <p className="text-lg muted">Upload 40 photos of 40 different things. The AI sorts them into items, writes the title, description, specs and price, and hands you ready-to-paste listings for nine marketplaces, each with a how-to. And it&apos;s listed in this store at the same time, <b>free</b>: no listing fee, ever. We only get paid when your item sells here.</p>
           <StartSelling signedIn={!!user} role={me?.role || null} className="btn btn-primary text-lg w-full" label={me?.role && me.role !== "buyer" ? "Go to my listings" : "Start free: 3 AI listings on us"} />
+          <p className="text-sm"><a href="#plans" className="underline font-semibold">See plans and prices</a></p>
           <p className="text-xs muted">No card to start. Pro is ${p.pro_monthly}/month, cancel any time. <Link href="/why" className="underline">Why we built this</Link> · <Link href="/start" className="underline">Start with one box</Link></p>
         </section>
 
-        <section className="card p-4 space-y-1 text-center" style={{ borderColor: "var(--ok)", borderWidth: 2 }}>
-          <p className="font-bold text-lg">Just checking thrift finds? Thrift Pro, $3.99 a month</p>
-          <p className="text-sm muted">Unlimited Buy or Pass and What&apos;s it worth checks. Everyone gets 5 free checks a day; this removes the limit. No trial tricks, cancel in one tap.</p>
-          <Link href="/thrift" className="btn btn-secondary w-full">Try a check first, free</Link>
-        </section>
 
         <section className="grid grid-cols-1 gap-3">
           {[
@@ -45,12 +45,47 @@ export default async function ProPage() {
           ))}
         </section>
 
-        <section className="card p-4 space-y-2">
-          <div className="flex items-baseline justify-between"><p className="font-bold text-lg">Free</p><p className="font-bold">$0</p></div>
-          <ul className="text-sm space-y-1"><li>✔ 3 AI-written listings to try it</li><li>✔ 10 live listings in the store</li><li>✔ Card checkout, held payments, QR tags</li><li>✔ Messaging, pickup scheduling</li></ul>
-          <div className="flex items-baseline justify-between pt-3 border-t" style={{ borderColor: "var(--line)" }}><p className="font-bold text-lg">Pro</p><p className="font-bold">${p.pro_monthly}/month</p></div>
-          <ul className="text-sm space-y-1">{p.pro_features.map((f) => <li key={f}>✔ {f}</li>)}<li>✔ Invite a seller who goes Pro: you both get a month free</li></ul>
-          <StartSelling signedIn={!!user} role={me?.role || null} className="btn btn-primary w-full mt-2" label={me?.role && me.role !== "buyer" ? "Go to my listings" : "Start free"} />
+        <section id="plans" className="space-y-3 scroll-mt-4">
+          <h2 className="text-2xl font-extrabold text-center">Pick what fits</h2>
+          {a && a.kind !== "staff" && a.kind !== "comped" && <UsesMeter a={a} back="/pro" />}
+          {a && (a.kind === "staff" || a.kind === "comped") && <p className="card p-3 text-sm text-center">✓ Everything is free for you.</p>}
+          <p className="text-sm muted text-center">An <b>AI use</b> is one listing written, one lookup, one pile sorted, or one extra Buy or Pass check. Listing in our store is always free.</p>
+
+          <div className="card p-4 space-y-1">
+            <div className="flex items-baseline justify-between"><p className="font-bold text-lg">Free</p><p className="font-bold">$0</p></div>
+            <p className="text-sm">3 AI uses to try it, 5 Buy or Pass checks a day, 10 live listings, card checkout, QR tags, messaging.</p>
+            {!user && <StartSelling signedIn={false} role={null} className="btn btn-secondary w-full mt-1" label="Start free" />}
+          </div>
+
+          <div className="card p-4 space-y-1" style={{ borderColor: "var(--ok)", borderWidth: 2 }}>
+            <div className="flex items-baseline justify-between"><p className="font-bold text-lg">Thrift Pro</p><p className="font-bold">$3.99/mo</p></div>
+            <p className="text-sm">For thrift shoppers: up to <b>30 checks a day</b> on Buy or Pass and What&apos;s it worth. Other thrift apps charge $10 a week.</p>
+            {a?.kind !== "thrift" && a?.kind !== "staff" && a?.kind !== "comped" && <PlanButton plan="thrift" label="Get Thrift Pro" />}
+          </div>
+
+          <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 3 }}>
+            <div className="flex items-baseline justify-between"><p className="font-bold text-lg">Pro <span className="pill pill-active text-xs align-middle">Most popular</span></p><p className="font-bold">${p.pro_monthly}/mo</p></div>
+            <ul className="text-sm space-y-1">{p.pro_features.map((f) => <li key={f}>✔ {f}</li>)}<li>✔ Invite a seller who goes Pro: you both get a month free</li></ul>
+            {a?.kind !== "pro" && a?.kind !== "power" && a?.kind !== "staff" && a?.kind !== "comped" && <PlanButton plan="pro" label={`⭐ Go Pro: $${p.pro_monthly} a month`} primary />}
+            {a?.kind === "pro" && <p className="text-sm font-semibold text-center" style={{ color: "var(--ok)" }}>✓ You&apos;re on Pro</p>}
+          </div>
+
+          <div className="card p-4 space-y-1">
+            <div className="flex items-baseline justify-between"><p className="font-bold text-lg">Power Seller</p><p className="font-bold">$39/mo</p></div>
+            <p className="text-sm">Everything in Pro with <b>1,000 AI uses a month</b>. For resellers, estates and warehouses listing every day.</p>
+            {a?.kind === "power" ? <p className="text-sm font-semibold text-center" style={{ color: "var(--ok)" }}>✓ You&apos;re a Power Seller</p> : a?.kind !== "staff" && a?.kind !== "comped" && <PlanButton plan="power" label={a?.kind === "pro" ? "Move up to Power Seller" : "Get Power Seller"} />}
+            {a?.kind === "pro" && <p className="text-xs muted text-center">Your $15 Pro stops automatically, so you&apos;re never billed twice.</p>}
+          </div>
+
+          <div className="card p-4 space-y-2">
+            <p className="font-bold text-lg">Need a few more this month?</p>
+            <p className="text-sm">Add AI uses any time. One payment, nothing monthly, and they <b>never expire</b>.</p>
+            <div className="grid grid-cols-2 gap-2">
+              <PlanButton pack={100} label="100 for $6.99" />
+              <PlanButton pack={300} label="300 for $14.99" />
+            </div>
+          </div>
+          <p className="text-xs muted text-center">Cancel any plan in one tap. No trial tricks.</p>
         </section>
 
         <section className="text-sm muted space-y-2">

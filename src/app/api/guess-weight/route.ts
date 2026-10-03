@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   try {
     const out = await askWithTool<{ weight_lbs: number; box: string; reason: string }>(client, {
-      model: MODEL, max_tokens: 300,
+      model: MODEL, max_tokens: 300, log: { ownerId: user.id, feature: "weight_guess" },
       tool: { name: "weight", description: "Packed shipping estimate", input_schema: { type: "object", properties: {
         weight_lbs: { type: "number", description: "packed weight in pounds: the item plus a box and padding, rounded up to the next half pound" },
         box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"], description: "small=shoebox, medium=microwave, large=stereo receiver, xl=tower speaker, freight=too big/heavy to ship by parcel (over ~70 lb or very large)" },

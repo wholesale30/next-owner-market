@@ -13,13 +13,14 @@ import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib
 type Out = { missing_parts?: MissingPart[]; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: "ship" | "local" | "either"; shipping_est: number; confidence: "high" | "medium" | "low"; why: string; watch_out: string | null; weight_lbs: number; box: string; listing_title: string };
 
 const nyDay = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+/** Count one more against `key`; returns the new count, or 0 when it's already at `max`. */
 async function bump(key: string, max: number) {
   const d = admin();
   const { data } = await d.from("settings").select("value").eq("key", key).maybeSingle();
   const n = Number((data?.value as { n?: number } | null)?.n || 0);
-  if (n >= max) return false;
+  if (n >= max) return 0;
   await d.from("settings").upsert({ key, value: { n: n + 1 } });
-  return true;
+  return n + 1;
 }
 
 /**
@@ -44,13 +45,16 @@ export async function POST(req: Request) {
     const { data } = await d.from("buy_pass_scans").select("id, owner_id, what, resale_low, resale_high, photo_url, created_at").eq("id", prev_id).maybeSingle();
     const mine = data && (data.owner_id ? data.owner_id === user?.id : Date.now() - new Date(data.created_at).getTime() < 6 * 3600_000);
     if (!data || !mine) return NextResponse.json({ error: "Couldn't find that check to fix. Start a new one." }, { status: 404 });
-    if (!(await bump(`fix:bp:${prev_id}`, 5))) return NextResponse.json({ error: "That one's been fixed a lot already. Start a fresh check." }, { status: 429 });
+    const n = await bump(`fix:bp:${prev_id}`, 5);
+    if (!n) return NextResponse.json({ error: "That one's been fixed a lot already. Start a fresh check." }, { status: 429 });
+    // the first 2 fixes are free; after that a fix counts as a check
+    if (n > 2) { if (!user) return NextResponse.json({ error: "Make a free account to keep fixing this one.", signup: true }, { status: 429 }); charge = true; }
     prev = data as Prev;
     if (prev.photo_url && !photoUrls.includes(prev.photo_url)) photoUrls = [prev.photo_url, ...photoUrls];
   }
 
   if (prev) {
-    // no limits or charges for a correction
+    // corrections: handled above (2 free, then they count)
   } else if (!user) {
     if (jar.get("nom_bp")?.value === nyDay()) return NextResponse.json({ error: "That was your free check for today. Make a free account and you get 5 free checks every day.", signup: true }, { status: 429 });
     const h = await headers();
@@ -59,13 +63,11 @@ export async function POST(req: Request) {
     if (!(await bump(`bp:day:${nyDay()}`, 500))) return NextResponse.json({ error: "Lots of people are checking finds today. Make a free account and go right now.", signup: true }, { status: 429 });
     if (!(await bump(anonKey, 3))) return NextResponse.json({ error: "That was your free check for today. Make a free account and you get 5 free checks every day.", signup: true }, { status: 429 });
   } else {
-    const { data: me } = await d.from("profiles").select("plan, role, thrift_pro").eq("id", user.id).single();
-    const unlimited = me?.plan === "pro" || !!me?.thrift_pro || me?.role === "admin" || me?.role === "staff";
-    if (!unlimited) {
-      const start = new Date(Date.now() - 24 * 3600_000).toISOString(); // rolling day
-      const { count } = await d.from("buy_pass_scans").select("id", { count: "exact", head: true }).eq("owner_id", user.id).gte("created_at", start);
-      if ((count || 0) >= BP_FREE_DAILY) charge = true; // past today's free ones: use a saved AI credit, else the Pro offer
-    }
+    // Everyone signed in gets BP_FREE_DAILY free checks a day. After that each check is one AI use
+    // (Pro: from the 300 a month; Thrift Pro: from its 30 a day; free: starter credits or a pack). Staff and comped: free.
+    const start = new Date(Date.now() - 24 * 3600_000).toISOString(); // rolling day
+    const { count } = await d.from("buy_pass_scans").select("id", { count: "exact", head: true }).eq("owner_id", user.id).gte("created_at", start);
+    if ((count || 0) >= BP_FREE_DAILY) charge = true;
   }
 
   if (image && !prev) {
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
   });
   if (!r.ok) {
     if (anonKey) await d.from("settings").delete().eq("key", anonKey).then(() => {}, () => {});
-    return NextResponse.json({ error: r.upgrade ? `You've used today's ${BP_FREE_DAILY} free checks. They come back tomorrow, or get unlimited checks with Thrift Pro for $3.99 a month.` : r.error, upgrade: r.upgrade, thrift: r.upgrade }, { status: r.status });
+    return NextResponse.json({ error: r.upgrade ? `You've used today's ${BP_FREE_DAILY} free checks. They come back tomorrow. ${r.error}` : r.error, upgrade: r.upgrade, thrift: r.upgrade, topup: r.topup }, { status: r.status });
   }
   const o = r.result;
   const cost = Number(paid || 0);

@@ -46,7 +46,7 @@ export default async function ToolsPage() {
           <p className="font-bold">Free vs Pro</p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div><p className="font-semibold">Free</p><ul className="muted space-y-1"><li>✔ 1 try, no account</li><li>✔ 3 AI listings with an account</li><li>✔ Facebook copy-and-paste</li><li>✔ List in our store, always free</li></ul></div>
-            <div><p className="font-semibold">Pro · $15/month</p><ul className="muted space-y-1"><li>✔ Unlimited AI listings</li><li>✔ All 9 sites, ready to paste</li><li>✔ List a whole box</li><li>✔ Cancel any time</li></ul></div>
+            <div><p className="font-semibold">Pro · $15/month</p><ul className="muted space-y-1"><li>✔ 300 AI uses a month</li><li>✔ All 9 sites, ready to paste</li><li>✔ List a whole box</li><li>✔ Cancel any time</li></ul></div>
           </div>
           <Link href="/pro" className="btn btn-secondary w-full">See Pro</Link>
         </div>

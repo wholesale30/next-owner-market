@@ -43,7 +43,7 @@ const GLOSSARY: [string, string][] = [
   ["Automation", "Something the site does by itself on a schedule, with no one pressing anything. Each one below says what it does, why, when it last ran, and what happened."],
   ["Daily job", "Once a day (about 9 AM Eastern) the site runs every automation in order. 'Run now' runs one immediately."],
   ["Held money", "When a buyer pays, the money sits with us (Stripe) until the buyer has the item. Then it goes to the seller. That's what makes strangers trust each other."],
-  ["Pro", "The $15/month plan: unlimited AI listings and lookups, copy-and-paste for nine marketplaces, Sort the pile, video. Free Pro = gifted by us."],
+  ["Pro", "The $15/month plan: 300 AI uses a month (listings, lookups, piles, extra Buy or Pass checks), copy-and-paste for nine marketplaces, video. Power Seller ($39) = 1,000 a month. Packs of extra uses: 100 for $6.99, 300 for $14.99, never expire. Free Pro (comped) = gifted by us, no limit."],
   ["Commission", "Our percentage of a store sale (default 15%, on the item price only). We earn when the seller earns."],
   ["Indexing", "Google (and Bing) reading our pages so they show up in search. The site tells them about new pages automatically; the tasks below are the one-time setup."],
   ["Backlink", "Another website linking to ours. Google counts these as votes. The free widget and creator deals exist to get them."],
@@ -54,7 +54,7 @@ const GLOSSARY: [string, string][] = [
 
 const KIND_LABEL: Record<string, string> = { welcome_1: "Welcome day 1", welcome_3: "Welcome day 3", welcome_7: "Welcome day 7", nudge_views: "Views, no messages", nudge_saves: "People saved it", nudge_drafts: "Drafts waiting", nudge_payouts: "Set up payouts", review_request: "Review request" };
 
-export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples, lists = {}, funnel = [] }: { funnel?: { label: string; n: number; tip: string }[]; lists?: Record<string, { line: string; href?: string }[]>; now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
+export default function OpsClient({ stats, automations, tasks, emailsByKind, posts, now, integrations, emailSamples, lists = {}, funnel = [], ai }: { ai?: { month: number; calls: number; today: number }; funnel?: { label: string; n: number; tip: string }[]; lists?: Record<string, { line: string; href?: string }[]>; now: number; integrations: Integ[]; emailSamples: { kind: string; when: string; subject: string; body: string }[]; stats: Record<string, number>; automations: Auto[]; tasks: Task[]; emailsByKind: Record<string, number>; posts: { slug: string; title: string; published_at: string | null }[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [out, setOut] = useState<Record<string, string>>({});
@@ -102,6 +102,13 @@ export default function OpsClient({ stats, automations, tasks, emailsByKind, pos
             })}
           </div>
         </section>
+      )}
+
+      {ai && (
+        <Link href="/app/ops/ai" className="card p-3 flex items-center justify-between gap-2" style={{ borderLeft: "4px solid var(--brand)" }}>
+          <span><span className="font-bold">🤖 AI spending this month: ${ai.month.toFixed(2)}</span><span className="block text-xs muted">{ai.calls.toLocaleString()} AI calls · ${ai.today.toFixed(2)} in the last 24 hours · tap to see by feature and by person</span></span>
+          <span className="text-xl">›</span>
+        </Link>
       )}
 
       <section className="space-y-2">

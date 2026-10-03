@@ -218,7 +218,7 @@ const milestones: Automation = {
       const first = p.full_name?.split(" ")[0] || "there";
       const checks: [string, boolean, string, string][] = [
         ["first_listing", (listings || 0) >= 1, "Your first listing is live", `Hi ${first},\n\nYour first item is live on Next Owner Market. That's the hard part done.\n\nNext: copy it to Facebook Marketplace (open the item, Facebook tab, Copy, paste) so local buyers see it too. Then the next box.`],
-        ["ten_listings", (listings || 0) >= 10, "Ten listings. You're rolling.", `Hi ${first},\n\nTen items listed. Most people never get past one. If you're on the free plan, this is where Pro pays for itself: unlimited AI listings, all nine marketplaces, and the pile sorter. ${site()}/pro`],
+        ["ten_listings", (listings || 0) >= 10, "Ten listings. You're rolling.", `Hi ${first},\n\nTen items listed. Most people never get past one. If you're on the free plan, this is where Pro pays for itself: 300 AI listings and lookups a month, all nine marketplaces, and the pile sorter. ${site()}/pro`],
         ["first_sale", sales >= 1, "You made your first sale 🎉", `Hi ${first},\n\nFirst sale done and paid. The money lands in your bank in about two business days.\n\nWant to tell someone? Here's a line you can paste:\n"Sold my first thing on Next Owner Market. Took a photo, it wrote the listing, buyer paid by card. ${site()}"`],
         ["third_sale", sales >= 3, "Three sales: your limits just came off", `Hi ${first},\n\nThree completed sales. The new-seller limits (5 listings, $500) are off your account now. List as much as you want.`],
         ["sold_25", total >= 25, "First $25. It's real now.", `Hi ${first},\n\nYou've turned $${Math.round(total)} of stuff that was just sitting there into money in the bank. Small, but it's the proof: this works. Next box: ${site()}/pile`],
@@ -289,6 +289,7 @@ const weeklyBlog: Automation = {
       model: process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001", max_tokens: 1800,
       messages: [{ role: "user", content: `Write this week's post for the Next Owner Market blog (a marketplace where people photograph their stuff, an AI values it and writes the listing, buyers pay by card with money held until hand-off). Plain, friendly, 8th-grade English, first person plural ("we"), no hype, no "AI-powered". 350-550 words. Use ONLY the real data below; do not invent items or numbers. Structure: a short opener about the week; "What people found out their stuff is worth" (3-6 items with the ranges, link each as [title](/valued/slug) when a slug exists); "What sold" (if any, titles and prices); "New this week" (3-5 listed items as [title](/item/SKU)); one practical tip for someone overwhelmed by a pile; a closing line pointing to /pile or /worth. Markdown. Return only the post body, no title.\n\nDATA:\n${JSON.stringify(data).slice(0, 12000)}` }],
     });
+    void (await import("@/lib/usage")).logUsage(null, "weekly_blog", process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001", msg.usage);
     const body = msg.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
     const dt = new Date();
     const title = `This week on Next Owner Market: ${dt.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
@@ -418,7 +419,7 @@ const winback: Automation = {
     for (const p of zero || []) {
       if (left <= 0) break; if (p.marketing_opt_out || p.role === "admin" || p.role === "staff") continue;
       if (await alreadySent(p.id, "pro_offer")) continue;
-      await send(p.email, "You used your free lookups. Here's what Pro is.", `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYou've used the three free AI lookups, which means you've got the hang of it. Pro is $15 a month and gets you:\n\n• Unlimited What's it worth?, Sort the pile, Buy or pass, and AI-written listings\n• Copy-and-paste versions for all nine marketplaces (eBay, Poshmark, Mercari, OfferUp, Craigslist, Vinted, Depop, Etsy, plus Facebook which is free for everyone)\n• Video on listings; unlimited live listings\n\nListing in the store stays free on any plan. Cancel any time. ${site()}/pro\n\nIf you'd rather keep going free, you still can: write listings yourself, and Facebook copy is always included.`, { profile_id: p.id, kind: "pro_offer" }); n++; left--;
+      await send(p.email, "You used your free lookups. Here's what Pro is.", `Hi ${p.full_name?.split(" ")[0] || "there"},\n\nYou've used the three free AI lookups, which means you've got the hang of it. Pro is $15 a month and gets you:\n\n• 300 AI uses a month: What's it worth?, Sort the pile, Buy or pass, and AI-written listings (most people use about half)\n• Copy-and-paste versions for all nine marketplaces (eBay, Poshmark, Mercari, OfferUp, Craigslist, Vinted, Depop, Etsy, plus Facebook which is free for everyone)\n• Video on listings; unlimited live listings\n\nListing in the store stays free on any plan. Cancel any time. ${site()}/pro\n\nIf you'd rather keep going free, you still can: write listings yourself, and Facebook copy is always included.`, { profile_id: p.id, kind: "pro_offer" }); n++; left--;
     }
     return { emails_sent: n, budget_left: left };
   },
@@ -684,7 +685,49 @@ const thriftMonday: Automation = {
   },
 };
 
-export const AUTOMATIONS: Automation[] = [health, secretary, robot, heldMoney, payoutsReady, heldPayouts, thriftMonday, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
+// ---------------------------------------------------------------- AI allowance: 80% heads-up to members, $10 alert to the owner
+const aiWatch: Automation = {
+  key: "ai_watch", name: "AI uses watch", schedule: "daily", sort_order: 3,
+  what: "Two things. 1) Emails any Pro or Power Seller member once a month when they've used 80% of their AI uses, with the one-tap add-more link, so they never hit the end by surprise. 2) Tells you if any one member's AI cost passes $10 this month (once per member per month), with a link to their calls.",
+  why: "Members stay happy (no surprise wall) and you never get a surprise AI bill.",
+  async run() {
+    const d = db();
+    const { allowanceFor, ALLOW_SELECT } = await import("@/lib/usage");
+    const month = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" }).slice(0, 7);
+    const { data: members } = await d.from("profiles").select(`id, email, full_name, marketing_opt_out, uses_warned, ${ALLOW_SELECT}`).eq("plan", "pro").eq("uses_month", month).limit(5000);
+    let warned = 0;
+    for (const p of members || []) {
+      const a = allowanceFor(p);
+      if (!a.allow || a.used < a.allow * 0.8 || p.uses_warned === month || !p.email) continue;
+      const first = p.full_name?.split(" ")[0] || "there";
+      await send(p.email, `You've used ${a.used} of your ${a.allow} AI uses this month`, `Hi ${first},\n\nYou're busy, and that's great: ${a.used} of your ${a.allow} AI uses this month are done. They reset on the 1st.\n\nIf you'll need more before then, add 100 for $6.99 (they never expire): ${site()}/pro#plans\n\nListing a lot every month? Power Seller gives you 1,000 a month for $39.`, { profile_id: p.id, kind: "ai_80" });
+      await d.from("profiles").update({ uses_warned: month }).eq("id", p.id);
+      warned++;
+    }
+    // owner alert: anyone over $10 of AI this month
+    const start = new Date(month + "-01T04:00:00Z").toISOString();
+    const { data: rows } = await d.from("ai_usage").select("owner_id, cost_usd").gte("created_at", start).not("owner_id", "is", null).limit(50000);
+    const by = new Map<string, number>();
+    for (const r of rows || []) by.set(r.owner_id!, (by.get(r.owner_id!) || 0) + Number(r.cost_usd));
+    const over = [...by.entries()].filter(([, c]) => c > 10);
+    let alerted = 0;
+    for (const [id, c] of over) {
+      const key = `ai_alert:${month}:${id}`;
+      const { data: seen } = await d.from("settings").select("key").eq("key", key).maybeSingle();
+      if (seen) continue;
+      const { data: p } = await d.from("profiles").select(`full_name, username, email, ${ALLOW_SELECT}`).eq("id", id).maybeSingle();
+      if (p && (p.role === "admin" || p.role === "staff")) { await d.from("settings").insert({ key, value: { c } }); continue; }
+      const { alertStaff } = await import("@/lib/alert");
+      await alertStaff(`AI cost: ${p?.full_name || p?.username || p?.email || "a member"} passed $10 this month`, `They're at $${c.toFixed(2)} of AI this month (plan: ${p ? allowanceFor(p).kind : "?"}). Usually just a busy seller. Tap to see their calls.`, `/app/ops/ai?member=${id}`);
+      await d.from("settings").insert({ key, value: { c } });
+      alerted++;
+    }
+    const total = (rows || []).reduce((a, r) => a + Number(r.cost_usd), 0);
+    return { ai_this_month: `$${total.toFixed(2)}`, heads_up_emails: warned, owner_alerts: alerted };
+  },
+};
+
+export const AUTOMATIONS: Automation[] = [health, secretary, aiWatch, robot, heldMoney, payoutsReady, heldPayouts, thriftMonday, welcome, nudges, milestones, buyerDigest, sellerReport, winback, reviews, weeklyBlog, facebookPage, priceDrops, comps, feedPing, opsDigest, backups];
 
 /** Make sure every automation is registered (so the Operations page can list and toggle it). */
 export async function registerAutomations() {
@@ -729,7 +772,8 @@ export const EMAIL_SAMPLES: { kind: string; when: string; subject: string; body:
   { kind: "Buyer weekly digest", when: "Thursdays, accounts with a ZIP, if there's something new within 100 miles", subject: "New near 23220: …", body: "New this week near you: • item — $ · 12 mi … Everything: /?zip=…" },
   { kind: "Seller weekly report", when: "Mondays, sellers with live items", subject: "Your week: 84 views, 1 sale", body: "Your 6 live items this week: views, saved, messages, offers, sold… One thing to do: …" },
   { kind: "Win-back", when: "30 days without signing in, once", subject: "Your N items are still listed / Still have that pile?", body: "It's been a month… Two minutes in the app keeps them fresh." },
-  { kind: "Pro offer", when: "the day free credits hit zero, once", subject: "You used your free lookups. Here's what Pro is.", body: "Pro is $15 a month: unlimited lookups and listings, all nine marketplaces, video… Listing stays free on any plan." },
+  { kind: "AI uses at 80%", when: "a Pro or Power Seller member reaches 80% of the month's AI uses, once a month", subject: "You've used 240 of your 300 AI uses this month", body: "You're busy, and that's great: 240 of your 300 AI uses this month are done. They reset on the 1st. If you'll need more before then, add 100 for $6.99 (they never expire). Listing a lot every month? Power Seller gives you 1,000 a month for $39." },
+  { kind: "Pro offer", when: "the day free credits hit zero, once", subject: "You used your free lookups. Here's what Pro is.", body: "Pro is $15 a month: 300 lookups and listings a month, all nine marketplaces, video… Listing stays free on any plan." },
   { kind: "Price drop", when: "an item someone saved gets cheaper", subject: "Price drop: item", body: "Dropped from $X to $Y. Grab it before someone else does." },
   { kind: "Order emails (always sent)", when: "payment, shipping, problems", subject: "Order confirmed / You made a sale / etc.", body: "Transactional; not affected by the tips opt-out." },
   { kind: "Staff digest", when: "Mondays, to the alert address", subject: "Next Owner Market: week of …", body: "Numbers, what ran, what's broken, human tasks due." },

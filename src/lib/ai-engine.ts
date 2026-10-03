@@ -1,16 +1,18 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { admin } from "@/lib/stripe";
 import { askWithTool } from "@/lib/ai-tool";
+import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 /**
  * One place for "photos in, structured answer out":
- *  - charges one AI credit (Pro/staff unlimited), refunds it if the call fails
+ *  - charges one AI use (spend_ai_credit: Pro 300/month, Power 1,000, Thrift Pro 30/day, staff and comped free), gives it back if the call fails
+ *  - the AI reads a smaller copy of each photo; every call's real cost is logged to ai_usage
  *  - forces a tool call so the answer always has the schema's shape (no JSON parsing)
  *  - logs failures to settings as err:<name>:<ts>
  */
 export const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
 
-export type EngineResult<T> = { ok: true; result: T } | { ok: false; error: string; upgrade?: boolean; status: number };
+export type EngineResult<T> = { ok: true; result: T } | { ok: false; error: string; upgrade?: boolean; topup?: boolean; status: number };
 
 export async function runVision<T>(opts: {
   name: string;                       // tool name + log key
@@ -25,26 +27,23 @@ export async function runVision<T>(opts: {
   const db = admin();
   if (opts.charge !== false) {
     const { data: ok } = await db.rpc("spend_ai_credit", { p_profile: opts.userId });
-    if (!ok) return { ok: false, error: "You've used your free lookups. Pro gives you unlimited for $15/month.", upgrade: true, status: 402 };
+    if (!ok) return { ok: false, error: outOfUsesMessage(await allowanceOf(opts.userId)), upgrade: true, topup: true, status: 402 };
   }
   if (!process.env.ANTHROPIC_API_KEY) return { ok: false, error: "Not available right now.", status: 500 };
   const photos = (opts.photoUrls || []).slice(0, opts.maxPhotos ?? 6);
   if (!photos.length) return { ok: false, error: "Add at least one photo.", status: 400 };
   const client = new Anthropic();
   const content: Anthropic.MessageParam["content"] = [
-    ...photos.map((url) => ({ type: "image", source: { type: "url", url } }) as Anthropic.ImageBlockParam),
+    ...(await aiImages(photos)),
     { type: "text", text: opts.prompt },
   ];
   try {
-    const result = await askWithTool<T>(client, { model: MODEL, max_tokens: opts.maxTokens ?? 2500, messages: [{ role: "user", content }], tool: { name: opts.name, description: "Record the answer.", input_schema: opts.schema as unknown as Anthropic.Tool.InputSchema } });
+    const result = await askWithTool<T>(client, { model: MODEL, max_tokens: opts.maxTokens ?? 2500, messages: [{ role: "user", content }], tool: { name: opts.name, description: "Record the answer.", input_schema: opts.schema as unknown as Anthropic.Tool.InputSchema }, log: { ownerId: opts.userId, feature: opts.name } });
     return { ok: true, result };
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     await db.from("settings").upsert({ key: `err:${opts.name}:${Date.now()}`, value: { message, photos: photos.slice(0, 3), user: opts.userId } }).then(() => {}, () => {});
-    if (opts.charge !== false) {
-      const { data: me } = await db.from("profiles").select("ai_credits, plan, role").eq("id", opts.userId).single();
-      if (me && me.plan !== "pro" && me.role !== "admin" && me.role !== "staff") await db.from("profiles").update({ ai_credits: (me.ai_credits ?? 0) + 1 }).eq("id", opts.userId);
-    }
+    if (opts.charge !== false) await refundUse(opts.userId);
     return { ok: false, error: "Couldn't read that one. Try a clearer photo of the whole item, or add a note about what it is.", status: 500 };
   }
 }

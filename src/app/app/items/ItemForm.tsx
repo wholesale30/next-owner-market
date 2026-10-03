@@ -14,6 +14,7 @@ import { money } from "@/lib/listing";
 import { cleanBackground, compressImage, preloadBackgroundModel } from "@/lib/photo";
 import { touchUp } from "@/lib/photo-edit";
 import PhotoEditor from "@/components/PhotoEditor";
+import OutOfUses from "@/components/OutOfUses";
 import { useEffect } from "react";
 
 interface Props {
@@ -477,18 +478,19 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
             <button type="button" className="btn btn-secondary w-full" onClick={() => setStep("details")}>I&apos;ll type it myself</button>
           </>
         )}
-        {outOfCredits && (
+        {outOfCredits && isPro && <OutOfUses message="You've used all your AI uses for this month. Nice work! Add more now, or they reset on the 1st." back={mode === "edit" && item ? `/app/items/${item.id}/edit` : "/app/items/new"} />}
+        {outOfCredits && !isPro && (
           <div className="card p-4 space-y-2" style={{ borderLeft: "4px solid var(--brand)" }}>
             <p className="font-bold text-lg">You&apos;ve used your free AI listings 🎉</p>
-            <p className="text-sm">That means it&apos;s working for you. Pro writes unlimited listings and unlocks all 9 sites, for $15 a month. Most people save that in their first afternoon.</p>
-            <button type="button" className="btn btn-primary w-full" disabled={proBusy} onClick={goPro}>{proBusy ? "One sec…" : "⭐ Go Pro: unlimited listings"}</button>
+            <p className="text-sm">That means it&apos;s working for you. Pro writes up to 300 listings a month and unlocks all 9 sites, for $15 a month. Most people save that in their first afternoon.</p>
+            <button type="button" className="btn btn-primary w-full" disabled={proBusy} onClick={goPro}>{proBusy ? "One sec…" : "⭐ Go Pro: 300 a month"}</button>
             <button type="button" className="text-sm underline w-full" onClick={() => { setOutOfCredits(false); setStep("details"); }}>Not now, I&apos;ll type this one myself</button>
           </div>
         )}
         {aiWin && (
           <div className="card p-4 space-y-2" style={{ borderLeft: "4px solid var(--ok)" }}>
             <p className="font-bold">✨ Written in {aiWin.secs} seconds. By hand that&apos;s about 15 minutes.</p>
-            <p className="text-sm">{aiWin.left > 0 ? `${aiWin.left} free AI listing${aiWin.left === 1 ? "" : "s"} left.` : "That was your last free AI listing."} Pro writes unlimited listings and gives you copy-and-paste versions for all 9 sites, $15 a month.</p>
+            <p className="text-sm">{aiWin.left > 0 ? `${aiWin.left} free AI listing${aiWin.left === 1 ? "" : "s"} left.` : "That was your last free AI listing."} Pro writes up to 300 a month and gives you copy-and-paste versions for all 9 sites, $15 a month.</p>
             <div className="flex gap-2"><button type="button" className="btn btn-primary flex-1" disabled={proBusy} onClick={goPro}>{proBusy ? "One sec…" : "⭐ Go Pro"}</button><button type="button" className="btn btn-secondary" onClick={() => setAiWin(null)}>Later</button></div>
           </div>
         )}

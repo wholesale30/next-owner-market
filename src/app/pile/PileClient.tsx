@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
 import FixBox from "@/components/FixBox";
+import OutOfUses from "@/components/OutOfUses";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import Mic from "@/components/Mic";
 
@@ -36,6 +37,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
     if (!res) return "Nothing to fix yet.";
     const r = await fetch("/api/pile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints, correction, prev_scan_id: res.scanId, previous: res.items.map((x) => ({ name: x.name, low: x.low, high: x.high, action: x.action })) }) });
     const j = await r.json().catch(() => ({}));
+    if (r.status === 402) { setErr({ msg: j.error || "You're out of AI uses.", upgrade: true }); return "You're out of AI uses for now. See the box below."; }
     if (!r.ok || !j.items) return j.error || "Couldn't update it. Try again.";
     setRes(j); setPicked(new Set(j.items.map((x: Item, i: number) => (x.action === "sell" ? i : -1)).filter((i: number) => i >= 0))); setHints((h) => (h ? h + ". " : "") + correction);
     return null;
@@ -61,7 +63,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
       <p className="text-xs muted">Wide shot first, then closer shots so labels are readable. Up to 10 photos. Big piles: do them a shelf at a time.</p>
       <div className="space-y-1"><textarea className="input" rows={2} placeholder="Anything we should know? (Dad's tools, all works, some water damage…)" value={hints} onChange={(e) => setHints(e.target.value)} /><Mic onText={(t) => setHints((h) => (h ? h.trimEnd() + " " : "") + t)} /></div>
       <button type="button" className="btn btn-primary w-full text-lg" disabled={!photos.length || !!busy} onClick={run}>{busy || "Sort it"}</button>
-      {err && <p className="text-sm" style={{ color: "var(--danger)" }}>{err.msg}{err.upgrade && <> <Link href="/pro" className="underline font-semibold">Go Pro</Link></>}</p>}
+      {err && (err.upgrade ? <OutOfUses message={err.msg} back="/pile" /> : <p className="text-sm" style={{ color: "var(--danger)" }}>{err.msg}</p>)}
       {!meId && <p className="text-xs muted text-center">Free. You&apos;ll make a free account first so your results are saved.</p>}
     </div>
   );
@@ -79,6 +81,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
         <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!picked.size || !!busy} onClick={listPicked}>{busy || (picked.size ? `📝 Write ${picked.size === 1 ? "the listing" : `${picked.size} listings`}` : "Mark something Sell to list it")}</button>
         <p className="text-xs muted text-center">For everything marked 💰 Sell below: photo, title, description and price written, plus the Facebook post and 8 more sites. Free to list here. Each listing has ✨ Touch up for its photos.</p>
       </div>
+      {err?.upgrade && <OutOfUses message={err.msg} back="/pile" />}
       <FixBox onFix={fix} examples="the lamp is brass, not plastic · you missed the drill · the radio doesn't work" />
       <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
       <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); }}>📸 Sort another pile</button>

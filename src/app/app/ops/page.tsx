@@ -42,7 +42,12 @@ export default async function OpsPage() {
     { label: "Made a sale here", n: withSale.size, tip: "Sellers with a paid order in our store." },
     { label: "Paying Pro", n: (sellersRows || []).filter((p) => p.plan === "pro" && !p.comped).length, tip: "Paying $15/month." },
   ];
+  // AI spending this month (real cost of every call), for the summary card
+  const monthStart = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" }).slice(0, 7) + "-01T04:00:00Z").toISOString();
+  const { data: aiRows } = await svc.from("ai_usage").select("cost_usd, created_at").gte("created_at", monthStart).limit(50000);
+  const dayAgo = new Date(now - 86400_000).toISOString();
+  const ai = { month: (aiRows || []).reduce((a, r) => a + Number(r.cost_usd), 0), calls: (aiRows || []).length, today: (aiRows || []).filter((r) => r.created_at >= dayAgo).reduce((a, r) => a + Number(r.cost_usd), 0) };
   const byKind: Record<string, number> = {};
   for (const e of emails || []) byKind[e.kind] = (byKind[e.kind] || 0) + 1;
-  return <OpsClient stats={(stats as Record<string, number>) || {}} automations={autos || []} tasks={tasks || []} emailsByKind={byKind} posts={posts || []} now={now} integrations={ints || []} emailSamples={EMAIL_SAMPLES} funnel={funnel} lists={lists as Record<string, { line: string; href?: string }[]>} />;
+  return <OpsClient stats={(stats as Record<string, number>) || {}} automations={autos || []} tasks={tasks || []} emailsByKind={byKind} posts={posts || []} now={now} integrations={ints || []} emailSamples={EMAIL_SAMPLES} funnel={funnel} ai={ai} lists={lists as Record<string, { line: string; href?: string }[]>} />;
 }

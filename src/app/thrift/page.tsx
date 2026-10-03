@@ -25,7 +25,7 @@ export default async function ThriftPage({ searchParams }: PageProps<"/thrift">)
         <p className="opacity-90 text-sm">Free · no app to download · no account for your first one · works in the aisle</p>
       </div></section>
       <main className="max-w-2xl mx-auto p-4 space-y-4">
-        <BuyPassClient meId={me?.id || null} refCode={(me as { referral_code?: string } | null)?.referral_code || null} inRef={ref} />
+        <BuyPassClient plan={me ? (me.role === "admin" || me.role === "staff" || me.comped ? "staff" : me.plan === "pro" ? "pro" : me.thrift_pro ? "thrift" : "free") : null} meId={me?.id || null} refCode={(me as { referral_code?: string } | null)?.referral_code || null} inRef={ref} />
         {(count || 0) >= 20 && <p className="text-center text-sm muted">{(count || 0).toLocaleString()} finds checked this week</p>}
 
         <div className="card p-4 space-y-2">

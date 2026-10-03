@@ -28,7 +28,7 @@ export const TOPICS: HelpTopic[] = [
   { id: "start", who: "seller", q: "How do I sell something?", a: [
     "Tap + Add. Pick a few photos from your gallery. Tap Write it for me: the AI writes the title, description, and a price. Tap List it.",
     "Your item shows up in the store. When someone buys it, you get a message and the money is held until they have it.",
-    "First 3 AI listings are free. After that it's $15/month for unlimited, or write them yourself for free.",
+    "First 3 AI listings are free. After that Pro is $15/month for 300 a month, or write them yourself for free.",
   ] },
   { id: "add-item", who: "seller", q: "What do the boxes on the Add item screen mean?", a: [
     "Photos: pick from your gallery. The first one is the main picture.",
@@ -55,7 +55,7 @@ export const TOPICS: HelpTopic[] = [
   ] },
   { id: "fees", who: "seller", q: "What does it cost?", a: [
     "Listing is free. When something sells in the store, we keep a small percentage of the sale price (shown on your item before you list). Shipping is paid by the buyer and isn't part of it.",
-    "Pro is $15/month: unlimited AI listings, Snap, copy-and-paste for 9 other sites, and video.",
+    "Pro is $15/month: 300 AI uses a month (listings, lookups, piles), copy-and-paste for 9 other sites, and video. Need more? Packs of 100 for $6.99 never expire, or Power Seller ($39) for 1,000 a month.",
   ] },
   { id: "orders", who: "seller", q: "Someone bought my item. Now what?", a: [
     "Pickup: message the buyer to set a time and place. When they show up, they'll have a 6-digit code on their phone. Type it into the order and tap Release. Money's yours.",
@@ -100,7 +100,7 @@ export const TOPICS: HelpTopic[] = [
   { id: "worth", who: "all", q: "What's it worth? How does that work?", a: [
     "Tap Worth? at the top. Pick photos of the item (the whole thing, then labels and any damage). Tap What's it worth?",
     "You get what it is, a price range, what drives the value, and where it sells best. If you want to sell it, tap List it now and the listing is already written.",
-    "3 free lookups; Pro is unlimited. It's an estimate from photos, not an in-person appraisal; rare or valuable pieces deserve a specialist too.",
+    "3 free lookups; Pro gives you 300 AI uses a month. It's an estimate from photos, not an in-person appraisal; rare or valuable pieces deserve a specialist too.",
   ] },
   { id: "vehicles", who: "all", q: "Selling or buying a car, boat, or motorcycle here?", a: [
     "Sellers: list it like anything else, plus year, miles, VIN, and title status. You must have the title in hand. Vehicles are pickup only.",

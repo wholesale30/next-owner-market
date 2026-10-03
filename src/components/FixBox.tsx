@@ -36,7 +36,7 @@ export default function FixBox({ onFix, examples = "it's the 1978 model · the l
         <button type="button" className="btn btn-primary flex-1 text-lg" disabled={busy || !text.trim()} onClick={go}>{busy ? "Re-checking…" : "🔄 Update the answer"}</button>
         <button type="button" className="btn" onClick={() => setOpen(false)}>Cancel</button>
       </div>
-      <p className="text-xs muted">Same photos, your correction. Free; it doesn&apos;t use a lookup.</p>
+      <p className="text-xs muted">Same photos, your correction. Your first 2 fixes are free.</p>
       {msg && !msg.ok && <p className="text-sm" style={{ color: "var(--danger)" }}>{msg.t}</p>}
     </div>
   );
