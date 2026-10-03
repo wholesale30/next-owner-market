@@ -18,6 +18,10 @@ export default async function HelpPage() {
         <div>
           <h1 className="text-2xl font-extrabold">Help</h1>
           <p className="muted text-sm">Short answers, no jargon. Ask your own question at the top.</p>
+          <div className="grid grid-cols-2 gap-2 pt-2">
+            <Link href="/feedback?kind=problem&from=/help" className="btn btn-secondary" style={{ minHeight: 48 }}>🐞 Something&apos;s not working</Link>
+            <Link href="/feedback?kind=idea&from=/help" className="btn btn-secondary" style={{ minHeight: 48 }}>💡 Suggest an upgrade</Link>
+          </div>
         </div>
         <AskBox />
         {groups.map((g) => (

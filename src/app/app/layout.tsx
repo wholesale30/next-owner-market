@@ -26,12 +26,13 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     const { count } = await supabase.from("conversations").select("id", { count: "exact", head: true }).eq("seller_profile_id", profile.id).eq("unread_for_seller", true).neq("status", "closed");
     unread = count || 0;
   }
-  let pendingPeople = 0, pendingReview = 0, todoNow = 0;
+  let pendingPeople = 0, pendingReview = 0, todoNow = 0, newFeedback = 0;
   if (staff) {
     const { today, soon } = nyDays();
     const { data: td } = await supabase.from("todos").select("priority, due_date, snooze_until").is("done_at", null);
     todoNow = (td || []).filter((t) => !(t.snooze_until && t.snooze_until > today) && (t.priority === "urgent" || (t.due_date && t.due_date <= soon))).length;
     pendingReview = (await supabase.from("items").select("id", { count: "exact", head: true }).eq("status", "pending_review")).count || 0;
+    newFeedback = (await supabase.from("feedback").select("id", { count: "exact", head: true }).eq("status", "new")).count || 0;
     const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "consignor").eq("approved", false);
     pendingPeople = count || 0;
   }
@@ -55,6 +56,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/app/review", label: pendingReview ? `✅ Review (${pendingReview})` : "✅ Review" },
         { href: "/app/todo", label: todoNow ? `📝 To-do (${todoNow})` : "📝 To-do" },
         { href: "/app/ops", label: "🎛 Operations" },
+        { href: "/app/feedback", label: newFeedback ? `💡 Ideas (${newFeedback} new)` : "💡 Ideas" },
       ]
     : [
         { href: "/app/items/new", label: "➕ Sell" },
@@ -62,6 +64,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         { href: "/lookups", label: "📂 Lookups" },
         { href: "/app/inbox", label: unread ? `💬 Messages (${unread})` : "💬 Messages" },
         { href: "/app/money", label: "💵 Money" },
+        { href: "/feedback?from=/app", label: "💡 Ideas & problems" },
       ];
   const more: { group: string; links: L[] }[] = staff
     ? [

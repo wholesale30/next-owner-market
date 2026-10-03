@@ -475,3 +475,13 @@ Every What's it worth, Buy or Pass and Sort the pile check is saved in **📂 My
 - **🗑 Delete** has an Undo.
 - **On any listing**, tap **📷 Add, change or ✨ touch up photos**.
 - **Check another item** now jumps you back to the top.
+
+## 💡 Ideas & problems (Oct 2, 2026)
+
+Have an idea that would make the site better, or something isn't working? Tap **💡 Ideas & problems**. It's in the menu, on your account page, at the top of Help, and at the bottom of the home page.
+
+- Pick **💡 Suggest an upgrade** or **🐞 Something's not working**.
+- Type it or tap the mic. You can add a screenshot.
+- Tap **Send it**.
+
+The owner gets every one right away. Your own sends show on that page with where they stand: 📬 Got it, 🛠 We're on it, ✅ Done or ⏸ Not right now, plus any note from us.

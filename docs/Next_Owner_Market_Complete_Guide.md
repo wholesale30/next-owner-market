@@ -440,3 +440,10 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - **Actions:** `/api/lookups` handles delete, restore, photos, listed and list. List works for worth (whole lot or one piece) and Buy or Pass (`listFromScan`). A pile opens so the owner picks what to sell.
 - **Reopening:** `/worth?open=<id>`, `/buy-or-pass?open=<id>`, `/pile?open=<id>` load the saved result. On What's it worth, photos can be added (gallery or camera), removed or touched up, then "Re-check with the new photos" (a fix: first 2 free).
 - **Older data:** existing Buy or Pass checks and piles that had an owner were copied in. What's it worth checks before Oct 2 weren't saved anywhere.
+
+## Ideas & problems (Oct 2, 2026)
+
+- **Public page:** `/feedback` (works signed out; optional email). Big choices are Idea or Not working; then text plus mic, an optional screenshot, and Send. `?kind=` and `?from=` pre-fill which one and the page they came from.
+- **API:** `/api/feedback` saves to the `feedback` table (migration `037_feedback.sql`), stores the screenshot under `item-photos/feedback/`, limits 20 an hour per IP, and alerts staff right away (email and text).
+- **Staff page:** `/app/feedback`, shown as "💡 Ideas (N new)" in the staff menu. Tabs are Open and All; each entry shows the page, screenshot and email, a note box, and 📬 New / 🛠 On it / ✅ Done / ⏸ Not now. The note and status show to the sender on `/feedback`.
+- **Links:** the seller menu ("💡 Ideas & problems"), the account page, two buttons at the top of /help, and the home page footer.

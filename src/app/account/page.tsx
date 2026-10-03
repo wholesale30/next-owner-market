@@ -46,6 +46,7 @@ export default async function AccountPage() {
           <div className="flex gap-2">
             <Link href="/account/profile" className="btn btn-secondary">👤 Profile</Link>
             <Link href="/lookups" className="btn btn-secondary">📂 My lookups</Link>
+            <Link href="/feedback?from=/account" className="btn btn-secondary">💡 Ideas &amp; problems</Link>
             {profile.role !== "buyer" ? <Link href="/app" className="btn btn-secondary">{staff ? "Inventory" : "My listings"}</Link> : <StartSelling signedIn role="buyer" className="btn btn-secondary" label="📦 Start selling" />}
           </div>
         </div>
