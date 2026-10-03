@@ -46,3 +46,5 @@
 |---|---|---|
 | 16 | Next_Owner_Market_AddOn_Modules_White_Paper.docx | The add-on modules research and their status |
 | 17 | Next_Owner_Market_Estate_Pack_Legal_Research.docx | Full Virginia and federal legal research for the Estate and Downsizing Pack |
+
+- **Next_Owner_Market_Pro_Membership_Cost_Review.docx**: what every feature costs us per use, what one \$15 Pro member costs at light, typical and heavy use, the free-side exposure, the fixed bills coming, and the recommended allowance, top-ups and cost cuts (Oct 2, 2026).
