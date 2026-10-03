@@ -7,11 +7,12 @@ import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
 import InstallPrompt from "@/components/InstallPrompt";
 import FixBox from "@/components/FixBox";
 import OutOfUses from "@/components/OutOfUses";
+import ConditionLadder, { type LadderView } from "@/components/ConditionLadder";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import { compressImage } from "@/lib/photo";
 
 type Place = { key: string; label: string; pct: number; fixed: number; note: string; net_low: number; net_high: number };
-type Out = { missing_parts?: PartView[]; id: string | null; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: string; shipping_est: number; confidence: string; why: string; watch_out: string | null; fee: { label: string; pct: number; fixed: number; note: string }; places: Place[]; paid: number; net_low: number; net_high: number; max_pay: number; verdict: "buy" | "maybe" | "pass"; photo_url: string; photo_urls: string[] };
+type Out = { ladder?: LadderView | null; missing_parts?: PartView[]; id: string | null; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: string; shipping_est: number; confidence: string; why: string; watch_out: string | null; fee: { label: string; pct: number; fixed: number; note: string }; places: Place[]; paid: number; net_low: number; net_high: number; max_pay: number; verdict: "buy" | "maybe" | "pass"; photo_url: string; photo_urls: string[] };
 const money = (n: number) => `${n < 0 ? "-" : ""}$${Math.abs(Math.round(n)).toLocaleString()}`;
 const V = { buy: { label: "BUY", color: "var(--ok)" }, maybe: { label: "MAYBE", color: "var(--accent)" }, pass: { label: "PASS", color: "var(--danger)" } };
 
@@ -138,6 +139,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
         {r.verdict === "pass" && <p className="text-base font-semibold">{r.net_high < 0 ? `Buy it and you'd lose about ${money(-r.net_high)} after fees.` : `Only about ${money(r.net_low)}–${money(r.net_high)} left after fees. Not worth your time.`}</p>}
         <p className="text-xs muted">{r.condition_guess} · how sure: {r.confidence}</p>
       </div>
+      <ConditionLadder l={r.ladder} nowLow={r.resale_low} nowHigh={r.resale_high} nowVerdict={r.verdict} profit={{ low: r.net_low, high: r.net_high }} />
       <PartsBox parts={r.missing_parts} nowLow={r.resale_low} nowHigh={r.resale_high} />
       <FixBox onFix={fix} examples="it's the 1978 model · missing the remote · that's real Pyrex" />
 

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createHash, randomBytes } from "crypto";
 import { cookies, headers } from "next/headers";
 import { createClient as createAdmin } from "@supabase/supabase-js";
+import { LISTING_HONESTY } from "@/lib/ladder";
 import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
 import { askWithTool } from "@/lib/ai-tool";
 
@@ -76,7 +77,7 @@ export async function POST(req: Request) {
       tool: { name: "listing", description: "Record the listing.", input_schema: schema as unknown as Anthropic.Tool.InputSchema },
       messages: [{ role: "user", content: [
         { type: "image", source: { type: "base64", media_type: `image/${m[1]}` as "image/jpeg", data: m[2] } },
-        { type: "text", text: `You are an experienced US reseller writing a listing for this item. Read every label, model number and brand mark you can see. ${hints ? `The owner says: "${String(hints).slice(0, 300)}". ` : ""}Categories (pick the best id): ${(cats || []).map((c) => `${c.id}=${c.name}`).join("; ")}. Be honest; if it's common, say so plainly in the price.` },
+        { type: "text", text: `You are an experienced US reseller writing a listing for this item. Read every label, model number and brand mark you can see. ${hints ? `The owner says: "${String(hints).slice(0, 300)}". ` : ""}Categories (pick the best id): ${(cats || []).map((c) => `${c.id}=${c.name}`).join("; ")}. Be honest; if it's common, say so plainly in the price.${LISTING_HONESTY}` },
       ] }],
     });
     const call = { input };

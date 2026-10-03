@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { LISTING_HONESTY } from "@/lib/ladder";
 import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
 import { aiImages, allowanceOf, logUsage, outOfUsesMessage, refundUse } from "@/lib/usage";
 
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
     ...(await aiImages(photoUrls.slice(0, 6))),
     {
       type: "text",
-      text: `You are writing a resale listing for a surplus/used-goods business in Virginia. Look at the photos carefully: read every label, model number, brand mark, and sticker you can see.
+      text: `You are writing a resale listing for a surplus/used-goods business in Virginia. Look at the photos carefully: read every label, model number, brand mark, and sticker you can see.${LISTING_HONESTY}
 
 ${hints ? `Seller notes: ${hints}\n` : ""}
 Available categories (pick the single best one and return its id): ${catList}

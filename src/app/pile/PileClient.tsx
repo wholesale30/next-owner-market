@@ -11,7 +11,7 @@ import PartsBox, { type PartView } from "@/components/PartsBox";
 import Mic from "@/components/Mic";
 
 
-type Item = { missing_parts?: PartView[]; name: string; category?: string; condition?: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: string; needs_expert: boolean; listing_title?: string; listing_description?: string; weight_lbs?: number; box?: string; photo_index: number };
+type Item = { fixup?: string; fixup_low?: number | null; fixup_high?: number | null; fixup_tip?: string | null; missing_parts?: PartView[]; name: string; category?: string; condition?: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: string; needs_expert: boolean; listing_title?: string; listing_description?: string; weight_lbs?: number; box?: string; photo_index: number };
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 const ACT: Record<string, { label: string; color: string; emoji: string }> = { sell: { label: "Sell", color: "var(--ok)", emoji: "💵" }, keep: { label: "Keep", color: "var(--brand)", emoji: "🏠" }, donate: { label: "Donate", color: "var(--accent)", emoji: "🎁" }, toss: { label: "Toss", color: "var(--muted)", emoji: "🗑" } };
 
@@ -92,6 +92,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
             <p className="font-extrabold whitespace-nowrap">{x.action === "toss" ? "—" : `${money(x.low)}–${money(x.high)}`}</p>
           </div>
           <p className="text-sm">{x.reason}{x.needs_expert ? " ⚠ Get an expert look before selling." : ""}</p>
+          {x.fixup && x.fixup !== "none" && x.fixup_high != null && <p className="text-sm rounded-lg px-2 py-1" style={{ background: "color-mix(in srgb, var(--ok) 12%, var(--surface))" }}>💡 {x.fixup === "clean" ? "🧽 Cleaned up" : x.fixup === "test" ? "🔌 If it works" : "✨ Cleaned and working"}: <b>{money(x.fixup_low ?? x.low)}–{money(x.fixup_high)}</b> <span style={{ color: "var(--ok)" }}>(+{money(Math.max(0, x.fixup_high - x.high))})</span>{x.fixup_tip ? <span className="muted"> · {x.fixup_tip}</span> : null}</p>}
           <PartsBox parts={x.missing_parts} nowLow={x.low} nowHigh={x.high} compact />
           <div className="flex gap-1 flex-wrap">
             {(["sell", "keep", "donate", "toss"] as const).map((a) => <button key={a} type="button" className={`pill px-3 py-1 ${x.action === a ? "pill-active" : ""}`} onClick={() => setAction(i, a)}>{ACT[a].emoji} {ACT[a].label}</button>)}

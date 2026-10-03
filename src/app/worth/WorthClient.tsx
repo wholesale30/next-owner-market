@@ -12,10 +12,11 @@ import FixBox from "@/components/FixBox";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import PhotoEditor from "@/components/PhotoEditor";
 import OutOfUses from "@/components/OutOfUses";
+import ConditionLadder, { type LadderView } from "@/components/ConditionLadder";
 
 type Piece = { name: string; qty: number; value_low: number; value_high: number; note: string; listing_title: string; listing_description: string };
 type Result = {
-  missing_parts?: PartView[]; pieces?: Piece[]; sell_advice?: string | null;
+  missing_parts?: PartView[]; condition_ladder?: LadderView | null; pieces?: Piece[]; sell_advice?: string | null;
   what: string; era: string | null; condition_guess: string; value_low: number; value_high: number; retail_new: number | null; confidence: string; why: string;
   raise_value: string[]; best_places: { place: string; why: string }[]; ship_or_local: string; watch_out: string | null; listing: { title: string; description: string }; weight_lbs: number; box: string;
 };
@@ -185,6 +186,7 @@ export default function WorthClient({ meId, role, credits, plan }: { meId: strin
               ))}
             </div>
           )}
+          <ConditionLadder l={res.condition_ladder} nowLow={res.value_low} nowHigh={res.value_high} />
           <PartsBox parts={res.missing_parts} nowLow={res.value_low} nowHigh={res.value_high} />
           <FixBox onFix={fix} />
           <ShareValuation key={fixes} photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
