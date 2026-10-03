@@ -5,6 +5,7 @@ import { runVision } from "@/lib/ai-engine";
 import { scrubPriceTalk } from "@/lib/listing";
 import { PILE_PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 import { LISTING_HONESTY } from "@/lib/ladder";
+import { saveLookup } from "@/lib/lookups";
 
 export const maxDuration = 90;
 
@@ -80,5 +81,7 @@ export async function POST(req: Request) {
   }
   if (!scan) scan = (await db.from("pile_scans").insert({ owner_id: user.id, name: name || null, photo_urls: photoUrls.slice(0, 10), total_low, total_high }).select("id").single()).data;
   if (scan) await db.from("pile_items").insert(items.map((x, i) => ({ scan_id: scan.id, name: x.name, category: x.category || null, condition: x.condition || null, low: x.low, high: x.high, action: x.action, reason: x.reason, confidence: x.confidence, needs_expert: x.needs_expert, listing_title: x.listing_title || null, listing_description: x.listing_description || null, weight_lbs: x.weight_lbs || null, box: x.box || null, sort_order: i })));
-  return NextResponse.json({ scanId: scan?.id, summary: r.result.summary, items, total_low, total_high });
+  const body = { scanId: scan?.id, summary: r.result.summary, items, total_low, total_high };
+  const lookupId = scan?.id ? await saveLookup({ ownerId: user.id, tool: "pile", title: name || `${items.length} item${items.length === 1 ? "" : "s"}: ${items.slice(0, 3).map((x) => x.name).join(", ")}`, photoUrls, hints, result: body, low: total_low, high: total_high, refId: scan.id }) : null;
+  return NextResponse.json({ ...body, lookup_id: lookupId });
 }

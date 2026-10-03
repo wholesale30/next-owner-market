@@ -16,7 +16,7 @@ type Out = { ladder?: LadderView | null; missing_parts?: PartView[]; id: string 
 const money = (n: number) => `${n < 0 ? "-" : ""}$${Math.abs(Math.round(n)).toLocaleString()}`;
 const V = { buy: { label: "BUY", color: "var(--ok)" }, maybe: { label: "MAYBE", color: "var(--accent)" }, pass: { label: "PASS", color: "var(--danger)" } };
 
-export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", plan = null }: { meId: string | null; refCode?: string | null; freeLeft?: number | null; inRef?: string; plan?: string | null }) {
+export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", plan = null, initial = null }: { meId: string | null; refCode?: string | null; freeLeft?: number | null; inRef?: string; plan?: string | null; initial?: unknown }) {
   const refQ = inRef ? `&ref=${encodeURIComponent(inRef)}` : "";
   const router = useRouter();
   const [photos, setPhotos] = useState<Picked[]>([]);
@@ -25,7 +25,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
   const [hints, setHints] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean; signup?: boolean } | null>(null);
-  const [res, setRes] = useState<Out | null>(null);
+  const [res, setRes] = useState<Out | null>((initial as Out) || null);
   const [shared, setShared] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [page, setPage] = useState<string | null>(null);
@@ -98,7 +98,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const r = await fetch("/api/thrift-reminder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
     setRemind(r.ok ? "done" : "idle");
   }
-  function again() { setRes(null); setPhotos([]); setAnonPhoto(null); setPaid(""); setHints(""); setErr(null); }
+  function again() { setRes(null); setPhotos([]); setAnonPhoto(null); setPaid(""); setHints(""); setErr(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
   if (!res) return (
     <div className="card p-4 space-y-3">
@@ -126,8 +126,9 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
   );
 
   const r = res;
-  const bestPlace = r.places.find((p) => p.key === r.best_place) || r.places[0];
-  const sorted = [...r.places].sort((a, b) => b.net_high - a.net_high);
+  const places = r.places || []; // older saved checks may not have the per-place table
+  const bestPlace = places.find((p) => p.key === r.best_place) || places[0] || { key: r.best_place, label: r.best_place, pct: 0, fixed: 0, note: "", net_low: r.net_low, net_high: r.net_high };
+  const sorted = [...places].sort((a, b) => b.net_high - a.net_high);
   return (
     <div className="space-y-3">
       <div className="card p-4 text-center space-y-1" style={{ borderColor: V[r.verdict].color, borderWidth: 3 }}>

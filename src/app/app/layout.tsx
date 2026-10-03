@@ -49,6 +49,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     ? [
         { href: "/app", label: "📦 Inventory" },
         { href: "/app/items/new", label: "➕ Add" },
+        { href: "/lookups", label: "📂 Lookups" },
         { href: "/app/inbox", label: unread ? `💬 Inbox (${unread})` : "💬 Inbox" },
         { href: "/app/orders", label: openOrders ? `🛒 Orders (${openOrders})` : "🛒 Orders" },
         { href: "/app/review", label: pendingReview ? `✅ Review (${pendingReview})` : "✅ Review" },
@@ -58,6 +59,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
     : [
         { href: "/app/items/new", label: "➕ Sell" },
         { href: "/app", label: "📦 My stuff" },
+        { href: "/lookups", label: "📂 Lookups" },
         { href: "/app/inbox", label: unread ? `💬 Messages (${unread})` : "💬 Messages" },
         { href: "/app/money", label: "💵 Money" },
       ];

@@ -3,14 +3,19 @@ import { createClient, getProfile } from "@/lib/supabase/server";
 import WorthClient from "./WorthClient";
 import ToolGuide from "@/components/ToolGuide";
 import { allowanceFor } from "@/lib/usage";
+import Link from "next/link";
+import { countLookups, getLookup } from "@/lib/lookups";
 
 export const metadata = { title: "What's it worth?", description: "Take a photo of anything in your house and find out what it's worth and where to sell it. Free." };
 
-export default async function WorthPage() {
+export default async function WorthPage({ searchParams }: PageProps<"/worth">) {
+  const sp = (await searchParams) as { open?: string };
   const supabase = await createClient();
   const [me, { data: biz }] = await Promise.all([getProfile(), supabase.from("settings").select("value").eq("key", "business").maybeSingle()]);
   const business = (biz?.value as { name: string }) || { name: "Next Owner Market" };
   const a = me ? allowanceFor(me) : null;
+  const [saved, nSaved] = me ? await Promise.all([sp.open ? getLookup(sp.open, me.id) : Promise.resolve(null), countLookups(me.id)]) : [null, 0];
+  const initial = saved && saved.tool === "worth" ? { id: saved.id, photo_urls: saved.photo_urls || [], hints: saved.hints, result: saved.result } : null;
   return (
     <div className="flex-1">
       <StoreHeader business={business} signedIn={!!me} />
@@ -21,7 +26,8 @@ export default async function WorthPage() {
         </div>
       </section>
       <main className="max-w-2xl mx-auto p-4 space-y-4">
-        <WorthClient meId={me?.id || null} role={me?.role || null} credits={!a || a.left == null ? null : a.left} plan={a?.kind || null} />
+        <WorthClient meId={me?.id || null} role={me?.role || null} credits={!a || a.left == null ? null : a.left} plan={a?.kind || null} initial={initial} key={initial?.id || "new"} />
+        {me && nSaved > 0 && <Link href="/lookups" className="card p-3 flex items-center justify-between font-semibold" style={{ minHeight: 52 }}><span>📂 My saved lookups ({nSaved})</span><span className="muted text-sm">List them any time ›</span></Link>}
         <ToolGuide
           intro={[
             "Everybody has a thing they've wondered about. The stereo in the basement. Grandma's lamp. The drill in the garage with the dead battery. Is it worth anything? Is it worth the trouble of selling? This page answers that in about thirty seconds, from a photo, for free.",

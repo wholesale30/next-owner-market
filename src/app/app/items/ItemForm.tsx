@@ -413,7 +413,7 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       <h1 className="text-2xl font-bold flex items-center gap-2">{mode === "new" ? "Add item" : "Edit item"} <HelpTip topic="add-item" /></h1>
 
       {/* PHOTOS */}
-      <section className="card p-4 space-y-3">
+      <section id="photos" className="card p-4 space-y-3 scroll-mt-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Photos {photos.length ? `(${photos.length})` : ""}</h2>
           <span className="text-xs muted">First photo is the cover. Tap a photo to make it first. ✨ cleans it up.</span>

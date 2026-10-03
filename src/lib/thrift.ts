@@ -28,10 +28,15 @@ export async function listFromScan(me: Me, scanId: string, extraPhotos: string[]
   if (error || !item) return { error: error?.message || "Couldn't make the listing.", status: 500 };
   if (photos.length) await d.from("item_photos").insert(photos.map((url, i) => ({ item_id: item.id, storage_path: url.slice(base.length), url, sort_order: i, is_primary: i === 0 })));
   await d.from("buy_pass_scans").update({ bought: true, item_id: item.id, owner_id: me.id }).eq("id", s.id);
+  await d.from("lookups").update({ item_id: item.id, listed_count: 1 }).eq("ref_id", s.id).eq("owner_id", me.id);
   return { item_id: item.id };
 }
 
 /** After signup: a check made while signed out becomes theirs (only unclaimed checks from the last day). */
 export async function claimScan(meId: string, scanId: string) {
-  await admin().from("buy_pass_scans").update({ owner_id: meId }).eq("id", scanId).is("owner_id", null).gte("created_at", new Date(Date.now() - 86400_000).toISOString());
+  const { data: s } = await admin().from("buy_pass_scans").update({ owner_id: meId }).eq("id", scanId).is("owner_id", null).gte("created_at", new Date(Date.now() - 86400_000).toISOString()).select("*").maybeSingle();
+  if (s) {
+    const { saveLookup } = await import("@/lib/lookups");
+    await saveLookup({ ownerId: meId, tool: "buy_or_pass", title: s.what, photoUrls: s.photo_url ? [s.photo_url] : [], result: { ...s, id: s.id, photo_urls: s.photo_url ? [s.photo_url] : [], places: [] }, low: s.resale_low, high: s.resale_high, refId: s.id });
+  }
 }

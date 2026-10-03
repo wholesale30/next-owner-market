@@ -7,6 +7,7 @@ import { askWithTool } from "@/lib/ai-tool";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 import { LADDER_SCHEMA, LADDER_PROMPT, LISTING_HONESTY, cleanLadder, type Ladder } from "@/lib/ladder";
 import { createHash } from "crypto";
+import { saveLookup } from "@/lib/lookups";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 export const maxDuration = 120;
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Sign in first (it's free)." }, { status: 401 });
-  const { photoUrls, hints, correction, previous } = (await req.json()) as { photoUrls: string[]; hints?: string; correction?: string; previous?: { what?: string; value_low?: number; value_high?: number; era?: string | null } };
+  const { photoUrls, hints, correction, previous, lookup_id } = (await req.json()) as { photoUrls: string[]; hints?: string; correction?: string; previous?: { what?: string; value_low?: number; value_high?: number; era?: string | null }; lookup_id?: string };
   const fixing = !!(correction && correction.trim() && previous);
   let charged = false;
   const spend = async () => {
@@ -96,7 +97,10 @@ export async function POST(req: Request) {
     const parts = await withPartLinks(out.missing_parts);
     const o3 = out as { condition_ladder?: Partial<Ladder>; value_low?: number; value_high?: number };
     const ladder = cleanLadder(o3.condition_ladder, Number(o3.value_low || 0), Number(o3.value_high || 0));
-    return NextResponse.json({ result: { ...out, missing_parts: parts, condition_ladder: ladder } });
+    const result = { ...out, missing_parts: parts, condition_ladder: ladder };
+    const r2 = result as { what?: string; value_low?: number; value_high?: number };
+    const lookupId = await saveLookup({ id: lookup_id, ownerId: user.id, tool: "worth", title: r2.what || "", photoUrls, hints: [hints, fixing ? correction : null].filter(Boolean).join(". "), result, low: r2.value_low, high: r2.value_high });
+    return NextResponse.json({ result, lookup_id: lookupId });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     await admin().from("settings").upsert({ key: `err:worth:${Date.now()}`, value: { message, raw: raw.slice(0, 2000), photos: photoUrls.slice(0, 3), user: user.id } }).then(() => {}, () => {});

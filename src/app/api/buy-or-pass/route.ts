@@ -8,6 +8,7 @@ import { runVision, FEES } from "@/lib/ai-engine";
 export const maxDuration = 60;
 
 import { BP_FREE_DAILY } from "@/lib/thrift";
+import { saveLookup } from "@/lib/lookups";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 import { LADDER_SCHEMA, LADDER_PROMPT, cleanLadder, type Ladder } from "@/lib/ladder";
 
@@ -146,7 +147,9 @@ export async function POST(req: Request) {
     ? await d.from("buy_pass_scans").update({ ...row, valuation_slug: null, shared: false }).eq("id", prev.id).select("id").single()
     : await d.from("buy_pass_scans").insert({ owner_id: user?.id || null, ...row }).select("id").single();
   const fee = FEES.find((f) => f.key === best.key) || FEES[0];
-  const res = NextResponse.json({ ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note }, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key, missing_parts: parts, ladder, condition_ladder: undefined });
+  const body = { ...o, id: scan?.id || null, photo_url: photoUrls[0], photo_urls: photoUrls, places, paid: cost, net_low, net_high, verdict, max_pay, best_place: best.key, missing_parts: parts, ladder, condition_ladder: undefined, fee: { label: fee.label, pct: fee.pct, fixed: fee.fixed, note: fee.note } };
+  const lookupId = user && scan?.id ? await saveLookup({ ownerId: user.id, tool: "buy_or_pass", title: o.what, photoUrls, hints, result: body, low: o.resale_low, high: o.resale_high, refId: scan.id }) : null;
+  const res = NextResponse.json({ ...body, lookup_id: lookupId });
   if (!user && !prev) res.cookies.set("nom_bp", nyDay(), { maxAge: 60 * 60 * 26, httpOnly: true, sameSite: "lax", path: "/" });
   return res;
 }

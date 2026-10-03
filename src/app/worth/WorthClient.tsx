@@ -23,13 +23,19 @@ type Result = {
 
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 
-export default function WorthClient({ meId, role, credits, plan }: { meId: string | null; role: string | null; credits: number | null; plan?: string | null }) {
+export type SavedWorth = { id: string; photo_urls: string[]; hints: string | null; result: unknown };
+const pathOf = (url: string) => url.split("/item-photos/")[1] || url;
+const newPath = (meId: string | null) => `worth/${meId}/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+
+export default function WorthClient({ meId, role, credits, plan, initial }: { meId: string | null; role: string | null; credits: number | null; plan?: string | null; initial?: SavedWorth | null }) {
   const router = useRouter();
-  const [photos, setPhotos] = useState<{ url: string; path: string }[]>([]);
-  const [hints, setHints] = useState("");
+  const [photos, setPhotos] = useState<{ url: string; path: string }[]>(() => (initial?.photo_urls || []).map((url) => ({ url, path: pathOf(url) })));
+  const [hints, setHints] = useState(initial?.hints || "");
+  const [lookupId, setLookupId] = useState<string | null>(initial?.id || null);
+  const [photosChanged, setPhotosChanged] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean; topup?: boolean } | null>(null);
-  const [res, setRes] = useState<Result | null>(null);
+  const [res, setRes] = useState<Result | null>((initial?.result as Result) || null);
   const [left, setLeft] = useState(credits);
   const [editing, setEditing] = useState<number | null>(null);
   const [fixes, setFixes] = useState(0); // remounts the share box after a fix so it shares the corrected answer
@@ -39,32 +45,50 @@ export default function WorthClient({ meId, role, credits, plan }: { meId: strin
     if (!meId) { router.push("/signup?buyer=1&next=/worth"); return; }
     setErr(null); setBusy("Uploading…");
     const sb = createClient();
+    const added: { url: string; path: string }[] = [];
     for (const f of Array.from(files).slice(0, 6 - photos.length)) {
       try {
         const blob = await compressImage(f);
-        const path = `worth/${meId}/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+        const path = newPath(meId);
         const { error } = await sb.storage.from("item-photos").upload(path, blob, { contentType: "image/jpeg" });
         if (error) throw error;
-        setPhotos((p) => [...p, { url: sb.storage.from("item-photos").getPublicUrl(path).data.publicUrl, path }]);
+        const ph = { url: sb.storage.from("item-photos").getPublicUrl(path).data.publicUrl, path };
+        added.push(ph);
+        setPhotos((p) => [...p, ph]);
       } catch (e) { setErr({ msg: e instanceof Error ? e.message : "Upload failed" }); }
     }
     setBusy(null);
+    if (res && added.length) { setPhotosChanged(true); savePhotos([...photos, ...added]); }
+  }
+
+  /** Keep the saved lookup's photos in step (added, removed, touched up). */
+  function savePhotos(list: { url: string }[]) {
+    if (!lookupId) return;
+    fetch("/api/lookups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "photos", id: lookupId, photo_urls: list.map((p) => p.url) }) }).catch(() => {});
+  }
+  function removePhoto(i: number) {
+    const next = photos.filter((_, j) => j !== i);
+    setPhotos(next);
+    if (res) savePhotos(next);
   }
 
   async function saveEdit(i: number, blob: Blob) {
     const sb = createClient();
-    const path = `worth/${meId}/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+    const path = newPath(meId);
     const { error } = await sb.storage.from("item-photos").upload(path, blob, { contentType: "image/jpeg" });
     if (error) throw error;
-    setPhotos((p) => p.map((x, j) => (j === i ? { url: sb.storage.from("item-photos").getPublicUrl(path).data.publicUrl, path } : x)));
+    const next = photos.map((x, j) => (j === i ? { url: sb.storage.from("item-photos").getPublicUrl(path).data.publicUrl, path } : x));
+    setPhotos(next);
     setEditing(null);
+    if (res) savePhotos(next);
   }
 
   async function appraise() {
     setBusy("Looking it over…"); setErr(null); setRes(null);
     const r = await fetch("/api/worth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints }) });
-    const j = (await r.json()) as { result?: Result; error?: string; upgrade?: boolean; topup?: boolean };
+    const j = (await r.json()) as { result?: Result; error?: string; upgrade?: boolean; topup?: boolean; lookup_id?: string | null };
     setBusy(null);
+    if (j.lookup_id) setLookupId(j.lookup_id);
     if (!r.ok || !j.result) return setErr({ msg: j.error || "Couldn't get an answer.", upgrade: j.upgrade, topup: j.topup });
     setRes(j.result);
     if (left != null) setLeft(Math.max(0, left - 1));
@@ -72,11 +96,11 @@ export default function WorthClient({ meId, role, credits, plan }: { meId: strin
 
   async function fix(correction: string): Promise<string | null> {
     if (!res) return "Nothing to fix yet.";
-    const r = await fetch("/api/worth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints, correction, previous: { what: res.what, value_low: res.value_low, value_high: res.value_high, era: res.era } }) });
+    const r = await fetch("/api/worth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ photoUrls: photos.map((p) => p.url), hints, correction, lookup_id: lookupId, previous: { what: res.what, value_low: res.value_low, value_high: res.value_high, era: res.era } }) });
     const j = (await r.json().catch(() => ({}))) as { result?: Result; error?: string; topup?: boolean };
     if (r.status === 402) { setErr({ msg: j.error || "You're out of AI uses.", topup: true }); return "You're out of AI uses for now. See the box below."; }
     if (!r.ok || !j.result) return j.error || "Couldn't update it. Try again.";
-    setRes(j.result); setHints((h) => (h ? h + ". " : "") + correction); setFixes((n) => n + 1);
+    setRes(j.result); setHints((h) => (h ? h + ". " : "") + correction); setFixes((n) => n + 1); setPhotosChanged(false);
     return null;
   }
 
@@ -94,6 +118,7 @@ export default function WorthClient({ meId, role, credits, plan }: { meId: strin
     }).select("id").single();
     if (error || !data) { setBusy(null); return setErr({ msg: error?.message || "Couldn't create the listing." }); }
     await sb.from("item_photos").insert(photos.map((p, i) => ({ item_id: data.id, storage_path: p.path, url: p.url, sort_order: i, is_primary: i === 0 })));
+    if (lookupId) await fetch("/api/lookups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "listed", id: lookupId, item_id: data.id }) }).catch(() => {});
     router.push(`/app/items/${data.id}?written=1#copy`);
   }
 
@@ -101,7 +126,7 @@ export default function WorthClient({ meId, role, credits, plan }: { meId: strin
   const count = (res?.pieces || []).reduce((a, x) => a + (Number(x.qty) || 1), 0);
   const apart = (res?.pieces || []).reduce((a, x) => [a[0] + x.value_low * (Number(x.qty) || 1), a[1] + x.value_high * (Number(x.qty) || 1)], [0, 0]);
 
-  function reset() { setPhotos([]); setRes(null); setHints(""); setErr(null); setFixes(0); }
+  function reset() { setPhotos([]); setRes(null); setHints(""); setErr(null); setFixes(0); setLookupId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
   return (
     <div className="space-y-4">
@@ -156,15 +181,31 @@ export default function WorthClient({ meId, role, credits, plan }: { meId: strin
           <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
             <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!!busy} onClick={() => listIt()}>{busy || (lot ? "📝 Write the listing for the lot" : "📝 Write my listing")}</button>
             <p className="text-xs muted text-center">One tap: your Facebook post is written, plus eBay, OfferUp, Mercari and 5 more. Free to list here.</p>
-            <div className="flex gap-2 overflow-x-auto pt-1">
+            <p className="text-sm font-semibold pt-1">Your photos <span className="muted font-normal text-xs">· tap one to ✨ touch it up</span></p>
+            <div className="flex gap-2 overflow-x-auto pb-1">
               {photos.map((p, i) => (
-                <button key={p.path} type="button" onClick={() => setEditing(i)} className="relative shrink-0">
-                  <img src={p.url} alt="" className="w-16 h-16 object-cover rounded-lg" />
-                  <span className="absolute -bottom-1 -right-1 text-xs rounded-full px-1" style={{ background: "var(--brand)", color: "#fff" }}>✨</span>
-                </button>
+                <div key={p.path} className="relative shrink-0">
+                  <button type="button" onClick={() => setEditing(i)} className="block">
+                    <img src={p.url} alt="" className="w-20 h-20 object-cover rounded-lg" />
+                    <span className="absolute bottom-1 left-1 text-xs rounded-full px-1" style={{ background: "var(--brand)", color: "#fff" }}>✨</span>
+                  </button>
+                  {photos.length > 1 && <button type="button" onClick={() => removePhoto(i)} aria-label="Remove photo" className="absolute -top-1 -right-1 w-6 h-6 rounded-full text-white text-xs" style={{ background: "rgba(0,0,0,.7)" }}>×</button>}
+                </div>
               ))}
-              <p className="text-xs muted self-center">Tap a photo to clean off dust and fix the light first.</p>
+              {photos.length < 6 && (
+                <>
+                  <label className="shrink-0 w-20 h-20 rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-xs font-semibold cursor-pointer" style={{ borderColor: "var(--brand)" }}>
+                    <span className="text-xl">🖼</span>Add
+                    <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+                  </label>
+                  <label className="shrink-0 w-20 h-20 rounded-lg border-2 border-dashed flex flex-col items-center justify-center text-xs font-semibold cursor-pointer" style={{ borderColor: "var(--line)" }}>
+                    <span className="text-xl">📸</span>Camera
+                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
+                  </label>
+                </>
+              )}
             </div>
+            {photosChanged && <button type="button" className="btn btn-secondary w-full" disabled={!!busy} onClick={async () => { setBusy("Looking again…"); const m = await fix("I added more photos. Look again at all of them."); setBusy(null); if (m) setErr({ msg: m }); }}>{busy === "Looking again…" ? busy : "🔄 Re-check with the new photos"}</button>}
           </div>
           {lot && (
             <div className="card p-4 space-y-2">

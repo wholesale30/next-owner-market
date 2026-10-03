@@ -5,6 +5,7 @@ import { createClient, getProfile } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
 import { BP_FREE_DAILY, claimScan, listFromScan, since } from "@/lib/thrift";
 import BuyPassClient from "./BuyPassClient";
+import { countLookups, getLookup } from "@/lib/lookups";
 import ToolGuide from "@/components/ToolGuide";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,9 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
     if (sp.list === "1") { const r = await listFromScan(me, claim); if (r.item_id) redirect(`/app/items/${r.item_id}?written=1`); }
   }
   const d = admin();
+  const openId = typeof sp.open === "string" ? sp.open : null;
+  const [saved, nSaved] = me ? await Promise.all([openId ? getLookup(openId, me.id) : Promise.resolve(null), countLookups(me.id)]) : [null, 0];
+  const initial = saved && saved.tool === "buy_or_pass" && (saved.result as { verdict?: string })?.verdict ? saved.result : null;
   const weekAgo = since(7 * 86400_000);
   const [{ count: weekChecks }, mine, myPages] = await Promise.all([
     d.from("buy_pass_scans").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
@@ -62,7 +66,8 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
             </details>
           </div>
         )}
-        <BuyPassClient plan={me ? (me.role === "admin" || me.role === "staff" || me.comped ? "staff" : me.plan === "pro" ? "pro" : me.thrift_pro ? "thrift" : "free") : null} meId={me?.id || null} refCode={(me as { referral_code?: string } | null)?.referral_code || null} freeLeft={freeLeft} inRef={typeof sp.ref === "string" ? sp.ref.replace(/[^a-z0-9_-]/gi, "").slice(0, 32) : ""} />
+        <BuyPassClient initial={initial} key={saved?.id || "new"} plan={me ? (me.role === "admin" || me.role === "staff" || me.comped ? "staff" : me.plan === "pro" ? "pro" : me.thrift_pro ? "thrift" : "free") : null} meId={me?.id || null} refCode={(me as { referral_code?: string } | null)?.referral_code || null} freeLeft={freeLeft} inRef={typeof sp.ref === "string" ? sp.ref.replace(/[^a-z0-9_-]/gi, "").slice(0, 32) : ""} />
+        {me && nSaved > 0 && <Link href="/lookups" className="card p-3 flex items-center justify-between font-semibold" style={{ minHeight: 52 }}><span>📂 My saved lookups ({nSaved})</span><span className="muted text-sm">List them any time ›</span></Link>}
         {(weekChecks || 0) >= 20 && <p className="text-center text-sm muted">{(weekChecks || 0).toLocaleString()} finds checked this week</p>}
         <ToolGuide
           intro={[

@@ -106,6 +106,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
           {photos.map((p) => <img key={p.id} src={p.url} alt="" className="h-40 rounded-lg object-cover shrink-0" />)}
         </div>
       )}
+      <Link href={`/app/items/${it.id}/edit#photos`} className="btn btn-secondary w-full">📷 Add, change or ✨ touch up photos</Link>
 
       <div className="card p-4 grid grid-cols-2 gap-3 text-sm">
         <div><p className="label">Price</p><p className="text-lg font-bold">{money(it.price)}</p>{it.price_min_suggested && <p className="muted">AI: {money(it.price_min_suggested)}–{money(it.price_max_suggested)}</p>}</div>

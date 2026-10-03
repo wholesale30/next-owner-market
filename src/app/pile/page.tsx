@@ -1,13 +1,18 @@
+import Link from "next/link";
 import StoreHeader from "../StoreHeader";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import PileClient from "./PileClient";
+import { countLookups, getLookup } from "@/lib/lookups";
 import ToolGuide from "@/components/ToolGuide";
 
 export const metadata = { title: "Sort the Pile: what to keep, sell, donate, toss", description: "Photograph a box, a shelf, a garage corner. Get every item listed with what it's worth and whether to keep, sell, donate, or toss it. Free to try." };
 
-export default async function PilePage() {
+export default async function PilePage({ searchParams }: PageProps<"/pile">) {
+  const sp = (await searchParams) as { open?: string };
   const supabase = await createClient();
   const [me, { data: biz }] = await Promise.all([getProfile(), supabase.from("settings").select("value").eq("key", "business").maybeSingle()]);
+  const [saved, nSaved] = me ? await Promise.all([sp.open ? getLookup(sp.open, me.id) : Promise.resolve(null), countLookups(me.id)]) : [null, 0];
+  const initial = saved && saved.tool === "pile" ? { id: saved.id, photo_urls: saved.photo_urls || [], hints: saved.hints, result: saved.result } : null;
   const business = (biz?.value as { name: string }) || { name: "Next Owner Market" };
   return (
     <div className="flex-1">
@@ -17,7 +22,8 @@ export default async function PilePage() {
         <p className="opacity-90">A box from the attic, a shelf, a whole garage corner. Photograph it. We list every item, what it&apos;s worth, and whether to keep it, sell it, donate it, or toss it. Then list the good ones in one tap.</p>
       </div></section>
       <main className="max-w-2xl mx-auto p-4 space-y-4">
-        <PileClient meId={me?.id || null} role={me?.role || null} />
+        <PileClient meId={me?.id || null} role={me?.role || null} initial={initial} key={initial?.id || "new"} />
+        {me && nSaved > 0 && <Link href="/lookups" className="card p-3 flex items-center justify-between font-semibold" style={{ minHeight: 52 }}><span>📂 My saved lookups ({nSaved})</span><span className="muted text-sm">List them any time ›</span></Link>}
         <ToolGuide
           intro={[
             "This is for the garage you can't look at. The attic. The storage unit. The parent's house. A warehouse, if that's your life. You know there's money in there and you don't want to throw it away, but the size of the job has kept you from starting. Sort the pile makes the job small: one box, one shelf, one corner at a time.",

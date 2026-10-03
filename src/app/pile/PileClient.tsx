@@ -15,14 +15,16 @@ type Item = { fixup?: string; fixup_low?: number | null; fixup_high?: number | n
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 const ACT: Record<string, { label: string; color: string; emoji: string }> = { sell: { label: "Sell", color: "var(--ok)", emoji: "💵" }, keep: { label: "Keep", color: "var(--brand)", emoji: "🏠" }, donate: { label: "Donate", color: "var(--accent)", emoji: "🎁" }, toss: { label: "Toss", color: "var(--muted)", emoji: "🗑" } };
 
-export default function PileClient({ meId, role }: { meId: string | null; role: string | null }) {
+type PileRes = { scanId?: string; summary: string; items: Item[]; total_low: number; total_high: number };
+export default function PileClient({ meId, role, initial }: { meId: string | null; role: string | null; initial?: { id: string; photo_urls: string[]; hints: string | null; result: unknown } | null }) {
   const router = useRouter();
-  const [photos, setPhotos] = useState<Picked[]>([]);
-  const [hints, setHints] = useState("");
+  const [photos, setPhotos] = useState<Picked[]>(() => (initial?.photo_urls || []).map((url) => ({ url, path: url.split("/item-photos/")[1] || url }) as Picked));
+  const [hints, setHints] = useState(initial?.hints || "");
+  const [lookupId, setLookupId] = useState<string | null>(initial?.id || null);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean } | null>(null);
-  const [res, setRes] = useState<{ scanId?: string; summary: string; items: Item[]; total_low: number; total_high: number } | null>(null);
-  const [picked, setPicked] = useState<Set<number>>(new Set());
+  const [res, setRes] = useState<PileRes | null>((initial?.result as PileRes) || null);
+  const [picked, setPicked] = useState<Set<number>>(() => new Set(((initial?.result as PileRes | undefined)?.items || []).map((x, i) => (x.action === "sell" ? i : -1)).filter((i) => i >= 0)));
 
   async function run() {
     if (!meId) { router.push("/signup?buyer=1&next=/pile"); return; }
@@ -31,6 +33,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
     const j = await r.json().catch(() => ({}));
     setBusy(null);
     if (!r.ok) return setErr({ msg: j.error || "Couldn't sort that.", upgrade: j.upgrade });
+    if (j.lookup_id) setLookupId(j.lookup_id);
     setRes(j); setPicked(new Set(j.items.map((x: Item, i: number) => (x.action === "sell" ? i : -1)).filter((i: number) => i >= 0)));
   }
   async function fix(correction: string): Promise<string | null> {
@@ -55,6 +58,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
       if (data) { const p = photos[x.photo_index] || photos[0]; if (p) await sb.from("item_photos").insert({ item_id: data.id, storage_path: p.path, url: p.url, sort_order: 0, is_primary: true }); n++; last = data.id; }
     }
     setBusy(null);
+    if (lookupId && n) await fetch("/api/lookups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "listed", id: lookupId, item_id: last }) }).catch(() => {});
     router.push(n === 1 && last ? `/app/items/${last}?written=1#copy` : `/app?status=draft&made=${n}`);
   }
   if (!res) return (
@@ -84,7 +88,7 @@ export default function PileClient({ meId, role }: { meId: string | null; role: 
       {err?.upgrade && <OutOfUses message={err.msg} back="/pile" />}
       <FixBox onFix={fix} examples="the lamp is brass, not plastic · you missed the drill · the radio doesn't work" />
       <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
-      <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); }}>📸 Sort another pile</button>
+      <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); setLookupId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}>📸 Sort another pile</button>
       {res.items.map((x, i) => (
         <div key={i} className="card p-3 space-y-1" style={{ borderLeft: `4px solid ${ACT[x.action].color}` }}>
           <div className="flex items-start justify-between gap-2">
