@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 9:36 PM from the project history (214 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 2, 2026 10:47 PM from the project history (216 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1585,3 +1585,20 @@
 - **Database (migrations):** `supabase/migrations/037_feedback.sql`
 
 <sub>change id 9546903</sub>
+
+### 21:36 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id c71e53e</sub>
+
+### 22:45 — Listings write for the buyer (owner notes become facts, never quoted); Tell it what to change: talk or type to rewrite a listing on the Edit page, with Undo; Change the words button on every listing
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/ai-listing/revise/route.ts`, `src/app/api/ai-listing/route.ts`, `src/app/api/lookups/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Seller / staff app:** `src/app/app/items/ItemForm.tsx`, `src/app/app/items/[id]/page.tsx`
+- **Public site pages:** `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/RewriteBox.tsx`
+- **Shared code (logic):** `src/lib/ladder.ts`
+
+<sub>change id 687b4cb</sub>
