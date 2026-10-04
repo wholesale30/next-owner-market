@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       condition_notes: { type: ["string", "null"], description: "honest note on visible wear or missing parts" },
       description: { type: "string", description: "3-6 plain, honest sentences a buyer wants. Never mention price or value." },
       specs: { type: "object", additionalProperties: { type: "string" }, description: "2-6 useful specs (Dimensions, Color, Year, Power...)" },
-      tags: { type: "array", items: { type: "string" }, description: "5-10 lowercase search terms" },
+      tags: { type: "array", items: { type: "string" }, description: "12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, common other names and spellings, category, use, era or style. Relevant only; no unrelated brands" },
       price_min: { type: "number", description: "realistic quick-sale price in USD" },
       price_max: { type: "number", description: "realistic patient-seller price in USD" },
       price_note: { type: "string", description: "one sentence on how it was priced and what would raise it" },

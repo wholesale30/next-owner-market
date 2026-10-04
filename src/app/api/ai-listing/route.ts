@@ -58,7 +58,7 @@ Return ONLY a JSON object with these fields:
   "condition_notes": "short honest note about visible wear, damage, or missing parts, or null",
   "description": "3-6 sentences a buyer would want: what it is, what it does, notable features, size if guessable, what's included. Plain and honest. No hype words like 'amazing'. NEVER mention price, value, worth, or dollar amounts anywhere in title, description, condition_notes, or specs; the price goes in price_min/price_max only.",
   "specs": { "key": "value" } (2-6 useful specs like Dimensions, Power, Capacity, Year, Color; omit unknowns),
-  "tags": ["5-10 lowercase search terms buyers would type"],
+  "tags": ["12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, common other names and spellings, category, use, era or style. Relevant only; no unrelated brands"],
   "price_min": number (realistic low resale price in USD for local pickup),
   "price_max": number (realistic high resale price in USD),
   "price_note": "one sentence on how you priced it and what would raise it (e.g. tested, box, accessories)",

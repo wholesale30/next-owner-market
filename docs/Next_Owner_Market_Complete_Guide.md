@@ -463,3 +463,14 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - **`cleanOrigin`** tidies the answer (text-for-object, "unknown", zeros). `inTodaysDollars` converts the original price using US CPI-U annual averages (BLS, 1982–84 = 100): every 5 years from 1950, then yearly from 2020 to 2025, interpolated. It only shows when it's more than 10% higher.
 - **UI:** `OriginCard` sits under the main answer on What's it worth (before Write my listing) and on Buy or Pass. The pile shows one line per item.
 - **Tested** on the owner's photos. Lasko Cascade humidifier: Lasko, USA, about 1998–2002, sold new for $80 in 2000 (about $149 today), replacement about $90. The receiver stack gave makers and years; prices come per piece.
+
+## Keywords in every copy (Oct 3, 2026)
+
+- **`keywordsFor(item)`** in `src/lib/listing.ts` builds the list: the item's `tags` first, then brand, model, "brand model", category and the title words (stop words removed), deduplicated, up to 20.
+- **Where it goes:** `baseBody` adds "Keywords: …" at the bottom of every copy. Mercari keeps it inside the 1,000-character limit by trimming the description, and adds 3 hashtags. Vinted and Depop get 5 hashtags; Etsy gets 13 tags.
+- **Where tags come from:**
+  - `/api/ai-listing` and `/api/try` ask for 12–20 relevant search words.
+  - What's it worth's `listing.keywords` (and each piece's `keywords`) is saved as `tags` from Write my listing and from My lookups.
+  - Sort the pile's `keywords` per sell item is saved as `tags`.
+  - Buy or Pass listings fall back to brand, model and title words.
+- **Rules followed:** Mercari allows up to 3 hashtags per listing; eBay's keyword-spam rule bans unrelated words, so relevant words only.

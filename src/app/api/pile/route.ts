@@ -10,7 +10,7 @@ import { PILE_ORIGIN_FIELDS } from "@/lib/origin";
 
 export const maxDuration = 90;
 
-type PileItem = { year_made?: string | null; price_new?: number | null; fixup?: "clean" | "test" | "both" | "none"; fixup_low?: number | null; fixup_high?: number | null; fixup_tip?: string | null; missing_parts?: MissingPart[]; name: string; category: string; condition: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: "high" | "medium" | "low"; needs_expert: boolean; listing_title: string; listing_description: string; weight_lbs: number; box: string; photo_index: number };
+type PileItem = { keywords?: string[]; year_made?: string | null; price_new?: number | null; fixup?: "clean" | "test" | "both" | "none"; fixup_low?: number | null; fixup_high?: number | null; fixup_tip?: string | null; missing_parts?: MissingPart[]; name: string; category: string; condition: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: "high" | "medium" | "low"; needs_expert: boolean; listing_title: string; listing_description: string; weight_lbs: number; box: string; photo_index: number };
 
 /** POST { photoUrls, hints?, name? } → items with value ranges and keep/sell/donate/toss; saved as a pile scan. */
 export async function POST(req: Request) {
@@ -54,6 +54,7 @@ export async function POST(req: Request) {
           needs_expert: { type: "boolean" },
           listing_title: { type: "string", description: "max 80 chars, only if action is sell" },
           listing_description: { type: "string", description: "3-4 honest sentences, no prices, only if action is sell" },
+          keywords: { type: "array", items: { type: "string" }, description: "only if action is sell: 8-15 search words buyers type (brand, model, what it is, other names)" },
           weight_lbs: { type: "number" }, box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
           photo_index: { type: "integer" },
           missing_parts: PILE_PART_SCHEMA,

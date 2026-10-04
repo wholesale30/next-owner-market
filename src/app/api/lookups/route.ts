@@ -49,14 +49,14 @@ export async function POST(req: Request) {
     }
     if (lk.tool !== "worth") return NextResponse.json({ open: `/pile?open=${id}` });
     // What's it worth: same as "Write my listing" on the result (a single piece of a lot if piece is given)
-    type Piece = { name: string; value_low: number; value_high: number; listing_title: string; listing_description: string };
-    const res = lk.result as { what: string; condition_guess: string; value_low: number; value_high: number; ship_or_local: string; box: string; weight_lbs: number; listing: { title: string; description: string; condition?: string }; pieces?: Piece[] };
+    type Piece = { keywords?: string[]; name: string; value_low: number; value_high: number; listing_title: string; listing_description: string };
+    const res = lk.result as { what: string; condition_guess: string; value_low: number; value_high: number; ship_or_local: string; box: string; weight_lbs: number; listing: { title: string; description: string; condition?: string; keywords?: string[] }; pieces?: Piece[] };
     const piece = typeof b.piece === "number" ? res.pieces?.[b.piece] : undefined;
     if (me.role === "buyer") { const sb = await createClient(); await sb.rpc("become_seller"); }
     const lo = piece ? piece.value_low : res.value_low, hi = piece ? piece.value_high : res.value_high;
     const { data: item, error } = await d.from("items").insert({
       owner_id: me.id, created_by: me.id, title: String(piece ? piece.listing_title || piece.name : res.listing?.title || res.what).slice(0, 80),
-      description: piece ? piece.listing_description : res.listing?.description || "", condition_notes: res.listing?.condition || res.condition_guess || null,
+      description: piece ? piece.listing_description : res.listing?.description || "", condition_notes: res.listing?.condition || res.condition_guess || null, tags: ((piece ? piece.keywords : res.listing?.keywords) || []).slice(0, 25),
       price: Math.round((Number(lo) + Number(hi)) / 2), price_min_suggested: lo, price_max_suggested: hi, status: "draft", ai_generated: true,
       shipping_ok: res.ship_or_local !== "local" && res.box !== "freight", local_pickup_ok: true, weight_lbs: res.weight_lbs || null,
       box: res.box === "freight" ? "xl" : res.box || "medium", shipping_mode: "calculated",

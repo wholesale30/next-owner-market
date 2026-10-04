@@ -502,3 +502,16 @@ Every What's it worth and Buy or Pass answer now has an **📋 About it** card r
 - **New today**, or what replaced it.
 
 It says how it knows: read off the label in your photo, known for that model, or a best estimate. **Tip:** photograph the label or model plate to make it exact. On a lot, each piece shows its year and what it sold for new. On Sort the pile, each item's line shows "made 1990 · new $250" when it can tell.
+
+## Keywords on every site's listing (Oct 3, 2026)
+
+Every copy-and-paste listing now ends with the words people search for, in the way each site uses them:
+
+| Site | What's added at the bottom |
+|---|---|
+| Facebook, eBay, OfferUp, Craigslist, Poshmark | **Keywords:** up to 20 search words (brand, model, model number, what it is, other names) |
+| Mercari | Keywords, plus its 3 hashtags (Mercari allows 3) |
+| Vinted, Depop | 5 hashtags |
+| Etsy | 13 tags in the Tags box |
+
+The AI picks 12–20 real search words for every listing. Older listings without them still get a line built from the brand, model and title. Only words that fit the item are used, because eBay and Mercari punish unrelated keywords.

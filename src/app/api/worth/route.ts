@@ -14,10 +14,10 @@ import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage"
 export const maxDuration = 120;
 
 /** Accept the listing as an object, JSON text, or the AI's "<parameter name=...>" text; fall back to what/why. */
-function toListing(v: unknown, what?: string, why?: string): { title: string; description: string; condition?: string } {
+function toListing(v: unknown, what?: string, why?: string): { title: string; description: string; condition?: string; keywords?: string[] } {
   if (v && typeof v === "object" && typeof (v as { title?: unknown }).title === "string") {
-    const o = v as { title: string; description?: string; condition?: string };
-    return { title: o.title, description: String(o.description || why || ""), condition: o.condition ? String(o.condition) : undefined };
+    const o = v as { title: string; description?: string; condition?: string; keywords?: unknown };
+    return { title: o.title, description: String(o.description || why || ""), condition: o.condition ? String(o.condition) : undefined, keywords: Array.isArray(o.keywords) ? o.keywords.map(String).slice(0, 25) : [] };
   }
   if (typeof v === "string") {
     try { const j = JSON.parse(v); if (j && typeof j.title === "string") return { title: j.title, description: String(j.description || why || "") }; } catch { /* not JSON */ }
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
       best_places: { type: "array", items: { type: "object", properties: { place: { type: "string" }, why: { type: "string" } }, required: ["place", "why"] }, description: "2-3 entries, best first: eBay, Facebook Marketplace, OfferUp, Craigslist, Mercari, Poshmark, Etsy, Local auction, Scrap, Donate" },
       ship_or_local: { type: "string", enum: ["ship", "local", "either"] },
       watch_out: { type: ["string", "null"], description: "recalls, fakes, common scams" },
-      listing: { type: "object", properties: { title: { type: "string", description: "max 80 chars, brand + model + what it is" }, description: { type: "string", description: "3-5 honest sentences a buyer wants, in the seller's voice" }, condition: { type: "string", description: "one short line for the buyer, e.g. 'New, never used. Untested.' or 'Used, works, light wear.'" } }, required: ["title", "description", "condition"] },
+      listing: { type: "object", properties: { title: { type: "string", description: "max 80 chars, brand + model + what it is" }, description: { type: "string", description: "3-5 honest sentences a buyer wants, in the seller's voice" }, condition: { type: "string", description: "one short line for the buyer, e.g. 'New, never used. Untested.' or 'Used, works, light wear.'" }, keywords: { type: "array", items: { type: "string" }, description: "12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, common other names and spellings, category, use, era or style. Relevant only; no unrelated brands" } }, required: ["title", "description", "condition", "keywords"] },
       weight_lbs: { type: "number", description: "packed shipping weight estimate" },
       box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
       missing_parts: PART_SCHEMA,
@@ -92,6 +92,7 @@ export async function POST(req: Request) {
           note: { type: "string", description: "one short sentence: why it's worth that (demand, rarity, condition)" },
           listing_title: { type: "string", description: "max 80 chars" },
           listing_description: { type: "string", description: "2-4 honest sentences for selling this one alone" },
+          keywords: { type: "array", items: { type: "string" }, description: "8-15 search words for this piece alone" },
           year_made: { type: ["string", "null"], description: "year or range this piece was made, if you can tell" },
           original_price: { type: ["number", "null"], description: "what this piece sold for new when it came out, USD, if known" },
         }, required: ["name", "qty", "value_low", "value_high", "note", "listing_title", "listing_description"] },
