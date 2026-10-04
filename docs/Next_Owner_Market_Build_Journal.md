@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 3, 10:40 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 3, 10:44 PM (continuing)
 
 **Claude:**
 
@@ -7617,3 +7617,16 @@ None of tonight's failed attempts left a blank listing in your inventory, so the
 Good idea: two pages on Google for every listing, the listing itself plus a "find" page. First, how the existing share works, so the listed item's find page can link to the listing:
 
 Now the find page gets a big Buy button pointing back to the listing:
+
+Live. A stranger check, then the records:
+
+Once you tap "List it in the store," the listing's page now shows a big **📣 Share this find** button.
+
+**What one tap does:**
+- **A second page:** it gives the item a "find" page on our site with the photo, what it's worth, and a **🛒 For sale now: $X** button that goes straight to your listing.
+- **Search engines:** both pages, the listing and the find page, are sent to Bing, DuckGo and others right away. Google picks them both up from our site map.
+- **Facebook or a friend:** after that, a **📲 Also send it to Facebook or a friend** button sends the listing link anywhere.
+
+The button only shows on live listings, and tapping it again just reuses the same find page instead of making duplicates. The site refuses it for anyone who isn't signed in. I couldn't tap through it as you from here, so the first time you share a live listing is the real test.
+
+Updated guides are in **Next_Owner_Market_Files_2026-10-03_2244.zip**.

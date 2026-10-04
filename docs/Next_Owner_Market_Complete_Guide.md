@@ -201,7 +201,7 @@ What a person still has to do is listed, with steps, on the Operations page (Sea
 
 - Money held until the buyer has the item; 6-digit pickup code; mandatory in-app shipping labels with tracking.
 - Real names, emails, phones never shown; usernames everywhere; contact info stripped from listings, messages and community posts.
-- New-seller caps (5 listings / $500) until three completed sales; staff approval of first listings.
+- Staff approval of first listings. (New-seller caps of 5 listings / $500 until three sales were removed Oct 3, 2026; `items_trust_guard` now only caps free accounts at 10 live listings; Pro, Power and comped have no limit.)
 - Problem reports freeze the money; buyer and seller can settle it themselves (withdraw / refund); staff decide only when they can't.
 - Safe meet spots (police stations) on pickup orders; scam checklist in Help.
 - Vehicles: title in hand required, pickup only, deposit over the cap, printable bill of sale with real names only after payment.

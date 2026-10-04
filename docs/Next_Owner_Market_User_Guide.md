@@ -249,7 +249,7 @@ Rates are editable in Settings, per consignor, and per item.
 
 - **Verified sellers only.** Nobody can sell through checkout without passing Stripe's identity and bank verification.
 - **Held payment.** Buyers never pay a stranger directly; sellers never hand over an item to someone who hasn't paid.
-- **New-seller limits.** 5 live listings and $500 total until 3 sales are completed.
+- **Listing limits.** Free accounts can have 10 live listings. Paying members (Pro, Power Seller) have no limit. (The old new-seller limit of 5 listings and $500 until 3 sales was removed Oct 3, 2026.)
 - **Contact info is removed from listings and messages** (phone numbers, emails, "Venmo me") so every deal is protected by checkout. Buyers and sellers never see each other's email or phone; they message inside the app, and shipping addresses are collected at checkout and shown to the seller only after payment. Staff listings are exempt and staff can see contacts to mediate.
 - **Ratings both ways** after every completed order.
 - **Problem reports** freeze the money; staff decide.

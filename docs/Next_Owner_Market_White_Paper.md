@@ -107,7 +107,7 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 - **Refund/cancel** before hand-off (`/api/orders/refund`); **disputes** freeze funds (`disputes`, `dispute_messages`); staff resolve at /app/disputes (`/api/orders/resolve`).
 - **Seller onboarding**: Stripe Connect Express (`/api/stripe/connect`); `stripe_payouts_ready` set by `account.updated` webhook. Platform-owned items (admin/staff) need no transfer.
 - **Pro plan** $15/mo via Stripe subscription (`/api/stripe/subscribe`, portal at `/api/stripe/portal`); `profiles.plan`. Free users get `ai_credits` = 3 (spent server-side by `spend_ai_credit()`); copy-paste blocks, video, and unlimited listings are Pro. Enforced in DB triggers (`items_trust_guard`, `videos_plan_guard`) and API routes, not just UI.
-- **Trust**: `strip_contact()` removes phones/emails/payment handles from non-staff listings; new-seller caps (5 listings / $500 until 3 completed sales); free cap 10 live; `suspended` flag; `ratings` table with `rating_avg`/`rating_count` on profiles.
+- **Trust**: `strip_contact()` removes phones/emails/payment handles from non-staff listings; free cap 10 live (paying members unlimited; the new-seller cap was removed Oct 3, 2026); `suspended` flag; `ratings` table with `rating_avg`/`rating_count` on profiles.
 - **Admin one-tap setup** (`/api/stripe/setup`, button on Money): creates the webhook endpoint (`/api/stripe/webhook`) and the Pro price; secrets stored in `settings.stripe`. Needs env `STRIPE_SECRET_KEY`. Connect must be enabled once in the Stripe dashboard (Connect → Get started).
 
 **Alerts, email, growth (later the same evening)**

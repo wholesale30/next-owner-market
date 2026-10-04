@@ -14,7 +14,7 @@ Next Owner Market (nextownermarket.com) is an online marketplace operated by ___
 - Describe items accurately, including defects. Photos must be of the actual item.
 - Prohibited: illegal items, recalled products, weapons and ammunition, counterfeits, stolen goods, items you don't have the right to sell, and anything that violates Stripe's or the law's restrictions.
 - Contact details and off-platform payment instructions are removed from public listings. All store sales go through checkout so both sides are protected.
-- New sellers may list up to 5 items ($500 total) until 3 sales are completed. Free accounts may keep 10 live listings; Pro accounts are unlimited.
+- Free accounts may keep 10 live listings. Paying members (Pro and Power Seller) have no listing limit. (The old new-seller limit of 5 items and $500 until 3 sales was removed Oct 3, 2026.) Pro accounts are unlimited.
 - We may remove any listing at our discretion.
 
 ## 4. Buying and held payment
