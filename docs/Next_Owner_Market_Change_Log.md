@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 12:10 PM from the project history (218 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 10:06 PM from the project history (220 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1621,3 +1621,18 @@
 - **Shared code (logic):** `src/lib/origin.ts`
 
 <sub>change id 1df6fed</sub>
+
+### 12:10 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id 3d7d743</sub>
+
+### 22:04 — Keywords at the bottom of every site's listing (Facebook, eBay, OfferUp, Craigslist, Poshmark, Mercari +3 hashtags, Vinted/Depop hashtags, Etsy 13 tags); every listing writer now produces 12-20 search words
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/ai-listing/route.ts`, `src/app/api/lookups/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Public site pages:** `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared code (logic):** `src/lib/listing.ts`
+
+<sub>change id ce55259</sub>
