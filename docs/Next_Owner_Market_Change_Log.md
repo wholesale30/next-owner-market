@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 10:43 PM from the project history (224 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 11:17 PM from the project history (226 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1666,3 +1666,18 @@
 - **Public site pages:** `src/app/valued/[slug]/page.tsx`
 
 <sub>change id 76411cd</sub>
+
+### 22:44 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id 35b5e80</sub>
+
+### 23:17 — Remove the new-seller limit (5 live / $500 until 3 sales): paying members and comped list without limit, free accounts keep 10; terms, emails and guides updated
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Seller_Terms.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Public site pages:** `src/app/terms/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+- **Database (migrations):** `supabase/migrations/038_remove_new_seller_cap.sql`
+
+<sub>change id 963cb30</sub>
