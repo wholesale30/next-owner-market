@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 11:22 PM from the project history (228 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 11:37 PM from the project history (230 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1694,3 +1694,17 @@
 - **Shared code (logic):** `src/lib/listing.ts`
 
 <sub>change id 234b25d</sub>
+
+### 23:22 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id 0c99cf4</sub>
+
+### 23:37 — Marketplace policy compliance: per-site keyword format (eBay/Poshmark short line, Craigslist none, Mercari 5+3 hashtags), Craigslist no web address, Etsy only for vintage/handmade, Depop under 1000 chars, filter comparison/other-brand keywords, AI told the same, each site's must-know rule in its how-to
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`
+- **Server routes (API):** `src/app/api/ai-listing/route.ts`, `src/app/api/pile/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Shared code (logic):** `src/lib/howto.ts`, `src/lib/listing.ts`
+
+<sub>change id e47e0bc</sub>
