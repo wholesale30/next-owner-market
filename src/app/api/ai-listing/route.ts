@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { LISTING_HONESTY, BUYER_VOICE } from "@/lib/ladder";
 import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
-import { aiImages, allowanceOf, logUsage, outOfUsesMessage, refundUse } from "@/lib/usage";
+import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
+import { askWithTool } from "@/lib/ai-tool";
 
 export const maxDuration = 60;
 
@@ -39,68 +40,58 @@ export async function POST(req: Request) {
   const client = new Anthropic();
   const catList = categories.map((c) => `${c.name} (${c.id})`).join("; ");
 
+  // Structured answer (a tool call), not free JSON text: the old way got cut off at the word limit and came back blank (Oct 3, 2026).
+  const schema = {
+    type: "object",
+    properties: {
+      title: { type: "string", description: "clear, searchable title, max 80 characters, brand + model + what it is (no ALL CAPS, no exclamation points)" },
+      brand: { type: ["string", "null"] },
+      model: { type: ["string", "null"], description: "model number" },
+      category_id: { type: ["string", "null"], description: "id from the category list" },
+      condition: { type: "string", enum: ["new", "like_new", "good", "fair", "for_parts"] },
+      condition_notes: { type: ["string", "null"], description: "short buyer-facing note about wear, damage, missing parts, tested/untested" },
+      description: { type: "string", description: "3-6 plain sentences a buyer wants: what it is, what it does, notable features, size, what's included. No hype. Never mention price or value." },
+      specs: { type: "object", additionalProperties: { type: "string" }, description: "2-6 useful specs (Dimensions, Power, Capacity, Year, Color); omit unknowns" },
+      tags: { type: "array", items: { type: "string" }, description: "12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, other names and spellings, category, use, era or style. Relevant only." },
+      price_min: { type: "number", description: "realistic low resale price in USD, local pickup" },
+      price_max: { type: "number", description: "realistic high resale price in USD" },
+      price_note: { type: "string", description: "one sentence on how you priced it and what would raise it" },
+      weight_lbs: { type: "number", description: "packed shipping weight in pounds" },
+      box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
+      worth_listing: { type: "boolean", description: "false if likely worth under $10 or junk" },
+      recalled_or_prohibited: { type: ["string", "null"], description: "short warning if commonly recalled or not allowed on marketplaces, else null" },
+    },
+    required: ["title", "condition", "description", "tags", "price_min", "price_max", "price_note", "weight_lbs", "box", "worth_listing"],
+  };
   const content: Anthropic.MessageParam["content"] = [
     ...(await aiImages(photoUrls.slice(0, 6))),
     {
       type: "text",
-      text: `You are writing a resale listing for a surplus/used-goods business in Virginia. Look at the photos carefully: read every label, model number, brand mark, and sticker you can see.${LISTING_HONESTY}${BUYER_VOICE}
-
-${hints ? `Seller notes: ${hints}\n` : ""}
+      text: `You are writing a resale listing for a surplus/used-goods business in Virginia. Look at the photos carefully: read every label, model number, brand mark, and sticker you can see. The seller's notes are true: if they say what the item is, use that, even if the photos are unclear.${LISTING_HONESTY}${BUYER_VOICE}
+${hints ? `\nSeller notes: ${String(hints).slice(0, 1500)}\n` : ""}
 Available categories (pick the single best one and return its id): ${catList}
 
-Return ONLY a JSON object with these fields:
-{
-  "title": "clear, searchable title, max 80 characters, brand + model + what it is (no ALL CAPS, no exclamation points)",
-  "brand": "brand or null",
-  "model": "model number or null",
-  "category_id": "id from the list",
-  "condition": "one of: new, like_new, good, fair, for_parts (judge from photos; if unclear use good)",
-  "condition_notes": "short honest note about visible wear, damage, or missing parts, or null",
-  "description": "3-6 sentences a buyer would want: what it is, what it does, notable features, size if guessable, what's included. Plain and honest. No hype words like 'amazing'. NEVER mention price, value, worth, or dollar amounts anywhere in title, description, condition_notes, or specs; the price goes in price_min/price_max only.",
-  "specs": { "key": "value" } (2-6 useful specs like Dimensions, Power, Capacity, Year, Color; omit unknowns),
-  "tags": ["12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, common other names and spellings, category, use, era or style. Relevant only; no unrelated brands"],
-  "price_min": number (realistic low resale price in USD for local pickup),
-  "price_max": number (realistic high resale price in USD),
-  "price_note": "one sentence on how you priced it and what would raise it (e.g. tested, box, accessories)",
-  "weight_lbs": number (estimated packed shipping weight in pounds, including box and padding),
-  "box": "one of: small (fits a shoebox), medium (microwave-size), large (stereo receiver / small speaker), xl (tower speaker, large lamp), freight (too big or heavy to ship by parcel)",
-  "worth_listing": true or false (false if it is likely worth under $10 or is junk),
-  "recalled_or_prohibited": "null, or a short warning if this item type is commonly recalled or can't be sold on marketplaces"
-}`,
+Record the listing with the listing tool. Never put a price or dollar amount in the title, description, condition notes or specs.`,
     },
   ];
 
   try {
-    const msg = await client.messages.create({
-      model: MODEL,
-      max_tokens: 1200,
-      messages: [{ role: "user", content }],
+    const d = await askWithTool<{ title?: string; description?: string; condition_notes?: string | null; specs?: Record<string, string>; tags?: string[] }>(client, {
+      model: MODEL, max_tokens: 2500, messages: [{ role: "user", content }],
+      tool: { name: "listing", description: "Record the listing.", input_schema: schema as unknown as Anthropic.Tool.InputSchema },
+      log: { ownerId: user.id, feature: "listing" },
     });
-    await logUsage(user.id, "listing", MODEL, msg.usage);
-    const text = msg.content
-      .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("");
-    const jsonStart = text.indexOf("{");
-    const jsonEnd = text.lastIndexOf("}");
-    let parsed: unknown;
-    try { parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1)); }
-    catch {
-      // second try: ask the model to fix its own JSON
-      const fix = await client.messages.create({ model: MODEL, max_tokens: 1500, messages: [{ role: "user", content: `Return ONLY this as valid JSON, nothing else:\n${text.slice(jsonStart, jsonEnd + 1)}` }] });
-      await logUsage(user.id, "listing", MODEL, fix.usage);
-      const t2 = fix.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
-      parsed = JSON.parse(t2.slice(t2.indexOf("{"), t2.lastIndexOf("}") + 1));
-    }
-    const d = parsed as { description?: string; condition_notes?: string; specs?: Record<string, string>; title?: string };
     d.description = scrubPriceTalk(d.description);
     d.condition_notes = d.condition_notes ? scrubPriceTalk(d.condition_notes) : d.condition_notes;
     d.specs = scrubSpecs(d.specs);
     if (d.title) d.title = d.title.replace(/\s*[-–(]?\s*\$\s?\d[\d,.]*\s*\)?/g, "").trim();
-    return NextResponse.json({ draft: d, usage: msg.usage });
+    if (!d.title || !d.description) throw new Error("The AI came back without a title or description.");
+    return NextResponse.json({ draft: d });
   } catch (e) {
     const message = e instanceof Error ? e.message : "AI request failed";
     await refundUse(user.id); // the listing didn't come out: give the use back
-    return NextResponse.json({ error: message }, { status: 500 });
+    const { admin } = await import("@/lib/stripe");
+    await admin().from("settings").upsert({ key: `err:listing:${Date.now()}`, value: { message, photos: photoUrls.slice(0, 3), user: user.id, hints: hints || null } }).then(() => {}, () => {});
+    return NextResponse.json({ error: "The AI couldn't read that one this time. Tap Try again, or fill it in yourself.", retry: true }, { status: 500 });
   }
 }

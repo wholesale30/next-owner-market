@@ -232,21 +232,27 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   }
 
   // ---------- AI ----------
+  const [aiFailed, setAiFailed] = useState<string | null>(null);
   async function runAi() {
     const urls = photos.filter((p) => p.storage_path && !p.uploading).map((p) => p.url);
     if (!urls.length) return setError("Add at least one photo first.");
     setAiBusy(true);
     setError(null);
+    setAiFailed(null);
     const t0 = Date.now();
+    // never hang: give up after 90 seconds and offer the way forward
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 90_000);
     try {
       const res = await fetch("/api/ai-listing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ photoUrls: urls, hints, categories: categories.map((c) => ({ id: c.id, name: c.name })) }),
+        signal: ctrl.signal,
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({ error: "The AI took too long." }));
       if (res.status === 402) { setOutOfCredits(true); return; }
-      if (!res.ok) throw new Error(json.error || "AI failed");
+      if (!res.ok || !json.draft?.title) throw new Error(json.error || "The AI couldn't read that one this time.");
       const a = json.draft;
       const mid = a.price_min && a.price_max ? Math.round((Number(a.price_min) + Number(a.price_max)) / 2) : "";
       set({
@@ -271,10 +277,19 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
       setStep("details");
       if (!isPro) setAiWin({ secs: Math.max(5, Math.round((Date.now() - t0) / 1000)), left: Math.max(0, (Number((profile as unknown as { ai_credits?: number }).ai_credits ?? 3)) - 1) });
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      const aborted = e instanceof DOMException && e.name === "AbortError";
+      setAiFailed(aborted ? "The AI took too long this time." : e instanceof Error ? e.message : String(e));
     } finally {
+      clearTimeout(timer);
       setAiBusy(false);
     }
+  }
+  /** AI failed: keep going by hand, with whatever the seller already said filled in. */
+  function fillMyself() {
+    const firstLine = hints.split(/[.\n]/)[0]?.trim() || "";
+    set({ title: d.title || firstLine.slice(0, 80), description: d.description || hints });
+    setAiFailed(null);
+    setStep("details");
   }
 
   // ---------- save ----------
@@ -477,6 +492,15 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
               {aiBusy ? "Reading the photos…" : uploading ? "Uploading…" : "✨ Write the listing for me"}
             </button>
             <button type="button" className="btn btn-secondary w-full" onClick={() => setStep("details")}>I&apos;ll type it myself</button>
+            {aiFailed && (
+              <div className="card p-3 space-y-2" style={{ borderColor: "var(--danger)", borderWidth: 2 }}>
+                <p className="font-semibold">😕 {aiFailed}</p>
+                <p className="text-sm muted">Your photos and notes are saved here. Nothing was charged.</p>
+                <button type="button" className="btn btn-primary w-full" style={{ minHeight: 48 }} disabled={aiBusy} onClick={runAi}>🔄 Try again</button>
+                <button type="button" className="btn btn-secondary w-full" style={{ minHeight: 48 }} onClick={fillMyself}>✏️ Fill it in myself{hints.trim() ? " (starts with your notes)" : ""}</button>
+                <button type="button" className="text-sm underline w-full" onClick={() => window.location.replace("/app/items/new")}>Start over with a new item</button>
+              </div>
+            )}
           </>
         )}
         {outOfCredits && isPro && <OutOfUses message="You've used all your AI uses for this month. Nice work! Add more now, or they reset on the 1st." back={mode === "edit" && item ? `/app/items/${item.id}/edit` : "/app/items/new"} />}

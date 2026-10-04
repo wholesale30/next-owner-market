@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
 import { runVision, FEES } from "@/lib/ai-engine";
 
-export const maxDuration = 60;
+export const maxDuration = 90;
 
 import { BP_FREE_DAILY } from "@/lib/thrift";
 import { saveLookup } from "@/lib/lookups";
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
   if (!photoUrls.length) return NextResponse.json({ error: "Add a photo first." }, { status: 400 });
 
   const r = await runVision<Out>({
-    name: "buy_or_pass", userId: user?.id || "anon", photoUrls, maxPhotos: 4, maxTokens: 1700, charge,
+    name: "buy_or_pass", userId: user?.id || "anon", photoUrls, maxPhotos: 4, maxTokens: 3500, charge,
     prompt: `You are a full-time US reseller who flips thrift-store and yard-sale finds on eBay, Mercari, Poshmark and Facebook Marketplace. Identify the item from the photo (read labels, model numbers). ${hints ? `Notes: "${String(hints).slice(0, 300)}". ` : ""}${prev ? `Your earlier answer said this was "${String(prev.what).slice(0, 200)}", reselling for about $${Math.round(Number(prev.resale_low))}-$${Math.round(Number(prev.resale_high))}. The person says that's not right: "${String(correction).slice(0, 600)}". Look again with this correction. Trust what they tell you about the item (exact model, what's missing or broken, condition, what it came with) unless the photo clearly shows otherwise, and redo everything from scratch. In "why", say in one sentence what changed. ` : ""}Give a realistic resale range in USD (what it actually sells for used, not retail or hopeful asking prices), the single best place to sell it, whether it ships or is local-only, a rough shipping cost if shipped, and any warning (fakes, recalls, hard to ship, slow to sell). Be honest and a little conservative; a wrong "buy" costs real money.${LADDER_PROMPT}${ORIGIN_PROMPT}${PART_PROMPT}`,
     schema: { type: "object", properties: {
       what: { type: "string" }, condition_guess: { type: "string" },

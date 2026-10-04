@@ -98,8 +98,12 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
           <h1 className="text-xl font-bold leading-tight">{it.title || "Untitled"}</h1>
           <p className="muted text-sm">{it.sku}{it.locations?.code ? ` • ${it.locations.code}` : ""}{it.categories ? ` • ${it.categories.name}` : ""}</p>
         </div>
-        <span className={`pill shrink-0 ${it.status === "active" ? "pill-active" : it.status === "sold" ? "pill-sold" : "pill-draft"}`}>{STATUS_LABELS[it.status]}</span>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span className={`pill ${it.status === "active" ? "pill-active" : it.status === "sold" ? "pill-sold" : "pill-draft"}`}>{STATUS_LABELS[it.status]}</span>
+          <Link href={`/app/items/${it.id}/edit`} className="btn btn-secondary text-sm" style={{ minHeight: 40 }}>✏️ Edit</Link>
+        </div>
       </div>
+      {!it.title && <Link href={`/app/items/${it.id}/edit`} className="card p-3 block text-center font-semibold" style={{ borderColor: "var(--danger)", borderWidth: 2 }}>This one has no title yet. Tap to fill it in ✏️</Link>}
 
       {photos.length > 0 && (
         <div className="flex gap-2 overflow-x-auto">

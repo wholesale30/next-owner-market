@@ -515,3 +515,9 @@ Every copy-and-paste listing now ends with the words people search for, in the w
 | Etsy | 13 tags in the Tags box |
 
 The AI picks 12–20 real search words for every listing. Older listings without them still get a line built from the brand, model and title. Only words that fit the item are used, because eBay and Mercari punish unrelated keywords.
+
+## If the AI can't read a photo (Oct 3, 2026)
+
+On **Add item**, if the AI can't write the listing, you get three buttons: **🔄 Try again**, **✏️ Fill it in myself** (it starts with your notes) and **Start over with a new item**. Your photos and notes stay, and nothing is charged. It never hangs: after 90 seconds it stops and shows those buttons.
+
+Tapping **➕ Add** (or any menu button) while you're already on that page now starts it fresh. Every listing has an **✏️ Edit** button at the top, next to its status.

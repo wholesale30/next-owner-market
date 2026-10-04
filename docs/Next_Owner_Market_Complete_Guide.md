@@ -474,3 +474,17 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
   - Sort the pile's `keywords` per sell item is saved as `tags`.
   - Buy or Pass listings fall back to brand, model and title words.
 - **Rules followed:** Mercari allows up to 3 hashtags per listing; eBay's keyword-spam rule bans unrelated words, so relevant words only.
+
+## Blank AI listings fixed (Oct 3, 2026)
+
+- **Cause:** `/api/ai-listing` asked for free-form JSON with `max_tokens: 1200`. After keywords (12–20) and the buyer-voice rules were added, answers got longer. 9 of 26 listings on Oct 3 stopped at exactly 1,200 tokens, so the JSON was cut off, the "fix your JSON" retry got a fragment, and the draft came back blank.
+- **Fix:**
+  - It's now a structured tool answer (`askWithTool` plus a schema, 2,500 tokens). Tested on the owner's receiver photo: 1,177 tokens, full title, 19 keywords, full description.
+  - Seller notes are trusted ("if they say what it is, use that").
+  - Failures refund the use, are logged as `err:listing:*`, and return a plain message.
+- **Other limits raised:** Buy or Pass to 3,500 tokens (90 s); Sort the pile to 9,000 (180 s).
+- **Tripwire:** `askWithTool` writes `err:cutoff:<feature>:<ts>` whenever an answer stops at the limit.
+- **Add item:**
+  - A 90-second timeout, then a failure box with Try again, Fill it in myself (the title comes from the notes) and Start over.
+  - Menu links (`NavLink`) reload when tapped on the current page, so ➕ Add always starts fresh.
+  - Item page: a ✏️ Edit button by the status, plus a red "no title yet" prompt.

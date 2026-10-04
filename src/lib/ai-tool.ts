@@ -12,7 +12,14 @@ export async function askWithTool<T = Record<string, unknown>>(client: Anthropic
   tool: { name: string; description: string; input_schema: Anthropic.Tool.InputSchema };
   log?: { ownerId: string | null; feature: string };
 }): Promise<T> {
-  const track = async (m: Anthropic.Message) => { if (p.log) await logUsage(p.log.ownerId, p.log.feature, p.model, m.usage); };
+  const track = async (m: Anthropic.Message) => {
+    if (p.log) await logUsage(p.log.ownerId, p.log.feature, p.model, m.usage);
+    // tripwire: an answer cut off at the word limit comes back incomplete; record it so the limit gets raised
+    if (m.stop_reason === "max_tokens") {
+      const { admin } = await import("@/lib/stripe");
+      await admin().from("settings").upsert({ key: `err:cutoff:${p.log?.feature || p.tool.name}:${Date.now()}`, value: { feature: p.log?.feature || p.tool.name, max_tokens: p.max_tokens, out: m.usage?.output_tokens } }).then(() => {}, () => {});
+    }
+  };
   const pick = (m: Anthropic.Message): T | null => {
     const call = m.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use" && b.name === p.tool.name);
     if (call) return call.input as T;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import NavLink from "./NavLink";
 import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import SignOutButton from "./SignOutButton";
@@ -101,9 +102,9 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
         </div>
         <nav className={`max-w-3xl mx-auto px-2 pb-2 ${staff ? "flex gap-1 overflow-x-auto" : "grid grid-cols-4 gap-1"}`}>
           {main.map((n) => (
-            <Link key={n.href} href={n.href} className="navbtn text-center justify-center" style={{ minHeight: staff ? 36 : 44, fontSize: staff ? ".85rem" : ".9rem" }}>
+            <NavLink key={n.href} href={n.href} className="navbtn text-center justify-center" style={{ minHeight: staff ? 36 : 44, fontSize: staff ? ".85rem" : ".9rem" }}>
               {n.label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
       </header>
