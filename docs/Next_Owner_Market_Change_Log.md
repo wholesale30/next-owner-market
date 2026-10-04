@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 10:06 PM from the project history (220 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 10:21 PM from the project history (222 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1636,3 +1636,18 @@
 - **Shared code (logic):** `src/lib/listing.ts`
 
 <sub>change id ce55259</sub>
+
+### 22:06 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id e16d197</sub>
+
+### 22:19 — Fix blank AI listings: listing writer cut off at 1200 tokens (9 of 26 tonight); now a structured answer with 2500, raised Buy or Pass and pile limits, cutoff tripwire; Add item never hangs (90s, Try again / Fill it in myself / Start over); menu taps restart the current page; Edit button at the top of every listing
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/ai-listing/route.ts`, `src/app/api/buy-or-pass/route.ts`, `src/app/api/pile/route.ts`
+- **Seller / staff app:** `src/app/app/NavLink.tsx`, `src/app/app/items/ItemForm.tsx`, `src/app/app/items/[id]/page.tsx`, `src/app/app/layout.tsx`
+- **Shared code (logic):** `src/lib/ai-tool.ts`
+
+<sub>change id b6f5c0a</sub>
