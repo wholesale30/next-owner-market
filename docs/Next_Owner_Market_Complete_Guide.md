@@ -509,3 +509,26 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
 - eBay's Links policy: "listings or item descriptions can't contain links that direct customers to any other site," and no web addresses like ".com" in store names.
 - Mercari's guidelines: sell within Mercari.
 - Facebook's written Commerce Policies don't clearly ban a web address (the page couldn't be fetched to confirm). Off-platform steering gets listings removed, so the address is left off.
+
+## Marketplace policy compliance (Oct 3, 2026)
+
+Checked against each site's own policy pages:
+- eBay: search manipulation, links, contact info and duplicate listings policies.
+- Mercari: Prohibited Conduct ("an excessive amount of search keywords," "soliciting transactions to an external website").
+- Vinted: Catalog Rules (no other brands as hashtags, no "inspired by," no links).
+- Depop: 5 hashtags, 1,000 characters, no email, removal for irrelevant hashtags.
+- Etsy: Creativity Standards (no resold commercial items newer than 20 years; 13 tags of 20 characters, letters, numbers and spaces).
+- Craigslist: "keyword spamming" and "links to auctions or ecommerce offerings" are flag reasons; repost once per 48 hours.
+- OfferUp: no contact info, links, duplicates or stock photos.
+- Poshmark: no contact info; categories limited.
+- Facebook: the official page couldn't be fetched; we use real prices, no web address and a moderate keyword line.
+
+**Implementation:**
+- `baseBody` `keywords: "list" | "short" | false` and `brand: "name" | "none"`. Craigslist now uses `name` with no keywords.
+- `keywordsFor` drops tags with "like/not/style/inspired/dupe/replica/vs/alternative/similar" or "?".
+- `etsyAllowed()` needs a year 20+ years back (in the year, specs or title) or "vintage/antique/handmade"; otherwise the Etsy tab shows "NOT FOR ETSY."
+- Etsy titles stay at 15 words or fewer, and tags keep letters, numbers and spaces only.
+- Depop fits in 1,000 characters.
+- Mercari gets 5 words plus 3 hashtags.
+- AI tag prompts forbid other brands, comparisons and question marks.
+- `HOWTO` tips carry each site's must-know rule.

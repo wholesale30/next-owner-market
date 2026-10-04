@@ -54,7 +54,7 @@ export async function POST(req: Request) {
           needs_expert: { type: "boolean" },
           listing_title: { type: "string", description: "max 80 chars, only if action is sell" },
           listing_description: { type: "string", description: "3-4 honest sentences, no prices, only if action is sell" },
-          keywords: { type: "array", items: { type: "string" }, description: "only if action is sell: 8-15 search words buyers type (brand, model, what it is, other names)" },
+          keywords: { type: "array", items: { type: "string" }, description: "only if action is sell: 8-15 search words buyers type (brand, model, what it is, other names); never another brand, never \"like X\"/\"not X\" or question marks" },
           weight_lbs: { type: "number" }, box: { type: "string", enum: ["small", "medium", "large", "xl", "freight"] },
           photo_index: { type: "integer" },
           missing_parts: PILE_PART_SCHEMA,

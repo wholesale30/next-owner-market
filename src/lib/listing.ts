@@ -59,7 +59,9 @@ export function keywordsFor(item: Pick<Item, "title" | "tags" | "brand" | "model
     if (!t || t.length < 2 || seen.has(k)) return;
     seen.add(k); out.push(t);
   };
-  for (const t of item.tags || []) add(t);
+  // never "like X", "not X", "X style", "inspired by", replicas or question marks: eBay, Vinted, Mercari and Depop remove those
+  const unsafe = /\?|\b(like|not|style|inspired|dupe|replica|vs|alternative|similar)\b/i;
+  for (const t of item.tags || []) if (!unsafe.test(t)) add(t);
   add(item.brand); add(item.model);
   if (item.brand && item.model) add(`${item.brand} ${item.model}`);
   add(item.categories?.name);
@@ -75,7 +77,14 @@ const hashtags = (words: string[], n: number) => words.slice(0, n).map((t) => "#
  *  - "none": item number only. eBay, Mercari, Poshmark, Etsy, Depop, Vinted ban links to other sites and steering buyers off their site.
  */
 type Brand = "link" | "name" | "none";
-function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyInput, opts: { keywords?: boolean; brand?: Brand } = {}) {
+/**
+ * Keyword line per site (policy check Oct 3, 2026):
+ *  - "list": "Keywords: …" up to 15. Facebook, OfferUp (no rule against it).
+ *  - "short": one plain line, 6 accurate search words. eBay ("all the words… refer only to the item"), Poshmark.
+ *  - false: none. Craigslist bans "keyword spamming"; Mercari/Vinted/Depop/Etsy use hashtags or tags instead.
+ */
+type Kw = "list" | "short" | false;
+function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyInput, opts: { keywords?: Kw; brand?: Brand } = {}) {
   const lines: string[] = [];
   lines.push(item.description.trim());
   lines.push("");
@@ -103,55 +112,72 @@ function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyIn
   const brand = opts.brand || "none";
   lines.push(brand === "none" ? `Item #${item.sku}` : `Item #${item.sku} • ${businessName}`);
   if (brand === "link" && storefrontUrl) lines.push(`See everything we have: ${storefrontUrl}`);
-  if (opts.keywords !== false) {
-    const kw = keywordsFor(item);
+  if (opts.keywords === "list") {
+    const kw = keywordsFor(item, 15);
     if (kw.length) { lines.push(""); lines.push(`Keywords: ${kw.join(", ")}`); }
+  } else if (opts.keywords === "short") {
+    const kw = keywordsFor(item, 6);
+    if (kw.length) { lines.push(""); lines.push(`Also searched as: ${kw.join(", ")}`); }
   }
   return lines.join("\n");
 }
 
 export function facebookCopy(input: ListingCopyInput) {
   const { item } = input;
-  return `${item.title}\n\n${baseBody(input, { brand: "name" })}`;
+  return `${item.title}\n\n${baseBody(input, { brand: "name", keywords: "list" })}`;
 }
 
 export function offerUpCopy(input: ListingCopyInput) {
-  return baseBody(input, { brand: "name" });
+  return baseBody(input, { brand: "name", keywords: "list" });
 }
 
 export function ebayCopy(input: ListingCopyInput) {
   const { item } = input;
   const title = item.title.slice(0, 80);
-  return `TITLE (80 char max):\n${title}\n\nDESCRIPTION:\n${baseBody(input)}`;
+  return `TITLE (80 char max):\n${title}\n\nDESCRIPTION:\n${baseBody(input, { keywords: "short" })}`;
 }
 
 export function craigslistCopy(input: ListingCopyInput) {
-  return `${input.item.title}\n\n${baseBody(input, { brand: "link" })}`;
+  return `${input.item.title}\n\n${baseBody(input, { brand: "name", keywords: false })}`;
 }
 
-/** Etsy: 140-char title, 13 tags max (20 chars each). Only handmade, vintage (20+ yrs), or craft supplies are allowed. */
+/** Is this item allowed on Etsy? Etsy bans reselling commercially made items newer than 20 years (vintage or handmade only). */
+export function etsyAllowed(item: Pick<Item, "title" | "description" | "specs" | "tags"> & { year?: string | number | null }): boolean {
+  const cutoff = new Date().getFullYear() - 20;
+  const text = [item.year, ...(Object.entries(item.specs || {}).filter(([k]) => /year|era|decade|made/i.test(k)).map(([, v]) => v)), item.title].join(" ");
+  const years = (String(text).match(/\b(19[2-9]\d|20[0-2]\d)s?\b/g) || []).map((y) => parseInt(y, 10));
+  if (years.length && Math.max(...years) <= cutoff) return true;
+  return /\b(vintage|antique|handmade|hand-made|hand made)\b/i.test(`${item.title} ${(item.tags || []).join(" ")}`);
+}
+
+/** Etsy: title under ~15 words, 13 tags (letters, numbers, spaces; 20 chars). Vintage (20+ yrs) or handmade only. */
 export function etsyCopy(input: ListingCopyInput) {
   const { item } = input;
-  const tags = Array.from(new Set(keywordsFor(item, 30).map((t) => t.slice(0, 20)))).slice(0, 13);
-  return `TITLE (140 char max):\n${item.title.slice(0, 140)}\n\nDESCRIPTION:\n${baseBody(input)}\n\nTAGS (up to 13):\n${tags.join(", ")}\n\nNote: Etsy allows only handmade, vintage (20+ years old), or craft supplies. Pick "Vintage" and the decade when listing.`;
+  if (!etsyAllowed(item as Item & { year?: string })) {
+    return `NOT FOR ETSY\n\nEtsy only allows vintage items (20+ years old) or handmade items. Reselling newer store-bought items there can get your Etsy shop suspended.\n\nIf this one really is ${new Date().getFullYear() - 20} or older, add the year (Edit → Year) and the Etsy copy appears here. Otherwise use Facebook, eBay or Mercari for it.`;
+  }
+  const tags = Array.from(new Set(keywordsFor(item, 30).map((t) => t.replace(/[^A-Za-z0-9 ]/g, "").trim().slice(0, 20)).filter(Boolean))).slice(0, 13);
+  const title = item.title.split(/\s+/).slice(0, 15).join(" ").slice(0, 140);
+  return `TITLE (keep it under 15 words):\n${title}\n\nDESCRIPTION:\n${baseBody(input, { keywords: false })}\n\nTAGS (up to 13):\n${tags.join(", ")}\n\nWhen listing, pick "Vintage" and the decade it was made.`;
 }
 
 /** Poshmark: 80-char title, fashion/home. Buyers expect a short blurb; Poshmark takes 20% (or $2.95 under $15). */
 export function poshmarkCopy(input: ListingCopyInput) {
   const { item } = input;
-  return `TITLE (80 char max):\n${item.title.slice(0, 80)}\n\nDESCRIPTION:\n${baseBody(input)}\n\nTip: price about 20% above your bottom line; Poshmark buyers always send offers.`;
+  return `TITLE (80 char max):\n${item.title.slice(0, 80)}\n\nDESCRIPTION:\n${baseBody(input, { keywords: "short" })}\n\nPoshmark only takes clothing, shoes, bags, home goods and electronics. Tools, auto parts and similar items don't belong there.\nTip: price about 20% above your bottom line; Poshmark buyers always send offers.`;
 }
 
 /** Vinted: 100-char title; no fees to the seller (buyer pays protection fee). Clothing, accessories, home, electronics. */
 export function vintedCopy(input: ListingCopyInput) {
   const { item } = input;
-  return `TITLE (100 char max):\n${item.title.slice(0, 100)}\n\nDESCRIPTION:\n${baseBody(input)}\n\nHashtags:\n${hashtags(keywordsFor(item), 5)}`;
+  return `TITLE (100 char max):\n${item.title.slice(0, 100)}\n\nDESCRIPTION:\n${baseBody(input, { keywords: false })}\n\nHashtags:\n${hashtags(keywordsFor(item), 5)}`;
 }
 
 /** Mercari: 80-char title, 1,000-char description. */
 export function mercariCopy(input: ListingCopyInput) {
   const { item } = input;
-  const tail = `\n\nKeywords: ${keywordsFor(item, 12).join(", ")}\n${hashtags(keywordsFor(item), 3)}`;
+  // Mercari bans "an excessive amount of search keywords": 5 accurate words plus its 3 hashtags
+  const tail = `\n\nAlso searched as: ${keywordsFor(item, 5).join(", ")}\n${hashtags(keywordsFor(item), 3)}`;
   const body = baseBody(input, { keywords: false });
   return `TITLE (80 char max):\n${item.title.slice(0, 80)}\n\nDESCRIPTION (1000 char max):\n${body.slice(0, Math.max(200, 1000 - tail.length))}${tail}`;
 }
@@ -159,8 +185,10 @@ export function mercariCopy(input: ListingCopyInput) {
 /** Depop: short, casual, hashtags matter. */
 export function depopCopy(input: ListingCopyInput) {
   const { item } = input;
-  const tags = [hashtags(keywordsFor(item), 5)];
-  return `${item.title}\n\n${item.description.trim().slice(0, 600)}\n\n${item.condition ? CONDITION_LABELS[item.condition] + ". " : ""}${item.shipping_ok ? "Ships fast." : "Local pickup."}\n\n${tags.join(" ")}`;
+  // Depop has no title field; the whole description must stay under 1,000 characters, max 5 hashtags
+  const tail = `\n\n${item.condition ? CONDITION_LABELS[item.condition] + ". " : ""}${item.shipping_ok ? "Ships fast." : "Local pickup."}\n\n${hashtags(keywordsFor(item), 5)}`;
+  const head = `${item.title}\n\n`;
+  return `${head}${item.description.trim().slice(0, Math.max(150, 1000 - head.length - tail.length))}${tail}`;
 }
 
 /** Remove any price talk the AI slipped into buyer-facing text. Prices live in the price field only. */

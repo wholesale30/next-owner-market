@@ -537,3 +537,18 @@ Each site's copy follows that site's rules about pointing to other sites:
 | eBay, Mercari, Poshmark, Etsy, Depop, Vinted | Item number only. These sites ban links to other sites and steering buyers off their site, and it can get your account suspended. |
 
 To point people to the store, share the listing itself (📣 Share this find), not inside another site's listing.
+
+## Every site's listing follows that site's rules (Oct 3, 2026)
+
+So no seller gets their account shut down, each site's copy is written to that site's own rules:
+
+| Site | What the copy does |
+|---|---|
+| Facebook, OfferUp | Our name, no web address; a "Keywords:" line (up to 15) |
+| eBay, Poshmark | One short "Also searched as:" line (6 words), item number only, no links |
+| Craigslist | No keyword list and no web address (Craigslist flags both) |
+| Mercari | 5 search words plus 3 hashtags |
+| Vinted, Depop | 5 hashtags. Depop keeps the whole thing under 1,000 characters. |
+| Etsy | Only shows a listing when the item is 20+ years old or handmade. Otherwise it says "Not for Etsy," because reselling newer items can get an Etsy shop suspended. |
+
+Keywords never name another brand or say "like X," "not X" or "X style," and never use question marks; several sites remove listings for that. Each site's "How to post" tips now include its must-know rule, such as one listing per item and Craigslist reposts no more than every 48 hours.

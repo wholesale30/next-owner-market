@@ -25,7 +25,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Tap \"Next\". If it offers to post to groups too, tick your local buy/sell groups and this app's group.",
       "Tap \"Publish\". It's live. Messages come to Messenger.",
     ],
-    tips: ["Answer \"Is this available?\" fast; Facebook ranks quick responders higher.", "Renew the listing every 7 days (Marketplace → Your listings → Renew) to stay near the top.", "Meet in a public place or at the warehouse; cash or Zelle in person only."],
+    tips: ["Keep it to real items with their real price (never $1 to get attention), and no web addresses or phone numbers in the listing; Facebook hides those.", "Answer \"Is this available?\" fast; Facebook ranks quick responders higher.", "Renew the listing every 7 days (Marketplace → Your listings → Renew) to stay near the top.", "Meet in a public place or at the warehouse; cash or Zelle in person only."],
   },
   offerup: {
     app: "OfferUp",
@@ -46,7 +46,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Delivery: tick \"Local pickup\" and, if you'll ship, \"Shipping\" (OfferUp gives you a prepaid label; the buyer pays for it).",
       "Tap \"Post\". Done.",
     ],
-    tips: ["Add your ZIP so it shows in local search.", "Use \"Promote\" only for items over $100; it costs a few dollars.", "Verify your profile (TruYou) once; buyers trust it."],
+    tips: ["One listing per item, your own photos (not stock pictures), and no phone numbers, emails, social handles or web addresses anywhere; OfferUp removes those.", "Add your ZIP so it shows in local search.", "Use \"Promote\" only for items over $100; it costs a few dollars.", "Verify your profile (TruYou) once; buyers trust it."],
   },
   ebay: {
     app: "eBay",
@@ -73,7 +73,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Returns: 30 days is the norm and gets a search boost; \"No returns\" is allowed.",
       "Tap \"List it\". Buyers pay through eBay; you ship within your handling time, and eBay pays your bank in 1–2 days.",
     ],
-    tips: ["Check \"Sold items\" (search → Filter → Sold) before pricing; that's the real market.", "Print eBay's shipping labels in the app; they're cheaper than the post office counter.", "Ship within a day and buyers rate you higher, which raises your listings."],
+    tips: ["One listing per item: eBay doesn't allow two fixed-price listings of the same item at the same time. No links, web addresses, phone numbers or emails in the listing.", "Check \"Sold items\" (search → Filter → Sold) before pricing; that's the real market.", "Print eBay's shipping labels in the app; they're cheaper than the post office counter.", "Ship within a day and buyers rate you higher, which raises your listings."],
   },
   craigslist: {
     app: "Craigslist",
@@ -96,7 +96,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Tap \"done with images\", check the preview, tap \"publish\".",
       "Check your email and click the confirmation link. Without that click the ad never goes live.",
     ],
-    tips: ["Renew every 48 hours (the email link or your account page) to jump back to the top.", "Craigslist has scammers offering to pay by check or \"send a mover\". Cash in person only.", "One item per ad works better than a long list."],
+    tips: ["Post each item once, and repost no more than once every 48 hours. No keyword lists and no links to other selling sites; Craigslist flags those.", "Renew every 48 hours (the email link or your account page) to jump back to the top.", "Craigslist has scammers offering to pay by check or \"send a mover\". Cash in person only.", "One item per ad works better than a long list."],
   },
   mercari: {
     app: "Mercari",
@@ -117,7 +117,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Price: type it. Turn on \"Smart Pricing\" only if you're happy with the floor price it asks for.",
       "Tap \"List\". When it sells, print the label from the app and ship within 3 days.",
     ],
-    tips: ["Promote (drop the price 5%) once a week; Mercari notifies people who liked it.", "Package well; the buyer has 3 days to rate before you're paid."],
+    tips: ["One listing per item, and keep hashtags to 3 that describe the item. Never add other brand names or a long keyword list; Mercari removes those.", "Promote (drop the price 5%) once a week; Mercari notifies people who liked it.", "Package well; the buyer has 3 days to rate before you're paid."],
   },
   poshmark: {
     app: "Poshmark",
@@ -138,7 +138,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Tap \"List this item\".",
       "Buyers pay Poshmark; you get a prepaid USPS label by email. Ship within 2 days.",
     ],
-    tips: ["Share your listing to your followers daily and join \"Posh Parties\"; that's how things get seen.", "Price 20–30% above your bottom line and accept reasonable offers.", "Add measurements for anything clothing or furniture."],
+    tips: ["Only clothing, shoes, bags, home goods and electronics. Never put your phone number or email in a listing.", "Share your listing to your followers daily and join \"Posh Parties\"; that's how things get seen.", "Price 20–30% above your bottom line and accept reasonable offers.", "Add measurements for anything clothing or furniture."],
   },
   vinted: {
     app: "Vinted",
@@ -159,7 +159,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Package size: pick small/medium/large; that sets the shipping options.",
       "Tap \"Upload\". When it sells, you get a prepaid label; ship within 5 days.",
     ],
-    tips: ["Bundle discounts (Profile → Bundle discounts) move slow items.", "Mark items \"Sold elsewhere\" right away if they sell locally, or Vinted will penalize cancellations."],
+    tips: ["One listing per item. Never hashtag a brand other than the item's own, and no links to other sites.", "Bundle discounts (Profile → Bundle discounts) move slow items.", "Mark items \"Sold elsewhere\" right away if they sell locally, or Vinted will penalize cancellations."],
   },
   depop: {
     app: "Depop",
@@ -180,7 +180,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Price and shipping: choose \"Depop shipping\" for a prepaid label, or your own.",
       "Tap \"Post\".",
     ],
-    tips: ["Refresh listings by editing them; Depop bumps edited items.", "Follow and like similar shops; Depop rewards activity with visibility."],
+    tips: ["Up to 5 hashtags that describe the item, and no email addresses or talk of selling somewhere else.", "Refresh listings by editing them; Depop bumps edited items.", "Follow and like similar shops; Depop rewards activity with visibility."],
   },
   etsy: {
     app: "Etsy",
@@ -203,7 +203,7 @@ export const HOWTO: Record<string, HowTo> = {
       "Price, quantity 1, shipping profile (create one with weight and size; Etsy calculates).",
       "Tap \"Publish\". 20¢ is charged.",
     ],
-    tips: ["Etsy search runs on your tags and title; use all 13 tags.", "Renew (20¢) rather than relist to keep your reviews.", "Offer free shipping on items over $35; Etsy promotes those."],
+    tips: ["Only vintage (20+ years old) or handmade items. Reselling newer store-bought things can get your Etsy shop suspended.", "Etsy search runs on your tags and title; use all 13 tags.", "Renew (20¢) rather than relist to keep your reviews.", "Offer free shipping on items over $35; Etsy promotes those."],
   },
 };
 

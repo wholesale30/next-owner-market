@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       condition_notes: { type: ["string", "null"], description: "short buyer-facing note about wear, damage, missing parts, tested/untested" },
       description: { type: "string", description: "3-6 plain sentences a buyer wants: what it is, what it does, notable features, size, what's included. No hype. Never mention price or value." },
       specs: { type: "object", additionalProperties: { type: "string" }, description: "2-6 useful specs (Dimensions, Power, Capacity, Year, Color); omit unknowns" },
-      tags: { type: "array", items: { type: "string" }, description: "12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, other names and spellings, category, use, era or style. Relevant only." },
+      tags: { type: "array", items: { type: "string" }, description: "12-20 search words and phrases buyers actually type on Facebook, eBay and Google: brand, model and model number, what it is, other names and spellings, category, use, era or style. Only words that truly describe this item: never another brand, never 'like X', 'not X', 'X style' or a question mark (marketplaces remove listings for that)." },
       price_min: { type: "number", description: "realistic low resale price in USD, local pickup" },
       price_max: { type: "number", description: "realistic high resale price in USD" },
       price_note: { type: "string", description: "one sentence on how you priced it and what would raise it" },
