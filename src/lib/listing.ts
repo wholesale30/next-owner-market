@@ -68,7 +68,14 @@ export function keywordsFor(item: Pick<Item, "title" | "tags" | "brand" | "model
 }
 const hashtags = (words: string[], n: number) => words.slice(0, n).map((t) => "#" + t.replace(/[^A-Za-z0-9]/g, "")).filter((t) => t.length > 2).join(" ");
 
-function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyInput, opts: { keywords?: boolean } = {}) {
+/**
+ * How much of "us" each site allows at the bottom (checked Oct 3, 2026):
+ *  - "link": our name and web address. Craigslist only (links are allowed there).
+ *  - "name": item number and our name, no web address. Facebook, OfferUp (a web address can get a listing hidden as spam).
+ *  - "none": item number only. eBay, Mercari, Poshmark, Etsy, Depop, Vinted ban links to other sites and steering buyers off their site.
+ */
+type Brand = "link" | "name" | "none";
+function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyInput, opts: { keywords?: boolean; brand?: Brand } = {}) {
   const lines: string[] = [];
   lines.push(item.description.trim());
   lines.push("");
@@ -93,8 +100,9 @@ function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyIn
   if (item.local_pickup_ok) logistics.push(`Local pickup${location ? " in " + location : ""}`);
   if (item.shipping_ok) logistics.push("Shipping available");
   if (logistics.length) lines.push(logistics.join(" • "));
-  lines.push(`Item #${item.sku} • ${businessName}`);
-  if (storefrontUrl) lines.push(`See everything we have: ${storefrontUrl}`);
+  const brand = opts.brand || "none";
+  lines.push(brand === "none" ? `Item #${item.sku}` : `Item #${item.sku} • ${businessName}`);
+  if (brand === "link" && storefrontUrl) lines.push(`See everything we have: ${storefrontUrl}`);
   if (opts.keywords !== false) {
     const kw = keywordsFor(item);
     if (kw.length) { lines.push(""); lines.push(`Keywords: ${kw.join(", ")}`); }
@@ -104,11 +112,11 @@ function baseBody({ item, businessName, location, storefrontUrl }: ListingCopyIn
 
 export function facebookCopy(input: ListingCopyInput) {
   const { item } = input;
-  return `${item.title}\n\n${baseBody(input)}`;
+  return `${item.title}\n\n${baseBody(input, { brand: "name" })}`;
 }
 
 export function offerUpCopy(input: ListingCopyInput) {
-  return baseBody(input);
+  return baseBody(input, { brand: "name" });
 }
 
 export function ebayCopy(input: ListingCopyInput) {
@@ -118,7 +126,7 @@ export function ebayCopy(input: ListingCopyInput) {
 }
 
 export function craigslistCopy(input: ListingCopyInput) {
-  return `${input.item.title}\n\n${baseBody(input)}`;
+  return `${input.item.title}\n\n${baseBody(input, { brand: "link" })}`;
 }
 
 /** Etsy: 140-char title, 13 tags max (20 chars each). Only handmade, vintage (20+ yrs), or craft supplies are allowed. */

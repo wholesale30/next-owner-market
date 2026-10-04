@@ -525,3 +525,15 @@ Tapping **➕ Add** (or any menu button) while you're already on that page now s
 ## Share a listing: on the internet twice (Oct 3, 2026)
 
 Once an item is listed in the store, its page shows a big **📣 Share this find** button. One tap gives it a second page on our site, its "find" page, with the photo, what it's worth and a **🛒 For sale now** button back to your listing. Both pages go out to the search engines, so the item shows up twice. Then tap **📲 Also send it to Facebook or a friend** to share the listing link anywhere.
+
+## Our name and web address on other sites (Oct 3, 2026)
+
+Each site's copy follows that site's rules about pointing to other sites:
+
+| Site | What's at the bottom |
+|---|---|
+| Craigslist | Item number, our name and our web address (links are allowed) |
+| Facebook, OfferUp | Item number and our name, no web address (a web address can get a listing hidden as spam) |
+| eBay, Mercari, Poshmark, Etsy, Depop, Vinted | Item number only. These sites ban links to other sites and steering buyers off their site, and it can get your account suspended. |
+
+To point people to the store, share the listing itself (📣 Share this find), not inside another site's listing.

@@ -497,3 +497,15 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
   - Google finds both through the sitemap. Sharing again returns the same page.
 - **`ShareFind`** on the item page shows when the item is live. After sharing it reads "on the internet twice now," with a send button that uses the phone's share sheet with the listing link.
 - **`/valued/<slug>`** shows "🛒 For sale now: $X · See it" when the find came from a listing that's still live.
+
+## Per-site "us" line (Oct 3, 2026)
+
+`baseBody` takes `brand: "link" | "name" | "none"`:
+- **Craigslist:** link.
+- **Facebook and OfferUp:** name.
+- **eBay, Mercari, Poshmark, Etsy, Vinted (and Depop, which never used it):** none.
+
+**Why:**
+- eBay's Links policy: "listings or item descriptions can't contain links that direct customers to any other site," and no web addresses like ".com" in store names.
+- Mercari's guidelines: sell within Mercari.
+- Facebook's written Commerce Policies don't clearly ban a web address (the page couldn't be fetched to confirm). Off-platform steering gets listings removed, so the address is left off.
