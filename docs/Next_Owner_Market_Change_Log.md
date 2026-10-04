@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 10:21 PM from the project history (222 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 3, 2026 10:43 PM from the project history (224 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1651,3 +1651,18 @@
 - **Shared code (logic):** `src/lib/ai-tool.ts`
 
 <sub>change id b6f5c0a</sub>
+
+### 22:21 — Records: journal and change log
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Launch_Kit.docx`, `docs/Next_Owner_Market_Marketing_Plan.docx` (+11 more)
+
+<sub>change id 163214a</sub>
+
+### 22:41 — Share this find on live listings: one tap makes a second public page (find page with a For sale button back to the listing), sent to search engines; then send to Facebook or a friend
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Server routes (API):** `src/app/api/items/share/route.ts`
+- **Seller / staff app:** `src/app/app/items/[id]/ShareFind.tsx`, `src/app/app/items/[id]/page.tsx`
+- **Public site pages:** `src/app/valued/[slug]/page.tsx`
+
+<sub>change id 76411cd</sub>
