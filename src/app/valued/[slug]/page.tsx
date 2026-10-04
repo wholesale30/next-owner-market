@@ -24,6 +24,8 @@ export default async function ValuedPage({ params }: PageProps<"/valued/[slug]">
   const business = (biz?.value as { name: string }) || { name: "Next Owner Market" };
   const { data: similar } = await supabase.from("valuations").select("slug, title, value_low, value_high").eq("is_public", true).neq("slug", slug).ilike("title", `%${v.title.split(" ").filter((w: string) => w.length > 3)[0] || v.title}%`).limit(6);
   const places = (v.best_places as { place: string; why: string }[]) || [];
+  // shared from a live listing: send shoppers straight to it
+  const { data: forSale } = v.item_id ? await supabase.from("items").select("sku, price, status").eq("id", v.item_id).in("status", ["active", "reserved"]).maybeSingle() : { data: null };
   const jsonLd = { "@context": "https://schema.org", "@type": "Product", name: v.title, description: v.why || undefined, image: v.photo_url || undefined, offers: { "@type": "AggregateOffer", priceCurrency: "USD", lowPrice: v.value_low, highPrice: v.value_high, offerCount: 1 } };
   return (
     <div className="flex-1">
@@ -33,6 +35,9 @@ export default async function ValuedPage({ params }: PageProps<"/valued/[slug]">
         <p className="text-sm muted"><Link href="/valued" className="underline">What things are worth</Link> › {v.category || "Item"}</p>
         <h1 className="text-2xl font-extrabold leading-tight">{v.title}</h1>
         {v.photo_url && <img src={v.photo_url} alt={v.title} className="w-full rounded-2xl max-h-96 object-contain" style={{ background: "var(--line)" }} />}
+        {forSale && (
+          <Link href={`/item/${forSale.sku}`} className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>🛒 For sale now: {money(Number(forSale.price || 0))} · See it</Link>
+        )}
         <div className="card p-4 text-center">
           <p className="text-xs muted uppercase tracking-wide">Worth about</p>
           <p className="text-4xl font-extrabold">{money(v.value_low)} – {money(v.value_high)}</p>

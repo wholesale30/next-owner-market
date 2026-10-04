@@ -8,6 +8,7 @@ import CopyTabs from "./CopyTabs";
 import SellerTools from "./SellerTools";
 import { HOWTO } from "@/lib/howto";
 import AuctionAdmin from "./AuctionAdmin";
+import ShareFind from "./ShareFind";
 
 interface AuctionRow { id: string; starting_bid: number; reserve_price: number | null; buy_now_price: number | null; current_bid: number | null; starts_at: string; ends_at: string; status: string }
 
@@ -44,6 +45,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
     ? await supabase.from("sales").select("*").eq("item_id", it.id).order("sold_at", { ascending: false }).limit(1).maybeSingle()
     : { data: null };
 
+  const { data: sharedRow } = await supabase.from("valuations").select("slug").eq("item_id", it.id).maybeSingle();
   const sp = it.profiles;
   const platformItem = sp?.role === "admin" || sp?.role === "staff";
   const payReady = platformItem || !sp?.suspended;
@@ -121,6 +123,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
         {sale && <div className="col-span-2"><p className="label">Sold</p><p>{money(sale.sale_price)} via {sale.channel} to {sale.buyer_name || "—"} on {new Date(sale.sold_at).toLocaleDateString()} • {sale.payment_method || ""}{it.tier !== "owned" ? ` • consignor due ${money(sale.consignor_due)}` : ""}</p></div>}
       </div>
 
+      {live && <ShareFind itemId={it.id} sku={it.sku} title={it.title} shared={sharedRow?.slug || null} />}
       <ItemActions item={{ id: it.id, sku: it.sku, status: it.status, price: it.price, tier: it.tier }} staff={staff} commissionPct={pct} />
       <SellerTools itemId={it.id} status={it.status} price={it.price} postedTo={(it as unknown as { posted_to?: Record<string, string> }).posted_to || {}} stats={stats} drop={{ pct: x.drop_pct ?? null, days: x.drop_every_days ?? null, floor: x.drop_floor ?? null, last: x.last_drop_at ?? null }} />
       {staff && (it.status === "active" || it.status === "draft" || it.status === "reserved") && (

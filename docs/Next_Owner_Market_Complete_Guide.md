@@ -488,3 +488,12 @@ Buy Or Pass also shows what you'd keep with the part and whether the verdict bec
   - A 90-second timeout, then a failure box with Try again, Fill it in myself (the title comes from the notes) and Start over.
   - Menu links (`NavLink`) reload when tapped on the current page, so ➕ Add always starts fresh.
   - Item page: a ✏️ Edit button by the status, plus a red "no title yet" prompt.
+
+## Share a live listing (Oct 3, 2026)
+
+- **`/api/items/share` `{itemId}`:** the owner or staff, live items only.
+  - It creates (once) a `valuations` row with `item_id`, using the title, the condition line, the suggested price range (or the price), the first sentences of the description, the cover photo and the category.
+  - It pings IndexNow (Bing, DuckDuckGo and others) for the find page and the listing.
+  - Google finds both through the sitemap. Sharing again returns the same page.
+- **`ShareFind`** on the item page shows when the item is live. After sharing it reads "on the internet twice now," with a send button that uses the phone's share sheet with the listing link.
+- **`/valued/<slug>`** shows "🛒 For sale now: $X · See it" when the find came from a listing that's still live.

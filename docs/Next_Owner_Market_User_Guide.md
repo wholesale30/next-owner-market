@@ -521,3 +521,7 @@ The AI picks 12–20 real search words for every listing. Older listings without
 On **Add item**, if the AI can't write the listing, you get three buttons: **🔄 Try again**, **✏️ Fill it in myself** (it starts with your notes) and **Start over with a new item**. Your photos and notes stay, and nothing is charged. It never hangs: after 90 seconds it stops and shows those buttons.
 
 Tapping **➕ Add** (or any menu button) while you're already on that page now starts it fresh. Every listing has an **✏️ Edit** button at the top, next to its status.
+
+## Share a listing: on the internet twice (Oct 3, 2026)
+
+Once an item is listed in the store, its page shows a big **📣 Share this find** button. One tap gives it a second page on our site, its "find" page, with the photo, what it's worth and a **🛒 For sale now** button back to your listing. Both pages go out to the search engines, so the item shows up twice. Then tap **📲 Also send it to Facebook or a friend** to share the listing link anywhere.
