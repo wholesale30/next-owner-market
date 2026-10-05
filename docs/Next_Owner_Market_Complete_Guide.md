@@ -532,3 +532,8 @@ Checked against each site's own policy pages:
 - Mercari gets 5 words plus 3 hashtags.
 - AI tag prompts forbid other brands, comparisons and question marks.
 - `HOWTO` tips carry each site's must-know rule.
+
+## Bulk photo fix on the item form (Oct 5, 2026)
+
+- **Reported by Nikki Fiveash:** on a new listing, "clean the background" did nothing. The `clean`/`tidy` checkboxes only applied inside `addFiles`, to photos added later.
+- **Now:** `fixAll("clean" | "tidy")` processes every uploaded photo (fetch → `cleanBackground` or `touchUp` → upload → replace `url`/`storage_path` on the same photo id, so Save updates it in place). It also turns the flag on for future uploads and shows "N of M" progress plus a result note.

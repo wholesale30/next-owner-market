@@ -221,6 +221,44 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
   function removePhoto(id: string) {
     setPhotos((p) => p.filter((x) => x.id !== id));
   }
+
+  /**
+   * "Clean all backgrounds" / "Touch up all photos": works on the photos already added (Nikki, Oct 5, 2026:
+   * the old checkboxes only changed photos added AFTER ticking them, so picking photos first did nothing).
+   * Also turns it on for any photos added after.
+   */
+  const [bulk, setBulk] = useState<string | null>(null);
+  async function fixAll(kind: "clean" | "tidy") {
+    if (kind === "clean") setClean(true); else setTidy(true);
+    const list = photos.filter((p) => p.storage_path && !p.uploading);
+    if (!list.length) { setPhotoNote(kind === "clean" ? "Backgrounds will be cleaned as you add photos." : "Photos will be touched up as you add them."); return; }
+    setPhotoNote(null);
+    let done = 0, changed = 0;
+    for (const ph of list) {
+      setBulk(`${kind === "clean" ? "Cleaning backgrounds" : "Touching up"}… ${done + 1} of ${list.length}${kind === "clean" && done === 0 ? " (the first one takes up to a minute)" : ""}`);
+      try {
+        const src = await (await fetch(ph.url)).blob();
+        let out: Blob | null = null;
+        if (kind === "clean") { const r = await cleanBackground(src, photoBg); if (r.cleaned) out = r.blob; }
+        else out = await touchUp(src);
+        if (out) {
+          const path = `${profile.id}/${Date.now()}-${crypto.randomUUID()}.jpg`;
+          const { error: upErr } = await supabase.storage.from("item-photos").upload(path, out, { contentType: "image/jpeg", upsert: false });
+          if (!upErr) {
+            const url = supabase.storage.from("item-photos").getPublicUrl(path).data.publicUrl;
+            setPhotos((p) => p.map((x) => (x.id === ph.id ? { ...x, url, storage_path: path } : x)));
+            changed++;
+          }
+        }
+      } catch { /* leave that photo as it was */ }
+      done++;
+    }
+    setBulk(null);
+    const what = kind === "clean" ? "background" : "photo";
+    setPhotoNote(changed
+      ? `${changed} ${what}${changed === 1 ? "" : "s"} ${kind === "clean" ? "cleaned" : "touched up"}${changed < list.length ? ` (${list.length - changed} couldn't be, kept as they were)` : ""}.${mode === "edit" ? " Tap Save at the bottom to keep them." : ""} New photos you add get the same.`
+      : kind === "clean" ? "Couldn't find the item's edges in these photos, so they were kept as they were. Try one photo at a time with ✨ Touch up." : "These photos didn't need it.");
+  }
   function makePrimary(id: string) {
     setPhotos((p) => {
       const i = p.findIndex((x) => x.id === id);
@@ -457,8 +495,12 @@ export default function ItemForm({ mode, profile, categories, locations, item, p
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         <input ref={cameraRef} type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }} />
         {photoNote && <p className="text-sm" style={{ color: "var(--ok)" }}>✓ {photoNote}</p>}
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={tidy} onChange={(e) => setTidy(e.target.checked)} /> ✨ Touch up new photos (clean off dust, fix the light)</label>
-        <label className="flex items-center gap-2 text-xs muted"><input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} /> Clean background on new photos (studio look; off = your photo as-is)</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" className="btn btn-secondary" style={{ minHeight: 48 }} disabled={!!bulk} onClick={() => fixAll("tidy")}>{tidy ? "✓ " : ""}✨ Touch up all photos</button>
+          <button type="button" className="btn btn-secondary" style={{ minHeight: 48 }} disabled={!!bulk} onClick={() => fixAll("clean")}>{clean ? "✓ " : ""}⬜ Clean all backgrounds</button>
+        </div>
+        {bulk && <p className="text-sm text-center font-semibold">{bulk}</p>}
+        <p className="text-xs muted">Works on the photos above right away, and on any you add after. To fix just one, tap ✨ Touch up on that photo.</p>
         {editId && photos.find((x) => x.id === editId) && <PhotoEditor src={photos.find((x) => x.id === editId)!.url} bg={photoBg} onClose={() => setEditId(null)} onSave={(b) => saveEdited(editId, b)} />}
 
         {isPro && <div className="space-y-2">

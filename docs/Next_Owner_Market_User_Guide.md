@@ -552,3 +552,9 @@ So no seller gets their account shut down, each site's copy is written to that s
 | Etsy | Only shows a listing when the item is 20+ years old or handmade. Otherwise it says "Not for Etsy," because reselling newer items can get an Etsy shop suspended. |
 
 Keywords never name another brand or say "like X," "not X" or "X style," and never use question marks; several sites remove listings for that. Each site's "How to post" tips now include its must-know rule, such as one listing per item and Craigslist reposts no more than every 48 hours.
+
+## Clean all photos at once (Oct 5, 2026)
+
+Under the photos on Add item and Edit are two buttons: **✨ Touch up all photos** and **⬜ Clean all backgrounds**. They work on the photos you've already added, right away, and on any you add after. A count shows progress. The first background clean can take up to a minute while it loads. To fix just one photo, tap **✨ Touch up** on that photo.
+
+(Before this they were checkboxes that only changed photos added *after* ticking them, so picking photos first did nothing. Nikki reported it.)

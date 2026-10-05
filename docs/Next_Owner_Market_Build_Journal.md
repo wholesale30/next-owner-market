@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 3, 11:37 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 3, 11:38 PM (continuing)
 
 **Claude:**
 
@@ -7737,3 +7737,40 @@ Got it: the web address stays off Facebook. Next I'll check every site's own lis
 Next, the AI itself gets told never to write comparison words or other brands into keywords in the first place:
 
 Last piece: short rules in each site's how-to (no duplicate listings, Craigslist's 48-hour repost rule), since breaking those also gets accounts shut down:
+
+I checked every site's own rules, and four of our listings could have gotten people in trouble. All four are fixed and live.
+
+**What was wrong and is now fixed:**
+1. **Craigslist** names "keyword spamming" and "links to ecommerce offerings" as reasons to flag a post, and our copy had both. It now has no keyword list and no web address, just the item number and "Next Owner Market."
+2. **Etsy** doesn't allow reselling store-bought items newer than 20 years. Most warehouse items would have gotten someone's shop suspended. The Etsy tab now only gives a listing when the item is 20+ years old or handmade. Otherwise it says **"Not for Etsy"** and explains why.
+3. **eBay** says every word must describe the item, and **Mercari** bans "an excessive amount of search keywords." Our long keyword lists there are now one short "Also searched as:" line with 6 words on eBay, and 5 words plus its 3 hashtags on Mercari.
+4. **Other brands or comparisons in keywords**, like "like Honeywell," "not Vornado," "Dyson style" or question marks. eBay, Vinted, Mercari and Depop remove listings for these. The app now strips them out, and the AI is told never to write them. I tested it with exactly those words and they were all removed.
+
+**What each site's copy does now:**
+
+| Site | Keywords | Our name / web address |
+|---|---|---|
+| Facebook, OfferUp | Keywords line (up to 15) | Name only |
+| eBay, Poshmark | One short line (6 words) | Item number only |
+| Mercari | 5 words + 3 hashtags | Item number only |
+| Vinted, Depop | 5 hashtags (Depop kept under its 1,000-character limit) | None |
+| Craigslist | None | Name only |
+| Etsy | 13 tags, vintage or handmade items only | None |
+
+**Each site's how-to tips now include its must-know rule.** For example: one listing per item (eBay, Mercari, Vinted and OfferUp ban duplicates), Craigslist reposts no more than every 48 hours, Poshmark only takes clothing, home goods and electronics, and never a real item at a fake $1 price.
+
+One limit: Facebook's own policy page wouldn't load from here. Its copy follows what we know: real prices, no web address, and a moderate keyword line, which your 12 approved listings already show is fine.
+
+Everything's in **Next_Owner_Market_Files_2026-10-03_2337.zip**.
+
+Sources:
+- [eBay search manipulation policy](https://www.ebay.com/help/policies/listing-policies/search-browse-manipulation-policy?id=4243)
+- [eBay duplicate listings policy](https://www.ebay.com/help/policies/listing-policies/duplicate-listings-policy?id=4255)
+- [Mercari prohibited conduct](https://www.mercari.com/us/help_center/topics/account/policies/prohibited-conduct/)
+- [Vinted catalog rules](https://www.vinted.com/catalog-rules)
+- [Depop: why was my listing removed](https://depophelp.zendesk.com/hc/en-gb/articles/360001773188-Why-has-my-listing-been-removed)
+- [Etsy creativity standards](https://www.etsy.com/legal/creativity)
+- [Craigslist flag reasons](https://www.craigslist.org/about/help/reasons)
+- [Craigslist prohibited](https://www.craigslist.org/about/prohibited)
+- [OfferUp: why listings are removed](https://help.offerup.com/hc/en-us/articles/360032337011-Why-listings-are-removed)
+- [Poshmark community guidelines](https://poshmark.com/community_guidelines)
