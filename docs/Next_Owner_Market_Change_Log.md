@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 2:46 AM from the project history (235 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 1:19 PM from the project history (236 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1745,3 +1745,9 @@
 - **Shared code (logic):** `src/lib/business.ts`, `src/lib/shipping.ts`
 
 <sub>change id 207c85e</sub>
+
+### 02:46 — Docs: Google Merchant Center fix guide; guides updated; records
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md` (+17 more)
+
+<sub>change id a023263</sub>
