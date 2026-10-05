@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 5, 1:19 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 5, 1:30 PM (continuing)
 
 **Claude:**
 
@@ -7880,3 +7880,21 @@ On the list. Now sending the first reminder right away so it starts today, not t
 The link expired before it ran because of a date-format mix-up on my end. Retrying with the right format:
 
 The reminder went out at 1:19 PM. Updating the records:
+
+I'll change the reminders to come twice a day, at 11 AM and 5 PM, with your complete open list every time. Checking how the daily schedule runs first:
+
+Setting it up so it runs at exactly 11:00 AM and 5:00 PM, using the database's free built-in scheduler. The website's own scheduler only promises "sometime within the hour."
+
+Checking that the reminder's secret key can't be read by the public, then setting up the schedule:
+
+All of those use the secure server connection, so the change is safe:
+
+Now the schedule itself:
+
+Schedule is set. Shipping the code, then sending you the complete list right now in the new format:
+
+Live. Testing the scheduled link (it should say "not 11 or 5 yet") and sending you the full list now:
+
+Sent. Checking the scheduled link answered correctly:
+
+Both work. Records:

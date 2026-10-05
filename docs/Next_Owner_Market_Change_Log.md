@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 1:19 PM from the project history (236 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 1:30 PM from the project history (238 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1751,3 +1751,18 @@
 - **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_File_Index.md` (+17 more)
 
 <sub>change id a023263</sub>
+
+### 13:20 — Records: Google Shopping steps added to the owner's urgent to-do list
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx`, `docs/Next_Owner_Market_Launch_Kit.docx` (+12 more)
+
+<sub>change id 2ecb7f6</sub>
+
+### 13:25 — To-do reminders: full list by email and text at 11 AM and 5 PM (pg_cron); long texts go as picture messages; private settings staff-only
+
+- **Documents:** `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`
+- **Server routes (API):** `src/app/api/todo/remind/route.ts`
+- **Shared code (logic):** `src/lib/alert.ts`, `src/lib/automations.ts`
+- **Database (migrations):** `supabase/migrations/039_todo_twice_daily.sql`
+
+<sub>change id 0ed7ade</sub>
