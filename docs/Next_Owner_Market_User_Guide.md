@@ -558,3 +558,10 @@ Keywords never name another brand or say "like X," "not X" or "X style," and nev
 Under the photos on Add item and Edit are two buttons: **✨ Touch up all photos** and **⬜ Clean all backgrounds**. They work on the photos you've already added, right away, and on any you add after. A count shows progress. The first background clean can take up to a minute while it loads. To fix just one photo, tap **✨ Touch up** on that photo.
 
 (Before this they were checkboxes that only changed photos added *after* ticking them, so picking photos first did nothing. Nikki reported it.)
+
+## Contact, About, Returns and Shipping pages (Oct 5, 2026)
+
+Every public page now has a footer: **Contact · About · Returns · Shipping · Terms · Privacy**.
+
+- **Returns:** not as described, damaged or never arrived = full refund including shipping, if you report it within 3 days after delivery. No returns for change of mind.
+- **Shipping:** US only. The cost shows at checkout. Items Next Owner Market sells ship within 1–3 business days. Pickup is free.

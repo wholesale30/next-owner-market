@@ -537,3 +537,17 @@ Checked against each site's own policy pages:
 
 - **Reported by Nikki Fiveash:** on a new listing, "clean the background" did nothing. The `clean`/`tidy` checkboxes only applied inside `addFiles`, to photos added later.
 - **Now:** `fixAll("clean" | "tidy")` processes every uploaded photo (fetch → `cleanBackground` or `touchUp` → upload → replace `url`/`storage_path` on the same photo id, so Save updates it in place). It also turns the flag on for future uploads and shows "N of M" progress plus a result note.
+
+## Google Merchant Center compliance (Oct 5, 2026)
+
+- **What happened:** the account was suspended for "Misrepresentation."
+- **New pages:** `/contact`, `/about`, `/returns`, `/shipping`. They share `PolicyPage.tsx` and read `getBusiness()` from `src/lib/business.ts`.
+- **Footer:** `SiteFooter.tsx` sits in the root layout and is hidden on `/`, `/app/*` and `/embed/*`.
+- **Terms:** the operator and contact blanks are filled from settings.
+- **Feed (`/feed/google.xml`):**
+  - Only admin/staff-owned, shippable, non-auction, non-freight, non-for-parts items.
+  - Condition is `new` or `used`.
+  - Shipping is `nationalShippingEstimate()` (farthest zone plus markup), with handling 1–3 and transit 2–8 days.
+- **Item pages:** a "Sold and shipped by…" line, Returns/Shipping/Contact links, and the JSON-LD offer gains `seller` and `url`.
+- **Left out on purpose:** the JSON-LD return policy. It would show "3-day returns," which reads as any-reason returns.
+- **Steps the owner must do:** see Google_Merchant_Center_Fix.

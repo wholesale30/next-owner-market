@@ -281,3 +281,7 @@ Every lookup now spots missing or worn-out parts, such as a purifier with no fil
 
 - **Every lookup prices the item honestly as-is,** then shows what a wipe-down or a working test adds. For example, 6 satellite receivers go from $60–180 as-is to $180–480 cleaned and tested. Sellers see which items are worth 10 minutes of work.
 - **Everything checked is saved in My lookups** until deleted. A warehouse owner can value a whole pallet, then list one item or all of them with one tap.
+
+## Trust pages and Google Shopping (Oct 5, 2026)
+
+The site now has Contact, About, Returns and Shipping pages, linked from every page. The Google Shopping feed lists only the items Next Owner Market sells and ships itself, with honest shipping and condition. That follows Google's rules for a standard (non-marketplace) account.
