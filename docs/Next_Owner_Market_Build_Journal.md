@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 5, 2:28 AM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 5, 2:33 AM (continuing)
 
 **Claude:**
 
@@ -7786,3 +7786,27 @@ Sources:
 I'll find out exactly why, starting with the photo section of the new-listing page:
 
 Fixed and building clean. Shipping:
+
+I fixed Nikki's problem and it's live on nextownermarket.com now.
+
+**What was wrong:** on Add item, "Clean background" and "Touch up" were checkboxes that only worked on photos added after you ticked them. Everyone picks their photos first, so ticking them changed nothing. My fault for building it that way.
+
+**What it does now:** those two checkboxes are now big buttons under the photos, on both Add item and Edit:
+- **✨ Touch up all photos**
+- **⬜ Clean all backgrounds**
+
+Each one fixes every photo that's already there, right away, and shows a count like "1 of 4" while it works. It also stays on for any photos added after. The first background clean can take up to a minute; after that they go quickly. The ✨ Touch up button on each single photo still works the same as before.
+
+**Message you can forward to Nikki:**
+> Thanks for catching that! It's fixed. After you add your photos, tap "Clean all backgrounds" or "Touch up all photos" under them. It fixes every photo right then and shows the progress. The first background clean takes up to a minute. If it doesn't load the new version, close the app and open it again.
+
+I've added this to the User Guide and Complete Guide. The updated files are in Next_Owner_Market_Files_2026-10-05_0229.zip.
+
+### Oct 5, 2:33 AM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+The Build Journal and Change Log had updated again after I made the zip. They're now saved with the rest of the files, and a new site update has started. These are record files only, so nothing in the app changes and you don't need to do anything.

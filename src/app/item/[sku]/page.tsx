@@ -80,7 +80,9 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
     sku: item.sku,
     brand: item.brand ? { "@type": "Brand", name: item.brand } : undefined,
     image: photos.map((p) => p.url),
-    offers: { "@type": "Offer", price: item.price, priceCurrency: "USD", availability: item.status === "active" ? "https://schema.org/InStock" : "https://schema.org/SoldOut", itemCondition: item.condition === "new" ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition" },
+    offers: { "@type": "Offer", price: item.price, priceCurrency: "USD", availability: item.status === "active" ? "https://schema.org/InStock" : "https://schema.org/SoldOut", itemCondition: item.condition === "new" ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://nextownermarket.com"}/item/${item.sku}`,
+      seller: { "@type": "Organization", name: sellerIsPlatform ? business.name : seller?.display_name || business.name }, },
   };
 
   return (
@@ -131,6 +133,7 @@ export default async function PublicItemPage({ params }: PageProps<"/item/[sku]"
             </dl>
           )}
           <p className="text-xs muted">Item #{item.sku}{item.categories ? ` • ${item.categories.name}` : ""}</p>
+          <p className="text-xs muted">{sellerIsPlatform ? `Sold and shipped by ${business.name}${business.location ? `, ${business.location}` : ""}. ` : ""}Not as described? Full refund. <Link href="/returns" className="underline">Returns</Link> · <Link href="/shipping" className="underline">Shipping</Link> · <Link href="/contact" className="underline">Contact us</Link></p>
         </div>
 
         {item.status !== "sold" && (

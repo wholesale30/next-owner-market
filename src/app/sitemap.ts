@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${site}/pile`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${site}/start`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/why`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    ...["contact", "about", "returns", "shipping", "terms", "privacy"].map((p) => ({ url: `${site}/${p}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${site}/valued`, lastModified: now, changeFrequency: "hourly", priority: 0.8 },
     ...(vals || []).map((v) => ({ url: `${site}/valued/${v.slug}`, lastModified: new Date(v.created_at), changeFrequency: "monthly" as const, priority: 0.6 })),
     ...hubs.map((h) => ({ url: `${site}/valued/about/${h}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),

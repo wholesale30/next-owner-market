@@ -54,6 +54,18 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
   }
 }
 
+/**
+ * The most ground shipping could cost anywhere in the US (farthest zone) for the built-in estimate.
+ * Used in the Google feed so the shipping we advertise is never lower than what a buyer is charged by the estimate.
+ */
+export function nationalShippingEstimate(weightLbs: number | null | undefined, box: string | null | undefined, pct = 20, minUp = 1.5) {
+  const lbs = Math.max(1, Math.ceil(Number(weightLbs || 2)));
+  const base = lbs <= 5 ? 4.5 + lbs : lbs <= 10 ? 9.5 + (lbs - 5) * 1.2 : lbs <= 20 ? 15.5 + (lbs - 10) * 1 : 25.5 + (lbs - 20) * 0.9;
+  const size = box === "large" ? 2 : box === "xl" ? 5 : 0;
+  const r = base * 1.8 + size;
+  return Math.ceil((r + Math.max(r * pct / 100, minUp)) * 20) / 20;
+}
+
 export async function shipFromFor(sellerId: string): Promise<Address | null> {
   const db = admin();
   const { data: p } = await db.from("profiles").select("role, full_name, business_name, address1, address2, city, state, zip, phone, email").eq("id", sellerId).single();
