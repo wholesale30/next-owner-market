@@ -7,7 +7,7 @@ import Mic from "@/components/Mic";
 export type Todo = { id: string; title: string; notes: string | null; priority: "urgent" | "needed" | "someday"; due_date: string | null; remind: "weekly" | "due" | "none"; done_at: string | null; snooze_until: string | null; created_at: string };
 
 const PRI = { urgent: { label: "🔴 Urgent", color: "var(--danger)" }, needed: { label: "🟡 Needed", color: "var(--accent)" }, someday: { label: "⚪ Someday", color: "var(--line)" } } as const;
-const REMIND = { weekly: "Every Monday + when due", due: "Only when it's coming due", none: "Don't remind me" } as const;
+const REMIND = { weekly: "Remind me at 11 AM and 5 PM", due: "Only once it's due within 3 days", none: "Don't remind me" } as const;
 const todayISO = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 const daysUntil = (d: string) => Math.round((new Date(d + "T12:00:00").getTime() - new Date(todayISO() + "T12:00:00").getTime()) / 86400_000);
 function dueText(d: string) {

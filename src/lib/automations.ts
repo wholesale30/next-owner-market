@@ -636,7 +636,8 @@ const secretary: Automation = {
     const { data: rows } = await d.from("todos").select("id, title, notes, priority, due_date, remind, snooze_until").is("done_at", null);
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
     const until = (x: string) => Math.round((new Date(x + "T12:00:00").getTime() - new Date(today + "T12:00:00").getTime()) / 86400_000);
-    const list = (rows || []).filter((t) => t.remind !== "none" && !(t.snooze_until && t.snooze_until > today));
+    // remind: "weekly" (the default) = in every reminder; "due" = only once it's due within 3 days or late; "none" = never.
+    const list = (rows || []).filter((t) => !(t.snooze_until && t.snooze_until > today) && (t.remind === "weekly" || (t.remind === "due" && !!t.due_date && until(t.due_date) <= 3)));
     if (!list.length) return { open: 0, sent: "list is empty" };
     const label = (t: { due_date: string | null }) => { if (!t.due_date) return ""; const n = until(t.due_date); return n < 0 ? ` (${-n}d LATE)` : n === 0 ? " (due TODAY)" : n === 1 ? " (due tomorrow)" : ` (due ${t.due_date})`; };
     const order = { urgent: 0, needed: 1, someday: 2 } as const;

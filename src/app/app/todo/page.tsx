@@ -14,7 +14,7 @@ export default async function TodoPage() {
     <div className="space-y-3">
       <div>
         <h1 className="text-2xl font-bold">📝 To-do</h1>
-        <p className="text-sm muted">Your assistant&apos;s list. Add anything here (or tell Claude). You get a reminder every Monday, and again when something is coming due.</p>
+        <p className="text-sm muted">Your assistant&apos;s list. Add anything here (or tell Claude). Your whole list comes by email and text at 11 AM and 5 PM. Tap ✓ when something is done and it stops coming.</p>
       </div>
       <TodoClient initial={(data || []) as Todo[]} meId={me.id} />
     </div>
