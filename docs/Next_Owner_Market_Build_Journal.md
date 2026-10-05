@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 5, 6:53 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 5, 6:57 PM (continuing)
 
 **Claude:**
 
@@ -7953,3 +7953,30 @@ Now wiring it in so it stays current on its own:
 No secrets: those matches are the patterns the journal script uses to remove keys. Checking the leftover `{{` are code, not unfilled markers:
 
 The Word file builds cleanly. Shipping everything and making the zip:
+
+Your App Builder's Playbook is done. I sent it as its own Word file, so you can hand it straight to the other Claude, and it's also inside Next_Owner_Market_Files_2026-10-05_1853.zip.
+
+**What's in it:**
+- **Part 1, the to-do system:** the exact to-do page and the 11 AM / 5 PM email and text, with the real code and database copied straight from this project. It covers everything you listed: the table, the check mark, how it stops reminding you, how steps are written, how I add and clear items, what went wrong, and what has to change in another app. Another Claude can rebuild it without guessing.
+- **Part 2, the playbook for any app:**
+  - how we work, your rules, and the order to set up a new app on day one;
+  - the setup and patterns that worked;
+  - every behind-the-scenes service and workaround the app runs on: Supabase, Vercel, GitHub, Stripe, Resend, the AI, texts, Google, Facebook, plus the tricks I use to run it all from here without sending you anywhere;
+  - 54 numbered trial-and-error lessons, with your words and the fix for each;
+  - design rules, costs, gotchas for each service, and the "why we do this" quotes for the book.
+
+**It keeps itself current.** Every time I make the zip, the playbook is rebuilt from the live code, so it's always in the latest zip like the journal. A new written rule (rule 21) has me add each new mistake, rule or workaround as it happens. I also saved a copy to your "Warehouse items" Claude project.
+
+**For the other app:** give its Claude the Playbook file. The first page tells it to add a "Lessons from the Political Posting App" section in the same format and raise the version number. When you bring that copy back here, I'll merge both into one master.
+
+**Two skills to save:** the card shows two skills. Tap save on both:
+- **app-builder-playbook** is new. It loads the playbook's rules in any chat, any project.
+- **shayne-operating-rules** is an update. It fixes the to-do description, which still said "Monday rundown," and adds the playbook rule.
+
+Two other things:
+- **Small to-do fix:** the to-do page still said "a reminder every Monday" and the "only when it's coming due" choice had stopped working. Both are fixed and live.
+- **One label not fixed:** a label on the Operations page says Vercel deploys automatically, which isn't true. My update to it was cancelled because it needed an approval in your app that no one answered. It's harmless; say "fix the Vercel label" and I'll redo it.
+
+### Oct 5, 6:57 PM — Shayne
+
+> Goive it toe here again so I have the latest to give it.
