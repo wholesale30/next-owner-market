@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 3, 11:38 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 5, 2:28 AM (continuing)
 
 **Claude:**
 
@@ -7774,3 +7774,15 @@ Sources:
 - [Craigslist prohibited](https://www.craigslist.org/about/prohibited)
 - [OfferUp: why listings are removed](https://help.offerup.com/hc/en-us/articles/360032337011-Why-listings-are-removed)
 - [Poshmark community guidelines](https://poshmark.com/community_guidelines)
+
+### Oct 5, 2:25 AM — Shayne
+
+> Nikki fiveash sends this problem with the app.
+> 
+> when I do a new listing and I click on the button to clean the background or edit the photo doesn't do anything it only does it when I go back to the listing and edit them individually
+
+**Claude:**
+
+I'll find out exactly why, starting with the photo section of the new-listing page:
+
+Fixed and building clean. Shipping:
