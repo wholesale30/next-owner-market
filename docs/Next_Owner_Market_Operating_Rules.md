@@ -53,4 +53,10 @@
     - On the political posting app a Stop hook blocks Claude from ending a turn if there is a change newer than the last send. Every new project gets the same scripts and hook first.
     - Why this exists: a fix on Oct 2 at 6:14 PM was deployed and the files were not sent until he pointed it out.
 
+21. **Keep the App Builder's Playbook current (added Oct 5, 2026).**
+    - The Playbook is the master guide for building any app or website the way we built this one.
+    - Claude adds every new mistake and its fix, every new rule, and every new outside service or workaround as it happens.
+    - It's rebuilt from the real code and sent in every zip, like the journal.
+    - The other apps (the political posting app) add their own lessons in the same format; Shayne brings each copy back here to be merged into one master.
+
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."

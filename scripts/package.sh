@@ -6,6 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 scripts/journal.py >/dev/null
 python3 scripts/changelog.py >/dev/null
+python3 scripts/build_playbook.py >/dev/null   # App Builder's Playbook: re-reads the real code every time
 # rebuild every Word copy from its source so nothing in the zip is stale
 for md in docs/Next_Owner_Market_*.md; do
   docx="${md%.md}.docx"

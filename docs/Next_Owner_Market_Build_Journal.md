@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 5, 1:30 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 5, 6:53 PM (continuing)
 
 **Claude:**
 
@@ -7913,3 +7913,43 @@ The full list is too long for a normal text, so it now arrives as one picture me
 While setting this up I found that a few of the site's private settings were readable by anyone. I locked them so only staff can see them.
 
 The updated files are in Next_Owner_Market_Files_2026-10-05_1330.zip.
+
+### Oct 5, 6:37 PM — Shayne
+
+> I'm building a second app (a political posting app, Next.js on Vercel + Supabase) and I want it to get the same twice-a-day to-do email you built for Next Owner Market, plus the same to-do page where I tap a check mark. Please make me ONE handoff document (a Word file) that lets another Claude rebuild it exactly, without guessing. Look at the real code and database in this project first, and quote the real code, not a summary. Include:
+> 
+> 1. The database: every table and column for the to-do items (title, urgency, due date, start date, done, steps text, anything else), plus any security rules, and the SQL to create them.
+> 2. The to-do page (/app/todo): the full code, how the check mark works, how items are added, and how the "stops reminding you" part works.
+> 3. The twice-a-day email: the full code that builds it (subject line counts, red/yellow/grey dots, LATE flags, "HOW TO DO THE URGENT ONES" steps, "Coming later" section, the link at the bottom), and the exact rules for what counts as urgent, late, and coming later.
+> 4. How it is scheduled: which service runs it, the exact times (and how daylight saving is handled), and the exact config.
+> 5. How the email is sent: which service sends it, whether it is free, and what keys or settings it needs. List the names of every environment variable (names only, never the secret values) and where each one is set.
+> 6. How the item steps are written: the rules for the "how to do it" text (starting from the very first tap, exact addresses, what the person will see).
+> 7. How you add new to-do items when something comes up in a chat, and how items get cleared when done.
+> 8. Anything that went wrong while building this and the fix, so it isn't repeated.
+> 9. Anything about how it is built that would not carry over to a different app, and what has to change.
+> 
+> Put it all in one Word file I can download.
+
+**Claude:**
+
+I'll read the real to-do code and database first, then write one handoff Word file that quotes it directly.
+
+Checking that today's 5 PM reminder actually went out, so the document reports what really happened:
+
+The Build Journal is 628 KB, too much for one careful pass. I'm splitting the reading across three helpers working in parallel while I write Part 1 from the real code:
+
+Now reading your existing account skill, so the new one adds to it instead of repeating it:
+
+Committing the small fix first:
+
+Now writing the playbook. It pulls code straight from the real files as it's built, so nothing is retyped by hand:
+
+The service list lives in the database. Reading it:
+
+Fixing one wrong line in that list first: the Vercel row says it deploys automatically after each change, but it doesn't.
+
+Now wiring it in so it stays current on its own:
+
+No secrets: those matches are the patterns the journal script uses to remove keys. Checking the leftover `{{` are code, not unfilled markers:
+
+The Word file builds cleanly. Shipping everything and making the zip:

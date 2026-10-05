@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 1:30 PM from the project history (238 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 6:53 PM from the project history (240 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1766,3 +1766,17 @@
 - **Database (migrations):** `supabase/migrations/039_todo_twice_daily.sql`
 
 <sub>change id 0ed7ade</sub>
+
+### 13:30 — Records: twice-daily to-do reminders
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx`, `docs/Next_Owner_Market_Launch_Kit.docx` (+12 more)
+
+<sub>change id 2c67f37</sub>
+
+### 18:46 — To-do page: wording now matches the 11 AM / 5 PM reminders; 'Only once it's due within 3 days' option works again
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Seller / staff app:** `src/app/app/todo/TodoClient.tsx`, `src/app/app/todo/page.tsx`
+- **Shared code (logic):** `src/lib/automations.ts`
+
+<sub>change id cef6b0a</sub>
