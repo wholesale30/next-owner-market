@@ -628,35 +628,32 @@ const heldPayouts: Automation = {
 
 // ---------------------------------------------------------------- the owner's to-do list (assistant reminders)
 const secretary: Automation = {
-  key: "todo_reminders", name: "To-do reminders (your assistant)", schedule: "daily (full list Mondays)", sort_order: 2,
-  what: "Reads your 📝 To-do list each morning. Every Monday it sends you the whole open list, urgent first. Any other day it only writes when something needs you: due in 3 days, due tomorrow, due today, late, or urgent (every 2 days). Comes by email and by text.",
-  why: "You run a hundred things. Nothing you put on the list gets forgotten, and you aren't nagged about things that can wait.",
+  key: "todo_reminders", name: "To-do reminders (your assistant)", schedule: "twice a day: 11 AM and 5 PM", sort_order: 2,
+  what: "At 11 AM and 5 PM (Eastern) it sends you your whole open 📝 To-do list, urgent first, with how-to steps for the urgent ones. Comes by email and by text. Items stop once you tap ✓, and snoozed items wait until their date.",
+  why: "You run a hundred things. Nothing you put on the list gets forgotten, and you see the full picture twice a day.",
   async run() {
     const d = db();
-    const { data: rows } = await d.from("todos").select("id, title, priority, due_date, remind, snooze_until, last_reminded_at").is("done_at", null);
+    const { data: rows } = await d.from("todos").select("id, title, notes, priority, due_date, remind, snooze_until").is("done_at", null);
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-    const monday = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" }) === "Monday" || process.env.FORCE_DIGEST === "1";
     const until = (x: string) => Math.round((new Date(x + "T12:00:00").getTime() - new Date(today + "T12:00:00").getTime()) / 86400_000);
-    const open = (rows || []).filter((t) => t.remind !== "none" && !(t.snooze_until && t.snooze_until > today));
+    const list = (rows || []).filter((t) => t.remind !== "none" && !(t.snooze_until && t.snooze_until > today));
+    if (!list.length) return { open: 0, sent: "list is empty" };
     const label = (t: { due_date: string | null }) => { if (!t.due_date) return ""; const n = until(t.due_date); return n < 0 ? ` (${-n}d LATE)` : n === 0 ? " (due TODAY)" : n === 1 ? " (due tomorrow)" : ` (due ${t.due_date})`; };
-    const nudge = open.filter((t) => {
-      if (t.due_date) { const n = until(t.due_date); if (n < 0 || n === 0 || n === 1 || n === 3) return true; }
-      if (t.priority === "urgent") return !t.last_reminded_at || Date.now() - new Date(t.last_reminded_at).getTime() > 44 * 3600_000;
-      return false;
-    });
-    const weekly = monday ? open.filter((t) => t.remind === "weekly" || nudge.includes(t)) : [];
-    const list = monday ? weekly : nudge;
-    if (!list.length) return { open: open.length, sent: "nothing needed you today" };
     const order = { urgent: 0, needed: 1, someday: 2 } as const;
-    list.sort((a, b) => order[a.priority as keyof typeof order] - order[b.priority as keyof typeof order] || (a.due_date || "9") .localeCompare(b.due_date || "9"));
+    list.sort((a, b) => order[a.priority as keyof typeof order] - order[b.priority as keyof typeof order] || (a.due_date || "9").localeCompare(b.due_date || "9"));
     const icon = { urgent: "🔴", needed: "🟡", someday: "⚪" } as Record<string, string>;
-    const body = (monday ? "Your week. Everything open on your list:\n" : "These need you:\n") + list.slice(0, 25).map((t) => `${icon[t.priority] || "•"} ${t.title}${label(t)}`).join("\n") + (list.length > 25 ? `\n…and ${list.length - 25} more` : "") + "\n\nTap ✓ when done:";
-    const urgentN = list.filter((t) => t.priority === "urgent").length; const lateN = list.filter((t) => t.due_date && until(t.due_date) <= 0).length;
-    const subject = monday ? `📝 Your to-do list: ${list.length} open${urgentN ? `, ${urgentN} urgent` : ""}` : `📝 ${lateN ? `${lateN} due now` : `${list.length} coming up`}${urgentN ? ` · ${urgentN} urgent` : ""}`;
+    const urgent = list.filter((t) => t.priority === "urgent");
+    const lateN = list.filter((t) => t.due_date && until(t.due_date) < 0).length;
+    const waiting = (rows || []).filter((t) => t.snooze_until && t.snooze_until > today);
+    const body = `Everything open on your list (${list.length}):\n` + list.map((t) => `${icon[t.priority] || "•"} ${t.title}${label(t)}`).join("\n")
+      + (urgent.some((t) => t.notes) ? "\n\nHOW TO DO THE URGENT ONES\n" + urgent.filter((t) => t.notes).map((t) => `🔴 ${t.title}\n${t.notes}`).join("\n\n") : "")
+      + (waiting.length ? `\n\nComing later: ${waiting.map((t) => `${t.title} (from ${t.snooze_until})`).join("; ")}` : "")
+      + "\n\nTap ✓ on each one when it's done and it stops reminding you:";
+    const subject = `📝 To-do: ${list.length} open${urgent.length ? `, ${urgent.length} urgent` : ""}${lateN ? `, ${lateN} late` : ""}`;
     const { alertStaff } = await import("@/lib/alert");
-    const ok = await alertStaff(subject, body, "/app/todo");
+    const ok = await alertStaff(subject, body, "/app/todo", { longText: true });
     await d.from("todos").update({ last_reminded_at: new Date().toISOString() }).in("id", list.map((t) => t.id));
-    return { open: open.length, reminded: list.length, kind: monday ? "Monday rundown" : "due/urgent nudge", sent: ok };
+    return { open: list.length, urgent: urgent.length, sent: ok };
   },
 };
 
@@ -746,6 +743,7 @@ export async function runAutomations(only?: string): Promise<Record<string, Resu
     if (only && a.key !== only) continue;
     if (!only && a.key === "held_money_timers") continue; // done inline in the daily job
     if (!only && a.key === "backups") continue;            // done inline too
+    if (!only && a.key === "todo_reminders") continue;     // runs at 11 AM and 5 PM from /api/todo/remind
     if (enabled.get(a.key) === false) { out[a.key] = { skipped: "switched off" }; continue; }
     const started = Date.now();
     try { out[a.key] = await a.run(); } catch (e) { out[a.key] = { error: e instanceof Error ? e.message : String(e) }; }

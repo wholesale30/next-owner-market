@@ -551,3 +551,10 @@ Checked against each site's own policy pages:
 - **Item pages:** a "Sold and shipped by…" line, Returns/Shipping/Contact links, and the JSON-LD offer gains `seller` and `url`.
 - **Left out on purpose:** the JSON-LD return policy. It would show "3-day returns," which reads as any-reason returns.
 - **Steps the owner must do:** see Google_Merchant_Center_Fix.
+
+## To-do reminders twice a day (Oct 5, 2026)
+
+- **What it does:** the owner gets his whole open 📝 To-do list by email and text at **11 AM and 5 PM Eastern**: urgent first, how-to notes for urgent items, and snoozed items listed under "Coming later."
+- **How it runs:** pg_cron job `todo-reminders-11am-5pm` (15, 16, 21 and 22 UTC) calls `/api/todo/remind?key=…` (the key is in settings `todo:remind`). The route only sends when it's 11 or 17 in New York, and once per slot, so it stays right through daylight-saving changes. The 9 AM daily job no longer sends it.
+- **Texts:** the full list goes to `@vzwpix.com` (picture message) instead of `@vtext.com`, so it isn't cut at 160 characters.
+- **Security:** settings keys containing ":" are now readable by staff only.

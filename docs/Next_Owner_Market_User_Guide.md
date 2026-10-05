@@ -565,3 +565,7 @@ Every public page now has a footer: **Contact · About · Returns · Shipping ·
 
 - **Returns:** not as described, damaged or never arrived = full refund including shipping, if you report it within 3 days after delivery. No returns for change of mind.
 - **Shipping:** US only. The cost shows at checkout. Items Next Owner Market sells ship within 1–3 business days. Pickup is free.
+
+## Your to-do list, twice a day (Oct 5, 2026)
+
+At 11 AM and 5 PM you get your whole to-do list by email and text: urgent first, with the steps for the urgent ones. Tap ✓ on an item in 📝 To-do when it's done and it stops coming.
