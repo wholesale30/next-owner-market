@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 8:45 PM from the project history (243 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 9:18 PM from the project history (244 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1807,3 +1807,9 @@
 - **Database (migrations):** `supabase/migrations/039_todo_twice_daily.sql`
 
 <sub>change id 9aba39d</sub>
+
+### 20:45 — Records: journal, change log, Playbook v1.2
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 834e5e0</sub>
