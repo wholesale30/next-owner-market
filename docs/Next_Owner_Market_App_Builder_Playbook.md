@@ -1847,6 +1847,13 @@ What Next Owner Market has that would make the political app stronger, most valu
     - It's rebuilt from the real code and sent in every zip, like the journal.
     - The other apps (the political posting app) add their own lessons in the same format; Shayne brings each copy back here to be merged into one master.
 
+22. **Learned from the political posting app (added Oct 5, 2026).**
+    - **Filter in code anything that must never appear.** A prompt rule alone doesn't hold (AI price talk in listings; em dashes in posts). Listings now pass through a code filter for AI tells.
+    - **Copy what already won** (the owner's own best posts and sales) before generic advice.
+    - **Never say "next I'm doing X" and then go quiet.** Send a one-line status after a long stretch.
+    - **Prove a fix is surgical:** `bash scripts/diff_check.sh` lists every file a deploy will change. Stop if anything shows up that wasn't asked for.
+    - **The Stop hook enforces rule 20:** a turn can't end while code changes haven't been sent. After sending the zip, run `bash scripts/mark_sent.sh`.
+
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."
 ```
 

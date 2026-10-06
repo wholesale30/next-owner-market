@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 6:57 PM from the project history (241 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 8:45 PM from the project history (243 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1788,3 +1788,22 @@
 - **Automation scripts:** `scripts/build_playbook.py`, `scripts/package.sh`
 
 <sub>change id cfd9ee3</sub>
+
+### 18:57 — Records: latest journal, change log and playbook
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx` (+13 more)
+
+<sub>change id 4301f81</sub>
+
+### 20:42 — Lessons from the political posting app: AI listings and copies no longer contain em dashes or curly quotes; a failed to-do reminder retries at :20 and :40; a session can't end with unsent changes (Stop hook); diff check before deploys; Playbook v1.2 merges both apps' lessons
+
+- **Project automation:** `.claude/settings.json`
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Operating_Rules.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`, `docs/playbook/template.md`
+- **Automation scripts:** `scripts/build_playbook.py`, `scripts/diff_check.sh`, `scripts/mark_sent.sh`, `scripts/stop_check.py`
+- **Server routes (API):** `src/app/api/ai-listing/revise/route.ts`, `src/app/api/ai-listing/route.ts`, `src/app/api/todo/remind/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Seller / staff app:** `src/app/app/items/[id]/page.tsx`
+- **Shared code (logic):** `src/lib/listing.ts`
+- **Database (migrations):** `supabase/migrations/039_todo_twice_daily.sql`
+
+<sub>change id 9aba39d</sub>
