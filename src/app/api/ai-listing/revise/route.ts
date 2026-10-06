@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
 import { askWithTool } from "@/lib/ai-tool";
-import { scrubPriceTalk } from "@/lib/listing";
+import { cleanAiTells, scrubPriceTalk } from "@/lib/listing";
 import { BUYER_VOICE } from "@/lib/ladder";
 
 export const maxDuration = 30;
@@ -44,7 +44,7 @@ ${String(b.description || "").slice(0, 4000)}
 
 The seller says: "${instruction}"` }],
     });
-    return NextResponse.json({ title: String(out.title || "").slice(0, 80), description: scrubPriceTalk(out.description || ""), condition_notes: scrubPriceTalk(out.condition_notes || ""), changed: out.changed || "Updated." });
+    return NextResponse.json({ title: cleanAiTells(String(out.title || "")).slice(0, 80), description: scrubPriceTalk(out.description || ""), condition_notes: scrubPriceTalk(out.condition_notes || ""), changed: out.changed || "Updated." });
   } catch {
     return NextResponse.json({ error: "Couldn't rewrite it right now. Try again." }, { status: 502 });
   }

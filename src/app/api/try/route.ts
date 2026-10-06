@@ -4,7 +4,7 @@ import { createHash, randomBytes } from "crypto";
 import { cookies, headers } from "next/headers";
 import { createClient as createAdmin } from "@supabase/supabase-js";
 import { LISTING_HONESTY, BUYER_VOICE } from "@/lib/ladder";
-import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
+import { cleanAiTells, scrubPriceTalk, scrubSpecs } from "@/lib/listing";
 import { askWithTool } from "@/lib/ai-tool";
 
 /**
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     draft.description = scrubPriceTalk(draft.description);
     if (draft.condition_notes) draft.condition_notes = scrubPriceTalk(draft.condition_notes);
     draft.specs = scrubSpecs(draft.specs);
-    draft.title = String(draft.title || "").replace(/\s*[-–(]?\s*\$\s?\d[\d,.]*\s*\)?/g, "").trim().slice(0, 80);
+    draft.title = cleanAiTells(String(draft.title || "").replace(/\s*[-–(]?\s*\$\s?\d[\d,.]*\s*\)?/g, "").trim()).slice(0, 80);
     const catName = (cats || []).find((c) => c.id === draft.category_id)?.name || null;
     await d.from("settings").upsert({ key: `try:result:${token}`, value: { draft, photo_url: photoUrl, path, at: new Date().toISOString(), cat: catName } });
     const res = NextResponse.json({ token, draft, photo_url: photoUrl, category: catName });

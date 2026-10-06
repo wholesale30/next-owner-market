@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
-import { money, commissionFor, DEFAULT_TIERS, facebookCopy, offerUpCopy, ebayCopy, craigslistCopy, etsyCopy, poshmarkCopy, vintedCopy, mercariCopy, depopCopy } from "@/lib/listing";
+import { money, commissionFor, DEFAULT_TIERS, cleanAiTells, facebookCopy, offerUpCopy, ebayCopy, craigslistCopy, etsyCopy, poshmarkCopy, vintedCopy, mercariCopy, depopCopy } from "@/lib/listing";
 import { STATUS_LABELS, CONDITION_LABELS, TIER_LABELS, type Item } from "@/lib/types";
 import ItemActions from "./ItemActions";
 import CopyTabs from "./CopyTabs";
@@ -39,7 +39,8 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
   const photos = [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order);
   const base = process.env.NEXT_PUBLIC_SITE_URL || "";
   const publicUrl = `${base}/item/${it.sku}`;
-  const copyInput = { item: it, businessName: business.name, location: business.location, storefrontUrl: base || undefined };
+  // copies for other sites are cleaned of AI tells (em dashes, curly quotes), even on listings saved before the filter existed
+  const copyInput = { item: { ...it, title: cleanAiTells(it.title), description: cleanAiTells(it.description) }, businessName: business.name, location: business.location, storefrontUrl: base || undefined };
   const pct = commissionFor(it, it.profiles?.default_commission_pct, tiers);
   const { data: sale } = it.status === "sold" || it.status === "shipped"
     ? await supabase.from("sales").select("*").eq("item_id", it.id).order("sold_at", { ascending: false }).limit(1).maybeSingle()

@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
-import { scrubPriceTalk } from "@/lib/listing";
+import { cleanAiTells, scrubPriceTalk } from "@/lib/listing";
 import { askWithTool } from "@/lib/ai-tool";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 import { LADDER_SCHEMA, LADDER_PROMPT, LISTING_HONESTY, BUYER_VOICE, cleanLadder, type Ladder } from "@/lib/ladder";
@@ -115,6 +115,7 @@ export async function POST(req: Request) {
     out.listing = toListing(out.listing, out.what, out.why);
     if (typeof out.condition_ladder === "string") { try { out.condition_ladder = JSON.parse(out.condition_ladder); } catch { out.condition_ladder = null; } }
     out.listing.description = scrubPriceTalk(out.listing.description);
+    out.listing.title = cleanAiTells(out.listing.title);
     const o2 = out as { pieces?: { listing_description: string }[] };
     if (Array.isArray(o2.pieces)) { if (o2.pieces.length < 2 && !o2.pieces.some((x) => Number((x as { qty?: number }).qty) > 1)) o2.pieces = []; o2.pieces.forEach((x) => { x.listing_description = scrubPriceTalk(x.listing_description || ""); }); }
     const parts = await withPartLinks(out.missing_parts);

@@ -9,3 +9,6 @@ do $$ begin
   drop policy if exists "settings public read" on public.settings;
   create policy "settings public read" on public.settings for select using (position(':' in key) = 0 or public.is_staff());
 end $$;
+-- Oct 5, 2026 (evening): retries at :20 and :40 in case the :00 send fails (the route releases the slot on failure).
+select cron.schedule('todo-reminders-11am-5pm', '0,20,40 15,16,21,22 * * *', $c$select net.http_get('https://nextownermarket.com/api/todo/remind?key=' || (select value->>'key' from public.settings where key='todo:remind'), timeout_milliseconds := 60000)$c$);
+

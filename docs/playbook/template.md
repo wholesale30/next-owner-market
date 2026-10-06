@@ -5,7 +5,13 @@ subtitle: "How Shayne and Claude build apps strong and right the first time. Eve
 
 # How to use this
 
-**Version 1.0, October 5, 2026.** Written from Next Owner Market (nextownermarket.com): 7 days of building, 240+ changes, about 8,000 lines of verbatim conversation.
+**Version 1.2, October 5, 2026.** Written from Next Owner Market (nextownermarket.com): 7 days of building, 240+ changes, about 8,000 lines of verbatim conversation.
+
+| Version | What changed |
+|---|---|
+| 1.0 (Oct 5) | First version, from Next Owner Market. |
+| 1.1 (Oct 5) | The political posting app's Claude added "Lessons from the Political Posting App." |
+| 1.2 (Oct 5) | Next Owner Market's Claude merged those lessons into the main sections (rules, schedule, gotchas, trial and error) and kept the political section whole. Added "From Next Owner Market back to the Political Posting App" (things worth copying back) and the shared email limit both apps live under. Next Owner Market adopted four of the political app's ideas the same night (section 15). |
 
 This has two parts.
 
@@ -20,13 +26,13 @@ This has two parts.
 2. Follow the operating rules in Appendix A exactly. They are the owner's own words, earned the hard way.
 3. Add what you learn using the format in Part 2, section 16, so the next app gets it too.
 
-**For the Claude building the political posting app:**
+**For the Claude building the political posting app (version 1.2 and later):**
 
-1. Keep this file whole. Add a new section at the end: **"Lessons from the Political Posting App,"** in the format of Part 2, section 16.
-2. Where your app found a better way than this one, say so plainly under **"Better than Next Owner Market."** Don't delete anything here.
-3. Bump the version (1.1) and date at the top.
+1. Read **"From Next Owner Market back to the Political Posting App"** (near the end). It lists what to copy from Next Owner Market, starting with the most valuable.
+2. Keep this file whole. Add anything new **under your own section**, as a sub-heading like "Added in v1.3 (date)," in the section-16 format.
+3. Bump the version and add a line to the version table.
 
-Shayne will bring it back here and the two will be merged into one master copy.
+Shayne carries each copy back and forth, and Next Owner Market's Claude merges it into the master. The master lives in Next Owner Market (`docs/playbook/template.md`) and is rebuilt into every zip.
 
 # PART 1: The Owner's To-do and Twice-a-Day Reminder
 
@@ -280,10 +286,10 @@ The line `if (!only && a.key === "todo_reminders") continue;` keeps the reminder
 | **Service** | **Supabase pg_cron** (built-in, free) plus **pg_net**. The database itself calls the website. |
 | **Why not Vercel cron** | On the free (Hobby) plan, Vercel cron runs at most once a day and only promises "sometime within the hour." The owner asked for 11:00 and 5:00 exactly. |
 | **Job name** | `todo-reminders-11am-5pm` |
-| **Schedule** | `0 15,16,21,22 * * *` (UTC) |
+| **Schedule** | `0,20,40 15,16,21,22 * * *` (UTC). The :20 and :40 calls are retries. |
 | **What it calls** | `GET https://nextownermarket.com/api/todo/remind?key=<secret from settings 'todo:remind'>` |
 | **Daylight saving** | In summer (EDT, UTC−4), 15:00 UTC = 11 AM and 21:00 = 5 PM. In winter (EST, UTC−5), 16:00 UTC = 11 AM and 22:00 = 5 PM. All four fire; the route sends only when the New York hour is **11 or 17**. The other two calls answer "skipped" and send nothing. Nothing has to change when the clocks change. |
-| **No doubles** | The route saves `last_slot` (e.g. `2026-10-05 17`) in settings and won't send the same slot twice. |
+| **No doubles, no misses** | The route saves `last_slot` (e.g. `2026-10-05 17`) in settings and won't send the same slot twice. If the send fails, it releases the slot, so the :20 (or :40) call sends it instead. The release idea came from the political app (PP-T7). |
 | **Checked live** | On October 5, 2026 the 21:00 and 22:00 UTC runs both ran "succeeded." The automation recorded a send at 5:00:07 PM: 12 open, 5 urgent. |
 
 The route:
@@ -401,6 +407,7 @@ returning title, due_date;
 | The settings table was readable by anyone on the internet (counters, error logs, one-time tokens, the reminder key). | The original policy was "settings public read: true." | Keys with ":" are staff-only (migration 039). New private keys must contain ":". |
 | Long reminders would be cut at 160 characters by text. | `@vtext.com` is SMS. | `alertStaff(..., { longText: true })` sends to `@vzwpix.com` (picture message). |
 | After the switch, the page still said "a reminder every Monday," and "Only when it's coming due" did nothing different. | The wording and that option weren't updated with the change. | Fixed the same evening: the heading says 11 AM and 5 PM, and `due` means "only once it's due within 3 days." |
+| A failed send would have been skipped until the next slot. | The slot was claimed before sending and never released. | Release on failure, plus retry calls at :20 and :40 (v1.2, from the political app). |
 | (Earlier) Vercel cron couldn't do two exact times. | The free plan allows daily cron only, sometime within the hour. | pg_cron in the database, at four UTC hours, filtered by New York hour. |
 | (Earlier, Oct 1) Free email-to-text is dying. | AT&T and Cricket ended it June 17, 2025; T-Mobile, Metro and Mint around Dec 2024. Verizon plans to end it by March 31, 2027. | It's on the to-do list: "Replace text alerts before Verizon ends email-to-text" (due Feb 1, 2027). Options then: paid SMS (Twilio, about 1¢ a text, ask first), or a push notification. |
 
@@ -471,7 +478,11 @@ returning title, due_date;
 20. **Record every mistake as a rule,** as it happens.
 21. **Build it complete now.** Never quote "days" or "weeks." He built the first version in a day: "How could that take two weeks? We could do it all now."
 22. **Build for growth; never rebuild.** "I don't want to have to redo the app or anything. I just want to be able to add it."
-23. **Search, don't guess,** on every fact: prices, rules, policies. "I don't ask you to guess. You need to go out and look on the Internet."
+23. **Search, don't guess (the political app calls it RULE ZERO),** on every fact: prices, rules, policies, menus, limits, API details. If it can't be confirmed, say "I could not confirm this" and what was checked. "I don't ask you to guess. You need to go out and look on the Internet."
+24. **Filter in code anything that must never appear.** A prompt rule alone fails: price talk leaked into listings (T-36), and em dashes leaked into his political posts (PP-T1). Both are now removed in code on every output.
+25. **Copy what already won before adding generic advice.** Use the owner's own best results (his posts that reached 977,000 views, his listings that sold) as the model. Generic "best practices" come second.
+26. **Never say "next I'm doing X" and then go quiet.** After a long stretch of work, send a one-line status.
+27. **Prove a fix is surgical.** Before a deploy, list every file that will change (`scripts/diff_check.sh`). If anything shows up that wasn't asked for, stop.
 
 **How he talks.** Voice-typed, so words run together and swear words mean urgency, not anger at the work. "Go," "do it all" and "sweet" mean build everything discussed. Questions like "is that against the rules?" want a researched answer with sources. He tests as different accounts (admin, a buyer, real sellers like Nikki), so ask which one.
 
@@ -487,7 +498,8 @@ Do these before the first feature. Every one was learned the hard way.
 3. **Records system before code:**
    - `scripts/journal.py`, `scripts/changelog.py`, `scripts/package.sh` (Appendix B);
    - the hooks in `.claude/settings.json`;
-   - the political app's Stop hook (`stop_check.py`), so a turn can't end with unsent changes;
+   - the Stop hook (`scripts/stop_check.py`) and `scripts/mark_sent.sh`, so a turn can't end with unsent changes;
+   - `scripts/diff_check.sh`, which lists what a deploy will change;
    - `docs/` with the User Guide, White Paper, Complete Guide, Operating Rules, Mission Statement and Lessons_For_Next_App.
 4. **Secrets go straight into Vercel env vars,** never pasted into chat. If one gets pasted, the journal script redacts it (GitHub push protection will block it otherwise, T-15).
 5. **Database foundation** (one migration):
@@ -666,6 +678,7 @@ Note: `ilike '%____%'` doesn't find underscores, because `_` is a wildcard. Use 
 - **"Apply to new photos" checkboxes don't work,** because people pick photos first. Use buttons that fix the photos already there.
 - **Photo files keep the originals;** the AI and the editor make copies.
 - **Location comes from the seller's profile,** not the item.
+- **`cleanAiTells()`** (`src/lib/listing.ts`) runs on every AI title and description, and on the copies for other sites. Em and en dashes become commas, except between numbers (1985-1989 keeps a hyphen). Curly quotes, the ellipsis character and hidden spaces become plain keyboard characters. Adapted from the political app's `noLinks` (PP-T1).
 
 ## 4B. The engine room: every outside service and behind-the-scenes workaround
 
@@ -681,7 +694,7 @@ This is the same list the Operations page shows under "Outside the site" (stored
 | **Supabase** (database, sign-in, photo storage) | Every account, item, order, message and photo; row-level security | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase connector `execute_sql` for all reads, schema changes and data fixes; `list_tables` and `get_advisors` for checks | **pg_net** (`net.http_get`/`http_post`) is Claude's window to the live site and outside URLs. **pg_cron** gives exact schedules. `apply_migration` gets cancelled, so use `execute_sql`. Mixed `drop policy`/`revoke` batches get cancelled, so use DO blocks or run them alone. Approvals nobody answers cancel the change. Nightly JSON backup to a private bucket (the free plan has no managed backups). | Free to 1 GB of files; Pro $25 |
 | **GitHub** (code) | The code and its history; the Change Log is built from it | Repo `wholesale30/next-owner-market`, linked through the GitHub app | `git` in the sandbox; the session's proxy supplies the login | Personal tokens don't work behind the proxy; install the GitHub app. Always `git pull --rebase` (other sessions push). Push protection blocks secrets; the journal script redacts them. | Free |
 | **Stripe** (payments) | Checkout, held money, paying sellers (Connect Express), Pro / Power / Thrift subscriptions, top-up packs | `STRIPE_SECRET_KEY`; the webhook secret and Pro price are in `settings.stripe`, written by the one-tap `/api/stripe/setup` | Prices made in code (`price_data`); the webhook and price created by the setup route | The Connect platform questionnaire can only be done by the owner in the live dashboard (no API). Watch Sandbox vs live. Every money step is guarded so it can't run twice. | 2.9% + 30¢ a charge; +0.7% subscriptions |
-| **Resend** (email) | Every email: orders, alerts, welcome series, digests, to-do reminders | `RESEND_API_KEY` (send-only), `EMAIL_FROM`; domain verified with DNS records | Sends from server code; every send logged (`email_log`, `notifications`) | A send-only key can't read account info (401), so health is judged by real sends. Capped at 80 automatic emails a day. The sandbox can't reach Resend directly, so test by triggering the live site. | Free 3,000/month, 100/day |
+| **Resend** (email) | Every email: orders, alerts, welcome series, digests, to-do reminders. **Both apps send through the same Resend account,** so the 100-a-day and 3,000-a-month limits are shared. | `RESEND_API_KEY` (send-only), `EMAIL_FROM`; domain verified with DNS records | Sends from server code; every send logged (`email_log`, `notifications`) | A send-only key can't read account info (401), so health is judged by real sends. Capped at 80 automatic emails a day. The sandbox can't reach Resend directly, so test by triggering the live site. | Free 3,000/month, 100/day |
 | **Phone carriers' email-to-text** (texts) | Owner alerts and seller texts | An address like `8047207910@vtext.com` in `settings.business.alert_to`; sellers pick a carrier in Profile | Same as email | `@vzwpix.com` carries long messages. Dead carriers (AT&T, Cricket, T-Mobile, Metro, Mint) are marked "texts not available"; Verizon ends by March 31, 2027. | Free |
 | **Anthropic** (the AI) | Lookups, listings, pile sorting, Buy or Pass, weight guesses, rewrites, help answers, weekly blog | `ANTHROPIC_API_KEY`; model names in `CLAUDE_MODEL` and similar | `.env.local` has the key, so Claude tests prompts from the sandbox (api.anthropic.com is reachable) | `askWithTool` with fallback; photos shrunk to 1,100px; every call's cost logged in `ai_usage`; a cutoff tripwire; refund on failure; allowances in one database function. | Pennies per use |
 | **Shippo** (shipping labels) | Live rates and labels (when a key is added) | `SHIPPO_API_KEY` (not set yet) | | Without a key, a built-in estimate by weight and distance tracks USPS Ground Advantage. The Google feed uses the farthest-zone estimate. | Pay per label; the app adds a markup |
@@ -706,7 +719,7 @@ This is the same list the Operations page shows under "Outside the site" (stored
 | **Health automation** | A daily check of every outside service and every public page, signed out | Red status plus an alert to the owner | Judge each service by what it actually did. |
 | **Robot new user** | A weekly fake customer on the live site | Finds breakage before customers do | Deletes everything it made. |
 | **Headless Chromium (Playwright)** | Pre-installed in the sandbox | Phone-width screenshots (412px, 360px) of new screens before shipping | Kill old servers by port, not `pkill`; wait for CSS to load. |
-| **Hooks** (`.claude/settings.json`) | Commands that run on their own | Journal and change log before condensing and at session end; a Stop hook in the political app | Hooks can't send files to the chat. |
+| **Hooks** (`.claude/settings.json`) | Commands that run on their own | Journal and change log before condensing and at session end. A **Stop hook** (`scripts/stop_check.py`, in both apps) refuses to end a turn while code changes haven't been sent. | Hooks can't send files to the chat; they can only stop Claude and remind it. The hook allows the second stop attempt, so it can't loop. |
 | **Skills** | Saved instructions on the Claude account | `shayne-operating-rules` and `app-builder-playbook` load in every chat | Rules must also be in CLAUDE.md and the project. |
 | **Claude project docs** | The "Warehouse items" project | A copy of the Operating Rules and guides, visible in every chat of the project | Text only (.docx isn't accepted there). |
 | **The file tool** | Sends the zip into the chat | After every batch | The only way files reach the owner. |
@@ -775,9 +788,9 @@ The scripts are in Appendix B.
 2. Lint and type-check (`npx tsc --noEmit`, `npx eslint <files>`), then `npm run build`.
 3. Commit with a plain-English message plus the trailers.
 4. `git pull --rebase` (other sessions push too), then push.
-5. Deploy: Vercel `create_deployment` with project, target production and the git source, and **no team ID**. One build at a time.
-6. Wait for READY, then check live (pg_net, or the page itself).
-7. Update the guides. Run `package.sh`, commit the records, push, deploy, and **send the zip**.
+5. Run `bash scripts/diff_check.sh` and confirm only the intended files are listed. Then deploy: Vercel `create_deployment` with project, target production and the git source, and **no team ID**. One build at a time.
+6. Wait for READY, then check live (pg_net, or the page itself). Then run `bash scripts/diff_check.sh --mark`.
+7. Update the guides. Run `package.sh`, commit the records, push, deploy, **send the zip**, then run `bash scripts/mark_sent.sh`. The Stop hook won't let the turn end until this is done.
 8. Tell the owner, bottom line first. Include a forwardable message if a user reported it.
 
 **Database changes:**
@@ -826,7 +839,10 @@ Measure real costs from the log before setting prices.
 
 **Vercel**
 
-- No team ID on deploys.
+- No team ID or slug on deploys (403 "scope" on a personal account; T-35, PP-T2).
+- Deploys made from uploaded files (not from GitHub) must list **every** file. A file the tool has never stored must be included in full. A partial list drops pages from the live site (PP-T4). Deploying from GitHub (`gitSource`) avoids all of this.
+- `list_deployment_files` cuts off deep folders; use `get_deployment_file_contents` with the file ID.
+- Env vars marked sensitive can't be read back.
 - Builds take about 2 minutes; wait before telling anyone to verify.
 - Background work after the response gets killed, so **await every write.**
 - Cron on the free plan is daily, within the hour; use pg_cron for exact times.
@@ -853,6 +869,8 @@ Measure real costs from the log before setting prices.
 **Resend**
 
 - Domain not verified means sends fail; check the response.
+- The `resend.dev` test sender only emails the account owner (PP-T6).
+- The free plan allows 3 domains, but the **100 a day and 3,000 a month are per account**. Next Owner Market caps its automatic emails at 80 a day; the political app sends about 5 a day. Watch the total if either grows.
 - A send-only key returns 401 on account calls, so judge health by real sends.
 
 **Anthropic AI**
@@ -884,6 +902,8 @@ Measure real costs from the log before setting prices.
 
 **Facebook / Meta**
 
+- Feed ranking (from third-party sources; Meta's own pages couldn't be fetched): it rewards comments, private shares, "See more" taps, time spent and original content, and reduces clickbait and engagement bait. Links in the body hurt reach, so put links in the first comment. A **follow ask** is not on Meta's engagement-bait list (PP-T8).
+- Instagram shows about 125 characters before "more" and has no clickable links in captions. X shows about 280 before "Show more."
 - No API to post Marketplace listings; use copy-paste text. Automation risks the account.
 - The Groups API ended April 2024: apps can't post to groups. Post to a business Page instead, which needs a Page token with `pages_manage_posts`; it expires in about 60 days.
 - Marketplace listings with an outside web address can be removed even after approval. The owner chose to leave the address off.
@@ -982,6 +1002,9 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 - **T-52. Google Merchant Center "Misrepresentation" suspension (Oct 5).** Blank "operated by ____" in the Terms; no Contact/About/Returns/Shipping; other sellers' items in the feed; pickup items sent as free shipping; "like new" sent as "refurbished." All fixed. The owner's steps went on his to-do list with reminders.
 - **T-53. The reminder test link expired at once:** wrong date format (Part 1, 1.9).
 - **T-54. Private settings readable by anyone.** Keys with ":" are staff-only.
+- **T-55. Em dashes in AI listings (fixed before anyone complained, Oct 5).** Learned from PP-T1. **Rule 24:** filter in code. `cleanAiTells()` now runs on every AI title, description and cross-post copy.
+- **T-56. A failed reminder would silently skip a slot.** The slot is released on failure and retried at :20 and :40 (from PP-T7).
+- **The political app's own trial and error** (PP-T1 to PP-T10: em dashes, Vercel 403, copy slips and dropped files in hand-built deploys, cancelled SQL, the Resend test sender, cron limits, an over-claim about the algorithm, slogans, shared prompts) is in its section below and applies to every app.
 
 ## 12. What worked and should be repeated
 
@@ -1002,6 +1025,7 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 15. Growth loops that run themselves: shared pages, IndexNow, city and hub pages, a weekly blog, branded previews, an embed widget, milestones with referral links.
 16. The to-do list that nags until it's done (Part 1).
 17. Tell the owner to keep selling while it's being built.
+18. Two apps teaching each other. The political app's lessons fixed Next Owner Market the same night it read them, and the same goes the other way. Keep carrying the Playbook back and forth.
 
 ## 13. Why we do this (for the book)
 
@@ -1037,7 +1061,7 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 - **Link the repo to Vercel** so pushes deploy themselves. This removes a whole class of deploy work (the political app's lesson too).
 - **Put `admin()` in `lib/supabase/admin.ts`,** not the Stripe file.
 - **Number every migration and always save the file.** Here, 010–029 exist only in the live history.
-- **Use the Stop hook from day one** (from the political app).
+- **Use the Stop hook from day one** (from the political app). *Done in Next Owner Market Oct 5, along with `mark_sent.sh` and `diff_check.sh`.*
 - **Make `journal.py` follow daylight saving** (it's fixed at UTC−4).
 - **Trust pages and the settings privacy rule** on day one, not after a suspension.
 - **Plan for text alerts after email-to-text ends** (push notifications or paid SMS).
@@ -1066,6 +1090,95 @@ Each app adds one section at the end of this document, never editing the others:
 ```
 
 Then raise the version number at the top. Shayne brings the file back, and Claude merges the lessons into the main sections (keeping the originals under the app's heading) as the next version.
+
+## Lessons from the Political Posting App (Oct 2 to 5, 2026)
+
+Built by Shayne Snavely for his Virginia politics page. Next.js on Vercel plus Supabase. It finds the top stories, writes Facebook, X and Instagram posts in his voice, builds graphics, tracks what was posted, and emails him the latest articles and his to-do list. Four days of building. Facts below come from the project files and the verbatim journal.
+
+### New rules
+
+- **RULE ZERO: never guess.** Search and fetch the real source before stating any step, menu, price, limit or API detail. If it can't be confirmed, say "I could not confirm this" and say what was checked. He said it "a thousand times." It outranks speed.
+- **Surgical fixes only, one change at a time.** When he asks for one fix, change only that. Say the one change in a line, make only that edit, run scripts/diff_check.sh before deploying and stop if any other file or line shows up, deploy, check the live file matches the local one, then tell him exactly what changed and what did not. He tests every fix, so any extra change forces him to re-test everything.
+- **Zero-knowledge steps for anything outside the app.** Write for someone who has never done it: which app to open, the exact address, "Desktop site" when needed, what he will see, what to tap, what to type in every box, what to do if the screen looks different. One complete numbered list, written after looking up the real steps.
+- **Do it yourself.** If a change can be made from here (code, database, Vercel, DNS by API, env vars), make it. Never send him to look something up that can be reached from here.
+- **Anything that must never appear is filtered in code, not only requested in a prompt.** On Oct 5 he was racing a 7:30 posting deadline and the draft had em dashes. His words: "Everybody knows, damn sure Facebook algorithm knows, that those fucking dashes ... is obviously AI." A prompt rule had failed, so the filter now lives in src/lib/writer.ts and runs on every output. When he is racing a deadline, fix his actual post first.
+- **Copy what already won before adding generic advice.** His 11 posts reached up to 977,000 views. The winning structure (headline hook with names and numbers, dated named sources, exact quotes, calling out both sides, one concrete private-share ask, one real question) is in the writer prompt and outranks generic algorithm advice except for the dash, link and slogan bans.
+- **Keep the follow ask.** Followers grew by 4,000 after he started asking people to follow. Meta's five engagement bait types (vote, react, share for a reward, tag, meaningless comment) do not include a follow ask.
+- **Update the journal automatically, every time.** "Always update the journal. That should be an automatic thing." scripts/journal.py runs from refresh_docs.sh and from the hooks, and the Stop hook blocks the end of a session until the records were sent.
+- **Send the records after every batch as ONE dated zip** (Political_Posting_Records_YYYY-MM-DD_HHMM.zip), then run mark_sent.sh. Never wait to be asked.
+- **Posted is frozen.** The Posted tab must show exactly what was posted. It is enforced in the database (drafts.posted_snapshot and trigger trg_snap_posted), never read from live drafts.
+- **Scheduled jobs run in parallel, log FAILED to run_log, and stay under 300 seconds.** Check run_log the next morning without being asked. A long serial morning loop is not allowed.
+- **No paid services without asking.** Keep costs at zero.
+- **Never say "next I'm doing X" and then do nothing.** After a long silence send a short status line.
+- **Phone-first screens.** Copy buttons on every page. List screens show one line per item (thumbnail, headline, date), tap to open, and a "Back to the list" button.
+- **Banned slogans** (his Oct 4 order): "Read that again," "Don't trust me. Check it yourself," "Today, not tomorrow," "This moves fast and the clock is already running." Posts are Facebook 300 to 450 words (never over 500), X 100 to 160, Instagram 100 to 200, and the closing catch-up block stays.
+
+### Trial and error
+
+- **PP-T1. Em dashes in a post (Oct 5).** Cause: the no-dashes rule lived only in the prompt. Fix: noLinks in src/lib/writer.ts turns em dashes, en dashes and spaced hyphens into commas, and converts curly quotes, the ellipsis character and hidden spaces to plain keyboard characters, on every output. Rule: filter in code what must never appear.
+- **PP-T2. Vercel 403 "scope wholesale30" (Oct 5).** Cause: passing teamId or slug to the deploy tools on a personal Hobby account. Fix: leave both out. Rule: never pass teamId or slug for this account.
+- **PP-T3. Copy slips in deploys (Oct 4).** A live page once said "X marked undone" instead of "X mark undone" because text pasted into a deploy call picked up a typo. Cause: files inlined by hand into the deploy call. Fix: compare each live file's uid to the local sha1sum and redeploy until they match. Rule: copy errors are changes.
+- **PP-T4. missing_files and a deploy that dropped files (Oct 5).** The deploy tool refuses a sha it has never stored (queue page, comments page, writer.ts). A retry that left three files out would have broken the site. Cause: rebuilding a long file list by hand under pressure. Fix: inline any file whose sha is unknown, always send the full list, cancel a partial deploy at once. Rule: every deploy lists ALL files.
+- **PP-T5. The approval layer cancelling SQL (Oct 4).** DELETE statements and big batches were cancelled. Fix: small, single-purpose execute_sql calls.
+- **PP-T6. Email stopped at the account owner (Oct 5).** Resend's test sender only emails the account owner. Fix: send from the verified domain (nextownermarket.com) with a real key. The key was pasted in chat, so it was stored as a sensitive Vercel env var and never repeated. Rule: keys are account-level, so one verified domain serves every app.
+- **PP-T7. Vercel Hobby only allows daily crons (Oct 5).** Fix: pg_cron inside Supabase calls the app with net.http_get. Each route checks the Eastern hour and claims a slot (todo_slots, cron_todo_claim and unclaim) so daylight saving and double firing can never send twice.
+- **PP-T8. An over-claim about the algorithm (Oct 5).** Cause: saying every source treats like and share asks as bait. Fix: fetched Edgar and Revive Social, then corrected it: Meta's own list has no follow ask, and plain like or share asks are a gray area. Rule: do not generalize past what was fetched.
+- **PP-T9. Slogan posts (Oct 4).** The writer produced catchphrases he found stupid. Fix: a banned list in the prompts. Rule: if a line sounds like a slogan, state the plain fact instead.
+- **PP-T10. Partial prompts getting edited twice.** The prompt file (src/lib/prompts.ts) is shared by every writer, so a length change must be made in every prompt that mentions it, including the review prompt and the redo route.
+
+### Better than Next Owner Market
+
+- **The journal is verbatim and automatic.** scripts/journal.py rebuilds it from the transcript, hooks run it, and a Stop hook (scripts/stop_check.py) plus mark_sent.sh force the records to be sent. Copy these on day one.
+- **diff_check.sh and a deployed snapshot.** docs/.deployed_snapshot holds exactly what is live, and scripts/diff_check.sh lists every file that differs before a deploy. This is how surgical fixes are enforced instead of promised.
+- **Per-account row-level security** with a server pass: cron_*(p_pass, ...) functions guarded by _server_ok(p_pass), so scheduled jobs can read one account's data without a service key in the browser.
+- **His voice is stored verbatim** (acct.voice_profile, about 74,700 characters of his own posts) and fed to the writer, instead of a summary of his style.
+- **Idempotent schedules** with slot claims and an Eastern-hour check, so a retry never double sends.
+
+### Platform gotchas
+
+- **Vercel:** teamId or slug gives a 403 on a personal account. Hobby crons are daily only. Non-git deploys must list every file. Sensitive env vars can't be read back, and env values are never decrypted unless he asks. list_deployment_files truncates deep folders, so use get_deployment_file_contents with the fileId. The deploy tool decodes escape sequences in inlined files, so a live uid can differ from the local sha1 while behaving the same.
+- **Supabase:** pg_cron runs in UTC. pg_net (net.http_get, results in net._http_response) is the only way to test the live site, because the shell and the Vercel fetch tools can't reach it. The approval layer cancels DELETE and big batches.
+- **Resend:** the resend.dev sender only emails the account owner. Keys are account-level. The free plan is 3,000 emails a month.
+- **Verizon:** the email-to-text gateway (vtext.com and vzwpix.com) ends 03/31/2027. Plan push notifications or paid SMS before then.
+- **Facebook ranking (third-party sources; Meta's own pages could not be fetched):** it predicts clicks, time spent, comments, shares and "informative" value, and reduces clickbait and engagement bait. Longer thoughtful comments, private shares and "See more" taps are strong signals. Original content wins. Links in the body hurt reach, so links go in the pinned comment. Fast replies help.
+- **Instagram and X:** Instagram shows about 125 characters before "more" and no clickable links in captions. X shows about 280 characters before "Show more." None of the three publishes how it detects AI text, so the safe move is removing every known tell.
+
+### Patterns worth reusing
+
+- **Code filter for AI tells and links** (src/lib/writer.ts). Real code:
+
+```ts
+export const noLinks = (t: string) => (t || "")
+  .replace(/(?:https?:\/\/|www\.)\S+/gi, "")
+  .replace(/[ \t]*[\u2014\u2013][ \t]*/g, ", ").replace(/[ \t]-{1,2}[ \t]/g, ", ")
+  .replace(/,\s*,/g, ",").replace(/,\s*([.;:!?])/g, "$1")
+  .replace(/[\u201c\u201d\u201e]/g, '"').replace(/[\u2018\u2019\u201b]/g, "'")
+  .replace(/\u2026/g, "...").replace(/[\u00a0\u202f\u2009\u200b\u2060]/g, " ")
+  .replace(/[ \t]{2,}/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+```
+
+- **Guaranteed closing** (src/lib/writer.ts): ensureClosing appends the share and follow lines if the writer left them out, so the closing ask can never go missing.
+- **Three prompt blocks kept separate** (src/lib/prompts.ts): HUMAN_TELLS (never look AI written), ALGO_RULES (what the feed rewards), WINNER_RULES (copy his own best posts). Each is edited alone, and the review prompt also acts as an AI-detector pass.
+- **A box before writing**: on every article a talk-or-type box tells the writer what to add; its text is passed as the owner's instructions into writePost.
+- **Scheduled email routes** (src/app/api/articles/send/route.ts): GET with a key, runs only at Eastern hours 9 and 16, claims a slot, loops the accounts, logs FAILED to run_log, unclaims the slot on failure. Latest articles at 9 AM and 4 PM, to-do at 9 AM, 11 AM and 5 PM.
+- **Records pipeline** (scripts/refresh_docs.sh, make_zip.sh, mark_sent.sh): one command rebuilds the journal, change log and rule documents, one command zips them with a dated name, and the Stop hook keeps them from being forgotten.
+
+
+## From Next Owner Market back to the Political Posting App (v1.2)
+
+What Next Owner Market has that would make the political app stronger, most valuable first. Each one has its full explanation and real code earlier in this Playbook.
+
+1. **Deploy from GitHub, not from uploaded files.** Next Owner Market deploys with `create_deployment` and `gitSource: { type: "github", org, repo, ref: "main" }`, so Vercel builds from the pushed code. That makes PP-T3 (copy slips) and PP-T4 (missing or dropped files) impossible, and diff checks become `git diff`. If the political app has no GitHub repo, make one first and push; then deploy this way (Part 2, section 8).
+2. **Your dash filter changes number ranges.** `noLinks` turns "1985–1989" into "1985, 1989" and "10–12" into "10, 12." For dates, vote counts or polling ranges in posts, add the number rule from Next Owner Market's `cleanAiTells` before the comma rule: `.replace(/(\d)\s*[\u2013\u2014]\s*(\d)/g, "$1-$2")`.
+3. **Retry after a failed send.** Releasing the slot only helps if something calls again in the same hour. Schedule pg_cron at `0,20,40` of each hour you use (Part 1, 1.5).
+4. **Shared email allowance.** Both apps send through one Resend account: 100 a day and 3,000 a month in total. The free plan allows 3 domains, so the political app can verify its own domain (shayneforva.com) and stop sending as nextownermarket.com. That's worth doing before any email goes to people other than Shayne.
+5. **AI calls through one helper (`askWithTool`, Part 2, 4.6).** It retries when a model refuses forced tool choice (that broke five tools here in one day, T-32), logs the cost of every call (awaited, so nothing is lost on Vercel), and records when an answer was cut off at the token limit.
+6. **A daily health check, signed out** (Part 2, section 6). It opens every public page as a stranger, makes one real AI call, checks each outside service by what it actually did, and alerts Shayne if anything is red. A weekly robot user does the main task end to end.
+7. **Nothing is ever lost:** the `trash` table and trigger on every table, plus a Deleted page that restores (Part 2, 4.3).
+8. **Signed-out visitors need `grant execute on is_staff() to anon`** if any public rule calls it (T-29). Every listing here showed 404 to strangers until this was found.
+9. **The Playbook rebuilds itself from the real code** (`scripts/build_playbook.py`, Appendix B), so the code in it is never out of date. Copy the script and the template into the political app's records pipeline.
+10. **An Operations page** (Part 2, 4.5 and 4B): every automation with what, why, last result, on/off and Run now, plus every outside service with live health. Your `run_log` holds the facts; this page shows them to Shayne in plain English.
+11. **Trust pages before any ad, Google or payment account:** Contact, About, Terms and Privacy linked on every page, with no blank lines (T-52).
 
 # Appendix A: The Operating Rules (full text)
 

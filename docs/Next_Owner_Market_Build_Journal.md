@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 5, 6:57 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 5, 6:58 PM (continuing)
 
 **Claude:**
 
@@ -7980,3 +7980,41 @@ Two other things:
 ### Oct 5, 6:57 PM — Shayne
 
 > Goive it toe here again so I have the latest to give it.
+
+**Claude:**
+
+I sent the latest App Builder's Playbook as a Word file, rebuilt at 6:57 PM. Give that file to the other Claude. Its first page tells it how to add its own lessons and send it back. Next_Owner_Market_Files_2026-10-05_1857.zip holds the same playbook plus the updated journal and everything else.
+
+### Oct 5, 6:57 PM — Shayne
+
+> Forgive the politics, build these two.
+
+**Claude:**
+
+You likely mean: build the two things (the to-do page and the twice-a-day email and text) in the political posting app. Checking whether I can reach that app from here:
+
+I've stopped. I read "build these two" as adding the to-do page and the twice-a-day email and text to the political posting app. Its code isn't in this session, and my search for its repository turned up nothing. Nothing in the political app has been changed.
+
+Tell me how you want to go:
+- **Use the other chat (fastest):** give the political app's Claude the App Builder's Playbook I just sent and say *"Build Part 1 of this playbook here."* Part 1 has everything it needs.
+- **Do it from here:** tell me the political app's GitHub repository name and I'll add it to this session and build both there.
+
+If "these two" meant something else, tell me which two.
+
+### Oct 5, 6:58 PM — Shayne
+
+> I meant so I give the politics chat um, these two files.
+
+**Claude:**
+
+Yes, and you only need one of them. Give the politics chat **Next_Owner_Market_App_Builder_Playbook.docx**. That's the one it needs. The zip is Next Owner Market's full record set, so the other chat doesn't need it.
+
+Paste this with the file:
+
+> Read this App Builder's Playbook first. Then:
+> 1. Build Part 1 here: the 📝 To-do page and the 11 AM / 5 PM email and text reminders, following its checklist in section 1.10. Use this app's web address in the schedule.
+> 2. Add a section at the end called "Lessons from the Political Posting App" in the format in Part 2, section 16. Include everything this app learned: rules, trial and error, outside services and workarounds, and anything you do better than Next Owner Market. Change the version to 1.1.
+> 3. Put the playbook in this project's files so it's rebuilt and sent with every update, like the journal.
+> 4. Send me the updated playbook as a Word file.
+
+When it sends back version 1.1, bring that file here and I'll merge both into one master copy.

@@ -191,11 +191,28 @@ export function depopCopy(input: ListingCopyInput) {
   return `${head}${item.description.trim().slice(0, Math.max(150, 1000 - head.length - tail.length))}${tail}`;
 }
 
+/**
+ * Strip the marks that make text look AI-written (Oct 5, 2026, learned from the political posting app:
+ * a prompt rule alone didn't stop em dashes). Em/en dashes become commas, except between numbers
+ * (1985–1989, 10–12 in) where they become a plain hyphen; curly quotes, the ellipsis character and hidden
+ * spaces become plain keyboard characters. Runs on every AI title and description.
+ */
+export function cleanAiTells(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/(\d)\s*[\u2013\u2014]\s*(\d)/g, "$1-$2")
+    .replace(/[ \t]*[\u2014\u2013][ \t]*/g, ", ")
+    .replace(/,\s*,/g, ",").replace(/,\s*([.;:!?)])/g, "$1").replace(/^\s*,\s*/gm, "")
+    .replace(/[\u201c\u201d\u201e]/g, '"').replace(/[\u2018\u2019\u201b]/g, "'")
+    .replace(/\u2026/g, "...").replace(/[\u00a0\u202f\u2009\u200b\u2060]/g, " ")
+    .replace(/[ \t]{2,}/g, " ").trim();
+}
+
 /** Remove any price talk the AI slipped into buyer-facing text. Prices live in the price field only. */
 export function scrubPriceTalk(text: string | null | undefined): string {
   if (!text) return "";
   const sentences = text.split(/(?<=[.!?])\s+|\n+/);
-  return sentences.filter((x) => !/\$\s?\d|\b\d+\s?(dollars|bucks)\b|\b(worth|valued?|retail(s|ed)? (for|at)|resale|asking|price[ds]?|sell(s)? for)\b/i.test(x)).join(" ").replace(/\s+/g, " ").trim();
+  return cleanAiTells(sentences.filter((x) => !/\$\s?\d|\b\d+\s?(dollars|bucks)\b|\b(worth|valued?|retail(s|ed)? (for|at)|resale|asking|price[ds]?|sell(s)? for)\b/i.test(x)).join(" ").replace(/\s+/g, " ").trim());
 }
 export function scrubSpecs(specs: Record<string, string> | null | undefined): Record<string, string> {
   const out: Record<string, string> = {};

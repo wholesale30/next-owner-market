@@ -558,3 +558,18 @@ Checked against each site's own policy pages:
 - **How it runs:** pg_cron job `todo-reminders-11am-5pm` (15, 16, 21 and 22 UTC) calls `/api/todo/remind?key=…` (the key is in settings `todo:remind`). The route only sends when it's 11 or 17 in New York, and once per slot, so it stays right through daylight-saving changes. The 9 AM daily job no longer sends it.
 - **Texts:** the full list goes to `@vzwpix.com` (picture message) instead of `@vtext.com`, so it isn't cut at 160 characters.
 - **Security:** settings keys containing ":" are now readable by staff only.
+
+## Lessons adopted from the political posting app (Oct 5, 2026, evening)
+
+- **`cleanAiTells()`** (`src/lib/listing.ts`):
+  - Called inside `scrubPriceTalk`, so it covers every AI description and condition note.
+  - Also on AI titles (ai-listing, try, revise, worth) and on the cross-post copies built on the item page (`copyInput`), so older listings are covered too.
+  - Em and en dashes become ", ", but digit–digit becomes "-". Curly quotes, the ellipsis character and hidden spaces become plain characters.
+- **To-do reminder:**
+  - pg_cron is now `0,20,40 15,16,21,22 * * *`.
+  - `/api/todo/remind` releases `last_slot` when the send fails, so a :20 or :40 call retries.
+- **Records enforcement:**
+  - `scripts/stop_check.py` is a Stop hook in `.claude/settings.json`. It blocks while there are uncommitted non-docs changes, or non-docs commits newer than `/home/claude/deliverables/.last_sent`. If that file is missing, it compares against the latest "Records" commit.
+  - Run `scripts/mark_sent.sh` after SendUserFile.
+- **Deploy check:** `scripts/diff_check.sh` lists the files going live since `/home/claude/deliverables/.last_deployed`; use `--mark` after READY.
+- **Playbook v1.2:** the political lessons are merged, and there's a reply section for that app.

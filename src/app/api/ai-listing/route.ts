@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { LISTING_HONESTY, BUYER_VOICE } from "@/lib/ladder";
-import { scrubPriceTalk, scrubSpecs } from "@/lib/listing";
+import { cleanAiTells, scrubPriceTalk, scrubSpecs } from "@/lib/listing";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 import { askWithTool } from "@/lib/ai-tool";
 
@@ -84,7 +84,7 @@ Record the listing with the listing tool. Never put a price or dollar amount in 
     d.description = scrubPriceTalk(d.description);
     d.condition_notes = d.condition_notes ? scrubPriceTalk(d.condition_notes) : d.condition_notes;
     d.specs = scrubSpecs(d.specs);
-    if (d.title) d.title = d.title.replace(/\s*[-–(]?\s*\$\s?\d[\d,.]*\s*\)?/g, "").trim();
+    if (d.title) d.title = cleanAiTells(d.title.replace(/\s*[-–(]?\s*\$\s?\d[\d,.]*\s*\)?/g, "").trim());
     if (!d.title || !d.description) throw new Error("The AI came back without a title or description.");
     return NextResponse.json({ draft: d });
   } catch (e) {

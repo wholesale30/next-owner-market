@@ -569,3 +569,7 @@ Every public page now has a footer: **Contact · About · Returns · Shipping ·
 ## Your to-do list, twice a day (Oct 5, 2026)
 
 At 11 AM and 5 PM you get your whole to-do list by email and text: urgent first, with the steps for the urgent ones. Tap ✓ on an item in 📝 To-do when it's done and it stops coming.
+
+## Cleaner AI writing (Oct 5, 2026)
+
+AI-written titles and descriptions no longer contain long dashes (—) or curly quotes, which make a listing look machine-written on Facebook. This also applies when you copy a listing for another site.
