@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 9, 11:06 AM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 11:07 AM (continuing)
 
 **Claude:**
 
@@ -8154,3 +8154,7 @@ Still queued behind the previous update. Waiting:
 Live. Testing the same question:
 
 Fixed and checked live. Records:
+
+Fixed and live. I asked the Help box the same question on the live site, and the answer now has no long dashes or curly quotes. That was the only change.
+
+Next_Owner_Market_Files_2026-10-09_1106.zip has the updated records.
