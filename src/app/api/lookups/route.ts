@@ -39,6 +39,15 @@ export async function POST(req: Request) {
   if (b.action === "listed") {
     const itemId = b.item_id && /^[0-9a-f-]{36}$/.test(b.item_id) ? b.item_id : null;
     await d.from("lookups").update({ item_id: itemId || lk.item_id, listed_count: Number(lk.listed_count || 0) + 1 }).eq("id", id);
+    // Same item looked up again a minute earlier (new photos or notes) leaves a twin in "not listed yet".
+    // Clear unlisted lookups of the same thing from the 2 hours before this one (Oct 9, 2026).
+    const key = String(lk.title || "").toLowerCase().slice(0, 40);
+    if (itemId && key.length >= 12) {
+      const since = new Date(new Date(lk.created_at).getTime() - 2 * 3600_000).toISOString();
+      const { data: twins } = await d.from("lookups").select("id, title").eq("owner_id", lk.owner_id).eq("tool", lk.tool).is("item_id", null).eq("listed_count", 0).is("deleted_at", null).gte("created_at", since).neq("id", id);
+      const ids = (twins || []).filter((t) => String(t.title || "").toLowerCase().slice(0, 40) === key).map((t) => t.id);
+      if (ids.length) await d.from("lookups").update({ item_id: itemId, listed_count: 1 }).in("id", ids);
+    }
     return NextResponse.json({ ok: true });
   }
   if (b.action === "list") {
