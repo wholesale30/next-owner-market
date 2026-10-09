@@ -5,6 +5,7 @@ import path from "path";
 import { TOPICS } from "@/lib/help";
 import { logUsage } from "@/lib/usage";
 import { aiServiceDown, reportAiDown, AI_DOWN_MESSAGE } from "@/lib/ai-tool";
+import { cleanAiTells } from "@/lib/listing";
 
 export const maxDuration = 30;
 const MODEL = process.env.CLAUDE_ASK_MODEL || "claude-haiku-4-5-20251001";
@@ -50,5 +51,5 @@ export async function POST(req: Request) {
   }
   await logUsage(null, "help_question", MODEL, r.usage);
   const text = r.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
-  return NextResponse.json({ answer: text });
+  return NextResponse.json({ answer: cleanAiTells(text) }); // no em dashes or curly quotes (Rule 24)
 }
