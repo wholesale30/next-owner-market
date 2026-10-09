@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 11:55 AM from the project history (255 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 1:30 PM from the project history (257 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1884,3 +1884,17 @@
 - **Static files (logo, icons):** `public/ads/whats-it-worth-reel.mp4`
 
 <sub>change id f04a633</sub>
+
+### 11:55 — Records: shareable reel link
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx` (+13 more)
+
+<sub>change id fbff8fd</sub>
+
+### 13:25 — What's it worth, Buy or Pass and Sort the pile: big Share and Check another buttons right under the answer; Share opens the phone's share menu (Messages, Facebook, email, copy link) before listing
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+- **Shared UI pieces:** `src/components/ShareAndAgain.tsx`
+
+<sub>change id bf98408</sub>
