@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
-import { askWithTool } from "@/lib/ai-tool";
+import { askWithTool, aiServiceDown, reportAiDown, AI_DOWN_MESSAGE } from "@/lib/ai-tool";
 import { cleanAiTells, scrubPriceTalk } from "@/lib/listing";
 import { BUYER_VOICE } from "@/lib/ladder";
 
@@ -45,7 +45,8 @@ ${String(b.description || "").slice(0, 4000)}
 The seller says: "${instruction}"` }],
     });
     return NextResponse.json({ title: cleanAiTells(String(out.title || "")).slice(0, 80), description: scrubPriceTalk(out.description || ""), condition_notes: scrubPriceTalk(out.condition_notes || ""), changed: out.changed || "Updated." });
-  } catch {
+  } catch (e) {
+    if (aiServiceDown(e)) { await reportAiDown(e); return NextResponse.json({ error: AI_DOWN_MESSAGE }, { status: 503 }); }
     return NextResponse.json({ error: "Couldn't rewrite it right now. Try again." }, { status: 502 });
   }
 }

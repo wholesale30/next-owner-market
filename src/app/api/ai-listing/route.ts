@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { LISTING_HONESTY, BUYER_VOICE } from "@/lib/ladder";
 import { cleanAiTells, scrubPriceTalk, scrubSpecs } from "@/lib/listing";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
-import { askWithTool } from "@/lib/ai-tool";
+import { askWithTool, aiServiceDown, reportAiDown, AI_DOWN_MESSAGE } from "@/lib/ai-tool";
 
 export const maxDuration = 60;
 
@@ -92,6 +92,7 @@ Record the listing with the listing tool. Never put a price or dollar amount in 
     await refundUse(user.id); // the listing didn't come out: give the use back
     const { admin } = await import("@/lib/stripe");
     await admin().from("settings").upsert({ key: `err:listing:${Date.now()}`, value: { message, photos: photoUrls.slice(0, 3), user: user.id, hints: hints || null } }).then(() => {}, () => {});
+    if (aiServiceDown(e)) { await reportAiDown(e); return NextResponse.json({ error: AI_DOWN_MESSAGE, retry: true }, { status: 503 }); }
     return NextResponse.json({ error: "The AI couldn't read that one this time. Tap Try again, or fill it in yourself.", retry: true }, { status: 500 });
   }
 }

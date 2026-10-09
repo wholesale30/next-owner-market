@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { admin } from "@/lib/stripe";
 import { cleanAiTells, scrubPriceTalk } from "@/lib/listing";
-import { askWithTool } from "@/lib/ai-tool";
+import { askWithTool, aiServiceDown, reportAiDown, AI_DOWN_MESSAGE } from "@/lib/ai-tool";
 import { PART_SCHEMA, PART_PROMPT, withPartLinks, type MissingPart } from "@/lib/parts";
 import { LADDER_SCHEMA, LADDER_PROMPT, LISTING_HONESTY, BUYER_VOICE, cleanLadder, type Ladder } from "@/lib/ladder";
 import { createHash } from "crypto";
@@ -129,6 +129,7 @@ export async function POST(req: Request) {
     const message = e instanceof Error ? e.message : String(e);
     await admin().from("settings").upsert({ key: `err:worth:${Date.now()}`, value: { message, raw: raw.slice(0, 2000), photos: photoUrls.slice(0, 3), user: user.id } }).then(() => {}, () => {});
     if (charged) await refundUse(user.id); // give back the use that failed
+    if (aiServiceDown(e)) { await reportAiDown(e); return NextResponse.json({ error: AI_DOWN_MESSAGE }, { status: 503 }); }
     return NextResponse.json({ error: "Couldn't read that one. Try a clearer photo of the whole item, or add a note about what it is." }, { status: 500 });
   }
 }

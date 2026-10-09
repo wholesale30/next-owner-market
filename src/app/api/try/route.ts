@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers";
 import { createClient as createAdmin } from "@supabase/supabase-js";
 import { LISTING_HONESTY, BUYER_VOICE } from "@/lib/ladder";
 import { cleanAiTells, scrubPriceTalk, scrubSpecs } from "@/lib/listing";
-import { askWithTool } from "@/lib/ai-tool";
+import { askWithTool, aiServiceDown, reportAiDown, AI_DOWN_MESSAGE } from "@/lib/ai-tool";
 
 /**
  * Try it free: one photo in, a full listing out, no account needed.
@@ -95,6 +95,7 @@ export async function POST(req: Request) {
     await d.from("settings").upsert({ key: `err:try:${Date.now()}`, value: { message: e instanceof Error ? e.message : String(e) } }).then(() => {}, () => {});
     // don't count a failed try against them
     await d.from("settings").delete().eq("key", `try:ip:${today()}:${ipKey}`).then(() => {}, () => {});
+    if (aiServiceDown(e)) { await reportAiDown(e); return NextResponse.json({ error: AI_DOWN_MESSAGE }, { status: 503 }); }
     return NextResponse.json({ error: "Couldn't read that photo. Try one of the whole item in good light, or add a note about what it is." }, { status: 500 });
   }
 }

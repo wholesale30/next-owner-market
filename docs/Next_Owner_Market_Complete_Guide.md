@@ -573,3 +573,11 @@ Checked against each site's own policy pages:
   - Run `scripts/mark_sent.sh` after SendUserFile.
 - **Deploy check:** `scripts/diff_check.sh` lists the files going live since `/home/claude/deliverables/.last_deployed`; use `--mark` after READY.
 - **Playbook v1.2:** the political lessons are merged, and there's a reply section for that app.
+
+## AI outage handling (Oct 9, 2026)
+
+- **What happened:** the Anthropic account ran out of prepaid credit, and every AI call returned 400 "credit balance is too low."
+- **Detection:** `aiServiceDown(e)` in `src/lib/ai-tool.ts` recognizes out-of-credit, 401/403, 429, 5xx and overloaded.
+- **What customers see:** every AI route (ai-engine for worth-style tools and Buy or Pass and pile, ai-listing, revise, worth, try, ask) returns 503 with `AI_DOWN_MESSAGE`. The use is still refunded.
+- **Owner alert:** `reportAiDown(e)` texts and emails the owner, throttled to once an hour by settings key `err:ai_down:last_alert`.
+- **Help box:** `/api/ask` now catches errors instead of crashing.

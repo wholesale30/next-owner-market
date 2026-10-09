@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { admin } from "@/lib/stripe";
-import { askWithTool } from "@/lib/ai-tool";
+import { askWithTool, aiServiceDown, reportAiDown, AI_DOWN_MESSAGE } from "@/lib/ai-tool";
 import { aiImages, allowanceOf, outOfUsesMessage, refundUse } from "@/lib/usage";
 
 /**
@@ -44,6 +44,7 @@ export async function runVision<T>(opts: {
     const message = e instanceof Error ? e.message : String(e);
     await db.from("settings").upsert({ key: `err:${opts.name}:${Date.now()}`, value: { message, photos: photos.slice(0, 3), user: opts.userId } }).then(() => {}, () => {});
     if (opts.charge !== false) await refundUse(opts.userId);
+    if (aiServiceDown(e)) { await reportAiDown(e); return { ok: false, error: AI_DOWN_MESSAGE, status: 503 }; }
     return { ok: false, error: "Couldn't read that one. Try a clearer photo of the whole item, or add a note about what it is.", status: 500 };
   }
 }

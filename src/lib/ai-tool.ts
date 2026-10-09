@@ -47,3 +47,36 @@ export async function askWithTool<T = Record<string, unknown>>(client: Anthropic
   if (!r2) throw new Error("No structured answer returned");
   return r2;
 }
+
+/**
+ * Oct 9, 2026: the AI account ran out of prepaid credit and every tool told customers "try a clearer photo."
+ * These tell an outage apart from a bad photo: out of credit, bad key, rate limit, overloaded or server errors.
+ */
+export function aiServiceDown(e: unknown): boolean {
+  const status = Number((e as { status?: number } | null)?.status || 0);
+  const msg = e instanceof Error ? e.message : String(e);
+  return status === 401 || status === 403 || status === 429 || status >= 500 || /credit balance|billing|overloaded|rate.?limit|authentication|api key/i.test(msg);
+}
+export const AI_DOWN_MESSAGE = "Our AI is taking a short break right now. Nothing was used or charged. Please try again in a little while.";
+
+/** Text and email the owner the first time the AI goes down (at most once an hour). Never throws. */
+export async function reportAiDown(e: unknown): Promise<void> {
+  try {
+    const { admin } = await import("@/lib/stripe");
+    const d = admin();
+    const key = "err:ai_down:last_alert";
+    const { data } = await d.from("settings").select("value").eq("key", key).maybeSingle();
+    const last = Number((data?.value as { at?: number } | null)?.at || 0);
+    const now = new Date().getTime();
+    if (now - last < 3600_000) return;
+    await d.from("settings").upsert({ key, value: { at: now } });
+    const msg = (e instanceof Error ? e.message : String(e)).slice(0, 200);
+    const credit = /credit balance|billing/i.test(msg);
+    const { alertStaff } = await import("@/lib/alert");
+    await alertStaff(credit ? "AI is OFF: out of prepaid credit" : "AI tools are failing",
+      credit
+        ? "Every AI tool (What's it worth, listings, Sort the pile, Buy or Pass, Help) is stopped until credit is added. Customers see a short-break message and aren't charged. Fix: platform.claude.com, sign in, Settings, Billing, Buy credits. Turn on Auto-reload there so it can't run out again."
+        : `The AI service is refusing requests: ${msg}. Customers see a short-break message and aren't charged. Tell Claude.`,
+      "/app/ops");
+  } catch { /* alerts must never break a request */ }
+}

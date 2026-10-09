@@ -875,6 +875,7 @@ Measure real costs from the log before setting prices.
 
 **Anthropic AI**
 
+- The API is **prepaid**. When the balance hits zero, every call fails with 400 "Your credit balance is too low." Turn on auto-reload (Console → Settings → Billing → Auto-reload) on day zero (T-57).
 - Free-form JSON breaks ($ signs, ranges like "50-80"); use forced tools (`askWithTool`).
 - One model update rejected forced tool choice and broke five tools; keep the fallback and a daily real-call check.
 - Bigger output means a bigger `max_tokens`. Adding keywords cut off 9 of 26 listings at 1,200 tokens; now 2,500–9,000 plus the cutoff tripwire.
@@ -1004,6 +1005,7 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 - **T-54. Private settings readable by anyone.** Keys with ":" are staff-only.
 - **T-55. Em dashes in AI listings (fixed before anyone complained, Oct 5).** Learned from PP-T1. **Rule 24:** filter in code. `cleanAiTells()` now runs on every AI title, description and cross-post copy.
 - **T-56. A failed reminder would silently skip a slot.** The slot is released on failure and retried at :20 and :40 (from PP-T7).
+- **T-57. The AI account ran out of prepaid credit (Oct 9).** Every AI tool stopped, and customers were told "try a clearer photo," which blamed them for an outage. The daily health check caught it and texted the owner at 9:24 AM. **Fix:** `aiServiceDown()` and `reportAiDown()` in `src/lib/ai-tool.ts`. Out of credit, bad key, rate limit or overload now shows "Our AI is taking a short break. Nothing was used or charged," and texts the owner immediately, at most once an hour. **Rule:** tell customers the truth about outages; turn on **auto-reload** for any prepaid service on day zero.
 - **The political app's own trial and error** (PP-T1 to PP-T10: em dashes, Vercel 403, copy slips and dropped files in hand-built deploys, cancelled SQL, the Resend test sender, cron limits, an over-claim about the algorithm, slogans, shared prompts) is in its section below and applies to every app.
 
 ## 12. What worked and should be repeated
