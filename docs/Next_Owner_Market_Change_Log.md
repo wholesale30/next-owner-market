@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 5, 2026 9:18 PM from the project history (244 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 10:53 AM from the project history (246 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1813,3 +1813,20 @@
 - **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
 
 <sub>change id 834e5e0</sub>
+
+### 21:19 — Records: journal, change log, Playbook v1.2
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx` (+13 more)
+
+<sub>change id aecd9d5</sub>
+
+
+## Friday, October 9, 2026
+
+### 10:48 — When the AI service is down (out of credit, overloaded), customers now see 'Our AI is taking a short break, nothing was charged' instead of 'try a clearer photo', and the owner gets a text right away; Help box no longer crashes
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`, `docs/playbook/template.md`
+- **Server routes (API):** `src/app/api/ai-listing/revise/route.ts`, `src/app/api/ai-listing/route.ts`, `src/app/api/ask/route.ts`, `src/app/api/try/route.ts`, `src/app/api/worth/route.ts`
+- **Shared code (logic):** `src/lib/ai-engine.ts`, `src/lib/ai-tool.ts`
+
+<sub>change id 4ed909b</sub>

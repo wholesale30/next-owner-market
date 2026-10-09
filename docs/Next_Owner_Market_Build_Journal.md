@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 5, 9:19 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 10:53 AM (continuing)
 
 **Claude:**
 
@@ -8082,3 +8082,21 @@ Thanks for saving the skills. Here's the file for the other Claude: **Next_Owner
 Paste this along with it:
 
 > Here's Playbook v1.2 from Next Owner Market. Read "From Next Owner Market back to the Political Posting App" first and do those, starting with #1 (deploy from GitHub) and #2 (your dash filter turns number ranges like 1985–1989 into "1985, 1989"). Add anything new under your own section as "Added in v1.3," update the version table, and send it back.
+
+### Oct 9, 10:42 AM — Shayne
+
+> I got text message that there were issues with the app and site.
+
+**Claude:**
+
+I'll check what the alert said and what's broken.
+
+I'll add one shared check: when the failure is the AI service itself (out of credit, overloaded, key problem), customers get an honest message and you get a text right away, at most once an hour.
+
+The Help "Ask anything" box had no error handling at all, so it would just break. Fixing that too:
+
+Only the intended files. Shipping:
+
+Live. Testing on the real site that a customer now gets the honest message:
+
+Works live. Records:
