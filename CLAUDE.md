@@ -15,4 +15,12 @@
 - **SEND, don't wait to be asked.** No hook can put a file in the chat; only Claude can. After every batch of work (every deploy, every document round), at the end of every session, and at least every two hours of a long session: run `bash scripts/package.sh` and send the zip it prints (it holds the Build Journal, Change Log, Operating Rules and every other document). The owner must never have to remind you.
 - **Keep the Complete Guide and Presentation Walkthrough current** alongside the User Guide and White Paper whenever the app changes. Anything the owner says about why he's doing this goes into the Mission Statement and the journal.
 - **App Builder's Playbook (added Oct 5, 2026).** `docs/Next_Owner_Market_App_Builder_Playbook.docx` is the master guide for building ANY app the way we built this one: the exact owner to-do and reminder system (Part 1), and every rule, pattern, outside service and workaround, trial-and-error lesson, cost and gotcha (Part 2). Its source is `docs/playbook/template.md`; `scripts/build_playbook.py` fills in the real code each time `scripts/package.sh` runs, so it's in every zip. **Keep it current as things happen:** every new mistake and fix goes into Part 2 section 11 (next T- number), every new outside service or workaround into section 4B, every new rule into section 1 and Appendix A. Lessons from other apps (e.g. the political posting app) are merged in using Part 2 section 16. The same rules are in the account skill `app-builder-playbook`.
+- **LOCKED LAYOUT (owner, Oct 9, 2026). Never move these without him saying so.**
+  - On What's it worth, Buy or Pass and Sort the pile, the answer screen goes in this order:
+    1. the answer (price / verdict);
+    2. **📤 Share · 📸 Check another**, side by side;
+    3. **📣 Share this find** (puts it on our site), right under them;
+    4. then everything else.
+  - After a listing is written, the "🎉 Your listing is written" box has **📸 Check another item**.
+  - When bringing back something that was removed, put it where he last asked for it, not where it used to be.
 

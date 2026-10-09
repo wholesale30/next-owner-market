@@ -1641,6 +1641,7 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 - **T-56. A failed reminder would silently skip a slot.** The slot is released on failure and retried at :20 and :40 (from PP-T7).
 - **T-57. The AI account ran out of prepaid credit (Oct 9).** Every AI tool stopped, and customers were told "try a clearer photo," which blamed them for an outage. The daily health check caught it and texted the owner at 9:24 AM. **Fix:** `aiServiceDown()` and `reportAiDown()` in `src/lib/ai-tool.ts`. Out of credit, bad key, rate limit or overload now shows "Our AI is taking a short break. Nothing was used or charged," and texts the owner immediately, at most once an hour. **Rule:** tell customers the truth about outages; turn on **auto-reload** for any prepaid service on day zero.
 - **T-58. A merged button hid a feature the owner used (Oct 9).** The new 📤 Share button also made the find's page on our site, so the separate "📣 Share this find" box was removed. To the owner, his "put it on our site" step was simply gone. **Fix:** both buttons are back, sharing one page, so there are no duplicates. **Rule:** when combining features, keep every step the owner can see and name, unless he says to drop it.
+- **T-59. A restored feature went back to its old spot, not the spot the owner had fought for (Oct 9).** "Share this find" came back at the bottom of the page, two days after he got it moved to the top. *"I ask you to change one thing and you change a fucking other thing."* **Rule:** layouts the owner has settled are written down as LOCKED in CLAUDE.md, and anything brought back goes where he last asked for it.
 - **The political app's own trial and error** (PP-T1 to PP-T10: em dashes, Vercel 403, copy slips and dropped files in hand-built deploys, cancelled SQL, the Resend test sender, cron limits, an over-claim about the algorithm, slogans, shared prompts) is in its section below and applies to every app.
 
 ## 12. What worked and should be repeated
@@ -1890,6 +1891,10 @@ What Next Owner Market has that would make the political app stronger, most valu
     - **Never say "next I'm doing X" and then go quiet.** Send a one-line status after a long stretch.
     - **Prove a fix is surgical:** `bash scripts/diff_check.sh` lists every file a deploy will change. Stop if anything shows up that wasn't asked for.
     - **The Stop hook enforces rule 20:** a turn can't end while code changes haven't been sent. After sending the zip, run `bash scripts/mark_sent.sh`.
+
+23. **Locked layouts (Oct 9, 2026).**
+    - Once the owner settles where something goes, it's written down as LOCKED in CLAUDE.md and never moved without his say.
+    - Anything brought back goes where he last asked for it.
 
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."
 ```

@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 2:45 PM from the project history (262 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 5:14 PM from the project history (264 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1932,3 +1932,16 @@
 - **Server routes (API):** `src/app/api/lookups/route.ts`
 
 <sub>change id 09c4578</sub>
+
+### 14:45 — Records: check-another button after listing; twin lookup fix
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx` (+13 more)
+
+<sub>change id 0551ecc</sub>
+
+### 17:10 — Moved '📣 Share this find' (puts it on our site) up right under the Share and Check another buttons on What's it worth, Buy or Pass and Sort the pile, so it's seen without scrolling
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+
+<sub>change id 541d4d3</sub>

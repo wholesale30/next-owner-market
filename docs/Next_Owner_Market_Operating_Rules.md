@@ -66,4 +66,8 @@
     - **Prove a fix is surgical:** `bash scripts/diff_check.sh` lists every file a deploy will change. Stop if anything shows up that wasn't asked for.
     - **The Stop hook enforces rule 20:** a turn can't end while code changes haven't been sent. After sending the zip, run `bash scripts/mark_sent.sh`.
 
+23. **Locked layouts (Oct 9, 2026).**
+    - Once the owner settles where something goes, it's written down as LOCKED in CLAUDE.md and never moved without his say.
+    - Anything brought back goes where he last asked for it.
+
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."
