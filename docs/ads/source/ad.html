@@ -1,0 +1,178 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Inter;font-weight:700;src:url(node_modules/@fontsource/inter/files/inter-latin-700-normal.woff2)}
+@font-face{font-family:Inter;font-weight:800;src:url(node_modules/@fontsource/inter/files/inter-latin-800-normal.woff2)}
+@font-face{font-family:Inter;font-weight:900;src:url(node_modules/@fontsource/inter/files/inter-latin-900-normal.woff2)}
+@font-face{font-family:Inter;font-weight:500;src:url(node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2)}
+:root{--brand:#1f6f5c;--deep:#174f43;--accent:#d9822b;--gold:#ffc94d;--ink:#1b1b1a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;font-family:Inter,"Liberation Sans",sans-serif}
+.scene{position:absolute;inset:0;opacity:0}
+.full{position:absolute;inset:0;background-size:cover;background-position:center}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.1) 35%,rgba(0,0,0,.15) 60%,rgba(0,0,0,.75) 100%)}
+.cap{position:absolute;left:70px;right:70px;color:#fff;font-weight:900;text-align:center;line-height:1.05;letter-spacing:-1.5px;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+.hl{background:var(--gold);color:var(--ink);padding:0 18px;border-radius:14px;box-decoration-break:clone;-webkit-box-decoration-break:clone;text-shadow:none}
+.green{background:linear-gradient(160deg,#25806a,#174f43)}
+.phone{position:absolute;left:150px;top:500px;width:780px;height:1190px;background:#f7f6f1;border-radius:70px;border:16px solid #111;box-shadow:0 40px 120px rgba(0,0,0,.5);overflow:hidden}
+.bar{height:120px;background:var(--brand);color:#fff;display:flex;align-items:center;gap:18px;padding:0 40px;font-weight:800;font-size:34px}
+.pin{padding:34px 40px}
+.h1{font-size:52px;font-weight:900;color:var(--ink);letter-spacing:-1px}
+.sub{font-size:28px;color:#6b6a63;font-weight:500;margin-top:6px}
+.photo{margin-top:28px;width:100%;height:560px;border-radius:28px;background-size:cover;background-position:center;position:relative;overflow:hidden}
+.scan{position:absolute;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(255,201,77,0),rgba(255,201,77,.55),rgba(255,201,77,0))}
+.btn{margin-top:30px;height:110px;border-radius:26px;background:var(--brand);color:#fff;font-weight:900;font-size:40px;display:flex;align-items:center;justify-content:center}
+.btn2{background:var(--accent)}
+.finger{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.85);border:6px solid rgba(0,0,0,.25);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.card{background:#fff;border-radius:28px;padding:30px;margin-top:22px;box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.k{font-size:26px;color:#6b6a63;font-weight:700;text-transform:uppercase;letter-spacing:2px}
+.v{font-size:78px;font-weight:900;color:var(--ink);letter-spacing:-2px}
+.v2{font-size:64px;font-weight:900;color:var(--accent);letter-spacing:-1.5px}
+.tabs{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.tab{font-size:26px;font-weight:800;padding:12px 20px;border-radius:999px;background:#e9e7df;color:#3a3a36}
+.tab.on{background:var(--brand);color:#fff}
+.type{font-size:33px;line-height:1.4;color:#2a2a27;font-weight:500;margin-top:14px;min-height:330px}
+.ttl{font-size:36px;font-weight:900;color:var(--ink);line-height:1.15}
+.grid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:10px;background:#000}
+.grid div{background-size:cover;background-position:center}
+.pill{display:inline-block;background:#fff;color:var(--brand);font-weight:900;font-size:58px;padding:26px 52px;border-radius:999px;letter-spacing:-1px}
+.small{font-size:30px;font-weight:500;opacity:.8;letter-spacing:0}
+</style></head>
+<body>
+
+<!-- S1 hook -->
+<div class="scene" id="s1">
+  <div class="full" id="s1img" style="background-image:url(img/lamps.jpg)"></div><div class="shade"></div>
+  <div class="cap" id="s1a" style="top:260px;font-size:120px">Got <span class="hl">stuff</span><br>like this</div>
+  <div class="cap" id="s1b" style="top:610px;font-size:110px">sitting around?</div>
+</div>
+
+<!-- S2 quick cuts -->
+<div class="scene" id="s2">
+  <div class="full" id="s2img"></div><div class="shade"></div>
+  <div class="cap" style="top:300px;font-size:116px">No idea what<br>it's <span class="hl">worth?</span></div>
+</div>
+
+<!-- S3/S4/S5 phone -->
+<div class="scene green" id="s3">
+  <div class="cap" id="capA" style="top:190px;font-size:88px">Snap one photo</div>
+  <div class="cap" id="capB" style="top:170px;font-size:80px;opacity:0">AI tells you<br>what it's <span class="hl">worth</span></div>
+  <div class="cap" id="capC" style="top:170px;font-size:80px;opacity:0">and writes the ad<br>for <span class="hl">9 sites</span></div>
+  <div class="phone">
+    <div class="bar"><svg width="54" height="54" viewBox="0 0 64 64" fill="none"><path d="M10 12a4 4 0 0 1 4-4h16.3a6 6 0 0 1 4.25 1.76L52 27.2 34.2 45 11.76 22.55A6 6 0 0 1 10 18.3V12z" stroke="#fff" stroke-width="4.5" stroke-linejoin="round"/><circle cx="21" cy="19" r="4" fill="#fff"/><path d="M30 54h24m0 0-7-7m7 7-7 7" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Next Owner Market</div>
+    <!-- screen 1: upload -->
+    <div class="pin" id="p1">
+      <div class="h1">What's it worth?</div>
+      <div class="sub">Pick a photo. That's it.</div>
+      <div class="photo" id="p1photo" style="background-image:url(img/scopes.jpg)"><div class="scan" id="scan" style="top:-130px"></div></div>
+      <div class="btn" id="p1btn">What's it worth?</div>
+    </div>
+    <!-- screen 2: result -->
+    <div class="pin" id="p2" style="position:absolute;top:120px;left:0;right:0;opacity:0">
+      <div class="ttl">Lot of 4 Hitachi V-212 Oscilloscopes</div>
+      <div class="sub">Made in Japan · 1980s · 20 MHz</div>
+      <div class="card"><div class="k">As-is, untested</div><div class="v" id="v1">$80–$200</div></div>
+      <div class="card" id="ladder" style="opacity:0;border:4px solid var(--accent)"><div class="k" style="color:var(--accent)">Tested &amp; working</div><div class="v2" id="v2">$240–$480</div></div>
+      <div class="btn btn2" id="p2btn" style="opacity:0">📝 Write my listing</div>
+    </div>
+    <!-- screen 3: listing -->
+    <div class="pin" id="p3" style="position:absolute;top:120px;left:0;right:0;opacity:0">
+      <div class="tabs" id="tabs"></div>
+      <div class="card" style="margin-top:24px">
+        <div class="ttl" style="font-size:32px">Lot of 4 Hitachi V-212 20MHz Dual Trace Analog Oscilloscopes</div>
+        <div class="type" id="typed"></div>
+      </div>
+      <div class="btn" style="margin-top:22px">📋 Copy</div>
+    </div>
+    <div class="finger" id="finger" style="opacity:0"></div>
+  </div>
+</div>
+
+<!-- S6 montage -->
+<div class="scene" id="s6">
+  <div class="grid"><div style="background-image:url(img/scopes.jpg)"></div><div style="background-image:url(img/lamps.jpg)"></div><div style="background-image:url(img/plane.jpg)"></div><div style="background-image:url(img/jeans.jpg)"></div><div style="background-image:url(img/fridge.jpg)"></div><div style="background-image:url(img/scopes.jpg);background-position:top"></div></div>
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,.55)"></div>
+  <div class="cap" id="w1" style="top:560px;font-size:150px">One photo.</div>
+  <div class="cap" id="w2" style="top:760px;font-size:150px">Nine sites.</div>
+  <div class="cap" id="w3" style="top:960px;font-size:150px"><span class="hl">Done.</span></div>
+</div>
+
+<!-- S7 CTA -->
+<div class="scene green" id="s7">
+  <div style="position:absolute;top:330px;left:0;right:0;text-align:center" id="logo">
+    <svg width="260" height="260" viewBox="0 0 64 64" fill="none"><path d="M8 14a6 6 0 0 1 6-6h17.5a6 6 0 0 1 4.24 1.76L54 28l-18 18L14.5 24.5A6 6 0 0 1 12.8 20.3L8 14z" fill="#fff" opacity=".18"/><path d="M10 12a4 4 0 0 1 4-4h16.3a6 6 0 0 1 4.25 1.76L52 27.2 34.2 45 11.76 22.55A6 6 0 0 1 10 18.3V12z" stroke="#fff" stroke-width="4.5" stroke-linejoin="round"/><circle cx="21" cy="19" r="4" fill="#fff"/><path d="M30 54h24m0 0-7-7m7 7-7 7" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div style="color:#fff;font-weight:900;font-size:92px;letter-spacing:-2px;margin-top:20px">Next Owner Market</div>
+  </div>
+  <div class="cap" id="c1" style="top:860px;font-size:100px">Try it <span class="hl">free.</span><br>No sign-up.</div>
+  <div style="position:absolute;top:1180px;left:0;right:0;text-align:center" id="c2"><span class="pill">nextownermarket.com</span></div>
+  <div class="cap small" id="c3" style="top:1360px">Values are AI estimates from real resale prices.</div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const p = (t, a, b) => cl((t - a) / (b - a));            // 0..1 progress
+const ease = (x) => 1 - Math.pow(1 - x, 3);
+const pop = (t, a) => { const x = p(t, a, a + 0.35); return x < 1 ? 0.6 + 0.4 * ease(x) + Math.sin(x * Math.PI) * 0.08 : 1; };
+const show = (el, t, a, b, fade = 0.25) => { el.style.opacity = Math.min(p(t, a, a + fade), 1 - p(t, b - fade, b)); };
+const cuts = ["plane", "jeans", "fridge", "scopes"];
+const tabsN = ["Facebook", "eBay", "Mercari", "Vinted", "OfferUp", "Craigslist", "Poshmark", "Depop", "Etsy"];
+$("tabs").innerHTML = tabsN.map((n, i) => `<span class="tab" id="tab${i}">${n}</span>`).join("");
+const LISTING = "Lot of four Hitachi V-212 20 MHz dual-trace analog oscilloscopes, sold together. Untested and sold as-is for parts or repair. Dust and wear from storage; see photos.";
+const T = 26;
+window.T = T;
+window.render = (t) => {
+  // S1 hook 0-3.3
+  show($("s1"), t, -1, 3.3, 0.2);
+  $("s1img").style.transform = `scale(${1.18 - 0.12 * p(t, 0, 3.3)})`;
+  $("s1a").style.opacity = p(t, 0.15, 0.4); $("s1a").style.transform = `scale(${pop(t, 0.15)})`;
+  $("s1b").style.opacity = p(t, 1.0, 1.25); $("s1b").style.transform = `scale(${pop(t, 1.0)})`;
+  // S2 cuts 3.3-6.1
+  show($("s2"), t, 3.3, 6.1, 0.15);
+  const ci = cl(Math.floor((t - 3.3) / 0.7), 0, 3);
+  $("s2img").style.backgroundImage = `url(img/${cuts[ci]}.jpg)`;
+  $("s2img").style.transform = `scale(${1.12 - 0.08 * (((t - 3.3) % 0.7) / 0.7)})`;
+  // phone scenes 6.1-18.6
+  show($("s3"), t, 6.1, 18.6, 0.25);
+  $("capA").style.opacity = Math.min(p(t, 6.2, 6.5), 1 - p(t, 8.8, 9.1));
+  $("capB").style.opacity = Math.min(p(t, 9.1, 9.4), 1 - p(t, 13.3, 13.6));
+  $("capC").style.opacity = p(t, 13.6, 13.9);
+  // screen 1
+  const ph = $("p1photo"); ph.style.transform = `translateY(${(1 - ease(p(t, 6.3, 6.9))) * 600}px)`; ph.style.opacity = p(t, 6.3, 6.6);
+  $("p1").style.opacity = 1 - p(t, 8.9, 9.1);
+  const f = $("finger");
+  const tap1 = t > 7.3 && t < 8.0, tap2 = t > 12.4 && t < 13.1;
+  f.style.opacity = tap1 || tap2 ? 1 : 0;
+  if (tap1) { f.style.left = "330px"; f.style.top = `${890 + 120 * (1 - ease(p(t, 7.3, 7.6)))}px`; }
+  if (tap2) { f.style.left = "330px"; f.style.top = `${664 + 120 * (1 - ease(p(t, 12.4, 12.7)))}px`; }
+  const press1 = t > 7.6 && t < 7.9; $("p1btn").style.transform = `scale(${press1 ? 0.95 : 1})`;
+  $("p1btn").textContent = t > 7.75 ? "AI is looking…" : "What's it worth?";
+  $("scan").style.top = t > 7.8 ? `${-130 + ((t - 7.8) * 520) % 600}px` : "-130px";
+  // screen 2
+  $("p2").style.opacity = Math.min(p(t, 9.0, 9.3), 1 - p(t, 13.2, 13.4));
+  const a = ease(p(t, 9.3, 10.4));
+  $("v1").textContent = `$${Math.round(80 * a)}–$${Math.round(200 * a)}`;
+  $("ladder").style.opacity = p(t, 10.9, 11.2); $("ladder").style.transform = `scale(${pop(t, 10.9)})`;
+  const b = ease(p(t, 11.1, 12.0));
+  $("v2").textContent = `$${Math.round(240 * b)}–$${Math.round(480 * b)}`;
+  $("p2btn").style.opacity = p(t, 11.9, 12.2);
+  $("p2btn").style.transform = `scale(${t > 12.7 && t < 13.0 ? 0.95 : 1})`;
+  // screen 3
+  $("p3").style.opacity = p(t, 13.3, 13.6);
+  const chars = Math.floor(LISTING.length * p(t, 13.7, 16.3));
+  $("typed").textContent = LISTING.slice(0, chars) + (t < 16.3 ? "▌" : "");
+  const on = cl(Math.floor((t - 13.8) / 0.5), -1, 8);
+  tabsN.forEach((_, i) => $("tab" + i).classList.toggle("on", i === on));
+  // S6 montage 18.6-21.8
+  show($("s6"), t, 18.6, 21.8, 0.2);
+  [["w1", 18.8], ["w2", 19.6], ["w3", 20.4]].forEach(([id, s]) => { $(id).style.opacity = p(t, s, s + 0.2); $(id).style.transform = `scale(${pop(t, s)})`; });
+  // S7 CTA 21.8-26
+  show($("s7"), t, 21.8, 99, 0.3);
+  $("logo").style.transform = `scale(${pop(t, 22.0)})`; $("logo").style.opacity = p(t, 22.0, 22.3);
+  $("c1").style.opacity = p(t, 22.7, 23.0); $("c1").style.transform = `scale(${pop(t, 22.7)})`;
+  $("c2").style.opacity = p(t, 23.4, 23.7); $("c2").style.transform = `scale(${pop(t, 23.4)})`;
+  $("c3").style.opacity = p(t, 24.0, 24.4) * 0.8;
+};
+render(0);
+</script>
+</body></html>
