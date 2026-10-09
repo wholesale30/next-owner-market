@@ -580,3 +580,5 @@ On **What's it worth?**, **Buy or Pass** and **Sort the pile**, two big buttons 
 
 - **📤 Share** opens your phone's share menu (Messages, Facebook, email, Copy link…), so you can send the find to anyone before you list it. No name or location is shared.
 - **📸 Check another** (or **Check next** / **Sort another**) clears the screen for the next item.
+
+**Also still there:** the **📣 Share this find** box (on Sort the pile, **📣 Share these finds**) lower on the page. It puts the find on our website as its own page that people searching Google can find. If you already tapped 📤 Share, that page already exists and the box says so. Tapping both never makes two pages.

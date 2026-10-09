@@ -8,15 +8,28 @@ import { useState } from "react";
  * then opens the phone's share sheet so it can go to Facebook, texts, TikTok.
  * Every share is a new page on the site and a free ad.
  */
-export default function ShareValuation({ payload, photoUrl }: { payload: Record<string, unknown>; photoUrl?: string | null }) {
+export default function ShareValuation({ payload, photoUrl, published, onPublished, publishFn }: {
+  payload: Record<string, unknown>; photoUrl?: string | null;
+  /** the page already made for this lookup (e.g. by the 📤 Share button), so it's never made twice */
+  published?: string | null; onPublished?: (slug: string) => void;
+  /** how to make the page, when a tool has its own way (Buy or Pass); default posts to /api/valuations */
+  publishFn?: (withPhoto: boolean) => Promise<string | null>;
+}) {
   const [withPhoto, setWithPhoto] = useState(true);
-  const [state, setState] = useState<"idle" | "busy" | { slug: string } | "err">("idle");
+  const [own, setState] = useState<"idle" | "busy" | { slug: string } | "err">("idle");
+  const state = published ? { slug: published } : own;
   // Step 1: put it on our site (no popup). Step 2 (optional button): send it to Facebook or a friend.
   async function publish() {
     setState("busy");
-    const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, photo_url: withPhoto ? photoUrl : null }) });
-    const j = (await r.json().catch(() => ({}))) as { slug?: string };
-    setState(j.slug ? { slug: j.slug } : "err");
+    let slug: string | null = null;
+    if (publishFn) slug = await publishFn(withPhoto).catch(() => null);
+    else {
+      const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, photo_url: withPhoto ? photoUrl : null }) });
+      const j = (await r.json().catch(() => ({}))) as { slug?: string };
+      slug = j.slug || null;
+    }
+    setState(slug ? { slug } : "err");
+    if (slug) onPublished?.(slug);
   }
   async function send() {
     if (typeof state !== "object") return;

@@ -12,6 +12,7 @@ import OriginCard, { type OriginView } from "@/components/OriginCard";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import { compressImage } from "@/lib/photo";
 import ShareAndAgain from "@/components/ShareAndAgain";
+import ShareValuation from "@/components/ShareValuation";
 
 type Place = { key: string; label: string; pct: number; fixed: number; note: string; net_low: number; net_high: number };
 type Out = { origin?: OriginView | null; ladder?: LadderView | null; missing_parts?: PartView[]; id: string | null; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: string; shipping_est: number; confidence: string; why: string; watch_out: string | null; fee: { label: string; pct: number; fixed: number; note: string }; places: Place[]; paid: number; net_low: number; net_high: number; max_pay: number; verdict: "buy" | "maybe" | "pass"; photo_url: string; photo_urls: string[] };
@@ -28,6 +29,8 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean; signup?: boolean } | null>(null);
   const [res, setRes] = useState<Out | null>((initial as Out) || null);
+  // the public page made for this answer (by 📤 Share or 📣 Share this find), so it is only ever made once
+  const [page, setPage] = useState<string | null>(null);
   const [remind, setRemind] = useState<"idle" | "busy" | "done">("idle");
   const [email, setEmail] = useState("");
   const gallery = useRef<HTMLInputElement>(null), camera = useRef<HTMLInputElement>(null);
@@ -46,7 +49,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const j = await r.json().catch(() => ({}));
     setBusy(null);
     if (!r.ok) return setErr({ msg: j.error || "Couldn't read that.", upgrade: j.upgrade, signup: j.signup });
-    setRes(j);
+    setRes(j); setPage(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   async function fix(correction: string): Promise<string | null> {
@@ -54,7 +57,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const r = await fetch("/api/buy-or-pass", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ correction, prev_id: res.id, paid: res.paid, hints, photoUrls: res.photo_urls }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.verdict) return j.error || "Couldn't update it. Try again.";
-    setRes(j); setHints((h) => (h ? h + ". " : "") + correction);
+    setRes(j); setPage(null); setHints((h) => (h ? h + ". " : "") + correction);
     return null;
   }
 
@@ -79,7 +82,15 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const r = await fetch("/api/thrift-reminder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
     setRemind(r.ok ? "done" : "idle");
   }
-  function again() { setRes(null); setPhotos([]); setAnonPhoto(null); setPaid(""); setHints(""); setErr(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  /** Make this check's public page on our site (Share this find). Returns its address. */
+  async function publishCheck(): Promise<string | null> {
+    if (!res?.id) return null;
+    const x = await fetch("/api/buy-or-pass/share", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: res.id }) });
+    const j = (await x.json().catch(() => ({}))) as { slug?: string };
+    if (j.slug) setPage(j.slug);
+    return j.slug || null;
+  }
+  function again() { setPage(null); setRes(null); setPhotos([]); setAnonPhoto(null); setPaid(""); setHints(""); setErr(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
   if (!res) return (
     <div className="card p-4 space-y-3">
@@ -123,16 +134,16 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
       </div>
       <ShareAndAgain key={`${r.id}-${r.verdict}-${r.resale_low}-${r.resale_high}`} againLabel="📸 Check next" onAgain={again} prepare={async () => {
         if (!r.id) return null;
-        const x = await fetch("/api/buy-or-pass/share", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: r.id }) });
-        const j = (await x.json().catch(() => ({}))) as { slug?: string };
-        if (!j.slug) return null;
+        const slug = page || (await publishCheck());
+        if (!slug) return null;
         const text = r.paid ? `Paid ${money(r.paid)} at the thrift store. It sells for about ${money(r.resale_low)}–${money(r.resale_high)}. ${V[r.verdict].label}! Checked free with Buy or Pass:` : `Found this thrifting. It sells for about ${money(r.resale_low)}–${money(r.resale_high)}. Checked free with Buy or Pass:`;
-        return { url: `${window.location.origin}/flip/${r.id}${refCode ? `?ref=${refCode}` : ""}`, page: `/valued/${j.slug}`, title: "Buy or pass?", text };
+        return { url: `${window.location.origin}/flip/${r.id}${refCode ? `?ref=${refCode}` : ""}`, page: `/valued/${slug}`, title: "Buy or pass?", text };
       }} />
       <OriginCard o={r.origin} />
       <ConditionLadder l={r.ladder} nowLow={r.resale_low} nowHigh={r.resale_high} nowVerdict={r.verdict} profit={{ low: r.net_low, high: r.net_high }} />
       <PartsBox parts={r.missing_parts} nowLow={r.resale_low} nowHigh={r.resale_high} />
       <FixBox onFix={fix} examples="it's the 1978 model · missing the remote · that's real Pyrex" />
+      <ShareValuation key={`${r.id}-${r.verdict}-${r.resale_low}-${r.resale_high}`} published={page} onPublished={setPage} publishFn={() => publishCheck()} payload={{ title: r.what, value_low: r.resale_low, value_high: r.resale_high }} />
 
       <div className="grid gap-2">
         {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: write my listing"}</button>}

@@ -589,3 +589,7 @@ Checked against each site's own policy pages:
 - **Lost tap:** if the browser rejects the share because the tap expired (NotAllowedError), the button becomes "📤 Send it now" and reuses the same page.
 - **No share menu:** the link is copied to the clipboard instead.
 - **After a fix:** the component is re-keyed, so the corrected answer is the one shared.
+
+- **Oct 9 follow-up:** "📣 Share this find" (ShareValuation / SharePile) is back under the FixBox, because the owner wants the explicit "put it on our site" step.
+  - Both buttons share one page: the parent keeps the slug (`page` on worth, keyed to `fixes`; `page` on Buy or Pass; `pileShared` on pile).
+  - ShareValuation gained `published`, `onPublished` and `publishFn`, so whichever button runs first creates the page and the other reuses it.

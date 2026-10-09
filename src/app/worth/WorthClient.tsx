@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/photo";
 import ShareAndAgain from "@/components/ShareAndAgain";
+import ShareValuation from "@/components/ShareValuation";
 import FixBox from "@/components/FixBox";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import PhotoEditor from "@/components/PhotoEditor";
@@ -39,6 +40,8 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
   const [res, setRes] = useState<Result | null>((initial?.result as Result) || null);
   const [left, setLeft] = useState(credits);
   const [editing, setEditing] = useState<number | null>(null);
+  // the public page made for this answer (by 📤 Share or 📣 Share this find), so it is only ever made once
+  const [page, setPage] = useState<{ n: number; slug: string } | null>(null);
   const [fixes, setFixes] = useState(0); // remounts the share box after a fix so it shares the corrected answer
 
   async function addFiles(files: FileList | null) {
@@ -127,7 +130,7 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
   const count = (res?.pieces || []).reduce((a, x) => a + (Number(x.qty) || 1), 0);
   const apart = (res?.pieces || []).reduce((a, x) => [a[0] + x.value_low * (Number(x.qty) || 1), a[1] + x.value_high * (Number(x.qty) || 1)], [0, 0]);
 
-  function reset() { setPhotos([]); setRes(null); setHints(""); setErr(null); setFixes(0); setLookupId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function reset() { setPage(null); setPhotos([]); setRes(null); setHints(""); setErr(null); setFixes(0); setLookupId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
   return (
     <div className="space-y-4">
@@ -180,10 +183,14 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
           <ShareAndAgain key={fixes} againLabel="📸 Check another" onAgain={reset} prepare={async () => {
-            const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }, photo_url: photos[0]?.url || null }) });
-            const j = (await r.json().catch(() => ({}))) as { slug?: string };
-            if (!j.slug) return null;
-            return { url: `${window.location.origin}/valued/${j.slug}`, page: `/valued/${j.slug}`, title: res.what, text: `Found out what this is worth: about ${money(res.value_low)}–${money(res.value_high)}. Check yours free:` };
+            let slug = page && page.n === fixes ? page.slug : null;
+            if (!slug) {
+              const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }, photo_url: photos[0]?.url || null }) });
+              const j = (await r.json().catch(() => ({}))) as { slug?: string };
+              if (!j.slug) return null;
+              slug = j.slug; setPage({ n: fixes, slug });
+            }
+            return { url: `${window.location.origin}/valued/${slug}`, page: `/valued/${slug}`, title: res.what, text: `Found out what this is worth: about ${money(res.value_low)}–${money(res.value_high)}. Check yours free:` };
           }} />
           <OriginCard o={res.origin} fallbackNew={res.retail_new} />
           <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
@@ -239,6 +246,7 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
           <ConditionLadder l={res.condition_ladder} nowLow={res.value_low} nowHigh={res.value_high} />
           <PartsBox parts={res.missing_parts} nowLow={res.value_low} nowHigh={res.value_high} />
           <FixBox onFix={fix} />
+          <ShareValuation key={fixes} photoUrl={photos[0]?.url} published={page && page.n === fixes ? page.slug : null} onPublished={(slug) => setPage({ n: fixes, slug })} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
           <div className="card p-4 space-y-2 text-sm">
             <p className="font-semibold">Where it sells best</p>
             {res.best_places.map((b, i) => <p key={i}><b>{i + 1}. {b.place}</b> <span className="muted">— {b.why}</span></p>)}
