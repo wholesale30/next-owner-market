@@ -139,11 +139,11 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
         const text = r.paid ? `Paid ${money(r.paid)} at the thrift store. It sells for about ${money(r.resale_low)}–${money(r.resale_high)}. ${V[r.verdict].label}! Checked free with Buy or Pass:` : `Found this thrifting. It sells for about ${money(r.resale_low)}–${money(r.resale_high)}. Checked free with Buy or Pass:`;
         return { url: `${window.location.origin}/flip/${r.id}${refCode ? `?ref=${refCode}` : ""}`, page: `/valued/${slug}`, title: "Buy or pass?", text };
       }} />
+      <ShareValuation key={`${r.id}-${r.verdict}-${r.resale_low}-${r.resale_high}`} published={page} onPublished={setPage} publishFn={() => publishCheck()} payload={{ title: r.what, value_low: r.resale_low, value_high: r.resale_high }} />
       <OriginCard o={r.origin} />
       <ConditionLadder l={r.ladder} nowLow={r.resale_low} nowHigh={r.resale_high} nowVerdict={r.verdict} profit={{ low: r.net_low, high: r.net_high }} />
       <PartsBox parts={r.missing_parts} nowLow={r.resale_low} nowHigh={r.resale_high} />
       <FixBox onFix={fix} examples="it's the 1978 model · missing the remote · that's real Pyrex" />
-      <ShareValuation key={`${r.id}-${r.verdict}-${r.resale_low}-${r.resale_high}`} published={page} onPublished={setPage} publishFn={() => publishCheck()} payload={{ title: r.what, value_low: r.resale_low, value_high: r.resale_high }} />
 
       <div className="grid gap-2">
         {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: write my listing"}</button>}

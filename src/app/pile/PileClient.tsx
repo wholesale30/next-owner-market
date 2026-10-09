@@ -98,13 +98,13 @@ export default function PileClient({ meId, role, initial }: { meId: string | nul
         const low = sell.reduce((a, x) => a + x.low, 0), high = sell.reduce((a, x) => a + x.high, 0);
         return { url: `${window.location.origin}/pile`, title: "Sort the pile", text: sell.length ? `Just sorted a pile with AI: about ${money(low)}–${money(high)} of stuff worth selling. Try yours free:` : "Sorted a pile with AI in a minute. Try yours free:" };
       }} />
+      <SharePile items={res.items.filter((x) => x.action === "sell")} done={pileShared} onShare={publishPile} />
       <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
         <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!picked.size || !!busy} onClick={listPicked}>{busy || (picked.size ? `📝 Write ${picked.size === 1 ? "the listing" : `${picked.size} listings`}` : "Mark something Sell to list it")}</button>
         <p className="text-xs muted text-center">For everything marked 💰 Sell below: photo, title, description and price written, plus the Facebook post and 8 more sites. Free to list here. Each listing has ✨ Touch up for its photos.</p>
       </div>
       {err?.upgrade && <OutOfUses message={err.msg} back="/pile" />}
       <FixBox onFix={fix} examples="the lamp is brass, not plastic · you missed the drill · the radio doesn't work" />
-      <SharePile items={res.items.filter((x) => x.action === "sell")} done={pileShared} onShare={publishPile} />
       {res.items.map((x, i) => (
         <div key={i} className="card p-3 space-y-1" style={{ borderLeft: `4px solid ${ACT[x.action].color}` }}>
           <div className="flex items-start justify-between gap-2">
