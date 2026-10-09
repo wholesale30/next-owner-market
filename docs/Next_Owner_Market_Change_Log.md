@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 10:53 AM from the project history (246 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 11:06 AM from the project history (248 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1830,3 +1830,15 @@
 - **Shared code (logic):** `src/lib/ai-engine.ts`, `src/lib/ai-tool.ts`
 
 <sub>change id 4ed909b</sub>
+
+### 10:53 — Records: AI outage fix, journal, change log, playbook
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 024036b</sub>
+
+### 10:59 — Help box answers no longer contain long dashes or curly quotes
+
+- **Server routes (API):** `src/app/api/ask/route.ts`
+
+<sub>change id 7a5bef1</sub>
