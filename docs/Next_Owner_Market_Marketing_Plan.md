@@ -7,6 +7,83 @@
 **"Everything in the warehouse, on your phone. Tested, priced, ready to pick up."**
 For buyers: a real store with search, not a wall of Marketplace posts. For sellers: *We test it, photograph it, list it, and sell it. You get paid.*
 
+## LAUNCH PLAN: every social channel (updated October 9, 2026)
+
+*Shayne, Oct 9: "I want to market it on every social media, all the places, the groups and stuff with Goodwill shoppers and vintage shoppers... we'll use our emails... as long as it has an opt out... build this out really sweet and make it a prominent piece of this whole app."*
+
+### The three hooks (lead with the free tools, not the store)
+
+People don't join a new marketplace because you ask. They try a free tool that saves them money, then stay. We now have three hooks, each free to try with no account:
+
+| Hook | Who it grabs | The line that stops the scroll |
+|---|---|---|
+| **🔎 Find it for less** (new) | DIYers, car owners, homeowners, anyone who's been quoted too much | "The dealer wanted $750 for my Prius EGR valve. Same part: $77. Took me an afternoon." |
+| **💰 What's it worth?** | Anyone with a garage, attic or a parent's house | "I almost gave this away. It's worth $180." |
+| **🛒 Buy or pass?** | Goodwill, thrift and yard sale shoppers, flippers | "Snap it in the aisle. BUY or PASS in 10 seconds, fees and shipping already counted." |
+
+Every result has **📤 Share** right under the answer, and every shared link opens the same tool for the next person. That's the loop: one person's find becomes the next person's first try.
+
+### The Find it for less stories (use these word for word)
+
+These are real, from Shayne. Real numbers beat any ad copy.
+
+1. **The Prius EGR valve.** Dealer: $750. Same part on Amazon: about $80. The tool found it at $77 on eBay with the exact part number (25620-37120) and a shop quote of $770 to $920 installed. *"Before you say yes to that repair quote, look up the part."*
+2. **The Prius water pump and coolant pipe.** Shop quote: about $4,500 to $5,000. Parts: about $100. *"Same job. $4,400 difference. That's not a typo."* (Check the exact year and part in the tool before posting the numbers, and say "my" quote, not "every shop.")
+3. **The halogen work lights.** 500 watt halogen bulbs run hot and eat power. The tool found the exact LED swap (R7S, 118mm, 50 watt) for $15 to $40, and warned to measure first because 78mm and 189mm look the same. *"5 minute swap, cooler shop, smaller power bill."*
+
+Post format that works on every app: **the quote → the real price → a screen recording of the tool finding it → "free, link in comments/bio."**
+
+### Where to post, what to say (in order of payoff)
+
+**Facebook groups (biggest payoff, most rules).** Thrift and Goodwill groups, vintage groups, reseller and flipping groups, local buy-sell-trade groups, DIY and home repair groups, and car model groups (Prius owners, Toyota, F-150, Jeep...).
+- Most groups ban "promo" posts. **Ask the admin first** with a one-line message: "I built a free tool that finds the cheapest price for any part. Mind if I post one real example?" Admins say yes to free and useful.
+- Post a **story with a picture**, not a link dump. Put the link in the first comment if the group allows links at all.
+- Answer people's questions in those groups with a real lookup ("Here's what that part runs: $X at Y"), and mention the tool only when someone asks how you found it.
+- One group per day, not ten at once. Facebook flags the same post pasted into many groups quickly as spam.
+
+**Our own Facebook Page and group.** Post every good find (the tool makes the share text). Pin the Prius story.
+
+**TikTok, Instagram Reels, YouTube Shorts, Facebook Reels.** Same 20 to 30 second vertical video on all four. We already have the "What's it worth" reel; make one for Find it for less with the Prius numbers (same method: Playbook section 12, item 19). Hashtags to rotate: #thrifttok #goodwillfinds #thriftflip #reseller #vintagefinds #diy #carrepair #prius #savemoney #lifehack.
+
+**Reddit.** r/Frugal, r/DIY, r/HomeImprovement, r/MechanicAdvice, r/prius, r/Flipping, r/ThriftStoreHauls, r/vintage, r/BuyItForLife. Reddit hates ads. Every subreddit has its own self-promotion rule, so **read the rules of each one first**, post the story and the numbers, and only link the tool if the rules allow it or someone asks. A real helpful answer in a thread does more than a post.
+
+**Pinterest.** Pins of "What's it worth" results and DIY part swaps (bulb swaps, filter swaps). Pins keep sending traffic for months.
+
+**Nextdoor.** Neighbors love "don't overpay for that repair." Post the Prius story as a neighbor, once.
+
+**X and Threads.** Short version of each story, with the screen recording.
+
+**Google.** Every shared find already gets its own page on our site, and /find is in the sitemap. Nothing to do but keep sharing.
+
+### Email: legal, and how to do it right
+
+Checked October 9, 2026 against the FTC's CAN-SPAM guide and Resend's rules:
+
+- **Every marketing email must have**: honest From and subject line, a **real mailing address** (street, PO box or private mailbox), a clear **unsubscribe**, and opt-outs honored within 10 business days (Resend's rule is stricter: 7 days). Fines are up to $53,088 **per email**. Our emails already have the unsubscribe link and honor it instantly. **Missing: our mailing address.** It's on your to-do list: send me the warehouse address or a PO box and it goes in every footer.
+- **Resend (our email sender) only allows people who opted in.** Bought, rented or scraped lists are banned, and sending to them would get our sending shut off. So the email list grows from the site: everyone who uses a tool, signs up, buys, asks us to find something, or ticks "email me deals."
+- **Your own contacts** (friends, customers you've dealt with, people in your phone): send them a **personal note from your own Gmail**, one at a time or a small BCC, with the link and a line like "If you don't want these, just tell me." That's you talking to people you know, not a blast.
+- **Amazon affiliate links in email** are allowed now only to people who opted in. Same rule: our list, yes; cold email, never.
+
+### When to launch
+
+Launch the posts **after** the Amazon Associates and eBay Partner Network IDs are in (they're on your to-do list), so every Find it for less click from the launch traffic earns a commission. Everything else is ready now.
+
+### Launch week checklist
+
+- [ ] Send Claude the mailing address for email footers
+- [ ] Amazon Associates + eBay Partner Network IDs to Claude
+- [ ] Prius EGR video (Claude makes it) posted to TikTok, Reels, Shorts, Facebook
+- [ ] Message 5 group admins a day (thrift, vintage, DIY, Prius/car groups)
+- [ ] One story post a day in a group that said yes
+- [ ] Reddit: one helpful answer a day in r/Frugal, r/MechanicAdvice or r/DIY
+- [ ] Personal note to your own contacts with the /find link
+- [ ] Pin the Prius story on our Facebook Page
+
+### Sources
+- FTC, CAN-SPAM Act: A Compliance Guide for Business: https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business
+- Resend Acceptable Use Policy: https://resend.com/legal/acceptable-use
+- Geniuslink, affiliate links in email (Amazon's March 2024 change): https://geniuslink.com/blog/can-you-include-affiliate-links-in-emails/
+
 ## Who we're talking to
 
 1. **Bargain hunters and DIYers** in Charlottesville, Lynchburg, Richmond, Roanoke (30–60 mile pickup radius). Tools, kitchen, household.

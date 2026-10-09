@@ -27,9 +27,11 @@ async function send(to: string, subject: string, text: string, opts: { profile_i
   const d = db();
   if (!process.env.RESEND_API_KEY) return false;
   const { data: biz } = await d.from("settings").select("value").eq("key", "business").maybeSingle();
-  const name = (biz?.value as { name?: string })?.name || "Next Owner Market";
+  const bz = (biz?.value as { name?: string; address?: string; location?: string }) || {};
+  const name = bz.name || "Next Owner Market";
   const from = process.env.EMAIL_FROM || `${name} <alerts@nextownermarket.com>`;
-  const footer = `\n\n—\n${name} · ${site()}\nStop these emails: ${site()}/unsubscribe`;
+  // CAN-SPAM: every marketing email carries our postal address and a working opt-out (FTC guide, checked Oct 9, 2026)
+  const footer = `\n\n—\n${name} · ${bz.address || bz.location || "Virginia"} · ${site()}\nStop these emails: ${site()}/unsubscribe`;
   let ok = false;
   try {
     const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from, to: [to], subject, text: text + footer }) });

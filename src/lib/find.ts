@@ -78,7 +78,7 @@ const SYSTEM = `You help everyday people (thrift shoppers, flippers, DIYers, car
 Steps:
 1. Work out EXACTLY what they need (exact part number, size, base, fit). If they gave a photo, read any label or model number in it.
 2. Use web_search to find current prices at real stores. Search the exact part number and the plain name. Look at Amazon, Walmart, Home Depot, Lowe's, eBay and specialist stores (RockAuto, AutoZone, the maker). Also search what a dealer or repair shop charges if it's a repair.
-3. Call record_results once with what you found. Only use URLs that came back in your search results. Prices must be ones you actually saw; use null if you didn't see a price. Write for a beginner, short and plain, no dashes as punctuation.`;
+3. Call record_results once with what you found. Options must all be the thing they asked for (if they asked for LED, every option is LED). shop_price is what a dealer, repair shop or full-price store charges for that SAME thing (installed, for a repair); use null if there isn't one. A different, cheaper route goes in cheaper_idea, not in options. Only use URLs that came back in your search results. Prices must be ones you actually saw; use null if you didn't see a price. Write for a beginner, short and plain, no dashes as punctuation.`;
 
 const KNOWN_STORES: { host: RegExp; name: string; search: (q: string) => string }[] = [
   { host: /(^|\.)amazon\.com$/, name: "Amazon", search: (q) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}` },
