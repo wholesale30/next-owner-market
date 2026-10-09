@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 9, 11:07 AM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 11:38 AM (continuing)
 
 **Claude:**
 
@@ -8158,3 +8158,85 @@ Fixed and checked live. Records:
 Fixed and live. I asked the Help box the same question on the live site, and the answer now has no long dashes or curly quotes. That was the only change.
 
 Next_Owner_Market_Files_2026-10-09_1106.zip has the updated records.
+
+### Oct 9, 11:25 AM — Shayne
+
+> Looknat this advertisement can we do something like this. https://www.facebook.com/share/r/18cSfHhG1G/
+
+**Claude:**
+
+I'll try to open the ad from here first.
+
+I can't open that one. Facebook blocks outside tools from viewing reels, and I'm not connected to your phone or a browser that's signed in to Facebook.
+
+To see it, send me either:
+- **2 or 3 screenshots** of the reel (the opening, the middle, and the end where it shows the offer), or
+- **a quick voice note** saying what it shows, what it says on screen, and what it's selling.
+
+Once I see it, I'll tell you whether we can make one like it for Next Owner Market, how, and what it would cost (ideally nothing). If it's a simple style, I can build it straight from your listings and photos.
+
+### Oct 9, 11:25 AM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+I saved the journal update, which was just a records file, and started a fresh deploy. Nothing on the site changes.
+
+I still couldn't open that Facebook ad. Send me 2 or 3 screenshots of it, or a quick voice note saying what it shows, and I'll tell you if we can make one like it.
+
+### Oct 9, 11:26 AM — Shayne
+
+> Its an offer and promotional video for vented. List your items on vented.
+
+**Claude:**
+
+You mean **Vinted**. Checking what their current promotion offers, so ours can match or beat it:
+
+Yes, we can make one, at no cost.
+
+**What Vinted's ad is selling:** "List your stuff, keep 100%." In the US, Vinted charges sellers $0 and makes its money from a fee the buyer pays. Their ads lean on "free to sell," which is a strong hook, so ours should answer it rather than copy it. ([Vinted US fees](https://www.flipsail.io/blog/vinted-usa), [how Vinted makes money](https://sellerhound.com/field-notes/is-vinted-a-good-place-to-sell))
+
+**Our angle, which Vinted can't say:** "Snap one photo. AI tells you what it's worth and writes the ad for Facebook, eBay, Vinted and six more. Try it free, no sign-up." We don't compete with Vinted, we help you list on it. That's a better hook for someone with a garage full of stuff.
+
+**What I'd make:** a vertical phone video, 20 to 30 seconds, built from the real app:
+1. **Hook (first 2 seconds):** a dusty item on a shelf. Text on screen: *"What's this worth?"*
+2. **Snap:** the photo goes into What's it worth, and the price pops up (for example, *"$60–180 as-is, $180+ cleaned up"*).
+3. **"Write my listing":** the ad writes itself, then the tabs flip across: Facebook, eBay, Vinted, Mercari…
+4. **Offer:** *"Try it free. No sign-up. nextownermarket.com"*
+
+It would have big captions throughout, since most people watch with the sound off, and a short version for Stories.
+
+**How and cost:**
+- I build it here using screen recordings of the live site at phone size, made into an MP4 you can post as a reel on the Facebook Page, Instagram and TikTok. **$0.**
+- Use **one of your real items** for the demo. Real beats stock. Send me a photo of something dusty from the warehouse, or I'll use one you've already looked up (the satellite receivers or the Game Boy).
+- Paying Facebook to show it to more people (boosting) is optional, and your call later. Posting it normally is free.
+
+Say **"go"** and tell me which item to use, and I'll send you the video to look at before anything gets posted.
+
+### Oct 9, 11:31 AM — Shayne
+
+> Here are some more pictures and use whatever ones you have already too, just whatever you think's best. We can always change the pictures before we make it live, right?
+
+**Claude:**
+
+I'm taking that as a go. The video will use your oscilloscopes as the main example, with the lamps, the RC plane, the jeans rack and the lab fridge as quick "got stuff like this?" shots. And yes: nothing goes live until you approve it, and photos can be swapped any time before that.
+
+First I'll run your photos through the same AI the app uses, so the prices and listing in the video are real, not made up.
+
+I have the tools I need. Getting real AI valuations on three of your photos (about 6¢ of AI):
+
+Writing the video itself: seven short scenes, built as an animated page and recorded frame by frame for a smooth, sharp result.
+
+Now the recorder. First I'll take still previews of each scene to check the layout before rendering the full video:
+
+780 frames done. Checking both "tap" moments land on the buttons before encoding:
+
+The first tap lands right on the button. The second one lands below "Write my listing," so I'm moving it up and re-rendering:
+
+Lands on the button now. Encoding the final MP4:
+
+The video is done: 26 seconds, vertical phone size (1080×1920), 5.9 MB. Saving the source in the project so photos or words can be swapped later, then sending it to you:
+
+Adding the video method to the playbook so both apps can reuse it, then sending the records:

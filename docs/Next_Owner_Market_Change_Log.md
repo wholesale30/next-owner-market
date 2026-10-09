@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 11:06 AM from the project history (248 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 11:39 AM from the project history (251 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1842,3 +1842,21 @@
 - **Server routes (API):** `src/app/api/ask/route.ts`
 
 <sub>change id 7a5bef1</sub>
+
+### 11:06 — Records: Help box dash fix
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx` (+13 more)
+
+<sub>change id 13ddfcc</sub>
+
+### 11:25 — Records: journal update
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+
+<sub>change id ece156d</sub>
+
+### 11:38 — Promo reel: 26-second 'What's it worth?' video for Facebook/Instagram/TikTok built from the owner's own warehouse photos and real AI appraisals (source kept in docs/ads/source for edits)
+
+- **Documents:** `docs/ads/Next_Owner_Market_Reel_Whats_It_Worth.mp4`, `docs/ads/source/README.md`, `docs/ads/source/ad.html`, `docs/ads/source/img/fridge.jpg`, `docs/ads/source/img/jeans.jpg`, `docs/ads/source/img/lamps.jpg`, `docs/ads/source/img/plane.jpg`, `docs/ads/source/img/scopes.jpg`, `docs/ads/source/shoot.mjs`, `docs/ads/source/values.json`
+
+<sub>change id 0fd6951</sub>

@@ -1027,6 +1027,7 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 15. Growth loops that run themselves: shared pages, IndexNow, city and hub pages, a weekly blog, branded previews, an embed widget, milestones with referral links.
 16. The to-do list that nags until it's done (Part 1).
 17. Tell the owner to keep selling while it's being built.
+19. **Promo videos for $0, built from code (Oct 9).** One HTML page holds the whole video, with a `render(t)` function that draws second `t`. Playwright screenshots 30 frames a second and ffmpeg joins them into a vertical 1080×1920 MP4. Use the owner's real photos and real AI results, big captions (most people watch muted), and keep key text out of the bottom quarter, where the Reels buttons sit. Source and rebuild steps: `docs/ads/source/`. The first one (a 26-second "What's it worth?" reel) took about 1 minute to render.
 18. Two apps teaching each other. The political app's lessons fixed Next Owner Market the same night it read them, and the same goes the other way. Keep carrying the Playbook back and forth.
 
 ## 13. Why we do this (for the book)
