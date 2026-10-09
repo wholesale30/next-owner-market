@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 11:39 AM from the project history (251 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 11:47 AM from the project history (253 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1860,3 +1860,15 @@
 - **Documents:** `docs/ads/Next_Owner_Market_Reel_Whats_It_Worth.mp4`, `docs/ads/source/README.md`, `docs/ads/source/ad.html`, `docs/ads/source/img/fridge.jpg`, `docs/ads/source/img/jeans.jpg`, `docs/ads/source/img/lamps.jpg`, `docs/ads/source/img/plane.jpg`, `docs/ads/source/img/scopes.jpg`, `docs/ads/source/shoot.mjs`, `docs/ads/source/values.json`
 
 <sub>change id 0fd6951</sub>
+
+### 11:39 — Records: promo reel, playbook note
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+15 more)
+
+<sub>change id 2ddccba</sub>
+
+### 11:47 — Promo reel now has sound: original music composed in code (no licensing) plus sound effects timed to each tap, price reveal and scene change
+
+- **Documents:** `docs/ads/Next_Owner_Market_Reel_Whats_It_Worth.mp4`, `docs/ads/source/README.md`, `docs/ads/source/sound.py`
+
+<sub>change id d9ea08f</sub>
