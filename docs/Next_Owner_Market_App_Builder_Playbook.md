@@ -470,7 +470,7 @@ The menu link shows `📝 To-do (N)`, and the green banner says "📝 N things o
 
 It's one "automation" in `src/lib/automations.ts`, called `secretary`:
 
-*Source: `src/lib/automations.ts, lines 630-660`*
+*Source: `src/lib/automations.ts, lines 632-662`*
 
 ```ts
 const secretary: Automation = {
@@ -564,7 +564,7 @@ type Automation = { key: string; name: string; what: string; why: string; schedu
 
 ```
 
-*Source: `src/lib/automations.ts, lines 737-757`*
+*Source: `src/lib/automations.ts, lines 739-759`*
 
 ```ts
 export async function runAutomations(only?: string): Promise<Record<string, Result>> {
@@ -1254,7 +1254,9 @@ export function costOf(model: string, u: Partial<Anthropic.Usage> | null | undef
   const p = PRICES.find((x) => x.match.test(model)) || PRICES[2];
   const inp = Number(u?.input_tokens || 0), out = Number(u?.output_tokens || 0);
   const cr = Number(u?.cache_read_input_tokens || 0), cw = Number(u?.cache_creation_input_tokens || 0);
-  return (inp * p.inp + out * p.out + cr * p.inp * 0.1 + cw * p.inp * 1.25) / 1e6;
+  // web searches (Find it for less) are $10 per 1,000 on top of tokens
+  const searches = Number((u as { server_tool_use?: { web_search_requests?: number } } | null | undefined)?.server_tool_use?.web_search_requests || 0);
+  return (inp * p.inp + out * p.out + cr * p.inp * 0.1 + cw * p.inp * 1.25) / 1e6 + searches * 0.01;
 }
 
 export async function logUsage(ownerId: string | null | undefined, feature: string, model: string, u: Partial<Anthropic.Usage> | null | undefined) {
@@ -1266,8 +1268,6 @@ export async function logUsage(ownerId: string | null | undefined, feature: stri
       cache_read_tokens: u.cache_read_input_tokens || 0, cache_write_tokens: u.cache_creation_input_tokens || 0,
       cost_usd: costOf(model, u),
     });
-  } catch { /* logging must never break a lookup */ }
-}
 ```
 
 - One database function (`spend_ai_credit`) decides whether a use is allowed. It locks the row and resets monthly/daily counts in Eastern time. Order: staff and comped are unlimited; Pro gets 300 a month; Power Seller 1,000; Thrift Pro 30 a day; free accounts use credits, then packs.
@@ -1330,6 +1330,7 @@ This is the same list the Operations page shows under "Outside the site" (stored
 | **Stripe** (payments) | Checkout, held money, paying sellers (Connect Express), Pro / Power / Thrift subscriptions, top-up packs | `STRIPE_SECRET_KEY`; the webhook secret and Pro price are in `settings.stripe`, written by the one-tap `/api/stripe/setup` | Prices made in code (`price_data`); the webhook and price created by the setup route | The Connect platform questionnaire can only be done by the owner in the live dashboard (no API). Watch Sandbox vs live. Every money step is guarded so it can't run twice. | 2.9% + 30¢ a charge; +0.7% subscriptions |
 | **Resend** (email) | Every email: orders, alerts, welcome series, digests, to-do reminders. **Both apps send through the same Resend account,** so the 100-a-day and 3,000-a-month limits are shared. | `RESEND_API_KEY` (send-only), `EMAIL_FROM`; domain verified with DNS records | Sends from server code; every send logged (`email_log`, `notifications`) | A send-only key can't read account info (401), so health is judged by real sends. Capped at 80 automatic emails a day. The sandbox can't reach Resend directly, so test by triggering the live site. | Free 3,000/month, 100/day |
 | **Phone carriers' email-to-text** (texts) | Owner alerts and seller texts | An address like `8047207910@vtext.com` in `settings.business.alert_to`; sellers pick a carrier in Profile | Same as email | `@vzwpix.com` carries long messages. Dead carriers (AT&T, Cricket, T-Mobile, Metro, Mint) are marked "texts not available"; Verizon ends by March 31, 2027. | Free |
+| **Anthropic web search** (live prices for Find it for less) | Searches stores right now so prices and links are real | A server tool in the same Messages call: `{type: "web_search_20250305", name: "web_search", max_uses: 5, user_location: {type: "approximate", country: "US"}}`, plus our own `record_results` tool | Tested from the sandbox (api.anthropic.com is reachable) on real examples before building screens | Handle `stop_reason: "pause_turn"` by sending the assistant turn back; read `usage.server_tool_use.web_search_requests` to log cost; keep only URLs that appeared in `web_search_tool_result` blocks. Amazon's Product API needs 3 sales in 30 days first, so live search is the way in. | $10 per 1,000 searches plus tokens (about 10 to 15 cents a find) |
 | **Anthropic** (the AI) | Lookups, listings, pile sorting, Buy or Pass, weight guesses, rewrites, help answers, weekly blog | `ANTHROPIC_API_KEY`; model names in `CLAUDE_MODEL` and similar | `.env.local` has the key, so Claude tests prompts from the sandbox (api.anthropic.com is reachable) | `askWithTool` with fallback; photos shrunk to 1,100px; every call's cost logged in `ai_usage`; a cutoff tripwire; refund on failure; allowances in one database function. | Pennies per use |
 | **Shippo** (shipping labels) | Live rates and labels (when a key is added) | `SHIPPO_API_KEY` (not set yet) | | Without a key, a built-in estimate by weight and distance tracks USPS Ground Advantage. The Google feed uses the farthest-zone estimate. | Pay per label; the app adds a markup |
 | **Google Search Console** | Indexing reports | Verified with a meta tag in `src/app/layout.tsx` (`verification.google`) | Claude adds the tag and submits nothing by hand | Verify only after the deploy is READY. | Free |
@@ -1642,6 +1643,8 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 - **T-57. The AI account ran out of prepaid credit (Oct 9).** Every AI tool stopped, and customers were told "try a clearer photo," which blamed them for an outage. The daily health check caught it and texted the owner at 9:24 AM. **Fix:** `aiServiceDown()` and `reportAiDown()` in `src/lib/ai-tool.ts`. Out of credit, bad key, rate limit or overload now shows "Our AI is taking a short break. Nothing was used or charged," and texts the owner immediately, at most once an hour. **Rule:** tell customers the truth about outages; turn on **auto-reload** for any prepaid service on day zero.
 - **T-58. A merged button hid a feature the owner used (Oct 9).** The new 📤 Share button also made the find's page on our site, so the separate "📣 Share this find" box was removed. To the owner, his "put it on our site" step was simply gone. **Fix:** both buttons are back, sharing one page, so there are no duplicates. **Rule:** when combining features, keep every step the owner can see and name, unless he says to drop it.
 - **T-59. A restored feature went back to its old spot, not the spot the owner had fought for (Oct 9).** "Share this find" came back at the bottom of the page, two days after he got it moved to the top. *"I ask you to change one thing and you change a fucking other thing."* **Rule:** layouts the owner has settled are written down as LOCKED in CLAUDE.md, and anything brought back goes where he last asked for it.
+- **T-60. Live prices without making up links (Oct 9).** An AI asked for "the cheapest place to buy X" will happily write product URLs that look right and don't exist. **Fix:** Find it for less uses Anthropic's web search tool and collects every URL the searches actually returned; a product link is kept only if it is one of those, otherwise the button becomes a search at that store. Also: the search results make each call cost 10 to 15 cents (mostly input tokens, plus $10 per 1,000 searches), so the free cap for signed-out visitors is lower than the photo tools. **Rule:** never show an AI-written URL the code hasn't seen come back from a real search; count server-tool fees in your cost log from day one.
+- **T-61. A long tool answer came back tangled (Oct 9).** With live web search plus a big nested answer schema, about 1 in 4 finds came back with empty lists, fields flattened out of their box, or bits of tool markup inside the text, and one test on the live site showed a result with no stores at all. **Fix:** `strict: true` on the answer tool (the API then guarantees the schema; every object closed, every field required, list lengths trimmed in code), and if the model records twice, keep the fuller one. 8 of 8 live tests clean afterward. **Rule:** any AI tool with nested objects gets `strict: true`; test 5+ real runs in parallel before calling it done, not one.
 - **The political app's own trial and error** (PP-T1 to PP-T10: em dashes, Vercel 403, copy slips and dropped files in hand-built deploys, cancelled SQL, the Resend test sender, cron limits, an over-claim about the algorithm, slogans, shared prompts) is in its section below and applies to every app.
 
 ## 12. What worked and should be repeated

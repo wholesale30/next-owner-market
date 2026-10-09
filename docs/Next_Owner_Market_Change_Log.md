@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 6:54 PM from the project history (266 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 7:17 PM from the project history (269 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1958,3 +1958,30 @@
 - **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
 
 <sub>change id ecfb1c8</sub>
+
+### 19:09 — Find it for less: live store prices for any part, shop vs DIY savings, how-to, and Find it for me requests
+
+New /find page and /api/find (AI + live web search, links only from real search results, affiliate tags when set),
+/api/find/help (goes on the Wanted list + staff alert, 10% finder's fee, no find no fee). Saved in My lookups (Finds tab).
+Linked from home, Tools, What's it worth page, Help, sitemap. Web searches counted in AI cost.
+
+- **Server routes (API):** `src/app/api/find/help/route.ts`, `src/app/api/find/route.ts`
+- **Public site pages:** `src/app/find/FindClient.tsx`, `src/app/find/page.tsx`, `src/app/lookups/LookupsClient.tsx`, `src/app/page.tsx`, `src/app/sitemap.ts`, `src/app/tools/page.tsx`, `src/app/worth/page.tsx`
+- **Shared code (logic):** `src/lib/caps.ts`, `src/lib/find.ts`, `src/lib/help.ts`, `src/lib/lookups.ts`, `src/lib/parts.ts`, `src/lib/usage.ts`
+- **Database (migrations):** `supabase/migrations/040_find_it_for_less.sql`
+
+<sub>change id 2210f76</sub>
+
+### 19:11 — Find: every option is what they asked for; shop price is the same thing at full price. Email footers carry our mailing address (CAN-SPAM). Marketing Plan: launch plan for every social channel + email rules
+
+- **Documents:** `docs/Next_Owner_Market_Marketing_Plan.md`
+- **Shared code (logic):** `src/lib/automations.ts`, `src/lib/find.ts`
+
+<sub>change id f5b9f77</sub>
+
+### 19:16 — Find it for less: strict answer schema (no more empty or tangled results); guides, playbook T-60/61, mission
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.md`, `docs/Next_Owner_Market_Mission_Statement.md`, `docs/Next_Owner_Market_Presentation_Walkthrough.md`, `docs/Next_Owner_Market_User_Guide.md`, `docs/Next_Owner_Market_White_Paper.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`, `docs/playbook/template.md`
+- **Shared code (logic):** `src/lib/find.ts`
+
+<sub>change id 4079b1a</sub>
