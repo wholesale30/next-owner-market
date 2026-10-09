@@ -69,7 +69,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const j = await r.json().catch(() => ({}));
     setBusy(null);
     if (!r.ok || !j.item_id) return setErr({ msg: j.error || "Couldn't make the listing." });
-    router.push(`/app/items/${j.item_id}?written=1#copy`);
+    router.push(`/app/items/${j.item_id}?written=1&from=bp#copy`);
   }
   async function thriftPro() {
     if (!meId) { router.push(`/signup?buyer=1${refQ}&next=/buy-or-pass`); return; }

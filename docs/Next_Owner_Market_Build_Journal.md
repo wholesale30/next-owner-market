@@ -8397,3 +8397,17 @@ Now Sort the pile. I'm bringing back its "Share these finds" box from before tod
 Clean. The one warning was there before today. Building and shipping:
 
 Live. Adding the lesson to the playbook (combining two buttons hid a feature you were using), then the records:
+
+"📣 Share this find" is back and live. That was my mistake: the new 📤 Share button was quietly making the page on our site, so I removed the box, but that took away a step you use.
+
+**Now each lookup has both:**
+- **📤 Share · 📸 Check another**, right under the price. Share opens your phone's menu (Messages, Facebook, email, copy link).
+- **📣 Share this find**, lower down, where it was before, under "Something wrong? Tell it." It puts the lookup on our site as its own page for Google, with the same "✓ Shared on Next Owner Market · See your page" result as before.
+
+That's on What's it worth and Buy or Pass. On Sort the pile it's **📣 Share these finds**, and every sellable item gets its own page.
+
+**No duplicates.** Both buttons use the same page. If you tap 📤 Share first, the 📣 box changes to "✓ Shared on Next Owner Market." If you tap 📣 first, 📤 Share sends that same page.
+
+I also added this to the playbook as lesson T-58: when combining features, never drop a step you use unless you say so.
+
+Next_Owner_Market_Files_2026-10-09_1347.zip has the updated records.

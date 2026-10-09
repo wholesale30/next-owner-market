@@ -123,7 +123,7 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
     if (error || !data) { setBusy(null); return setErr({ msg: error?.message || "Couldn't create the listing." }); }
     await sb.from("item_photos").insert(photos.map((p, i) => ({ item_id: data.id, storage_path: p.path, url: p.url, sort_order: i, is_primary: i === 0 })));
     if (lookupId) await fetch("/api/lookups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "listed", id: lookupId, item_id: data.id }) }).catch(() => {});
-    router.push(`/app/items/${data.id}?written=1#copy`);
+    router.push(`/app/items/${data.id}?written=1&from=worth#copy`);
   }
 
   const lot = !!res?.pieces?.length;

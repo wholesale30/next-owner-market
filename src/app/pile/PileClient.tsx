@@ -70,7 +70,7 @@ export default function PileClient({ meId, role, initial }: { meId: string | nul
     }
     setBusy(null);
     if (lookupId && n) await fetch("/api/lookups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "listed", id: lookupId, item_id: last }) }).catch(() => {});
-    router.push(n === 1 && last ? `/app/items/${last}?written=1#copy` : `/app?status=draft&made=${n}`);
+    router.push(n === 1 && last ? `/app/items/${last}?written=1&from=pile#copy` : `/app?status=draft&made=${n}`);
   }
   if (!res) return (
     <div className="card p-4 space-y-3">

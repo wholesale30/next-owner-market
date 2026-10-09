@@ -14,7 +14,7 @@ interface AuctionRow { id: string; starting_bid: number; reserve_price: number |
 
 export default async function ItemPage({ params, searchParams }: PageProps<"/app/items/[id]">) {
   const { id } = await params;
-  const sq = (await searchParams) as { welcome?: string; written?: string };
+  const sq = (await searchParams) as { welcome?: string; written?: string; from?: string };
   const welcome = !!sq.welcome;
   const written = !!sq.written && !welcome;
   const supabase = await createClient();
@@ -84,6 +84,8 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
             <li>Tap <b>List it in the store</b> to put it on our site too. Free.</li>
             <li>Want different words? Tap <b>✨ Change the words</b> below and just say what to change. Photos have ✨ Touch up.</li>
           </ol>
+          {/* straight back to a fresh lookup, no back arrow needed (owner's request, Oct 9 2026) */}
+          {(() => { const next = ({ bp: ["/buy-or-pass", "📸 Check the next one"], pile: ["/pile", "📸 Sort another pile"], lookups: ["/lookups", "📂 Back to my lookups"] } as Record<string, [string, string]>)[sq.from || ""] || ["/worth", "📸 Check another item"]; return <Link href={next[0]} className="btn btn-secondary w-full text-lg" style={{ minHeight: 56 }}>{next[1]}</Link>; })()}
         </div>
       )}
       {(

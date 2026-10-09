@@ -35,7 +35,7 @@ export default function LookupsClient({ rows: initial }: { rows: Row[] }) {
     setBusy(null);
     if (j.open) { router.push(j.open); return; }
     if (!j.item_id) { setMsg(j.error || "Couldn't make that listing. Try again."); return; }
-    router.push(`/app/items/${j.item_id}?written=1#copy`);
+    router.push(`/app/items/${j.item_id}?written=1&from=lookups#copy`);
   }
   async function listAll() {
     if (!listable.length || !confirm(`Write listings for all ${listable.length}? They'll be drafts you can check before they go live.`)) return;

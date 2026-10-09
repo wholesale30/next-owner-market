@@ -21,7 +21,7 @@ export default async function BuyPassPage({ searchParams }: PageProps<"/buy-or-p
   const claim = typeof sp.claim === "string" ? sp.claim : null;
   if (me && claim) {
     await claimScan(me.id, claim);
-    if (sp.list === "1") { const r = await listFromScan(me, claim); if (r.item_id) redirect(`/app/items/${r.item_id}?written=1`); }
+    if (sp.list === "1") { const r = await listFromScan(me, claim); if (r.item_id) redirect(`/app/items/${r.item_id}?written=1&from=bp`); }
   }
   const d = admin();
   const openId = typeof sp.open === "string" ? sp.open : null;
