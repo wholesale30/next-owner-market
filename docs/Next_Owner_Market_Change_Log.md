@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 7:17 PM from the project history (269 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 7:55 PM from the project history (271 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1985,3 +1985,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Shared code (logic):** `src/lib/find.ts`
 
 <sub>change id 4079b1a</sub>
+
+### 19:18 — Records: journal, change log, guides, playbook, marketing plan (Find it for less)
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 4dcf5a7</sub>
+
+### 19:53 — Check another item button on every listing page, not just right after the AI writes it
+
+- **Documents:** `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/items/[id]/page.tsx`
+
+<sub>change id c295d44</sub>

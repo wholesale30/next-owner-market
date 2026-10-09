@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 9, 7:17 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 7:50 PM (continuing)
 
 **Claude:**
 
@@ -8533,3 +8533,51 @@ Meanwhile, the marketing plan section.
 Now I'll add Find it for less to every guide, the playbook and the Mission Statement.
 
 Live test running. Building the records zip meanwhile.
+
+**Find it for less** is live at nextownermarket.com/find. I tested it on the live site with your Prius example. It found the exact Toyota part number (25620-37120) for **$76.91**, against **$945** at a shop, installed.
+
+**Where people find it:**
+- A big **🔎 Need a part? Find it for less** button on the home page.
+- At the top of Tools.
+- On the What's it worth page. I put it below the tool, so your locked layout didn't move.
+- In Help and in Google's index of the site.
+
+**How it works:** people type it, say it (🎤 Talk) or pick a photo of the old part. In about 20 seconds they get:
+1. The exact part, the lowest price and **🎉 Save about $X** compared with the dealer or shop price.
+2. **📤 Share · 🔎 Find another**, side by side, in the same spot as on the other tools.
+3. The stores, cheapest first. Each one is a big button that goes straight to that store. The links all come from that day's real search results, never made up.
+4. **🙋 Find it for me.** This is your "let us do it." It's free to ask. If we find it and they want it, the fee is 10% of the price, at least $10. No find, no fee. It goes on your Wanted list and texts you right away.
+5. The specs to match, how hard the job is, the tools, the steps and a how-to video.
+
+Every find is saved under a new **🔎 Finds** tab in My lookups.
+
+**Costs to know:** each find costs us about 10 to 20 cents, because it searches the stores live. That's more than the photo tools. To keep it in check, people who aren't signed in get 1 free find a day (150 a day site-wide), and after that each find counts as one AI use.
+
+**Marketing Plan:** it now has a launch section for every channel:
+- **Facebook groups:** Goodwill, thrift, vintage, DIY and Prius/car groups. Ask the admin first, then post one group a day.
+- **Videos:** TikTok, Reels and Shorts.
+- **Reddit:** read each group's rules before posting.
+- **Also:** Pinterest, Nextdoor and X.
+
+Your Prius stories are written in as the ads.
+
+**Email, the honest part:**
+- Opt-outs are already handled.
+- The law also requires a real mailing address in every marketing email. Fines run up to $53,088 per email.
+- Our email service (Resend) bans bought lists. So we grow the list from the site.
+- For your own contacts, send a personal note from your Gmail.
+
+**I need two things from you.** Both are on your to-do list as urgent:
+1. A mailing address for the emails: the warehouse address or a PO box. Just text it to me.
+2. Your Amazon and eBay affiliate IDs. Every Find it for less click starts earning once they're in. I'd hold off on the launch posts until then.
+
+All the updated Word files are in the zip Next_Owner_Market_Files_2026-10-09_1917.zip.
+
+Sources:
+- [FTC: CAN-SPAM Act compliance guide](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
+- [Resend: Acceptable Use Policy](https://resend.com/legal/acceptable-use)
+- [Geniuslink: affiliate links in emails](https://geniuslink.com/blog/can-you-include-affiliate-links-in-emails/)
+
+### Oct 9, 7:50 PM — Shayne
+
+> Now I've asked over and over and fucking over. God damn it.
