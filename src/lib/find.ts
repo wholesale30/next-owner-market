@@ -80,6 +80,16 @@ Steps:
 2. Use web_search to find current prices at real stores. Search the exact part number and the plain name. Look at Amazon, Walmart, Home Depot, Lowe's, eBay and specialist stores (RockAuto, AutoZone, the maker). Also search what a dealer or repair shop charges if it's a repair.
 3. Call record_results once with what you found. Options must all be the thing they asked for (if they asked for LED, every option is LED). shop_price is what a dealer, repair shop or full-price store charges for that SAME thing (installed, for a repair); use null if there isn't one. A different, cheaper route goes in cheaper_idea, not in options. Only use URLs that came back in your search results. Prices must be ones you actually saw; use null if you didn't see a price. Write for a beginner, short and plain, no dashes as punctuation.`;
 
+/** Strict tool schemas need every object closed and every field listed as required; list lengths are trimmed in code. */
+function strictSchema(x: unknown): unknown {
+  if (Array.isArray(x)) return x.map(strictSchema);
+  if (!x || typeof x !== "object") return x;
+  const o: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(x)) if (k !== "maxItems" && k !== "minItems") o[k] = strictSchema(v);
+  if (o.type === "object" && o.properties) { o.additionalProperties = false; o.required = Object.keys(o.properties as object); }
+  return o;
+}
+
 const KNOWN_STORES: { host: RegExp; name: string; search: (q: string) => string }[] = [
   { host: /(^|\.)amazon\.com$/, name: "Amazon", search: (q) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}` },
   { host: /(^|\.)walmart\.com$/, name: "Walmart", search: (q) => `https://www.walmart.com/search?q=${encodeURIComponent(q)}` },
@@ -114,7 +124,8 @@ export async function findItForLess(client: Anthropic, p: { text: string; image?
   const messages: Anthropic.MessageParam[] = [{ role: "user", content }];
   const tools: Anthropic.ToolUnion[] = [
     { type: "web_search_20250305", name: "web_search", max_uses: p.maxSearches ?? 5, user_location: { type: "approximate", country: "US" } },
-    { name: "record_results", description: "Record what you found. Call this once, at the end.", input_schema: SCHEMA as unknown as Anthropic.Tool.InputSchema },
+    // strict: the API guarantees the answer matches the schema (without it, a long answer sometimes came back tangled)
+    { name: "record_results", description: "Record what you found. Call this once, at the end.", input_schema: strictSchema(SCHEMA) as Anthropic.Tool.InputSchema, strict: true },
   ];
   const seen = new Set<string>();
   const total = { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 0, cache_creation_input_tokens: 0, server_tool_use: { web_search_requests: 0 } };
@@ -129,7 +140,7 @@ export async function findItForLess(client: Anthropic, p: { text: string; image?
     total.server_tool_use.web_search_requests += u.server_tool_use?.web_search_requests || 0;
     for (const b of m.content) {
       if (b.type === "web_search_tool_result" && Array.isArray(b.content)) for (const r of b.content) if (r.type === "web_search_result") seen.add(norm(r.url));
-      if (b.type === "tool_use" && b.name === "record_results") raw = b.input as Record<string, unknown>;
+      if (b.type === "tool_use" && b.name === "record_results") { const inp = b.input as Record<string, unknown>; if (!raw || (Array.isArray(inp.options) ? inp.options.length : 0) >= (Array.isArray(raw.options) ? raw.options.length : 0)) raw = inp; }
     }
     if (raw) break;
     messages.push({ role: "assistant", content: m.content as Anthropic.ContentBlockParam[] });

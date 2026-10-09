@@ -54,6 +54,12 @@ For each: where it is, how you get there, what it does, why it exists, how it gr
 - **What:** Up to 10 photos of a box/shelf/corner. Result: up to 25 items, each with value range, Sell/Keep/Donate/Toss, reason, expert flag; total for sellable items. Change any label. **List N items** makes drafts for all the Sell ones. Share all valuations (no name). Guide + FAQ below.
 - **Why:** The estate/garage/downsizing front door. Turns "overwhelmed" into "listed" in a minute. Feeds the store with supply.
 
+### Find it for less · /find (Oct 9, 2026)
+- **What:** Type, say (mic) or photograph what you need. The AI searches stores live (Anthropic web search, up to 5 searches) and returns: the exact part and number, the lowest prices at real stores (cheapest first, each a button to that store), what a dealer/shop/full-price store charges, the savings, specs to match, do-it-yourself difficulty, time, tools, steps, a YouTube how-to search, an even-cheaper idea and a warning. **📤 Share · 🔎 Find another** sit right under the answer. **🙋 Find it for me** sends the request to the Wanted list (kind "find", with the AI's answer attached) and texts/emails staff; fee 10% of the price, at least $10, only if found (change it in `FINDER_FEE`, src/lib/find.ts).
+- **Links are never made up:** a product link is kept only if that exact page came back in the live search; otherwise the button searches that store (or Google Shopping). Amazon and eBay links get our affiliate tags automatically once the IDs are in settings.
+- **Cost and limits:** about 10 to 15 cents per find (searches are $10 per 1,000 plus tokens; logged in ai_usage with the searches counted). Signed out: 1 free per device a day, 2 per network, 150 a day site-wide. Signed in: one AI use, refunded if it fails.
+- **Why:** Shayne's own story (Prius EGR valve, $750 at the dealer, $80 on Amazon). It brings in a whole new crowd (DIYers, car owners, homeowners), earns affiliate commissions, and every share brings the next person to the tool.
+
 ### Buy or pass? · /buy-or-pass
 - **What:** Photo + what they're asking. Result: resale range, best marketplace, that marketplace's fees (shown), shipping, profit range, BUY/MAYBE/PASS. Guide + FAQ.
 - **Why:** The thrift-store demo. Great for 15-second videos. Ends in a listing.

@@ -132,6 +132,14 @@ Background removal runs in the browser (on-device model, @imgly/background-remov
 
 **Roles**: admin (everything incl. Settings), staff (everything but Settings), consignor (own items/payouts), buyer (account page). Enforced by Postgres row-level security, not just the UI.
 
+## 5b. Find it for less (Oct 9, 2026)
+
+- `src/lib/find.ts` `findItForLess()`: one Messages call with two tools, Anthropic's server-side `web_search_20250305` (max 5 uses, US location) and our `record_results`. Loops on `pause_turn`, nudges once if it ends without a result, forces `record_results` after 3 rounds. Every search-result URL is collected; an option's URL is kept only if it was in those results, otherwise it becomes that store's search URL (`KNOWN_STORES`) or Google Shopping. Amazon/eBay links get affiliate tags from `tags()` (src/lib/parts.ts). All AI text goes through `cleanAiTells()`.
+- `costOf()` (src/lib/usage.ts) now adds $0.01 per `server_tool_use.web_search_requests`.
+- `/api/find`: signed-out caps via `src/lib/caps.ts` (`bump`, `ipKey`, `nyDay`) and a `nom_find` cookie; signed-in spends one AI use via `spend_ai_credit` and refunds on failure; outages use `aiServiceDown`/`reportAiDown`. Saves to `lookups` with tool `find` (migration 040 widened the check).
+- `/api/find/help`: inserts into `sourcing_requests` with `kind = 'find'` and `details` jsonb (migration 040), 5 a day per network, then `alertStaff()`.
+- `/find` page: FindClient (answer, then ShareAndAgain, then stores, Find it for me, specs, DIY). Linked from the home hero, /tools, /worth, Help, sitemap; My lookups has a Finds tab.
+
 ## 6. Decisions and why
 
 - **Name**: "Next Owner Market" (plain nextowner.com is a used-car dealer in Alabama; unrelated business). Tagline: *Find its next owner.*

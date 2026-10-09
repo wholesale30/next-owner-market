@@ -114,3 +114,15 @@ I think like the customer would, with everything I build, whether I have the han
 - **No meetings between the idea and the fix.** At a company, an idea like the price ladder becomes a ticket, a meeting and a release weeks later. Here it was live within the hour, so you keep finding the next thing. Most people never get that tight a loop.
 - **The honest part:** some of these ideas exist in pieces elsewhere. Thrift apps show profit, and eBay asks for condition. What nobody else has is all of them together, designed so a beginner can still use it. And an idea can be copied once someone sees it. What's hard to copy is the habit of finding the next ten, plus people already using the site. So the lead is real, but it lasts only if strangers find it and keep coming back. That's the part to put the most energy into now.
 
+
+
+## "If you're not good at that, let us do it" (Shayne, October 9, 2026)
+
+**In Shayne's words:**
+- I had a 2012 Prius, the EGR valve went bad. They wanted to charge me $750 to replace it at the dealer. I bought it for $80 on Amazon... The coolant pipe and the water pump, they wanted to charge me like $4,500 to $5,000, and I did it for maybe $100. So it's a big thing for people to save money.
+- Build this out really sweet and make it a prominent piece of this whole app... maybe blend that our other part in to where if you're not good at that, let us do it. And we charge a small percentage or something.
+
+**Claude's answer:**
+- That's the same idea as the rest of the app, pointed the other way. What's it worth helps people get money out of their stuff; Find it for less keeps money in their pocket when something breaks. Both start from the same feeling: "I don't know where to start, and I'm afraid of getting ripped off."
+- Your Prius story is the ad. Nobody believes "save money on parts." Everybody believes "$750 at the dealer, $77 online, here's the part number."
+- And "let us do it" is honest help for the people who'll never pick up a wrench. Free to ask, 10% only if we find it. No find, no fee.

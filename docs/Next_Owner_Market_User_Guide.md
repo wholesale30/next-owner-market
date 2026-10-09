@@ -582,3 +582,23 @@ On **What's it worth?**, **Buy or Pass** and **Sort the pile**, two big buttons 
 - **📸 Check another** (or **Check next** / **Sort another**) clears the screen for the next item.
 
 **Also still there:** the **📣 Share this find** box (on Sort the pile, **📣 Share these finds**) lower on the page. It puts the find on our website as its own page that people searching Google can find. If you already tapped 📤 Share, that page already exists and the box says so. Tapping both never makes two pages.
+
+
+## 🔎 Find it for less (Oct 9, 2026)
+
+**What it's for:** you need a part, a bulb, a filter, a battery, a blade, anything, and you don't want to pay too much. Real example: the dealer wanted $750 for a 2012 Prius EGR valve; the tool found the same part for $77.
+
+1. Tap **🔎 Need a part? Find it for less** on the home page (also in Tools, and on the What's it worth page).
+2. Type what you need, tap **🎤 Talk** and say it, or tap **🖼 Pick photo** for a picture of the old part or its label (📸 Camera is the second choice). Add the brand, model or year if you know it.
+3. Tap **🔎 Find it for less**. It checks real stores right now. About 20 seconds.
+4. You get, top to bottom:
+   - **You need**: the exact part and part number, the **best price found**, and **🎉 Save about $X** compared to what a dealer or shop charges.
+   - **📤 Share · 🔎 Find another**, side by side (same spot as every other tool).
+   - **Where to buy it**: cheapest first. Tap **Open at (store)**. If we couldn't confirm the exact page, the button says **Search (store)** instead, so you never land on a dead link.
+   - **🙋 Too much hassle? Find it for me**: we track it down for you. Free to ask; if we find it and you want it, the fee is 10% of the price (at least $10). No find, no fee. Tick "I could use help getting it put in, too" if you want install help.
+   - **✅ Make sure it matches**: the specs to check before you buy.
+   - **🔧 Do it yourself?**: how hard, how long, tools, steps, and **▶️ Watch how it's done** (opens YouTube).
+   - **💡 Even cheaper** and **👀 Watch out**.
+5. Signed in, every find is saved in **📂 My lookups** under the **🔎 Finds** tab.
+
+**Cost:** first find free with no account. After that, one AI use per find.

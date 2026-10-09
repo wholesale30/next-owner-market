@@ -46,6 +46,12 @@
 
 **Then tap "Share it (no name)."** Show the public page it makes at /valued/…. **Say:** "Every one of these is a page Google can send someone to. We don't write them. Users do, by sharing."
 
+## Slide 4b · Find it for less
+
+**Show:** nextownermarket.com/find. Tap the example "2012 Prius EGR valve." In about 20 seconds: the exact Toyota part number, $77 best price, **🎉 Save about $845** against a shop quote, the stores side by side, and how hard the job is.
+
+**Say:** "The dealer quoted me $750 for this part. Same part, $77. Anyone who's ever been handed a repair quote gets this in one second. And if it's too much hassle, they tap Find it for me and we do it, for 10%."
+
 ## Slide 5 · Nine marketplaces, one tap
 
 **Show:** a listing in the seller app (nextownermarket.com/app → any item). The row of tabs: Facebook, eBay, OfferUp, Craigslist, Mercari, Poshmark, Vinted, Depop, Etsy. Tap eBay → Copy. Tap "How to post this on eBay."

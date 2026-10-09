@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 9, 5:15 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 6:54 PM (continuing)
 
 **Claude:**
 
@@ -8465,3 +8465,59 @@ The only change this time was moving that one box up on each of the three screen
 **So it doesn't happen again,** that order is now written into the project rules as **locked**. No Claude, in any session, moves it without you saying so. Anything that gets brought back goes where you last asked for it. That's also in your Operating Rules and the playbook (lesson T-59).
 
 Next_Owner_Market_Files_2026-10-09_1715.zip has the updated records.
+
+### Oct 9, 6:48 PM — Shayne
+
+> Okay, in our what it's worth, I want to add a separate, uh, well, not even in what it's worth. I'd like to add a category, and what do you think about it? The idea of adding a category uh, in our app that allows them to look up things. Say I just tried to look up a, I have these 500-watt halogen work lamps that I want to switch out to LED bulbs. And I said, what it's worth, and I asked, and I took pictures, and I said, where can I find the best replacement bulbs that turn this into LED versus halogen? And it comes back and gives me the price of the, of the damn item. And that gives me the idea of having a section where people can go just do a search and make a part of our overall app with all the extra goodies that you can actually search for parts, search for items. And it goes out and finds you like Amazon, Walmart, whatever, finds you the best prices on, on the, on the, that, that item. Is that something we can do?
+
+**Claude:**
+
+I think it's a good idea, and it fits the app. Before I give you my full take, I'm checking two facts that decide how it would work and what it costs: the price of letting our AI search the web live, and what Amazon and Walmart allow.
+
+Yes, we can do it, and I think it's a strong addition. Your halogen lamp is a perfect example of why: today, What's it worth only answers "what's it worth," even when the real question is "where do I get a part for this."
+
+**What I'd build: 🔎 Find it for less** (a new tool, next to What's it worth)
+
+1. **Ask any way.** Snap a photo, type it, or say it into the mic. For example: *"LED bulbs to replace the halogens in these 500-watt work lights."*
+2. **The AI figures out exactly what fits first.** For your lamps that's usually an **R7s 118 mm double-ended bulb**, and the LED versions are only 20 to 50 watts. It says plainly what to check: length, brightness, and whether a cheap new LED work light makes more sense than converting.
+3. **It searches the web live** and shows the 3 to 5 best current prices, cheapest first. Each one shows the store (Amazon, Walmart, Home Depot, Lowe's, eBay), the price and a **Buy** button. It only shows prices it actually found, with a note to check the price at checkout. It never makes prices up.
+4. **The usual buttons:** 📤 Share, 📸 Check another, and save to your Lookups.
+
+I'd also connect it to the existing tools. If you ask a "where can I buy…" question inside What's it worth, a **🔎 Find it for less** button shows up with your photo already filled in, instead of just giving you a price.
+
+**Cost and money:**
+- Each search costs us about **4 to 8¢**. The AI's live web search is $10 per 1,000 searches, so about 1¢ each, plus the normal AI cost. ([Claude web search pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool))
+- It counts as **1 AI use**, like a lookup, so Pro covers it and free accounts use their free credits. No new monthly bill.
+- **It can earn money.** Once your Amazon Associates and eBay Partner signups are approved (they're on your to-do list), the Buy buttons carry your affiliate tags, so you earn a cut when people buy.
+- Amazon's own price feed isn't an option yet: it requires 3 sales through your links in the last 30 days just to keep access. Live web search works today and covers every store, not just Amazon. ([PA-API rules, 2026](https://dev.to/agenthustler/amazon-product-api-pa-api-in-2026-restrictions-alternatives-and-web-scraping-4l35))
+
+**Why it's worth it:** it gives people a reason to open the app even when they're not selling anything. Fixing, replacing and bargain hunting are everyday needs, and every search is another chance for them to see the selling tools.
+
+Say **"go"** and I'll build it. It won't touch the locked layout on the other screens. The only change there is the extra button that appears when someone asks a parts question.
+
+### Oct 9, 6:49 PM — Shayne
+
+> Stop hook feedback:
+> [~/.claude/stop-hook-git-check.sh]: There are uncommitted changes in the repository. Please commit and push these changes to the remote branch.
+
+**Claude:**
+
+I saved the latest journal entries and pushed them. Only the records changed, so nothing on the site is different.
+
+**🔎 Find it for less** is still waiting on your **"go"** before I build it.
+
+### Oct 9, 6:53 PM — Shayne
+
+> Okay, do it and make it um, to where it's the best it can possibly be and, and update the marketing plan when we go to launch all this and actually market it on social media because I want to market it on every social media, um, all the places, the groups and stuff with Goodwill shoppers and vintage shoppers, all that stuff. I want to market to everybody and we'll use our uh, emails that we, that we can do without getting burned or anything because you can do emails as long as it has an opt out and they can't, nobody can do anything about it. And um, you have already the companies that will do it for us versus like MailChimp and constant contact that are assholes about it. And so build this out really sweet and make it a prominent piece of this whole app. I think it'd be crazy good for people to be able to look up stuff. And for instance, um, just recently, my girlfriend had a needed an EGR valve for her Toyota Prius 2012. She went to the dealer. They put it on the computer, and they gave her a price of $750. I bought it for $80 on Amazon and it will put it in myself. Previous to that, she had a problem with her, the exhaust pipe on a Prius has uh, coolant that flows through it and it, even though it had a leak and she was smoking and losing coolant. I had a wrecked a Prius that we have to, for parts. I, I, they wanted to do like $4,500 for that and uh, put, put a new water pump on. The water pump was, $95 with a thermostat. I took the part off the other car, uh, the, the pipe and stuff, fixed it all, basically for $100. And they wanted, I think it was $5,000, 20-some hundred just for the pipe. So, and I thought about doing that anyway. That's, that's already in our app that if you're looking for something, let us help, let us find it. But I think this will be, not maybe mark that in if you're if, if you're not good at that, Uh, in this app, maybe blend that, that our other part of that in to where if you're not good at that, let us do it. And we just, and we charge a, a small percentage or something.
+
+**Claude:**
+
+Building it. Here's the plan:
+
+1. **🔎 Find it for less**, a new tool:
+   - Snap a photo, type, or talk.
+   - The AI works out exactly what fits, then searches live for the best current prices.
+   - It shows what a shop or dealer would charge next to the best price, and how much you save.
+   - It says whether it's a do-it-yourself job, and has a **"Too hard? Let us find it for you"** button for the paid finding service you described.
+2. **Make it prominent:** home page, the tools menu, inside What's it worth when you ask a parts question, and in Lookups.
+3. **Update the marketing plan:** every social channel and group, plus an email plan that stays legal and won't get the account shut down.
