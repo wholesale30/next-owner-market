@@ -27,6 +27,7 @@ export default async function WorthPage({ searchParams }: PageProps<"/worth">) {
       </section>
       <main className="max-w-2xl mx-auto p-4 space-y-4">
         <WorthClient meId={me?.id || null} role={me?.role || null} credits={!a || a.left == null ? null : a.left} plan={a?.kind || null} initial={initial} key={initial?.id || "new"} />
+        <Link href="/find" className="card p-3 flex items-center justify-between font-semibold" style={{ minHeight: 52 }}><span>🔎 Need a part or replacement? Find it for less</span><span className="muted text-sm">›</span></Link>
         {me && nSaved > 0 && <Link href="/lookups" className="card p-3 flex items-center justify-between font-semibold" style={{ minHeight: 52 }}><span>📂 My saved lookups ({nSaved})</span><span className="muted text-sm">List them any time ›</span></Link>}
         <ToolGuide
           intro={[

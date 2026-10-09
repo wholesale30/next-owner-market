@@ -30,7 +30,7 @@ export const PART_PROMPT = " Also check for missing or worn-out parts: if a repl
 
 let cache: { at: number; amazon?: string; ebay?: string } | null = null;
 /** Affiliate IDs (set once Amazon Associates / eBay Partner Network approve us) live in settings 'business'. */
-async function tags() {
+export async function tags() {
   if (cache && Date.now() - cache.at < 300_000) return cache;
   const { data } = await admin().from("settings").select("value").eq("key", "business").maybeSingle();
   const v = (data?.value as { amazon_tag?: string; ebay_campid?: string }) || {};

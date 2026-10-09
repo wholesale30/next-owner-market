@@ -10,6 +10,7 @@ const TOOL: Record<string, { label: string; open: string }> = {
   worth: { label: "💰 What's it worth", open: "/worth" },
   buy_or_pass: { label: "🛒 Buy or Pass", open: "/buy-or-pass" },
   pile: { label: "📦 Sort the pile", open: "/pile" },
+  find: { label: "🔎 Find it for less", open: "/find" },
 };
 const money = (n: number) => `$${Math.round(n).toLocaleString()}`;
 const V: Record<string, string> = { buy: "var(--ok)", maybe: "var(--accent)", pass: "var(--danger)" };
@@ -17,11 +18,11 @@ const V: Record<string, string> = { buy: "var(--ok)", maybe: "var(--accent)", pa
 export default function LookupsClient({ rows: initial }: { rows: Row[] }) {
   const router = useRouter();
   const [rows, setRows] = useState(initial);
-  const [tab, setTab] = useState<"todo" | "listed" | "all">("todo");
+  const [tab, setTab] = useState<"todo" | "listed" | "finds" | "all">("todo");
   const [busy, setBusy] = useState<string | null>(null);
   const [undo, setUndo] = useState<Row | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const shown = useMemo(() => rows.filter((r) => (tab === "all" ? true : tab === "listed" ? r.listed : !r.listed)), [rows, tab]);
+  const shown = useMemo(() => rows.filter((r) => (tab === "all" ? true : tab === "finds" ? r.tool === "find" : r.tool === "find" ? false : tab === "listed" ? r.listed : !r.listed)), [rows, tab]);
   const listable = rows.filter((r) => !r.listed && (r.tool === "worth" || r.tool === "buy_or_pass"));
 
   async function act(body: Record<string, unknown>) {
@@ -71,7 +72,7 @@ export default function LookupsClient({ rows: initial }: { rows: Row[] }) {
   return (
     <div className="space-y-3">
       <div className="flex gap-1">
-        {([["todo", `To list (${rows.filter((r) => !r.listed).length})`], ["listed", `Listed (${rows.filter((r) => r.listed).length})`], ["all", "All"]] as const).map(([k, l]) => (
+        {([["todo", `To list (${rows.filter((r) => !r.listed && r.tool !== "find").length})`], ["listed", `Listed (${rows.filter((r) => r.listed).length})`], ...(rows.some((r) => r.tool === "find") ? [["finds", `🔎 Finds (${rows.filter((r) => r.tool === "find").length})`] as const] : []), ["all", "All"]] as const).map(([k, l]) => (
           <button key={k} type="button" className={`pill px-3 py-2 flex-1 ${tab === k ? "pill-active" : ""}`} onClick={() => setTab(k)}>{l}</button>
         ))}
       </div>
@@ -86,17 +87,19 @@ export default function LookupsClient({ rows: initial }: { rows: Row[] }) {
             {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 rounded-lg object-cover shrink-0" /> : <div className="w-16 h-16 rounded-lg shrink-0" style={{ background: "var(--line)" }} />}
             <div className="min-w-0 flex-1">
               <p className="font-semibold leading-tight line-clamp-2">{r.title}</p>
-              <p className="text-sm"><b>{money(r.low)}–{money(r.high)}</b>{r.verdict && <b className="ml-2" style={{ color: V[r.verdict] }}>{r.verdict.toUpperCase()}</b>}{r.count > 1 && <span className="muted"> · {r.count} items</span>}</p>
+              {r.tool === "find" ? <p className="text-sm">{r.low ? <b style={{ color: "var(--ok)" }}>Best {money(r.low)}</b> : null}{r.high > r.low ? <span className="muted"> · shop {money(r.high)}</span> : null}</p> : <p className="text-sm"><b>{money(r.low)}–{money(r.high)}</b>{r.verdict && <b className="ml-2" style={{ color: V[r.verdict] }}>{r.verdict.toUpperCase()}</b>}{r.count > 1 && <span className="muted"> · {r.count} items</span>}</p>}
               <p className="text-xs muted">{TOOL[r.tool]?.label} · {new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
             </div>
           </div>
           <div className="flex gap-2">
-            {r.listed && r.item_id ? (
+            {r.tool === "find" ? (
+              <Link href={`/find?open=${r.id}`} className="btn btn-primary flex-1">🔎 Open</Link>
+            ) : r.listed && r.item_id ? (
               <Link href={`/app/items/${r.item_id}`} className="btn btn-secondary flex-1">✓ Listed · see it</Link>
             ) : (
               <button type="button" className="btn btn-primary flex-1" disabled={!!busy} onClick={() => list(r)}>{busy === r.id ? "Writing…" : r.tool === "pile" ? "📝 Open and list" : "📝 List it"}</button>
             )}
-            <Link href={`${TOOL[r.tool]?.open || "/worth"}?open=${r.id}`} className="btn btn-secondary">Open</Link>
+            {r.tool !== "find" && <Link href={`${TOOL[r.tool]?.open || "/worth"}?open=${r.id}`} className="btn btn-secondary">Open</Link>}
             <button type="button" className="btn btn-secondary" aria-label="Delete" onClick={() => del(r)}>🗑</button>
           </div>
         </div>

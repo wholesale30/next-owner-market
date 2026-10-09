@@ -5,7 +5,7 @@ import { admin } from "@/lib/stripe";
  * in the person's "My lookups" until they delete it, so they can check a pallet's worth of things
  * now and list them later. Deleting is a soft delete (recoverable).
  */
-export type Tool = "worth" | "buy_or_pass" | "pile";
+export type Tool = "worth" | "buy_or_pass" | "pile" | "find";
 
 export async function saveLookup(p: { id?: string | null; ownerId: string; tool: Tool; title: string; photoUrls: string[]; hints?: string | null; result: unknown; low?: number | null; high?: number | null; refId?: string | null }): Promise<string | null> {
   const d = admin();

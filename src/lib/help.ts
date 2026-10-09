@@ -18,6 +18,7 @@ export const SCREEN_HINTS: { match: RegExp; text: string; topic?: string }[] = [
   { match: /^\/app\/blast/, text: "Send a New Arrivals email to your subscribers. Pick items, write a line, send." },
   { match: /^\/app\/trash/, text: "Anything deleted anywhere lands here. Tap Bring it back to undo. Nothing here is ever erased." },
   { match: /^\/thrift/, text: "Snap it, type the tag price, tap Buy or pass. First one is free with no account." },
+  { match: /^\/find/, text: "Say what you need or add a photo of the old part. Tap Find it for less. Cheapest store first. Too much hassle? Tap Find it for me.", topic: "find" },
   { match: /^\/app\/todo/, text: "Type or say anything you need to remember. Pick Urgent, Needed or Someday. Tap the green check when it's done." },
   { match: /^\/app\/pickups/, text: "Pickup appointments buyers booked." },
 ];
@@ -101,6 +102,11 @@ export const TOPICS: HelpTopic[] = [
     "Tap Worth? at the top. Pick photos of the item (the whole thing, then labels and any damage). Tap What's it worth?",
     "You get what it is, a price range, what drives the value, and where it sells best. If you want to sell it, tap List it now and the listing is already written.",
     "3 free lookups; Pro gives you 300 AI uses a month. It's an estimate from photos, not an in-person appraisal; rare or valuable pieces deserve a specialist too.",
+  ] },
+  { id: "find", who: "all", q: "Find it for less: how do I find a part cheaper?", a: [
+    "Tap Find it for less (on the home page and in Tools). Type or say what you need, like 2012 Prius EGR valve, or add a photo of the old part or its label. Tap Find it for less.",
+    "In about 20 seconds you get the exact part, the lowest prices at real stores right now (Amazon, Walmart, Home Depot, eBay and more), what a shop would charge, and whether you can put it in yourself, with a how-to video.",
+    "Too much hassle? Tap Find it for me and we track it down. Free to ask; if we find it and you want it, our fee is 10% of the price (at least $10). First find is free with no account; after that it's one AI use.",
   ] },
   { id: "vehicles", who: "all", q: "Selling or buying a car, boat, or motorcycle here?", a: [
     "Sellers: list it like anything else, plus year, miles, VIN, and title status. You must have the title in hand. Vehicles are pickup only.",

@@ -21,7 +21,9 @@ export function costOf(model: string, u: Partial<Anthropic.Usage> | null | undef
   const p = PRICES.find((x) => x.match.test(model)) || PRICES[2];
   const inp = Number(u?.input_tokens || 0), out = Number(u?.output_tokens || 0);
   const cr = Number(u?.cache_read_input_tokens || 0), cw = Number(u?.cache_creation_input_tokens || 0);
-  return (inp * p.inp + out * p.out + cr * p.inp * 0.1 + cw * p.inp * 1.25) / 1e6;
+  // web searches (Find it for less) are $10 per 1,000 on top of tokens
+  const searches = Number((u as { server_tool_use?: { web_search_requests?: number } } | null | undefined)?.server_tool_use?.web_search_requests || 0);
+  return (inp * p.inp + out * p.out + cr * p.inp * 0.1 + cw * p.inp * 1.25) / 1e6 + searches * 0.01;
 }
 
 export async function logUsage(ownerId: string | null | undefined, feature: string, model: string, u: Partial<Anthropic.Usage> | null | undefined) {
