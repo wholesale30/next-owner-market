@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 9, 1:30 PM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 1:47 PM (continuing)
 
 **Claude:**
 
@@ -8377,3 +8377,23 @@ This is done and live. Right under the price, every lookup tool now has two big 
 **I couldn't test the share menu from here,** because it only exists on a real phone. Try one lookup and tap 📤 Share to see your menu pop up. If something looks off, send me a screenshot.
 
 Next_Owner_Market_Files_2026-10-09_1330.zip has the updated records.
+
+### Oct 9, 1:40 PM — Shayne
+
+> I like it, but you have now um, the share goes into, you know, open all the boxes where I can send it different ways. But the um, share of the find is gone now, as far as it, what, making us our own page off each thing I look up.
+
+**Claude:**
+
+You're right. Combining them hid the "Share this find" button that puts each lookup on our own site for Google. Share still made that page, but only when you sent it to someone, and you couldn't see it happening. I'll bring "📣 Share this find" back as its own button in all three tools, and make both buttons use the same page, so tapping both never makes a duplicate. Starting with What's it worth:
+
+One shared piece runs "Share this find," so I'm teaching it to remember the page it made and to accept each tool's way of making that page. Then all three tools can use it:
+
+Now What's it worth: "📣 Share this find" goes back where it was, under the fix box, and both buttons share one page:
+
+Now Buy or Pass:
+
+Now Sort the pile. I'm bringing back its "Share these finds" box from before today, with the same don't-make-it-twice protection:
+
+Clean. The one warning was there before today. Building and shipping:
+
+Live. Adding the lesson to the playbook (combining two buttons hid a feature you were using), then the records:
