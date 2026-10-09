@@ -63,6 +63,10 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
     { ok: !!(it2.local_pickup_ok || it2.shipping_ok), text: [it2.local_pickup_ok ? "pickup" : null, it2.shipping_ok ? "shipping" : null].filter(Boolean).join(" and ").replace(/^./, (c) => c.toUpperCase()) + (it2.local_pickup_ok || it2.shipping_ok ? " offered." : "Neither pickup nor shipping is turned on; buyers can't check out.") },
   ];
 
+  // straight back to a fresh lookup, no back arrow needed (owner's request, Oct 9 2026)
+  const next = ({ bp: ["/buy-or-pass", "📸 Check the next one"], pile: ["/pile", "📸 Sort another pile"], lookups: ["/lookups", "📂 Back to my lookups"] } as Record<string, [string, string]>)[sq.from || ""] || ["/worth", "📸 Check another item"];
+  const againBtn = <Link href={next[0]} className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>{next[1]}</Link>;
+
   return (
     <div className="space-y-4 pb-8">
       {welcome && (
@@ -84,10 +88,11 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
             <li>Tap <b>List it in the store</b> to put it on our site too. Free.</li>
             <li>Want different words? Tap <b>✨ Change the words</b> below and just say what to change. Photos have ✨ Touch up.</li>
           </ol>
-          {/* straight back to a fresh lookup, no back arrow needed (owner's request, Oct 9 2026) */}
-          {(() => { const next = ({ bp: ["/buy-or-pass", "📸 Check the next one"], pile: ["/pile", "📸 Sort another pile"], lookups: ["/lookups", "📂 Back to my lookups"] } as Record<string, [string, string]>)[sq.from || ""] || ["/worth", "📸 Check another item"]; return <Link href={next[0]} className="btn btn-secondary w-full text-lg" style={{ minHeight: 56 }}>{next[1]}</Link>; })()}
+          {againBtn}
         </div>
       )}
+      {/* every listing, however you got here (Inventory, after List it, after approval): one tap to check the next item (owner, Oct 9 2026) */}
+      {!written && againBtn}
       {(
         <div className="card p-3 space-y-2" style={{ borderLeft: "4px solid var(--brand)" }}>
           <div className="flex items-center justify-between gap-2 flex-wrap">
