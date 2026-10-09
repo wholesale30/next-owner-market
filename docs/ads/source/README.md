@@ -5,6 +5,7 @@
 - **Rebuild:**
   1. In a folder with this source, run `npm i playwright-core@1.56 @fontsource/inter`.
   2. Run `CHROME=/opt/pw-browsers/chromium-1194/chrome-linux/chrome node shoot.mjs full frames` (780 frames, about 1 minute).
-  3. Run `ffmpeg -framerate 30 -i frames/f%04d.jpg -f lavfi -i anullsrc=r=44100:cl=stereo -shortest -c:v libx264 -pix_fmt yuv420p -crf 19 -movflags +faststart -c:a aac out.mp4`.
+  3. Run `python3 sound.py soundtrack.wav`. It makes the original music and sound effects, timed to the scenes; no licensing needed.
+4. Run `ffmpeg -framerate 30 -i frames/f%04d.jpg -i soundtrack.wav -c:v libx264 -pix_fmt yuv420p -crf 19 -movflags +faststart -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 192k -shortest out.mp4`. That loudness (-14 LUFS) is the level Facebook, Instagram and TikTok expect.
 - `values.json` holds the real AI appraisals used in the video (Hitachi V-212 lot $80–200 as-is, $240–480 tested; lamps $40–100 / $100–225; RC plane $50–120 / $130–250).
 - Cost: $0. The AI appraisals cost about 6¢.
