@@ -3620,7 +3620,7 @@ It's linked. My local project is already at that path with all the code, so I'll
 
 Pushed. Now connecting the Vercel project to that repo so it builds automatically.
 
-## Session: Sep 30, 3:18 AM → Oct 9, 11:47 AM (continuing)
+## Session: Sep 30, 3:18 AM → Oct 9, 11:55 AM (continuing)
 
 **Claude:**
 
@@ -8272,3 +8272,47 @@ Here's the plan for sound at $0: background music I compose with code (so there 
 I can't listen to it myself, so I'm checking it by the numbers: the loudness second by second, to confirm the intro is soft, the beat kicks in at the cuts, and the cha-chings stand out:
 
 The levels are where Facebook and Instagram expect them, about the same loudness as other reels. Saving the change and sending you the new version:
+
+The new version of Next_Owner_Market_Reel_Whats_It_Worth.mp4 now has sound. I made the music and sound effects myself in code, so there's nothing to license and nothing to pay. I can't listen to audio from here, so I checked the volume levels instead. Give it a listen with the volume up.
+
+**What you'll hear:**
+- **Music:** a soft start under "Got stuff like this," then the beat kicks in when the quick shots start.
+- **Effects:** a swoosh at each scene change, a click when the buttons are tapped, and a "thinking" shimmer while the AI looks.
+- **The prices:** a ticking count-up that ends in a **cha-ching** for each one.
+- **The listing:** typing sounds as it writes, and little blips as the 9 site tabs light up.
+- **The end:** a chime on the logo, and a final chord.
+
+It's mixed to the loudness Facebook, Instagram and TikTok expect, so it won't sound quieter than other reels.
+
+**If you want a voice on it,** your own voice would beat any AI voice. Record a short voice memo on your phone, about 20 seconds. For example: *"Got a garage full of stuff and no idea what it's worth? Snap one photo. The AI tells you what it's worth and writes your ad for nine sites. Try it free at nextownermarket.com."* Send it to me and I'll lower the music under it and line it up with the scenes.
+
+Or, if you'd rather swap my music for a popular song, you can still add one from Facebook's or Instagram's own song list when you post.
+
+Next_Owner_Market_Files_2026-10-09_1147.zip has the updated records.
+
+### Oct 9, 11:50 AM — Shayne
+
+> Okay, give me the video download so I can share it with people and get a, get their opinion.
+
+**Claude:**
+
+Here's the download: **Next_Owner_Market_Reel_Whats_It_Worth.mp4** (26 seconds, 6.5 MB, with sound). Tap it to save it to your phone. From there you can text it, email it, or send it in Messenger. At 6.5 MB it's small enough to send without trouble.
+
+To make their feedback useful, you could send it with this:
+> Quick 26-second ad for my app. Honest opinion: would you try it after watching? What would you change?
+
+Tell me what they say and I'll make the changes.
+
+### Oct 9, 11:51 AM — Shayne
+
+> I don't have a download button. Give me the download button.
+
+**Claude:**
+
+I'll do it two ways, so one of them is sure to work on your phone:
+1. **A zip with the video inside.** Your zips download fine, so this will too.
+2. **A link on your own website.** Tap it and the video opens in your browser, where you can save it or share the link directly.
+
+Putting the website copy live:
+
+It's live on your site. Sending the updated records so everything is current:
