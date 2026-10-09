@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 1:47 PM from the project history (259 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 2:45 PM from the project history (262 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1912,3 +1912,23 @@
 - **Shared UI pieces:** `src/components/ShareValuation.tsx`
 
 <sub>change id f565b7b</sub>
+
+### 13:47 — Records: Share this find restored; playbook T-58
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+15 more)
+
+<sub>change id 5d20733</sub>
+
+### 14:35 — After a listing is written, a big 'Check another item' button goes straight back to a fresh lookup (or Buy or Pass / Sort the pile / Lookups, whichever you came from); no back arrow needed
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`
+- **Seller / staff app:** `src/app/app/items/[id]/page.tsx`
+- **Public site pages:** `src/app/buy-or-pass/BuyPassClient.tsx`, `src/app/buy-or-pass/page.tsx`, `src/app/lookups/LookupsClient.tsx`, `src/app/pile/PileClient.tsx`, `src/app/worth/WorthClient.tsx`
+
+<sub>change id eb446cb</sub>
+
+### 14:40 — Listing an item now also clears any twin lookup of the same item done shortly before (looked up twice with new photos or notes), so it doesn't linger in 'not listed yet'
+
+- **Server routes (API):** `src/app/api/lookups/route.ts`
+
+<sub>change id 09c4578</sub>
