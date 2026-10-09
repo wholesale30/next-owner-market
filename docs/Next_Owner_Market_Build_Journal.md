@@ -8316,3 +8316,14 @@ I'll do it two ways, so one of them is sure to work on your phone:
 Putting the website copy live:
 
 It's live on your site. Sending the updated records so everything is current:
+
+There are two ways to get the video, and the link is the easiest.
+
+**1. Link (easiest for sharing):**
+**https://nextownermarket.com/ads/whats-it-worth-reel.mp4**
+
+Tap it and the video plays in your browser. To save it to your phone, tap the **⋮** menu (or press and hold the video) and choose **Download**. To get opinions, you don't even need to download it: just text or message that link to people, and it plays when they tap it. I confirmed it's live.
+
+**2. Zip:** Next_Owner_Market_Reel_2026-10-09.zip. It downloads like your other zips, and the video is inside.
+
+That link will keep working, so you can also post it in Facebook comments or anywhere else later.

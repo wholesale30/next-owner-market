@@ -581,3 +581,11 @@ Checked against each site's own policy pages:
 - **What customers see:** every AI route (ai-engine for worth-style tools and Buy or Pass and pile, ai-listing, revise, worth, try, ask) returns 503 with `AI_DOWN_MESSAGE`. The use is still refunded.
 - **Owner alert:** `reportAiDown(e)` texts and emails the owner, throttled to once an hour by settings key `err:ai_down:last_alert`.
 - **Help box:** `/api/ask` now catches errors instead of crashing.
+
+## ShareAndAgain (Oct 9, 2026)
+
+- **Component:** `src/components/ShareAndAgain.tsx`, used right under the answer on /worth, /buy-or-pass and /pile. It replaces `ShareValuation`, Buy or Pass's two-step share box and SharePile, plus the old bottom "check another" buttons.
+- **`prepare()`:** creates the public page (`/api/valuations`, or `/api/buy-or-pass/share` for Buy or Pass), then calls `navigator.share`.
+- **Lost tap:** if the browser rejects the share because the tap expired (NotAllowedError), the button becomes "📤 Send it now" and reuses the same page.
+- **No share menu:** the link is copied to the clipboard instead.
+- **After a fix:** the component is re-keyed, so the corrected answer is the one shared.

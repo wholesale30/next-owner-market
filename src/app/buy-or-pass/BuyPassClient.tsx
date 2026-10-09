@@ -11,6 +11,7 @@ import ConditionLadder, { type LadderView } from "@/components/ConditionLadder";
 import OriginCard, { type OriginView } from "@/components/OriginCard";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import { compressImage } from "@/lib/photo";
+import ShareAndAgain from "@/components/ShareAndAgain";
 
 type Place = { key: string; label: string; pct: number; fixed: number; note: string; net_low: number; net_high: number };
 type Out = { origin?: OriginView | null; ladder?: LadderView | null; missing_parts?: PartView[]; id: string | null; what: string; condition_guess: string; resale_low: number; resale_high: number; best_place: string; ship_or_local: string; shipping_est: number; confidence: string; why: string; watch_out: string | null; fee: { label: string; pct: number; fixed: number; note: string }; places: Place[]; paid: number; net_low: number; net_high: number; max_pay: number; verdict: "buy" | "maybe" | "pass"; photo_url: string; photo_urls: string[] };
@@ -27,9 +28,6 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<{ msg: string; upgrade?: boolean; signup?: boolean } | null>(null);
   const [res, setRes] = useState<Out | null>((initial as Out) || null);
-  const [shared, setShared] = useState(false);
-  const [sharing, setSharing] = useState(false);
-  const [page, setPage] = useState<string | null>(null);
   const [remind, setRemind] = useState<"idle" | "busy" | "done">("idle");
   const [email, setEmail] = useState("");
   const gallery = useRef<HTMLInputElement>(null), camera = useRef<HTMLInputElement>(null);
@@ -48,7 +46,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const j = await r.json().catch(() => ({}));
     setBusy(null);
     if (!r.ok) return setErr({ msg: j.error || "Couldn't read that.", upgrade: j.upgrade, signup: j.signup });
-    setRes(j); setShared(false);
+    setRes(j);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   async function fix(correction: string): Promise<string | null> {
@@ -56,7 +54,7 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     const r = await fetch("/api/buy-or-pass", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ correction, prev_id: res.id, paid: res.paid, hints, photoUrls: res.photo_urls }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.verdict) return j.error || "Couldn't update it. Try again.";
-    setRes(j); setShared(false); setPage(null); setHints((h) => (h ? h + ". " : "") + correction);
+    setRes(j); setHints((h) => (h ? h + ". " : "") + correction);
     return null;
   }
 
@@ -69,24 +67,6 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
     setBusy(null);
     if (!r.ok || !j.item_id) return setErr({ msg: j.error || "Couldn't make the listing." });
     router.push(`/app/items/${j.item_id}?written=1#copy`);
-  }
-  // Step 1: put it on our site (no popup). Step 2 (optional button): send the brag card to Facebook or a friend.
-  async function share() {
-    if (!res?.id) return;
-    setSharing(true);
-    const r = await fetch("/api/buy-or-pass/share", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: res.id }) });
-    const j = (await r.json().catch(() => ({}))) as { slug?: string };
-    setSharing(false);
-    if (j.slug) { setPage(j.slug); setShared(true); } else setErr({ msg: "Couldn't share that one. Tap Share again." });
-  }
-  async function send() {
-    if (!res?.id) return;
-    const url = `${window.location.origin}/flip/${res.id}${refCode ? `?ref=${refCode}` : ""}`;
-    const text = res.paid ? `Paid ${money(res.paid)} at the thrift store. It sells for about ${money(res.resale_low)}–${money(res.resale_high)}. ${V[res.verdict].label}! Checked free with Buy or Pass:` : `Found this thrifting. It sells for about ${money(res.resale_low)}–${money(res.resale_high)}. Checked free with Buy or Pass:`;
-    try {
-      if (navigator.share) await navigator.share({ title: "Buy or pass?", text, url });
-      else await navigator.clipboard.writeText(`${text} ${url}`);
-    } catch { /* closed */ }
   }
   async function thriftPro() {
     if (!meId) { router.push(`/signup?buyer=1${refQ}&next=/buy-or-pass`); return; }
@@ -141,29 +121,20 @@ export default function BuyPassClient({ meId, refCode, freeLeft, inRef = "", pla
         {r.verdict === "pass" && <p className="text-base font-semibold">{r.net_high < 0 ? `Buy it and you'd lose about ${money(-r.net_high)} after fees.` : `Only about ${money(r.net_low)}–${money(r.net_high)} left after fees. Not worth your time.`}</p>}
         <p className="text-xs muted">{r.condition_guess} · how sure: {r.confidence}</p>
       </div>
+      <ShareAndAgain key={`${r.id}-${r.verdict}-${r.resale_low}-${r.resale_high}`} againLabel="📸 Check next" onAgain={again} prepare={async () => {
+        if (!r.id) return null;
+        const x = await fetch("/api/buy-or-pass/share", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: r.id }) });
+        const j = (await x.json().catch(() => ({}))) as { slug?: string };
+        if (!j.slug) return null;
+        const text = r.paid ? `Paid ${money(r.paid)} at the thrift store. It sells for about ${money(r.resale_low)}–${money(r.resale_high)}. ${V[r.verdict].label}! Checked free with Buy or Pass:` : `Found this thrifting. It sells for about ${money(r.resale_low)}–${money(r.resale_high)}. Checked free with Buy or Pass:`;
+        return { url: `${window.location.origin}/flip/${r.id}${refCode ? `?ref=${refCode}` : ""}`, page: `/valued/${j.slug}`, title: "Buy or pass?", text };
+      }} />
       <OriginCard o={r.origin} />
       <ConditionLadder l={r.ladder} nowLow={r.resale_low} nowHigh={r.resale_high} nowVerdict={r.verdict} profit={{ low: r.net_low, high: r.net_high }} />
       <PartsBox parts={r.missing_parts} nowLow={r.resale_low} nowHigh={r.resale_high} />
       <FixBox onFix={fix} examples="it's the 1978 model · missing the remote · that's real Pyrex" />
 
-      <div className="card p-3 space-y-2" style={{ background: "color-mix(in srgb, var(--brand) 8%, var(--surface))", borderColor: "var(--brand)", borderWidth: 2 }}>
-        {shared && page ? (
-          <>
-            <p className="text-base font-bold text-center" style={{ color: "var(--ok)" }}>✓ Shared on Next Owner Market</p>
-            <p className="text-sm text-center">It has its own page now, so people searching Google for one can find it. <Link className="underline font-semibold" href={`/valued/${page}`}>See your page</Link> · <Link className="underline" href="/valued">Everyone&apos;s finds</Link></p>
-            <button type="button" className="btn btn-secondary w-full" onClick={send}>Also send it to Facebook or a friend</button>
-          </>
-        ) : (
-          <>
-            <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={sharing} onClick={share}>{sharing ? "Sharing…" : "📣 Share this find"}</button>
-            <p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the item, its photo and what it&apos;s worth.</p>
-            <p className="text-xs muted text-center">It goes on our site as its own page that Google can find. It helps the next person with the same thing.</p>
-          </>
-        )}
-      </div>
-
       <div className="grid gap-2">
-        <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={again}>📸 Check the next one</button>
         {r.verdict !== "pass" && <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} disabled={!!busy} onClick={listIt}>{busy || "✅ I bought it: write my listing"}</button>}
       </div>
 

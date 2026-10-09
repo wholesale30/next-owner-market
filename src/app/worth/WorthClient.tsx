@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/photo";
-import ShareValuation from "@/components/ShareValuation";
+import ShareAndAgain from "@/components/ShareAndAgain";
 import FixBox from "@/components/FixBox";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import PhotoEditor from "@/components/PhotoEditor";
@@ -179,6 +179,12 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
             <p className="text-sm">{res.why}</p>
             {res.watch_out && <p className="text-sm p-2 rounded-lg" style={{ background: "color-mix(in srgb, var(--accent) 12%, var(--surface))" }}>⚠ {res.watch_out}</p>}
           </div>
+          <ShareAndAgain key={fixes} againLabel="📸 Check another" onAgain={reset} prepare={async () => {
+            const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }, photo_url: photos[0]?.url || null }) });
+            const j = (await r.json().catch(() => ({}))) as { slug?: string };
+            if (!j.slug) return null;
+            return { url: `${window.location.origin}/valued/${j.slug}`, page: `/valued/${j.slug}`, title: res.what, text: `Found out what this is worth: about ${money(res.value_low)}–${money(res.value_high)}. Check yours free:` };
+          }} />
           <OriginCard o={res.origin} fallbackNew={res.retail_new} />
           <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
             <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!!busy} onClick={() => listIt()}>{busy || (lot ? "📝 Write the listing for the lot" : "📝 Write my listing")}</button>
@@ -233,8 +239,6 @@ export default function WorthClient({ meId, role, credits, plan, initial }: { me
           <ConditionLadder l={res.condition_ladder} nowLow={res.value_low} nowHigh={res.value_high} />
           <PartsBox parts={res.missing_parts} nowLow={res.value_low} nowHigh={res.value_high} />
           <FixBox onFix={fix} />
-          <ShareValuation key={fixes} photoUrl={photos[0]?.url} payload={{ source: "worth", title: res.what, era: res.era, condition: res.condition_guess, value_low: res.value_low, value_high: res.value_high, retail_new: res.retail_new, confidence: res.confidence, why: res.why, raise_value: res.raise_value, best_places: res.best_places, ship_or_local: res.ship_or_local, watch_out: res.watch_out }} />
-          <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={reset}>📸 Check another item</button>
           <div className="card p-4 space-y-2 text-sm">
             <p className="font-semibold">Where it sells best</p>
             {res.best_places.map((b, i) => <p key={i}><b>{i + 1}. {b.place}</b> <span className="muted">— {b.why}</span></p>)}

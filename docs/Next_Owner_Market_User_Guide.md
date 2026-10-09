@@ -573,3 +573,10 @@ At 11 AM and 5 PM you get your whole to-do list by email and text: urgent first,
 ## Cleaner AI writing (Oct 5, 2026)
 
 AI-written titles and descriptions no longer contain long dashes (—) or curly quotes, which make a listing look machine-written on Facebook. This also applies when you copy a listing for another site.
+
+## Share or check another, right under the answer (Oct 9, 2026)
+
+On **What's it worth?**, **Buy or Pass** and **Sort the pile**, two big buttons sit right under the answer:
+
+- **📤 Share** opens your phone's share menu (Messages, Facebook, email, Copy link…), so you can send the find to anyone before you list it. No name or location is shared.
+- **📸 Check another** (or **Check next** / **Sort another**) clears the screen for the next item.

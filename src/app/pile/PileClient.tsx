@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PhotoPicker, { type Picked } from "@/components/PhotoPicker";
@@ -9,6 +8,7 @@ import FixBox from "@/components/FixBox";
 import OutOfUses from "@/components/OutOfUses";
 import PartsBox, { type PartView } from "@/components/PartsBox";
 import Mic from "@/components/Mic";
+import ShareAndAgain from "@/components/ShareAndAgain";
 
 
 type Item = { keywords?: string[]; year_made?: string | null; price_new?: number | null; fixup?: string; fixup_low?: number | null; fixup_high?: number | null; fixup_tip?: string | null; missing_parts?: PartView[]; name: string; category?: string; condition?: string; low: number; high: number; action: "keep" | "sell" | "donate" | "toss"; reason: string; confidence: string; needs_expert: boolean; listing_title?: string; listing_description?: string; weight_lbs?: number; box?: string; photo_index: number };
@@ -81,14 +81,19 @@ export default function PileClient({ meId, role, initial }: { meId: string | nul
         <p className="text-sm">{res.summary}</p>
         <p className="text-xs muted">{Object.entries(counts).filter(([, n]) => n).map(([k, n]) => `${ACT[k].emoji} ${n} ${ACT[k].label.toLowerCase()}`).join(" · ")}</p>
       </div>
+      <ShareAndAgain key={lookupId || "pile"} againLabel="📸 Sort another" onAgain={() => { setRes(null); setPhotos([]); setLookupId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} prepare={async () => {
+        const sell = res.items.filter((x) => x.action === "sell");
+        // each sellable item gets its own public page (no name or location), same as before
+        await Promise.all(sell.map((x) => fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source: "pile", title: x.name, condition: x.condition, value_low: x.low, value_high: x.high, confidence: x.confidence, why: x.reason, category: x.category, photo_url: photos[x.photo_index]?.url || null }) }).catch(() => null)));
+        const low = sell.reduce((a, x) => a + x.low, 0), high = sell.reduce((a, x) => a + x.high, 0);
+        return { url: `${window.location.origin}/pile`, title: "Sort the pile", text: sell.length ? `Just sorted a pile with AI: about ${money(low)}–${money(high)} of stuff worth selling. Try yours free:` : "Sorted a pile with AI in a minute. Try yours free:" };
+      }} />
       <div className="card p-4 space-y-2" style={{ borderColor: "var(--brand)", borderWidth: 2 }}>
         <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!picked.size || !!busy} onClick={listPicked}>{busy || (picked.size ? `📝 Write ${picked.size === 1 ? "the listing" : `${picked.size} listings`}` : "Mark something Sell to list it")}</button>
         <p className="text-xs muted text-center">For everything marked 💰 Sell below: photo, title, description and price written, plus the Facebook post and 8 more sites. Free to list here. Each listing has ✨ Touch up for its photos.</p>
       </div>
       {err?.upgrade && <OutOfUses message={err.msg} back="/pile" />}
       <FixBox onFix={fix} examples="the lamp is brass, not plastic · you missed the drill · the radio doesn't work" />
-      <SharePile items={res.items.filter((x) => x.action === "sell")} photos={photos} />
-      <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 52 }} onClick={() => { setRes(null); setPhotos([]); setLookupId(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}>📸 Sort another pile</button>
       {res.items.map((x, i) => (
         <div key={i} className="card p-3 space-y-1" style={{ borderLeft: `4px solid ${ACT[x.action].color}` }}>
           <div className="flex items-start justify-between gap-2">
@@ -108,27 +113,3 @@ export default function PileClient({ meId, role, initial }: { meId: string | nul
   );
 }
 
-function SharePile({ items, photos }: { items: Item[]; photos: Picked[] }) {
-  const [state, setState] = useState<"idle" | "busy" | "done" | "err">("idle");
-  const [withPhoto, setWithPhoto] = useState(true);
-  if (!items.length) return null;
-  async function share() {
-    setState("busy");
-    let ok = 0;
-    for (const x of items) {
-      const r = await fetch("/api/valuations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source: "pile", title: x.name, condition: x.condition, value_low: x.low, value_high: x.high, confidence: x.confidence, why: x.reason, category: x.category, photo_url: withPhoto ? photos[x.photo_index]?.url || null : null }) });
-      if (r.ok) ok++;
-    }
-    setState(ok ? "done" : "err");
-  }
-  const box = { background: "color-mix(in srgb, var(--brand) 8%, var(--surface))", borderColor: "var(--brand)", borderWidth: 2 } as const;
-  if (state === "done") return <div className="card p-3 text-sm text-center" style={box}><p style={{ color: "var(--ok)" }}>✓ {items.length} new page{items.length === 1 ? "" : "s"} people can find on Google. <Link className="underline" href="/valued">See them</Link></p><button type="button" className="btn btn-primary w-full mt-2" onClick={async () => { const url = `${window.location.origin}/valued`; try { if (navigator.share) await navigator.share({ title: "What's it worth?", text: "Found out what my stuff is worth, free:", url }); else await navigator.clipboard.writeText(url); } catch { /* ok */ } }}>📣 Tell your friends</button></div>;
-  return (
-    <div className="card p-3 space-y-2" style={box}>
-      <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={state === "busy"} onClick={share}>{state === "busy" ? "Making their pages…" : state === "err" ? "Couldn't share; tap to try again" : `📣 Share these ${items.length} finds`}</button>
-      <p className="text-sm text-center">🔒 <b>Private.</b> No name, no email, no address, no location. People only see the items, their photos and what they&apos;re worth.</p>
-      <p className="text-xs muted text-center">Each one gets its own page that people searching Google can find. It helps the next person with the same thing.</p>
-      <label className="flex items-center justify-center gap-2 text-xs"><input type="checkbox" checked={withPhoto} onChange={(e) => setWithPhoto(e.target.checked)} /> Include the photos</label>
-    </div>
-  );
-}
