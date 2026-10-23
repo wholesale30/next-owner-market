@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:04 PM from the project history (307 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:13 PM from the project history (310 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2242,3 +2242,23 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Documents:** `docs/playbook/template.md`
 
 <sub>change id ea05a0e</sub>
+
+### 19:04 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 56d3ac0</sub>
+
+### 19:09 — Delete button on every item in Review and on the Relist list (Choose and Today's list); goes to Deleted, can be brought back
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/review/ReviewClient.tsx`
+
+<sub>change id 1fc988f</sub>
+
+### 19:11 — Relist cards: say 'Not posted yet' and label the three buttons as steps (Step 3 only after it's live on Facebook)
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`
+
+<sub>change id 1cedc22</sub>
