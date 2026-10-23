@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import EditBox from "../EditBox";
 
-type Listing = { id: string; title: string; price: number | null; category: string; location: string | null; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
+type Listing = { id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
 type Props = { state: "empty" | "day_done" | "wait" | "go"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
 
 const CREATE = "https://www.facebook.com/marketplace/create/item";
@@ -65,6 +66,7 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
 
           <div className="card p-3 space-y-2">
             <p className="font-bold">STEP 2. Post the new ad</p>
+            <EditBox id={listing.id} value={{ title: listing.title, price: listing.price, description: listing.rawDescription, location: listing.location }} onSaved={() => router.refresh()} />
             <a href={CREATE} target="_blank" rel="noreferrer" className="btn btn-primary w-full">➕ Open Facebook &quot;Create new listing&quot;</a>
             <dl className="text-sm space-y-1">
               <div><dt className="font-semibold inline">Title: </dt><dd className="inline" id="fb-title">{listing.title}</dd> <button className="pill" onClick={() => copy("title", listing.title)}>{copied === "title" ? "✓" : "Copy"}</button></div>

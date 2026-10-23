@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import EditBox, { type Editable } from "./EditBox";
 
 /**
  * Relist list (Oct 23, 2026): old Facebook ads brought in by the importer, N a day (he picks how many).
@@ -12,7 +13,7 @@ import { createClient } from "@/lib/supabase/client";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number };
 const PER_DAY_CHOICES = [20, 30, 40, 50];
@@ -27,8 +28,25 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
   const [s, setS] = useState(settings);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [choosing, setChoosing] = useState(false);
   const left = Math.max(0, s.perDay - today);
-  const now = rows.slice(0, left);
+  // his picks go first, in the order he tapped them; skipped ones never go
+  const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : 0));
+  const now = queue.slice(0, left);
+  const picked = rows.filter((r) => r.pick && !r.hold).length;
+
+  const saved = (id: string) => (e: Editable) => setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title } : y)));
+
+  async function togglePick(r: Row) {
+    const pick = r.pick ? null : new Date().toISOString();
+    setRows((x) => x.map((y) => (y.id === r.id ? { ...y, pick, hold: false } : y)));
+    await supabase.from("items").update({ fb_pick: pick, fb_hold: false }).eq("id", r.id);
+  }
+  async function toggleHold(r: Row) {
+    const hold = !r.hold;
+    setRows((x) => x.map((y) => (y.id === r.id ? { ...y, hold, pick: hold ? null : y.pick } : y)));
+    await supabase.from("items").update({ fb_hold: hold, ...(hold ? { fb_pick: null } : {}) }).eq("id", r.id);
+  }
 
   const dropFields = (price: number | null, v = s) => v.drop && price
     ? { drop_pct: v.pct, drop_every_days: v.days, drop_floor: Math.max(1, Math.round(price * v.floorPct / 100)) }
@@ -67,10 +85,39 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
     <div className="space-y-4 pb-10">
       <div>
         <h1 className="text-2xl font-bold">🔁 Relist list</h1>
-        <p className="muted text-sm">{rows.length} old Facebook ads waiting • {today} reposted today.</p>
+        <p className="muted text-sm">{queue.length} old Facebook ads waiting • {today} reposted today.</p>
       </div>
 
-      {rows.length > 0 && <Link href="/app/relist/next" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📣 Post them one at a time (random waits)</Link>}
+      {rows.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" className={`btn ${!choosing ? "btn-primary" : "btn-secondary"}`} onClick={() => setChoosing(false)}>📋 Today&apos;s list</button>
+          <button type="button" className={`btn ${choosing ? "btn-primary" : "btn-secondary"}`} onClick={() => setChoosing(true)}>✋ Choose{picked ? ` (${picked} picked)` : ""}</button>
+        </div>
+      )}
+
+      {choosing && (
+        <div className="space-y-2">
+          <p className="text-sm muted">Tap <b>⭐ Post next</b> on the ones you want out first (they go in the order you tap). <b>🚫 Skip</b> keeps one from being relisted. Everything else follows after your picks.</p>
+          {rows.map((r) => (
+            <div key={r.id} className="space-y-1">
+            <div className="card p-2 flex gap-2 items-center" style={r.pick && !r.hold ? { borderColor: "var(--brand)" } : r.hold ? { opacity: 0.55 } : {}}>
+              {r.photo ? <img src={r.photo} alt="" className="w-14 h-14 object-cover rounded shrink-0" /> : <div className="w-14 h-14 rounded shrink-0" style={{ background: "var(--line)" }} />}
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-sm truncate">{r.title}</p>
+                <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.pick && !r.hold ? ` • ⭐ #${queue.findIndex((q) => q.id === r.id) + 1} in line` : ""}{r.hold ? " • skipped" : ""}</p>
+              </div>
+              <div className="flex flex-col gap-1 shrink-0">
+                <button type="button" className={`pill ${r.pick && !r.hold ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick && !r.hold ? "⭐ Picked" : "⭐ Post next"}</button>
+                <button type="button" className="pill" onClick={() => toggleHold(r)}>{r.hold ? "↩ Undo skip" : "🚫 Skip"}</button>
+              </div>
+            </div>
+            <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!choosing && rows.length > 0 && <Link href="/app/relist/next" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📣 Post them one at a time (random waits)</Link>}
 
       {fix.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
@@ -113,7 +160,7 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
         </div>
       )}
 
-      {now.map((r, i) => (
+      {!choosing && now.map((r, i) => (
         <div key={r.id} className="card p-3 space-y-2">
           <div className="flex gap-3 items-center">
             {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 object-cover rounded shrink-0" /> : <div className="w-16 h-16 rounded shrink-0" style={{ background: "var(--line)" }} />}
@@ -122,6 +169,8 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
               <p className="text-sm muted">{r.price ? `$${r.price}` : "No price yet"} • #{r.sku}</p>
             </div>
           </div>
+          {r.location && <p className="text-sm">📍 {r.location}</p>}
+          <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
           <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>① 🗑 {r.oldUrl ? "Open the old ad and delete it" : "Delete the old ad (your selling page)"}</a>
           <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>② 📋 Copy the new listing + save photos</Link>
           <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>③ ✅ Posted it</button>

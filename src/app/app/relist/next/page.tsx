@@ -20,9 +20,9 @@ export default async function NextPostPage() {
   const supabase = await createClient();
   const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
   const [{ data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([
-    supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).neq("status", "draft").order("created_at").limit(1),
+    supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).neq("status", "draft").order("fb_pick", { ascending: true, nullsFirst: false }).order("created_at").limit(1),
     supabase.from("items").select("id", { count: "exact", head: true }).gte("fb_relisted_at", startOfDay.toISOString()),
-    supabase.from("items").select("id", { count: "exact", head: true }).not("fb_old_url", "is", null).is("fb_relisted_at", null).neq("status", "draft"),
+    supabase.from("items").select("id", { count: "exact", head: true }).not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).neq("status", "draft"),
     supabase.from("settings").select("key, value").in("key", ["relist:settings", "relist:next_at", "business"]),
   ]);
   const get = (k: string) => st?.find((s) => s.key === k)?.value as Record<string, unknown> | undefined;
@@ -45,6 +45,7 @@ export default async function NextPostPage() {
       location: (it as unknown as { fb_location?: string | null }).fb_location || null,
       condition: FB_CONDITION[it.condition || "good"] || "Used - Good",
       description: full.slice(full.indexOf("\n\n") + 2),
+      rawDescription: it.description || "",
       photos: [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order).map((p) => p.url),
       oldUrl: String(it.fb_old_url).startsWith("http") ? it.fb_old_url : null,
       postedTo: ((it as unknown as { posted_to?: Record<string, string> }).posted_to) || {}, status: it.status,
