@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 5:54 PM from the project history (301 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:04 PM from the project history (307 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2202,3 +2202,43 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/045_relist_pick.sql`
 
 <sub>change id 4420109</sub>
+
+### 17:54 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id ed286d3</sub>
+
+### 18:18 — Server-side Facebook import runner: queue table, a few ads a minute, sharp photo freshening, shared AI listing writer
+
+- **Server routes (API):** `src/app/api/ai-listing/route.ts`, `src/app/api/import/run/route.ts`
+- **Shared code (logic):** `src/lib/draft-listing.ts`
+- **Database (migrations):** `supabase/migrations/046_fb_import_queue.sql`
+
+<sub>change id 90c73c2</sub>
+
+### 18:20 — Facebook import loader: encrypted listings file in repo, key only in the database
+
+- **Other:** `data/fb_import_2026-10-23.enc`
+- **Server routes (API):** `src/app/api/import/load/route.ts`
+
+<sub>change id a70c8b5</sub>
+
+### 18:33 — Playbook 4B: moving a big file through an encrypted repo blob + queue runner; User Guide note
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`, `docs/playbook/template.md`
+
+<sub>change id 070f6a8</sub>
+
+### 19:00 — Import runner: finish listings whose save failed; weight column fits big lots (pallet racking over 9,999 lbs)
+
+- **Server routes (API):** `src/app/api/import/run/route.ts`
+- **Database (migrations):** `supabase/migrations/047_weight_wider.sql`
+
+<sub>change id 346ba80</sub>
+
+### 19:04 — Playbook T-67: silent save failure on heavy lots
+
+- **Documents:** `docs/playbook/template.md`
+
+<sub>change id ea05a0e</sub>
