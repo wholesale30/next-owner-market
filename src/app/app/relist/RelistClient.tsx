@@ -42,6 +42,13 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, pick, hold: false } : y)));
     await supabase.from("items").update({ fb_pick: pick, fb_hold: false }).eq("id", r.id);
   }
+  async function remove(r: Row) {
+    if (!confirm(`Delete "${r.title}" from the app? It goes to 🗑 Deleted, where it can be brought back. (This doesn't touch Facebook.)`)) return;
+    const { error } = await supabase.rpc("delete_item", { p_item: r.id });
+    if (error) { setNote(`Couldn't delete: ${error.message}`); return; }
+    setRows((x) => x.filter((y) => y.id !== r.id));
+  }
+
   async function toggleHold(r: Row) {
     const hold = !r.hold;
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, hold, pick: hold ? null : y.pick } : y)));
@@ -109,6 +116,7 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
               <div className="flex flex-col gap-1 shrink-0">
                 <button type="button" className={`pill ${r.pick && !r.hold ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick && !r.hold ? "⭐ Picked" : "⭐ Post next"}</button>
                 <button type="button" className="pill" onClick={() => toggleHold(r)}>{r.hold ? "↩ Undo skip" : "🚫 Skip"}</button>
+                <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
               </div>
             </div>
             <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
@@ -174,6 +182,7 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
           <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>① 🗑 {r.oldUrl ? "Open the old ad and delete it" : "Delete the old ad (your selling page)"}</a>
           <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>② 📋 Copy the new listing + save photos</Link>
           <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>③ ✅ Posted it</button>
+          <button type="button" className="pill w-full" onClick={() => remove(r)}>🗑 Don&apos;t want it: delete from the app</button>
         </div>
       ))}
 

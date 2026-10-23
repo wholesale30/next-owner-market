@@ -34,7 +34,7 @@ export default function ReviewClient({ items }: { items: Row[] }) {
     setSel(new Set()); router.refresh();
   }
   async function del() {
-    if (!confirm(`Delete ${sel.size} item(s) and their photos for good?`)) return;
+    if (!confirm(`Delete ${sel.size} item(s)? They go to 🗑 Deleted, where they can be brought back.`)) return;
     setBusy(true); setErr(null);
     const failed: string[] = [];
     for (const id of ids()) {
@@ -45,6 +45,16 @@ export default function ReviewClient({ items }: { items: Row[] }) {
     setBusy(false);
     if (failed.length) setErr(`${failed.length} couldn't be deleted (have a sale or order): archive those instead.`);
     setSel(new Set()); router.refresh();
+  }
+
+  async function delOne(id: string, title: string) {
+    if (!confirm(`Delete "${title || "this item"}"? It goes to 🗑 Deleted, where it can be brought back.`)) return;
+    setBusy(true); setErr(null);
+    const { error } = await supabase.rpc("delete_item", { p_item: id });
+    setBusy(false);
+    if (error) return setErr(`Couldn't delete: ${error.message}`);
+    setSel((s) => { const n = new Set(s); n.delete(id); return n; });
+    router.refresh();
   }
 
   return (
@@ -77,6 +87,7 @@ export default function ReviewClient({ items }: { items: Row[] }) {
               </div>
               <p className="font-semibold shrink-0">{money(it.price)}</p>
             </Link>
+            <button type="button" className="pill shrink-0" disabled={busy} onClick={() => delOne(it.id, it.title)} aria-label="Delete">🗑</button>
           </div>
         );
       })}
