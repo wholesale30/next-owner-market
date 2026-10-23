@@ -13,10 +13,10 @@ import EditBox, { type Editable } from "./EditBox";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; listedAt: string | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
-export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number };
+export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; order: "old" | "fb" | "high" | "low" };
 const PER_DAY_CHOICES = [10, 15, 20, 30];
 /** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
 export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. If the page says REMOVE ONLY, open that ad on Facebook, delete it, post nothing, and tap "I deleted it on Facebook". Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
@@ -31,7 +31,6 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   const [s, setS] = useState(settings);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-  const [choosing, setChoosing] = useState(false);
   const [live, setLive] = useState(liveIn);
   const [now0] = useState(() => new Date().getTime());
   const ageDays = (iso: string) => Math.max(0, Math.floor((now0 - new Date(iso).getTime()) / 86400000));
@@ -45,9 +44,8 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   }
   const left = Math.max(0, s.perDay - today);
   // his picks go first, in the order he tapped them; skipped ones never go
-  const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : 0));
-  const now = queue.slice(0, left);
-  const picked = rows.filter((r) => r.pick && !r.hold).length;
+  const rank = (r: Row) => (s.order === "high" ? -(r.price || 0) : s.order === "low" ? (r.price || 0) : s.order === "old" ? (r.listedAt ? new Date(r.listedAt).getTime() : 9e15) : 0);
+  const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : rank(a) - rank(b)));
 
   const saved = (id: string) => (e: Editable) => setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title } : y)));
 
@@ -114,56 +112,23 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     <div className="space-y-4 pb-10">
       <div>
         <h1 className="text-2xl font-bold">🔁 Relist list</h1>
-        <p className="muted text-sm">{queue.length} old Facebook ads waiting • {today} reposted today.</p>
+        <p className="muted text-sm">{queue.length} waiting • {today} reposted today • {live.length} on Facebook now</p>
       </div>
 
       {rows.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
-          <button type="button" className={`btn ${!choosing ? "btn-primary" : "btn-secondary"}`} onClick={() => setChoosing(false)}>📋 Today&apos;s list</button>
-          <button type="button" className={`btn ${choosing ? "btn-primary" : "btn-secondary"}`} onClick={() => setChoosing(true)}>✋ Choose{picked ? ` (${picked} picked)` : ""}</button>
-        </div>
-      )}
-
-      {choosing && (
-        <div className="space-y-2">
-          <p className="text-sm muted">Tap <b>⭐ Post next</b> on the ones you want out first (they go in the order you tap). <b>🚫 Skip</b> keeps one from being relisted. Everything else follows after your picks.</p>
-          {rows.map((r) => (
-            <div key={r.id} className="space-y-1">
-            <div className="card p-2 flex gap-2 items-center" style={r.pick && !r.hold ? { borderColor: "var(--brand)" } : r.hold ? { opacity: 0.55 } : {}}>
-              {r.photo ? <img src={r.photo} alt="" className="w-14 h-14 object-cover rounded shrink-0" /> : <div className="w-14 h-14 rounded shrink-0" style={{ background: "var(--line)" }} />}
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm truncate">{r.title}</p>
-                <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.pick && !r.hold ? ` • ⭐ #${queue.findIndex((q) => q.id === r.id) + 1} in line` : ""}{r.hold ? " • skipped" : ""}</p>
-              </div>
-              <div className="flex flex-col gap-1 shrink-0">
-                <button type="button" className={`pill ${r.pick && !r.hold ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick && !r.hold ? "⭐ Picked" : "⭐ Post next"}</button>
-                <button type="button" className="pill" onClick={() => toggleHold(r)}>{r.hold ? "↩ Undo skip" : "🚫 Skip"}</button>
-                {r.removing ? <span className="pill">📤 Coming off Facebook</span> : <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off Facebook</button>}
-                <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete from app</button>
-              </div>
-            </div>
-            <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {!choosing && rows.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
           <p className="font-bold">🤖 Let Claude in Chrome post them for you</p>
-          <p className="text-sm">The app can&apos;t touch Facebook. Claude in Chrome does the clicking in <b>your own Chrome</b>: deletes the old ad, posts the new one, then waits a random {s.gapMin}–{s.gapMax} minutes before the next, up to {s.perDay} a day. Your picks (⭐) go first.</p>
+          <p className="text-sm">The app can&apos;t touch Facebook. Claude in Chrome does the clicking in <b>your own Chrome</b>, working down the list below: deletes the old ad, posts the new one, then waits a random {s.gapMin}–{s.gapMax} minutes, up to {s.perDay} a day.</p>
           <ol className="text-sm list-decimal pl-5 space-y-1">
             <li>On your computer, open Chrome, signed in to Facebook and to nextownermarket.com.</li>
             <li>Tap the button below to copy the instructions.</li>
             <li>Open the Claude bar on the right side of Chrome, paste, and send. Leave Chrome open.</li>
           </ol>
           <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} onClick={() => navigator.clipboard.writeText(CHROME_PROMPT).then(() => setNote("✓ Copied. Paste it into the Claude bar in Chrome."))}>📋 Copy the instructions for Claude</button>
-          <p className="text-xs muted">Watch the first one. If it goes right, save it in Claude in Chrome as a shortcut and schedule it daily.</p>
+          <p className="text-xs muted">Watch the first one. If it goes right, save it in Claude in Chrome as a shortcut and schedule it daily. <Link href="/app/relist/next" className="underline">See the page Claude works from</Link>.</p>
         </div>
       )}
-      {note && !choosing && <p className="text-sm text-center">{note}</p>}
-
-      {!choosing && rows.length > 0 && <Link href="/app/relist/next" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📣 The page Claude works from (one at a time)</Link>}
+      {note && <p className="text-sm text-center">{note}</p>}
 
       {fix.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
@@ -175,6 +140,74 @@ export default function RelistClient({ items, doneToday, changes, settings, live
             </div>
           ))}
         </div>
+      )}
+
+      {!rows.length && (
+        <div className="card p-4 space-y-2 text-center">
+          <p className="font-semibold">Nothing waiting.</p>
+          <Link href="/app/import" className="btn btn-primary w-full">📂 Bring in my Facebook ads</Link>
+        </div>
+      )}
+
+      {queue.length > 0 && (
+        <div className="space-y-2">
+          <p className="font-bold text-lg pt-2">📋 The line-up: all {queue.length}, in posting order</p>
+          <p className="text-sm muted">Today&apos;s batch is simply the top {s.perDay} of this list. They go top to bottom: your ⭐ picks first, then everything else in the order you choose here. ⭐ <b>To front</b> moves one up; 🚫 <b>Skip</b> keeps it from being reposted.</p>
+          <div className="grid grid-cols-4 gap-1">
+            {([["old", "📅 Oldest first"], ["high", "💰 Highest price"], ["low", "Lowest price"], ["fb", "Facebook order"]] as [RelistSettings["order"], string][]).map(([k, l]) => (
+              <button key={k} type="button" className={`pill ${s.order === k ? "font-bold" : ""}`} style={s.order === k ? { borderColor: "var(--brand)" } : {}} onClick={() => saveSettings({ ...s, order: k }, false)}>{l}</button>
+            ))}
+          </div>
+          {left === 0 && <div className="card p-3 text-center"><p className="font-semibold">🎉 {today} reposted today. That&apos;s the day&apos;s {s.perDay}. The next {Math.min(s.perDay, queue.length)} go tomorrow.</p></div>}
+          {queue.map((r, i) => (
+            <div key={r.id} className="space-y-2">
+              {i === 0 && left > 0 && <p className="font-semibold text-sm" style={{ color: "var(--brand)" }}>⬇ TODAY: the first {Math.min(left, queue.length)}</p>}
+              {i === left && <p className="font-semibold text-sm pt-2 border-t" style={{ borderColor: "var(--line)" }}>⬇ TOMORROW AND LATER</p>}
+              <div className="card p-2 space-y-2" style={r.pick ? { borderColor: "var(--brand)" } : {}}>
+                <div className="flex gap-2 items-center">
+                  {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 object-cover rounded shrink-0" /> : <div className="w-16 h-16 rounded shrink-0" style={{ background: "var(--line)" }} />}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-sm truncate">#{i + 1} {r.title}</p>
+                    <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""}{r.pick ? " • ⭐ moved up" : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "⭐ Undo" : "⭐ To front"}</button>
+                  <button type="button" className="pill" onClick={() => toggleHold(r)}>🚫 Skip</button>
+                  <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
+                  <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
+                </div>
+                <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
+                <details className="text-sm">
+                  <summary className="cursor-pointer muted">Do this one by hand instead</summary>
+                  <div className="space-y-2 mt-2">
+                    <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>Step 1: 🗑 Delete the old ad on Facebook</a>
+                    <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>Step 2: 📋 Copy the new listing + save photos</Link>
+                    <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>Step 3: ✅ Tap here AFTER it&apos;s posted on Facebook</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {rows.some((r) => r.hold) && (
+        <details className="card p-3">
+          <summary className="font-semibold cursor-pointer">🚫 Skipped / coming off Facebook: {rows.filter((r) => r.hold).length}</summary>
+          <div className="space-y-2 mt-3">
+            {rows.filter((r) => r.hold).map((r) => (
+              <div key={r.id} className="flex gap-2 items-center">
+                {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
+                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped"}</p></div>
+                <div className="flex flex-col gap-1 shrink-0">
+                  {!r.removing && <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>}
+                  <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
       )}
 
       <div className="card p-3 space-y-2">
@@ -191,40 +224,6 @@ export default function RelistClient({ items, doneToday, changes, settings, live
         <p className="text-xs muted">Each wait is a random number in between (like 7, then 13, then 5 minutes).</p>
         <p className="text-xs muted">Safe start: <b>15 a day</b>, a random 5 to 15 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
       </div>
-
-      {!rows.length && (
-        <div className="card p-4 space-y-2 text-center">
-          <p className="font-semibold">Nothing waiting.</p>
-          <Link href="/app/import" className="btn btn-primary w-full">📂 Bring in my Facebook ads</Link>
-        </div>
-      )}
-
-      {rows.length > 0 && left === 0 && (
-        <div className="card p-4 text-center">
-          <p className="font-semibold">🎉 {today} reposted today. That&apos;s the day&apos;s {s.perDay}.</p>
-          <p className="muted text-sm">The next {Math.min(s.perDay, rows.length)} are ready tomorrow.</p>
-        </div>
-      )}
-
-      {!choosing && now.length > 0 && <p className="font-semibold pt-2">Or do one by hand ({now.length} ready today):</p>}
-      {!choosing && now.map((r, i) => (
-        <div key={r.id} className="card p-3 space-y-2">
-          <div className="flex gap-3 items-center">
-            {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 object-cover rounded shrink-0" /> : <div className="w-16 h-16 rounded shrink-0" style={{ background: "var(--line)" }} />}
-            <div className="min-w-0">
-              <p className="font-semibold truncate">{i + 1}. {r.title}</p>
-              <p className="text-sm muted">{r.price ? `$${r.price}` : "No price yet"} • #{r.sku}</p>
-            </div>
-          </div>
-          <p className="text-sm"><b>Not posted yet.</b> To repost it, do these 3 steps in order:{r.location ? ` • 📍 ${r.location}` : ""}</p>
-          <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
-          <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>Step 1: 🗑 Delete the old ad on Facebook</a>
-          <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>Step 2: 📋 Copy the new listing + save photos</Link>
-          <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>Step 3: ✅ Tap here AFTER it&apos;s posted on Facebook</button>
-          <button type="button" className="pill w-full" onClick={() => remove(r)}>🗑 Don&apos;t want it: delete from the app</button>
-          <button type="button" className="pill w-full" onClick={() => takeOff(r.id, r.title)}>📤 Just take it off Facebook (don&apos;t repost)</button>
-        </div>
-      ))}
 
       {live.length > 0 && (
         <details className="card p-3" open={due.length > 0}>
@@ -267,7 +266,6 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <p className="text-xs muted">Want one item different? Open it and use “📉 Drop the price automatically” on its page.</p>
         </div>
       </details>
-      {note && <p className="text-sm text-center">{note}</p>}
     </div>
   );
 }
