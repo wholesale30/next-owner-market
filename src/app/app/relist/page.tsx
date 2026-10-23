@@ -6,7 +6,7 @@ export const metadata = { title: "Relist list" };
 
 export default async function RelistPage() {
   const me = (await getProfile())!;
-  if (me.role !== "admin" && me.role !== "staff") redirect("/app");
+  if (me.role !== "admin") redirect("/app"); // owner only (Oct 23, 2026)
   const supabase = await createClient();
   const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
   const [{ data: items }, { count: doneToday }, { data: posted }, { data: s }] = await Promise.all([

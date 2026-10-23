@@ -16,7 +16,7 @@ const FB_CONDITION: Record<string, string> = { new: "New", like_new: "Used - Lik
 
 export default async function NextPostPage() {
   const me = (await getProfile())!;
-  if (me.role !== "admin" && me.role !== "staff") redirect("/app");
+  if (me.role !== "admin") redirect("/app"); // owner only (Oct 23, 2026)
   const supabase = await createClient();
   const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
   const [{ data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([

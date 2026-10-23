@@ -6,7 +6,7 @@ export const metadata = { title: "Bring in my Facebook ads" };
 
 export default async function ImportPage() {
   const me = (await getProfile())!;
-  if (me.role !== "admin" && me.role !== "staff") redirect("/app");
+  if (me.role !== "admin") redirect("/app"); // owner only (Oct 23, 2026)
   const supabase = await createClient();
   const { data } = await supabase.from("items").select("fb_old_url").not("fb_old_url", "is", null).limit(5000);
   return <ImportClient userId={me.id} already={(data || []).map((r) => r.fb_old_url as string)} />;
