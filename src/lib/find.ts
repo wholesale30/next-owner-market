@@ -81,7 +81,7 @@ Steps:
 3. Call record_results once with what you found. Options must all be the thing they asked for (if they asked for LED, every option is LED). shop_price is what a dealer, repair shop or full-price store charges for that SAME thing (installed, for a repair); use null if there isn't one. A different, cheaper route goes in cheaper_idea, not in options. Only use URLs that came back in your search results. Prices must be ones you actually saw; use null if you didn't see a price. Write for a beginner, short and plain, no dashes as punctuation.`;
 
 /** Strict tool schemas need every object closed and every field listed as required; list lengths are trimmed in code. */
-function strictSchema(x: unknown): unknown {
+export function strictSchema(x: unknown): unknown {
   if (Array.isArray(x)) return x.map(strictSchema);
   if (!x || typeof x !== "object") return x;
   const o: Record<string, unknown> = {};

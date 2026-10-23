@@ -130,6 +130,10 @@ Built for working a pallet.
 - **🗂 Dump a batch (AI sorts)** — pick up to 40 photos of many different things. The AI groups them into items. Use **split** and **merge** to correct any grouping.
 - **Finish** — creates every draft, cleans every background, writes every listing with AI, and sends them all to Review. Walk away; come back to finished listings.
 
+### 4.3c 💲 Price check (/app/prices): owner only
+
+Every item you own, with your price next to real-comps prices (added Oct 23, 2026). Tap **🔎 Check prices** and each item gets a live search of eBay sold and listed prices, Marketplace asks and new retail (about 20 seconds and about 15¢ each; three run at a time). For each item you see **Top** (patient, about a month), **List** (sells in 1–2 weeks with room for offers), **Fast** (blow-out, a few days) and **Lowest** (stop here; hold or sell for parts instead), plus **🛑 HOLD** on things worth keeping for top dollar, a one-line why, and the comps it's based on with links. Tap **Use $List** or **Use $Fast** per item, or **Set all to List / Fast** (HOLD items are skipped). If an item has automatic drops on, its lowest drop is set to the Lowest price. Prices changed on Facebook ads show on the Relist list to change there too. Filters: Priced above List, 🛑 Hold, Not checked.
+
 ### 4.3b 📂 Bring in Facebook ads (/app/import) and 🔁 Relist list (/app/relist): owner only
 
 For moving old Facebook Marketplace ads into the app and reposting them fresh (added Oct 23, 2026). **Owner only:** only the admin account sees these menu items and pages; staff, sellers and buyers can't open them.
