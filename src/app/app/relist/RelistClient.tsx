@@ -13,13 +13,13 @@ import EditBox, { type Editable } from "./EditBox";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number };
 const PER_DAY_CHOICES = [10, 15, 20, 30];
 /** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
-export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
+export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. If the page says REMOVE ONLY, open that ad on Facebook, delete it, post nothing, and tap "I deleted it on Facebook". Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
 export default function RelistClient({ items, doneToday, changes, settings, live: liveIn }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings; live: Live[] }) {
@@ -61,6 +61,14 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     const { error } = await supabase.rpc("delete_item", { p_item: r.id });
     if (error) { setNote(`Couldn't delete: ${error.message}`); return; }
     setRows((x) => x.filter((y) => y.id !== r.id));
+  }
+
+  async function takeOff(id: string, title: string) {
+    if (!confirm(`Take "${title}" off Facebook? Claude in Chrome deletes the ad and doesn't repost it. It stays in the app.`)) return;
+    await supabase.from("items").update({ fb_remove: true, fb_hold: true, fb_pick: null }).eq("id", id);
+    setRows((x) => x.map((y) => (y.id === id ? { ...y, hold: true, pick: null, removing: true } : y)));
+    setLive((x) => x.filter((y) => y.id !== id));
+    setNote(`✓ "${title}" will be taken off Facebook next, before any new posts.`);
   }
 
   async function toggleHold(r: Row) {
@@ -130,7 +138,8 @@ export default function RelistClient({ items, doneToday, changes, settings, live
               <div className="flex flex-col gap-1 shrink-0">
                 <button type="button" className={`pill ${r.pick && !r.hold ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick && !r.hold ? "⭐ Picked" : "⭐ Post next"}</button>
                 <button type="button" className="pill" onClick={() => toggleHold(r)}>{r.hold ? "↩ Undo skip" : "🚫 Skip"}</button>
-                <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
+                {r.removing ? <span className="pill">📤 Coming off Facebook</span> : <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off Facebook</button>}
+                <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete from app</button>
               </div>
             </div>
             <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
@@ -213,6 +222,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>Step 2: 📋 Copy the new listing + save photos</Link>
           <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>Step 3: ✅ Tap here AFTER it&apos;s posted on Facebook</button>
           <button type="button" className="pill w-full" onClick={() => remove(r)}>🗑 Don&apos;t want it: delete from the app</button>
+          <button type="button" className="pill w-full" onClick={() => takeOff(r.id, r.title)}>📤 Just take it off Facebook (don&apos;t repost)</button>
         </div>
       ))}
 
@@ -230,7 +240,10 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                     <p className="font-semibold truncate">{l.title}</p>
                     <p className="muted">Posted {new Date(l.at).toLocaleDateString()} • <b style={d >= s.relistAfter ? { color: "var(--danger)" } : {}}>{d} day{d === 1 ? "" : "s"} old</b>{l.price ? ` • $${l.price}` : ""}</p>
                   </div>
-                  <button type="button" className="pill shrink-0" onClick={() => relistAgain(l)}>{d >= s.relistAfter ? "🔁 Relist now" : "🔁 Relist"}</button>
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <button type="button" className="pill" onClick={() => relistAgain(l)}>{d >= s.relistAfter ? "🔁 Relist now" : "🔁 Relist"}</button>
+                    <button type="button" className="pill" onClick={() => takeOff(l.id, l.title)}>📤 Off Facebook</button>
+                  </div>
                 </div>
               );
             })}

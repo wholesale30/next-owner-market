@@ -19,7 +19,8 @@ export default async function NextPostPage() {
   if (me.role !== "admin") redirect("/app"); // owner only (Oct 23, 2026)
   const supabase = await createClient();
   const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
-  const [{ data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([
+  const [{ data: removeRows }, { data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([
+    supabase.from("items").select("id, title, price, fb_old_url, item_photos(url, sort_order)").eq("fb_remove", true).is("fb_removed_at", null).order("updated_at").limit(1),
     supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).neq("status", "draft").order("fb_pick", { ascending: true, nullsFirst: false }).order("created_at").limit(1),
     supabase.from("items").select("id", { count: "exact", head: true }).gte("fb_relisted_at", startOfDay.toISOString()),
     supabase.from("items").select("id", { count: "exact", head: true }).not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).neq("status", "draft"),
@@ -32,8 +33,10 @@ export default async function NextPostPage() {
   const it = rows?.[0] as (Item & { item_photos: { url: string; sort_order: number }[]; categories: { name: string } | null; fb_old_url: string }) | undefined;
   const done = doneToday || 0;
 
-  let state: "empty" | "day_done" | "wait" | "go" = "go";
-  if (!it) state = "empty";
+  const rm = removeRows?.[0] as { id: string; title: string; price: number | null; fb_old_url: string | null; item_photos: { url: string; sort_order: number }[] } | undefined;
+  let state: "empty" | "day_done" | "wait" | "go" | "remove" = "go";
+  if (rm) state = nextAt && new Date(nextAt).getTime() > new Date().getTime() ? "wait" : "remove";
+  else if (!it) state = "empty";
   else if (done >= cfg.perDay) state = "day_done";
   else if (nextAt && new Date(nextAt).getTime() > new Date().getTime()) state = "wait";
 
@@ -52,5 +55,6 @@ export default async function NextPostPage() {
     };
   })() : null;
 
-  return <NextClient state={state} nextAt={nextAt} done={done} perDay={cfg.perDay} waiting={waiting || 0} gap={[cfg.gapMin, cfg.gapMax]} listing={listing} />;
+  const removal = rm && state === "remove" ? { id: rm.id, title: rm.title || "Untitled", price: rm.price, oldUrl: String(rm.fb_old_url || "").startsWith("http") ? rm.fb_old_url : null, photo: [...(rm.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null } : null;
+  return <NextClient removal={removal} state={state} nextAt={nextAt} done={done} perDay={cfg.perDay} waiting={waiting || 0} gap={[cfg.gapMin, cfg.gapMax]} listing={listing} />;
 }

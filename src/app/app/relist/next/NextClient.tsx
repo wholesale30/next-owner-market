@@ -7,13 +7,14 @@ import { createClient } from "@/lib/supabase/client";
 import EditBox from "../EditBox";
 
 type Listing = { id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
-type Props = { state: "empty" | "day_done" | "wait" | "go"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
+type Removal = { id: string; title: string; price: number | null; oldUrl: string | null; photo: string | null };
+type Props = { removal: Removal | null; state: "empty" | "day_done" | "wait" | "go" | "remove"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
 
 const CREATE = "https://www.facebook.com/marketplace/create/item";
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 const time = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 
-export default function NextClient({ state, nextAt, done, perDay, waiting, gap, listing }: Props) {
+export default function NextClient({ removal, state, nextAt, done, perDay, waiting, gap, listing }: Props) {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -46,6 +47,17 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
     router.refresh();
   }
 
+  async function removed() {
+    if (!removal) return;
+    setBusy(true);
+    const at = new Date();
+    await supabase.from("items").update({ fb_removed_at: at.toISOString(), fb_hold: true, fb_pick: null }).eq("id", removal.id);
+    const mins = gap[0] + Math.random() * Math.max(0, gap[1] - gap[0]);
+    await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
+    setBusy(false);
+    router.refresh();
+  }
+
   const copy = (label: string, text: string) => { navigator.clipboard.writeText(text).then(() => { setCopied(label); setTimeout(() => setCopied(""), 1500); }); };
 
   return (
@@ -58,6 +70,19 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
       {state === "empty" && <div className="card p-4 text-center space-y-2"><p className="text-xl font-bold">ALL DONE. Nothing left to post.</p><Link href="/app/import" className="btn btn-secondary w-full">📂 Bring in more Facebook ads</Link></div>}
       {state === "day_done" && <div className="card p-4 text-center"><p className="text-xl font-bold">✅ DONE FOR TODAY. STOP.</p><p className="muted">{done} posted today. The next ones are ready tomorrow.</p></div>}
       {state === "wait" && nextAt && <div className="card p-4 text-center"><p className="text-xl font-bold">⏳ WAIT. Next post at {time(nextAt)}.</p><p className="muted">This page shows the next listing by itself at that time.</p></div>}
+
+      {state === "remove" && removal && (
+        <div className="card p-3 space-y-2" style={{ borderColor: "var(--danger)" }}>
+          <p className="text-xl font-bold">🗑 REMOVE ONLY. Delete this ad on Facebook. Do NOT post anything.</p>
+          <div className="flex gap-3 items-center">
+            {removal.photo && <img src={removal.photo} alt="" className="w-16 h-16 object-cover rounded" />}
+            <p className="font-semibold">{removal.title}{removal.price ? ` • $${removal.price}` : ""}</p>
+          </div>
+          <a href={removal.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">🗑 Open the ad on Facebook</a>
+          <p className="text-xs muted">Ad link: {removal.oldUrl || "not saved; find it on your selling page by its photo and title"}</p>
+          <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={removed}>✅ I deleted it on Facebook</button>
+        </div>
+      )}
 
       {state === "go" && listing && (
         <div className="space-y-3">
