@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 2:02 PM from the project history (275 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 2:13 PM from the project history (277 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2026,3 +2026,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx` (+11 more)
 
 <sub>change id 861cf96</sub>
+
+### 14:02 — Rules Harvest prompt: collect lessons from every project into the master files
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx`, `docs/Next_Owner_Market_Google_Merchant_Center_Fix.docx`, `docs/Next_Owner_Market_Launch_Kit.docx` (+12 more)
+
+<sub>change id 622feab</sub>
+
+### 14:13 — Chat harvest: lessons from 26 past chats; Operating Rules 24-25 (valuing/listing, never hand off legwork); playbook T-64
+
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_Chat_Harvest.md`, `docs/Next_Owner_Market_Operating_Rules.md`, `docs/playbook/template.md`
+
+<sub>change id 66e3ff4</sub>

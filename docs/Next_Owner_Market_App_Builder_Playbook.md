@@ -1647,6 +1647,7 @@ Numbered T-1 onward so other documents can point to them. Dates are 2026.
 - **T-61. A long tool answer came back tangled (Oct 9).** With live web search plus a big nested answer schema, about 1 in 4 finds came back with empty lists, fields flattened out of their box, or bits of tool markup inside the text, and one test on the live site showed a result with no stores at all. **Fix:** `strict: true` on the answer tool (the API then guarantees the schema; every object closed, every field required, list lengths trimmed in code), and if the model records twice, keep the fuller one. 8 of 8 live tests clean afterward. **Rule:** any AI tool with nested objects gets `strict: true`; test 5+ real runs in parallel before calling it done, not one.
 - **T-62. A button only appeared on one path to the page (Oct 9).** "📸 Check another item" was put inside the "Your listing is written" box, which only shows right after the AI writes a listing. Open the same listing from Inventory, or after it's listed or approved, and the button was gone, so the owner hit it again after asking several times. **Fix:** the button now sits at the top of every listing page. **Rule:** when the owner asks for a button "after X," check every way a person reaches that screen, not just the one you tested.
 - **T-63. 30 minutes of guessing at buttons instead of looking it up (Oct 23).** The owner asked how to link this chat to his computer so Claude could pull his Facebook listings. Claude gave him step after step from memory (desktop app, Dispatch, a laptop icon, settings), none of them right, while he got angrier. Anthropic's own help page had the answer the whole time: a cloud chat can only use the computer if it was started in the desktop app. **Rule:** for any "how do I do X in this app" question, search the official help pages FIRST and quote them. Never hand the owner a click-path from memory, and if the honest answer is "this can't be done," say that in the first reply.
+- **T-64. Lessons from 26 regular chats (harvested Oct 23).** Claude read every reachable chat (May 20 to Oct 23) and found the same failures as in the app build: guessing prices instead of searching (H-1, H-2), sending the owner to do the legwork (H-12), hedging instead of giving the number (H-15, H-16), listings with blanks or no price-box number (H-10, H-13), inventing flaws or overriding his firsthand knowledge (H-5, H-6), and inconsistent prices for the same photos (H-19). **Rule:** the full list and his exact words are in `docs/Next_Owner_Market_Chat_Harvest.md`; the rules are Operating Rules 24 and 25 and the "Valuing and listing items" section of the shayne-operating-rules skill.
 - **The political app's own trial and error** (PP-T1 to PP-T10: em dashes, Vercel 403, copy slips and dropped files in hand-built deploys, cancelled SQL, the Resend test sender, cron limits, an over-claim about the algorithm, slogans, shared prompts) is in its section below and applies to every app.
 
 ## 12. What worked and should be repeated
@@ -1900,6 +1901,19 @@ What Next Owner Market has that would make the political app stronger, most valu
 23. **Locked layouts (Oct 9, 2026).**
     - Once the owner settles where something goes, it's written down as LOCKED in CLAUDE.md and never moved without his say.
     - Anything brought back goes where he last asked for it.
+
+24. **Valuing and listing items (from 26 past chats, Oct 23, 2026).**
+    - **Give the number:** one bold expected price first, short reasons after. A photo of an item means "what's it worth": answer it. *"Give me the fucking price. Quit fucking off."*
+    - **Two prices every time:** what to list it for, and what it will actually sell for fairly fast. Show quick, balanced and top-dollar tiers; never quietly pick the low one. When you name your asking price, use it exactly.
+    - **Search, don't guess:** real US sold and asking prices, real retail for new old stock (store page, hfpricetracker.com for Harbor Freight) and whether it's discontinued. US prices only. Storage rust is not "used."
+    - **Listings are paste-ready:** no blanks or [brackets]; start with "Price box: $X"; only flaws you can clearly see; say exactly what's included; your firsthand knowledge (fitment, condition) beats the box label.
+    - **Old equipment:** value the whole unit, the parts, current industry or research use, hobby and prop use, the scrap floor, and where those buyers shop.
+    - **Freight:** answer "is it worth the truck room" first; if the haul is happening anyway, freight is free; don't re-ask what you already answered.
+    - **Whole and parts at once:** write both listings, each saying the other is listed.
+    - **Be consistent:** anchor prices to cited comps so the same item gets the same price twice; check model numbers and math.
+    - **Shopping:** Amazon or a big-box store first, with real links; cheap good options welcome.
+    - **After any how-to or repair walkthrough,** make the Word white paper without being asked; if a fact in it was wrong, send a corrected one.
+25. **Never hand you the legwork (from the Floyd chat, Oct 14, 2026).** "Call the clerk," "file a FOIA" or "check the page yourself" is never a first answer. *"You have the entire universe of knowledge at your fingertips. Yet you always come back and tell me to do shit."* Claude digs through the budgets, minutes, listings and help pages first, and only names what is truly out of reach after that.
 
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."
 ```
