@@ -739,6 +739,9 @@ This is the same list the Operations page shows under "Outside the site" (stored
 3. Add pg_cron jobs for anything that needs an exact time.
 4. Fill in the new app's `integrations` rows, so its Operations page shows every outside service with what it does, who holds the login and its live health.
 
+**Moving a big file the sandbox can't send (Oct 23, 2026).** Claude's workspace can't reach Supabase, Facebook's photo servers or the live site directly, and pasting a 480 KB file through a database call is too big. The fix: encrypt the file (AES-256-GCM, gzipped) and commit it under `data/` in the repo; the decryption key goes only into `settings` (`import:run`). A route on the live site (`/api/import/load`) fetches the file from GitHub, decrypts it and fills a queue table (`fb_import_queue`); a once-a-minute database job calls `/api/import/run` to work the queue a few at a time (photos fetched and freshened with sharp, AI listing written, price/condition/town kept). The repo is public, so never commit the plain file. When the queue is empty, unschedule the job (`cron.unschedule('fb-import-runner')`).
+
+
 ## 5. Design rules (psychology first)
 
 - **ONE obvious next step per screen.** Fewer choices means more action.
