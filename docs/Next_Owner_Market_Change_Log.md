@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 3:34 PM from the project history (291 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 3:48 PM from the project history (293 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2130,3 +2130,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/042_relist_price_sync.sql`
 
 <sub>change id e5c433d</sub>
+
+### 15:35 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 4992729</sub>
+
+### 15:46 — Relist list: 20/30/40/50 a day, default 30 (Facebook publishes no limit; sellers report 15-30 safe). Playbook T-66.
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`, `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id aad750a</sub>
