@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 5:02 PM from the project history (295 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 5:16 PM from the project history (299 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2156,3 +2156,35 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
 
 <sub>change id b771be8</sub>
+
+### 17:02 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id db8cb36</sub>
+
+### 17:08 — Facebook import, Relist list and Next post page: owner (admin) only
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Server routes (API):** `src/app/api/import/photo/route.ts`
+- **Seller / staff app:** `src/app/app/import/page.tsx`, `src/app/app/layout.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id a14464d</sub>
+
+### 17:11 — Facebook import keeps each ad's town; Next post page shows it
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/import/ImportClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`
+- **Database (migrations):** `supabase/migrations/043_fb_location.sql`
+
+<sub>change id d1deeaa</sub>
+
+### 17:14 — Price check (owner only): real-comps Top / List / Fast / Lowest and HOLD for every item, one tap or all at once, apply per item or in bulk
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Server routes (API):** `src/app/api/price-check/route.ts`
+- **Seller / staff app:** `src/app/app/layout.tsx`, `src/app/app/prices/PricesClient.tsx`, `src/app/app/prices/page.tsx`
+- **Shared code (logic):** `src/lib/find.ts`, `src/lib/pricecheck.ts`
+- **Database (migrations):** `supabase/migrations/044_price_check.sql`
+
+<sub>change id 47589bc</sub>
