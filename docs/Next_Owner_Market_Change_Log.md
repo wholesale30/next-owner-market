@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 9, 2026 7:55 PM from the project history (271 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 1:58 PM from the project history (274 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -1998,3 +1998,25 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/items/[id]/page.tsx`
 
 <sub>change id c295d44</sub>
+
+### 19:55 — Records
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Build_Journal.md`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 1dc28ed</sub>
+
+
+## Friday, October 23, 2026
+
+### 13:54 — Playbook T-63: look up official help before giving click-paths
+
+- **Documents:** `docs/Next_Owner_Market_Build_Journal.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.md`, `docs/journal_sessions/faa89acb-5a67-582b-a46a-1c3f3b736545.rows.json`, `docs/playbook/template.md`
+
+<sub>change id dbf4ae6</sub>
+
+### 13:58 — Rule zero: look up official help first, never answer how-do-I from memory (incl. Claude's own apps)
+
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_Operating_Rules.md`
+
+<sub>change id 7603b00</sub>
