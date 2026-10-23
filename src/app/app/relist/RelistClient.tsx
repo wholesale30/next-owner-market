@@ -5,33 +5,91 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * Relist list (Oct 23, 2026): old Facebook ads brought in by the importer, 10 a day.
+ * Relist list (Oct 23, 2026): old Facebook ads brought in by the importer, N a day (he picks how many).
  * Order for each one matters: delete the old ad FIRST, then post the new one (two of the same ad up at once
  * is what gets Marketplace listings flagged as duplicates).
+ * Facebook only lets approved business partners post or change listings from outside, so the app can't post or
+ * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
+ * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null };
-const PER_DAY = 10;
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null };
+type Change = { id: string; sku: string; title: string; price: number; was: number };
+export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number };
+const PER_DAY_CHOICES = [10, 15, 20, 30];
+const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
-export default function RelistClient({ items, doneToday }: { items: Row[]; doneToday: number }) {
+export default function RelistClient({ items, doneToday, changes, settings }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings }) {
   const supabase = useMemo(() => createClient(), []);
   const [rows, setRows] = useState(items);
+  const [fix, setFix] = useState(changes);
   const [today, setToday] = useState(doneToday);
   const [deleted, setDeleted] = useState<Record<string, boolean>>({});
-  const left = Math.max(0, PER_DAY - today);
-  const now = rows.slice(0, Math.max(left, 0));
+  const [s, setS] = useState(settings);
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  const left = Math.max(0, s.perDay - today);
+  const now = rows.slice(0, left);
+
+  const dropFields = (price: number | null, v = s) => v.drop && price
+    ? { drop_pct: v.pct, drop_every_days: v.days, drop_floor: Math.max(1, Math.round(price * v.floorPct / 100)) }
+    : { drop_pct: null, drop_every_days: null, drop_floor: null };
+
+  async function saveSettings(next: RelistSettings, applyAll: boolean) {
+    setS(next);
+    setBusy(true);
+    await supabase.from("settings").upsert({ key: "relist:settings", value: next });
+    if (applyAll) {
+      // every Facebook ad already brought in and not sold gets the same schedule (each item can still be changed on its own page)
+      const { data } = await supabase.from("items").select("id, price, fb_posted_price").not("fb_old_url", "is", null).neq("status", "sold").limit(1000);
+      const list = data || [];
+      for (let i = 0; i < list.length; i += 20) {
+        await Promise.all(list.slice(i, i + 20).map((it) => supabase.from("items").update(dropFields(Number(it.fb_posted_price ?? it.price) || null, next)).eq("id", it.id)));
+      }
+      setNote(next.drop ? `✓ Saved. ${list.length} ads will drop ${next.pct}% every ${next.days} days, never below ${next.floorPct}% of their price.` : `✓ Price drops turned off for ${list.length} ads.`);
+    } else setNote("✓ Saved.");
+    setBusy(false);
+  }
 
   async function reposted(r: Row) {
     const at = new Date().toISOString();
-    await supabase.from("items").update({ fb_relisted_at: at, posted_to: { ...r.postedTo, facebook: at } }).eq("id", r.id);
+    const live = r.status === "pending_review" || r.status === "draft" ? { status: "active", listed_at: at } : {};
+    await supabase.from("items").update({ fb_relisted_at: at, fb_posted_price: r.price, posted_to: { ...r.postedTo, facebook: at }, ...live, ...dropFields(r.price) }).eq("id", r.id);
     setRows((x) => x.filter((y) => y.id !== r.id));
     setToday((t) => t + 1);
+  }
+
+  async function changed(c: Change) {
+    await supabase.from("items").update({ fb_posted_price: c.price }).eq("id", c.id);
+    setFix((x) => x.filter((y) => y.id !== c.id));
   }
 
   return (
     <div className="space-y-4 pb-10">
       <div>
         <h1 className="text-2xl font-bold">🔁 Relist list</h1>
-        <p className="muted text-sm">{rows.length} old Facebook ads waiting • {today} reposted today. Do {PER_DAY} a day so Facebook doesn&apos;t flag you.</p>
+        <p className="muted text-sm">{rows.length} old Facebook ads waiting • {today} reposted today.</p>
+      </div>
+
+      {fix.length > 0 && (
+        <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
+          <p className="font-semibold">💲 {fix.length} price{fix.length > 1 ? "s" : ""} dropped. Change {fix.length > 1 ? "them" : "it"} on Facebook too</p>
+          {fix.map((c) => (
+            <div key={c.id} className="flex items-center gap-2">
+              <a href={SELLING} target="_blank" rel="noreferrer" className="flex-1 min-w-0 text-sm"><span className="font-semibold truncate block">{c.title}</span><span className="muted">${c.was} → <b>${c.price}</b></span></a>
+              <button type="button" className="btn btn-secondary" onClick={() => changed(c)}>✅ Done</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="card p-3 space-y-2">
+        <p className="font-semibold">How many a day?</p>
+        <div className="grid grid-cols-4 gap-2">
+          {PER_DAY_CHOICES.map((n) => (
+            <button key={n} type="button" disabled={busy} className={`btn ${s.perDay === n ? "btn-primary" : "btn-secondary"}`} onClick={() => saveSettings({ ...s, perDay: n }, false)}>{n}</button>
+          ))}
+        </div>
+        <p className="text-xs muted">Start with 10. More than about 20 a day can get Facebook to slow down or flag your account.</p>
       </div>
 
       {!rows.length && (
@@ -43,8 +101,8 @@ export default function RelistClient({ items, doneToday }: { items: Row[]; doneT
 
       {rows.length > 0 && left === 0 && (
         <div className="card p-4 text-center">
-          <p className="font-semibold">🎉 {today} reposted today. That&apos;s the day&apos;s {PER_DAY}.</p>
-          <p className="muted text-sm">Come back tomorrow for the next {Math.min(PER_DAY, rows.length)}.</p>
+          <p className="font-semibold">🎉 {today} reposted today. That&apos;s the day&apos;s {s.perDay}.</p>
+          <p className="muted text-sm">The next {Math.min(s.perDay, rows.length)} are ready tomorrow.</p>
         </div>
       )}
 
@@ -57,15 +115,29 @@ export default function RelistClient({ items, doneToday }: { items: Row[]; doneT
               <p className="text-sm muted">{r.price ? `$${r.price}` : "No price yet"} • #{r.sku}</p>
             </div>
           </div>
-          {r.oldUrl ? (
-            <a href={r.oldUrl} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>① 🗑 Open the old ad and delete it</a>
-          ) : (
-            <a href="https://www.facebook.com/marketplace/you/selling" target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>① 🗑 Delete the old ad (your selling page)</a>
-          )}
+          <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>① 🗑 {r.oldUrl ? "Open the old ad and delete it" : "Delete the old ad (your selling page)"}</a>
           <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>② 📋 Copy the new listing + save photos</Link>
           <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>③ ✅ Posted it</button>
         </div>
       ))}
+
+      <details className="card p-3" open={s.drop}>
+        <summary className="font-semibold cursor-pointer">📉 Lower the price until it sells {s.drop ? `(on: ${s.pct}% every ${s.days} days)` : "(off)"}</summary>
+        <div className="space-y-2 mt-3">
+          <div className="grid grid-cols-3 gap-2 text-sm">
+            <label>Drop %<input className="input" inputMode="numeric" value={s.pct} onChange={(e) => setS({ ...s, pct: Number(e.target.value.replace(/\D/g, "")) || 0 })} /></label>
+            <label>Every (days)<input className="input" inputMode="numeric" value={s.days} onChange={(e) => setS({ ...s, days: Number(e.target.value.replace(/\D/g, "")) || 0 })} /></label>
+            <label>Lowest (% of price)<input className="input" inputMode="numeric" value={s.floorPct} onChange={(e) => setS({ ...s, floorPct: Math.min(100, Number(e.target.value.replace(/\D/g, "")) || 0) })} /></label>
+          </div>
+          <p className="text-xs muted">Example: a $100 item at 10% every 7 days, lowest 60%, goes $90, $81, $73, $66, $60, then stops. Each drop shows up at the top of this page so you can change it on Facebook. Buyers who saved it on our site get a price-drop email.</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button type="button" className="btn btn-primary" disabled={busy || !s.pct || !s.days} onClick={() => saveSettings({ ...s, drop: true }, true)}>Turn on for all</button>
+            <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => saveSettings({ ...s, drop: false }, true)}>Turn off</button>
+          </div>
+          <p className="text-xs muted">Want one item different? Open it and use “📉 Drop the price automatically” on its page.</p>
+        </div>
+      </details>
+      {note && <p className="text-sm text-center">{note}</p>}
     </div>
   );
 }
