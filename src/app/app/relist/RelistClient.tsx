@@ -180,7 +180,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <label>Up to (min)<input className="input" inputMode="numeric" value={s.gapMax} onChange={(e) => setS({ ...s, gapMax: Number(e.target.value.replace(/\D/g, "")) || 0 })} onBlur={() => saveSettings(s, false)} /></label>
         </div>
         <p className="text-xs muted">Each wait is a random number in between (like 7, then 13, then 5 minutes).</p>
-        <p className="text-xs muted">Safe start: <b>15 a day</b>, 15 to 40 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
+        <p className="text-xs muted">Safe start: <b>15 a day</b>, a random 5 to 15 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
       </div>
 
       {!rows.length && (
