@@ -130,6 +130,14 @@ Built for working a pallet.
 - **🗂 Dump a batch (AI sorts)** — pick up to 40 photos of many different things. The AI groups them into items. Use **split** and **merge** to correct any grouping.
 - **Finish** — creates every draft, cleans every background, writes every listing with AI, and sends them all to Review. Walk away; come back to finished listings.
 
+### 4.3b 📂 Bring in Facebook ads (/app/import) and 🔁 Relist list (/app/relist)
+
+For moving old Facebook Marketplace ads into the app and reposting them fresh (added Oct 23, 2026).
+
+1. In Chrome, open your Marketplace selling page and have the Claude bar on the right collect every ad into **facebook_listings.json** (it downloads the file).
+2. Menu → **📂 Bring in Facebook ads** → **Pick facebook_listings.json** → **✨ Bring in N ads**. Keep the screen open. Each ad comes in with its photos in a new order (photo 2 becomes the cover), each photo slightly cropped and touched up, a new AI-written title and description, and **your same price**. Picking the file again skips the ones already in. Do it within a day or two: Facebook's photo links expire.
+3. Menu → **🔁 Relist Facebook ads**. Ten a day. For each: **① delete the old ad**, **② copy the new listing and save the photos**, **③ Posted it**. Deleting first keeps Facebook from flagging a duplicate.
+
 ### 4.4 Review (/app/review)
 Everything the AI or a consignor produced, waiting for a human eye. Open one to check it, or tick several (**Select all**) and use the bar: **✅ Approve & list**, **Archive**, **🗑 Delete**. Approved items leave the queue. Consignor items always pass through here.
 
