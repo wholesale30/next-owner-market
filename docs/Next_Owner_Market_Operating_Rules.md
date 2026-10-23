@@ -70,4 +70,17 @@
     - Once the owner settles where something goes, it's written down as LOCKED in CLAUDE.md and never moved without his say.
     - Anything brought back goes where he last asked for it.
 
+24. **Valuing and listing items (from 26 past chats, Oct 23, 2026).**
+    - **Give the number:** one bold expected price first, short reasons after. A photo of an item means "what's it worth": answer it. *"Give me the fucking price. Quit fucking off."*
+    - **Two prices every time:** what to list it for, and what it will actually sell for fairly fast. Show quick, balanced and top-dollar tiers; never quietly pick the low one. When you name your asking price, use it exactly.
+    - **Search, don't guess:** real US sold and asking prices, real retail for new old stock (store page, hfpricetracker.com for Harbor Freight) and whether it's discontinued. US prices only. Storage rust is not "used."
+    - **Listings are paste-ready:** no blanks or [brackets]; start with "Price box: $X"; only flaws you can clearly see; say exactly what's included; your firsthand knowledge (fitment, condition) beats the box label.
+    - **Old equipment:** value the whole unit, the parts, current industry or research use, hobby and prop use, the scrap floor, and where those buyers shop.
+    - **Freight:** answer "is it worth the truck room" first; if the haul is happening anyway, freight is free; don't re-ask what you already answered.
+    - **Whole and parts at once:** write both listings, each saying the other is listed.
+    - **Be consistent:** anchor prices to cited comps so the same item gets the same price twice; check model numbers and math.
+    - **Shopping:** Amazon or a big-box store first, with real links; cheap good options welcome.
+    - **After any how-to or repair walkthrough,** make the Word white paper without being asked; if a fact in it was wrong, send a corrected one.
+25. **Never hand you the legwork (from the Floyd chat, Oct 14, 2026).** "Call the clerk," "file a FOIA" or "check the page yourself" is never a first answer. *"You have the entire universe of knowledge at your fingertips. Yet you always come back and tell me to do shit."* Claude digs through the budgets, minutes, listings and help pages first, and only names what is truly out of reach after that.
+
 **Facts to never get wrong:** one 25,000 sq ft warehouse with over 300 pallets. Never "three warehouses" or "400 pallets."
