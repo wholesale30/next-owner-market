@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 2:58 PM from the project history (283 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 3:28 PM from the project history (289 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2075,3 +2075,44 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Documents:** `docs/playbook/template.md`
 
 <sub>change id 0bcb8ac</sub>
+
+### 14:59 — Records
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id d1d2027</sub>
+
+### 15:03 — Rule: no zip for item lookups or questions; one zip per burst of changes. Stop hook treats CLAUDE.md as records.
+
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_Operating_Rules.md`
+- **Automation scripts:** `scripts/stop_check.py`
+
+<sub>change id 792d3c6</sub>
+
+### 15:10 — First-answer checklist at the top of every rules file
+
+- **Project rules:** `CLAUDE.md`
+- **Documents:** `docs/Next_Owner_Market_Operating_Rules.md`
+
+<sub>change id 080e394</sub>
+
+### 15:15 — Feedback for Anthropic: every logged mistake with dates and his words
+
+- **Documents:** `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.md`
+
+<sub>change id 4cfe972</sub>
+
+### 15:25 — Bring in Facebook ads: import facebook_listings.json with fresh photo order, AI rewrite, his price kept; Relist list of 10 a day (delete old first)
+
+- **Server routes (API):** `src/app/api/import/photo/route.ts`
+- **Seller / staff app:** `src/app/app/import/ImportClient.tsx`, `src/app/app/import/page.tsx`, `src/app/app/items/[id]/page.tsx`, `src/app/app/layout.tsx`, `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
+- **Database (migrations):** `supabase/migrations/041_facebook_import.sql`
+
+<sub>change id 7aa662e</sub>
+
+### 15:25 — User Guide: Bring in Facebook ads and Relist list
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+
+<sub>change id 8092ae7</sub>
