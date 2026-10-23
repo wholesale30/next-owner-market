@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 3:48 PM from the project history (293 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 5:02 PM from the project history (295 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2143,3 +2143,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
 
 <sub>change id aad750a</sub>
+
+### 15:48 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 54e4a6d</sub>
+
+### 17:00 — Next Facebook post page: one listing at a time in plain labeled text, random waits between posts, stops at the daily number; built for Claude in Chrome to work through
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id b771be8</sub>
