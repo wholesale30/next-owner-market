@@ -18,6 +18,7 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState("");
+  const [newUrl, setNewUrl] = useState("");
 
   // while waiting, reload by itself right when the next one is due
   useEffect(() => {
@@ -35,7 +36,9 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
     const v = (s?.value || {}) as { drop?: boolean; pct?: number; days?: number; floorPct?: number };
     const drop = v.drop && listing.price ? { drop_pct: v.pct, drop_every_days: v.days, drop_floor: Math.max(1, Math.round(listing.price * (v.floorPct || 60) / 100)) } : {};
     const live = listing.status === "pending_review" ? { status: "active", listed_at: at.toISOString() } : {};
-    await supabase.from("items").update({ fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...live, ...drop }).eq("id", listing.id);
+    // the new ad's link becomes the "old ad" to delete next time it's relisted
+    const link = /^https:\/\/(www\.|m\.)?facebook\.com\/marketplace\/item\/\d+/.test(newUrl.trim()) ? { fb_old_url: newUrl.trim() } : {};
+    await supabase.from("items").update({ ...link, fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...live, ...drop }).eq("id", listing.id);
     // random gap so posts don't land like clockwork (e.g. 7, then 13, then 5 minutes)
     const mins = gap[0] + Math.random() * Math.max(0, gap[1] - gap[0]);
     await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
@@ -89,6 +92,7 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
 
           <div className="card p-3 space-y-2">
             <p className="font-bold">STEP 3. Only after it&apos;s live on Facebook</p>
+            <label className="block text-sm font-semibold">New ad link (paste the new Facebook listing&apos;s link)<input id="fb-new-url" className="input" placeholder="https://www.facebook.com/marketplace/item/…" value={newUrl} onChange={(e) => setNewUrl(e.target.value)} /></label>
             <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={posted}>✅ I posted it on Facebook</button>
             <p className="text-xs muted">Sets a random wait before the next one.</p>
           </div>

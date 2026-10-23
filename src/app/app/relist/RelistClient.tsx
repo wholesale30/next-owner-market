@@ -15,13 +15,14 @@ import EditBox, { type Editable } from "./EditBox";
  */
 type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
-export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number };
+type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
+export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number };
 const PER_DAY_CHOICES = [10, 15, 20, 30];
 /** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
-export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, go back to the app page and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
+export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
-export default function RelistClient({ items, doneToday, changes, settings }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings }) {
+export default function RelistClient({ items, doneToday, changes, settings, live: liveIn }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings; live: Live[] }) {
   const supabase = useMemo(() => createClient(), []);
   const [rows, setRows] = useState(items);
   const [fix, setFix] = useState(changes);
@@ -31,6 +32,17 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [choosing, setChoosing] = useState(false);
+  const [live, setLive] = useState(liveIn);
+  const [now0] = useState(() => new Date().getTime());
+  const ageDays = (iso: string) => Math.max(0, Math.floor((now0 - new Date(iso).getTime()) / 86400000));
+  const due = live.filter((l) => ageDays(l.at) >= s.relistAfter);
+
+  async function relistAgain(l: Live) {
+    // back in line at the front; its saved link is the ad to delete
+    await supabase.from("items").update({ fb_relisted_at: null, fb_pick: new Date().toISOString(), fb_hold: false }).eq("id", l.id);
+    setLive((x) => x.filter((y) => y.id !== l.id));
+    setNote(`✓ "${l.title}" is back at the front of the line.`);
+  }
   const left = Math.max(0, s.perDay - today);
   // his picks go first, in the order he tapped them; skipped ones never go
   const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : 0));
@@ -203,6 +215,28 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
           <button type="button" className="pill w-full" onClick={() => remove(r)}>🗑 Don&apos;t want it: delete from the app</button>
         </div>
       ))}
+
+      {live.length > 0 && (
+        <details className="card p-3" open={due.length > 0}>
+          <summary className="font-semibold cursor-pointer">📅 On Facebook now: {live.length}{due.length ? ` • 🔁 ${due.length} due to relist` : ""}</summary>
+          <div className="space-y-2 mt-3">
+            <label className="text-sm flex items-center gap-2">Relist after<input className="input w-20" inputMode="numeric" value={s.relistAfter} onChange={(e) => setS({ ...s, relistAfter: Number(e.target.value.replace(/\D/g, "")) || 0 })} onBlur={() => saveSettings(s, false)} />days</label>
+            {live.map((l) => {
+              const d = ageDays(l.at);
+              return (
+                <div key={l.id} className="flex gap-2 items-center">
+                  {l.photo ? <img src={l.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
+                  <div className="min-w-0 flex-1 text-sm">
+                    <p className="font-semibold truncate">{l.title}</p>
+                    <p className="muted">Posted {new Date(l.at).toLocaleDateString()} • <b style={d >= s.relistAfter ? { color: "var(--danger)" } : {}}>{d} day{d === 1 ? "" : "s"} old</b>{l.price ? ` • $${l.price}` : ""}</p>
+                  </div>
+                  <button type="button" className="pill shrink-0" onClick={() => relistAgain(l)}>{d >= s.relistAfter ? "🔁 Relist now" : "🔁 Relist"}</button>
+                </div>
+              );
+            })}
+          </div>
+        </details>
+      )}
 
       <details className="card p-3" open={s.drop}>
         <summary className="font-semibold cursor-pointer">📉 Lower the price until it sells {s.drop ? `(on: ${s.pct}% every ${s.days} days)` : "(off)"}</summary>
