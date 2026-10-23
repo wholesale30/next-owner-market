@@ -16,7 +16,9 @@ import EditBox, { type Editable } from "./EditBox";
 type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number };
-const PER_DAY_CHOICES = [20, 30, 40, 50];
+const PER_DAY_CHOICES = [10, 15, 20, 30];
+/** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
+export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, go back to the app page and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
 export default function RelistClient({ items, doneToday, changes, settings }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings }) {
@@ -125,7 +127,22 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
         </div>
       )}
 
-      {!choosing && rows.length > 0 && <Link href="/app/relist/next" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📣 Post them one at a time (random waits)</Link>}
+      {!choosing && rows.length > 0 && (
+        <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
+          <p className="font-bold">🤖 Let Claude in Chrome post them for you</p>
+          <p className="text-sm">The app can&apos;t touch Facebook. Claude in Chrome does the clicking in <b>your own Chrome</b>: deletes the old ad, posts the new one, then waits a random {s.gapMin}–{s.gapMax} minutes before the next, up to {s.perDay} a day. Your picks (⭐) go first.</p>
+          <ol className="text-sm list-decimal pl-5 space-y-1">
+            <li>On your computer, open Chrome, signed in to Facebook and to nextownermarket.com.</li>
+            <li>Tap the button below to copy the instructions.</li>
+            <li>Open the Claude bar on the right side of Chrome, paste, and send. Leave Chrome open.</li>
+          </ol>
+          <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} onClick={() => navigator.clipboard.writeText(CHROME_PROMPT).then(() => setNote("✓ Copied. Paste it into the Claude bar in Chrome."))}>📋 Copy the instructions for Claude</button>
+          <p className="text-xs muted">Watch the first one. If it goes right, save it in Claude in Chrome as a shortcut and schedule it daily.</p>
+        </div>
+      )}
+      {note && !choosing && <p className="text-sm text-center">{note}</p>}
+
+      {!choosing && rows.length > 0 && <Link href="/app/relist/next" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📣 The page Claude works from (one at a time)</Link>}
 
       {fix.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
@@ -151,7 +168,7 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
           <label>Up to (min)<input className="input" inputMode="numeric" value={s.gapMax} onChange={(e) => setS({ ...s, gapMax: Number(e.target.value.replace(/\D/g, "")) || 0 })} onBlur={() => saveSettings(s, false)} /></label>
         </div>
         <p className="text-xs muted">Each wait is a random number in between (like 7, then 13, then 5 minutes).</p>
-        <p className="text-xs muted">Facebook has no official daily limit. Sellers with an established account report 15 to 30 a day is safe and about 50 is too many. Spread them through the day (about 15 minutes apart), not all at once.</p>
+        <p className="text-xs muted">Safe start: <b>15 a day</b>, 15 to 40 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
       </div>
 
       {!rows.length && (
@@ -168,6 +185,7 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
         </div>
       )}
 
+      {!choosing && now.length > 0 && <p className="font-semibold pt-2">Or do one by hand ({now.length} ready today):</p>}
       {!choosing && now.map((r, i) => (
         <div key={r.id} className="card p-3 space-y-2">
           <div className="flex gap-3 items-center">

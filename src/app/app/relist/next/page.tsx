@@ -26,7 +26,7 @@ export default async function NextPostPage() {
     supabase.from("settings").select("key, value").in("key", ["relist:settings", "relist:next_at", "business"]),
   ]);
   const get = (k: string) => st?.find((s) => s.key === k)?.value as Record<string, unknown> | undefined;
-  const cfg = { perDay: 30, gapMin: 5, gapMax: 20, ...(get("relist:settings") || {}) } as { perDay: number; gapMin: number; gapMax: number };
+  const cfg = { perDay: 15, gapMin: 15, gapMax: 40, ...(get("relist:settings") || {}) } as { perDay: number; gapMin: number; gapMax: number };
   const nextAt = (get("relist:next_at")?.at as string) || null;
   const business = (get("business") as { name: string; location?: string }) || { name: "Next Owner Market" };
   const it = rows?.[0] as (Item & { item_photos: { url: string; sort_order: number }[]; categories: { name: string } | null; fb_old_url: string }) | undefined;
