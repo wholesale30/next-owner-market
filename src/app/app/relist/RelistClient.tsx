@@ -177,11 +177,11 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
               <p className="text-sm muted">{r.price ? `$${r.price}` : "No price yet"} • #{r.sku}</p>
             </div>
           </div>
-          {r.location && <p className="text-sm">📍 {r.location}</p>}
+          <p className="text-sm"><b>Not posted yet.</b> To repost it, do these 3 steps in order:{r.location ? ` • 📍 ${r.location}` : ""}</p>
           <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
-          <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>① 🗑 {r.oldUrl ? "Open the old ad and delete it" : "Delete the old ad (your selling page)"}</a>
-          <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>② 📋 Copy the new listing + save photos</Link>
-          <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>③ ✅ Posted it</button>
+          <a href={r.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full" onClick={() => setDeleted((d) => ({ ...d, [r.id]: true }))}>Step 1: 🗑 Delete the old ad on Facebook</a>
+          <Link href={`/app/items/${r.id}?from=relist`} className={`btn w-full ${deleted[r.id] ? "btn-primary" : "btn-secondary"}`}>Step 2: 📋 Copy the new listing + save photos</Link>
+          <button type="button" className="btn btn-secondary w-full" onClick={() => reposted(r)}>Step 3: ✅ Tap here AFTER it&apos;s posted on Facebook</button>
           <button type="button" className="pill w-full" onClick={() => remove(r)}>🗑 Don&apos;t want it: delete from the app</button>
         </div>
       ))}

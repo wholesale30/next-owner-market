@@ -88,8 +88,8 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
           </div>
 
           <div className="card p-3 space-y-2">
-            <p className="font-bold">STEP 3. After it&apos;s posted</p>
-            <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={posted}>✅ Posted it</button>
+            <p className="font-bold">STEP 3. Only after it&apos;s live on Facebook</p>
+            <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={posted}>✅ I posted it on Facebook</button>
             <p className="text-xs muted">Sets a random wait before the next one.</p>
           </div>
         </div>
