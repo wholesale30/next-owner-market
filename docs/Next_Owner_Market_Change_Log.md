@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 3:28 PM from the project history (289 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 3:34 PM from the project history (291 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2116,3 +2116,17 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Documents:** `docs/Next_Owner_Market_User_Guide.md`
 
 <sub>change id 8092ae7</sub>
+
+### 15:28 — Rebuilt documents for the Oct 23 zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 6ab3070</sub>
+
+### 15:32 — Relist list: pick how many a day, lower prices until it sells (for all or per item), list of Facebook prices to change after each drop
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
+- **Database (migrations):** `supabase/migrations/042_relist_price_sync.sql`
+
+<sub>change id e5c433d</sub>
