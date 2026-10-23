@@ -47,6 +47,7 @@
     - After you save, Claude checks it live and tells you. You are never sent to check.
     - Why this exists: the shayneforva.com DNS fix took over 30 minutes and should have taken 5.
 20. **Send the records after EVERY batch, however small (added Oct 2, 2026).**
+    - **But never for item lookups or questions (Oct 23, 2026).** A value, a listing, a buyer list or a how-to answer stays in the chat: no zip. A zip goes out only when the app or the documents changed, and several quick changes in a row get ONE zip at the end.
     - No "too small to send." After any deploy or change, the zip with every current file (rule 4) comes into the chat.
     - The back and forth is the book, and the updated files are what gets passed to the next app.
     - These rules live in the master files (this document, the Claude skill, each project's CLAUDE.md), not only in Claude's memory.
