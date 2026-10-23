@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:13 PM from the project history (310 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:20 PM from the project history (313 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2262,3 +2262,23 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`
 
 <sub>change id 1cedc22</sub>
+
+### 19:13 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 28164ca</sub>
+
+### 19:15 — Relist: copy-the-instructions card for Claude in Chrome at the top; safer defaults (15 a day, 15-40 min apart); hand steps labeled as the by-hand option
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id 941e1b2</sub>
+
+### 19:18 — Relist: On Facebook now list with post date and age, Relist again after N days; saves the new ad's link so the next relist deletes the right ad
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id a9bf675</sub>
