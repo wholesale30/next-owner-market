@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:27 PM from the project history (316 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:36 PM from the project history (318 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2303,3 +2303,17 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/048_fb_remove.sql`
 
 <sub>change id 500bb70</sub>
+
+### 19:27 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id e48de34</sub>
+
+### 19:34 — Relist: one line-up list (today = top N, marked); order by oldest first (default), highest/lowest price or Facebook order; Facebook listed date column
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+- **Database (migrations):** `supabase/migrations/049_fb_listed_at.sql`
+
+<sub>change id 2d7561f</sub>
