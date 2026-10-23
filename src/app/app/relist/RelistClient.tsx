@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/client";
  */
 type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
-export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number };
+export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number };
 const PER_DAY_CHOICES = [20, 30, 40, 50];
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
@@ -70,6 +70,8 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
         <p className="muted text-sm">{rows.length} old Facebook ads waiting • {today} reposted today.</p>
       </div>
 
+      {rows.length > 0 && <Link href="/app/relist/next" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📣 Post them one at a time (random waits)</Link>}
+
       {fix.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
           <p className="font-semibold">💲 {fix.length} price{fix.length > 1 ? "s" : ""} dropped. Change {fix.length > 1 ? "them" : "it"} on Facebook too</p>
@@ -89,6 +91,11 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
             <button key={n} type="button" disabled={busy} className={`btn ${s.perDay === n ? "btn-primary" : "btn-secondary"}`} onClick={() => saveSettings({ ...s, perDay: n }, false)}>{n}</button>
           ))}
         </div>
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <label>Wait at least (min)<input className="input" inputMode="numeric" value={s.gapMin} onChange={(e) => setS({ ...s, gapMin: Number(e.target.value.replace(/\D/g, "")) || 0 })} onBlur={() => saveSettings(s, false)} /></label>
+          <label>Up to (min)<input className="input" inputMode="numeric" value={s.gapMax} onChange={(e) => setS({ ...s, gapMax: Number(e.target.value.replace(/\D/g, "")) || 0 })} onBlur={() => saveSettings(s, false)} /></label>
+        </div>
+        <p className="text-xs muted">Each wait is a random number in between (like 7, then 13, then 5 minutes).</p>
         <p className="text-xs muted">Facebook has no official daily limit. Sellers with an established account report 15 to 30 a day is safe and about 50 is too many. Spread them through the day (about 15 minutes apart), not all at once.</p>
       </div>
 

@@ -1,0 +1,97 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+
+type Listing = { id: string; title: string; price: number | null; category: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
+type Props = { state: "empty" | "day_done" | "wait" | "go"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
+
+const CREATE = "https://www.facebook.com/marketplace/create/item";
+const SELLING = "https://www.facebook.com/marketplace/you/selling";
+const time = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+export default function NextClient({ state, nextAt, done, perDay, waiting, gap, listing }: Props) {
+  const supabase = useMemo(() => createClient(), []);
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState("");
+
+  // while waiting, reload by itself right when the next one is due
+  useEffect(() => {
+    if (state !== "wait" || !nextAt) return;
+    const ms = Math.max(1000, new Date(nextAt).getTime() - Date.now() + 1500);
+    const t = setTimeout(() => router.refresh(), Math.min(ms, 2147483000));
+    return () => clearTimeout(t);
+  }, [state, nextAt, router]);
+
+  async function posted() {
+    if (!listing) return;
+    setBusy(true);
+    const at = new Date();
+    const { data: s } = await supabase.from("settings").select("value").eq("key", "relist:settings").maybeSingle();
+    const v = (s?.value || {}) as { drop?: boolean; pct?: number; days?: number; floorPct?: number };
+    const drop = v.drop && listing.price ? { drop_pct: v.pct, drop_every_days: v.days, drop_floor: Math.max(1, Math.round(listing.price * (v.floorPct || 60) / 100)) } : {};
+    const live = listing.status === "pending_review" ? { status: "active", listed_at: at.toISOString() } : {};
+    await supabase.from("items").update({ fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...live, ...drop }).eq("id", listing.id);
+    // random gap so posts don't land like clockwork (e.g. 7, then 13, then 5 minutes)
+    const mins = gap[0] + Math.random() * Math.max(0, gap[1] - gap[0]);
+    await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
+    setBusy(false);
+    router.refresh();
+  }
+
+  const copy = (label: string, text: string) => { navigator.clipboard.writeText(text).then(() => { setCopied(label); setTimeout(() => setCopied(""), 1500); }); };
+
+  return (
+    <div className="space-y-4 pb-10">
+      <div>
+        <h1 className="text-2xl font-bold">📣 Next Facebook post</h1>
+        <p className="muted text-sm">Today: {done} of {perDay} posted • {waiting} waiting in all • random {gap[0]}–{gap[1]} minutes apart</p>
+      </div>
+
+      {state === "empty" && <div className="card p-4 text-center space-y-2"><p className="text-xl font-bold">ALL DONE. Nothing left to post.</p><Link href="/app/import" className="btn btn-secondary w-full">📂 Bring in more Facebook ads</Link></div>}
+      {state === "day_done" && <div className="card p-4 text-center"><p className="text-xl font-bold">✅ DONE FOR TODAY. STOP.</p><p className="muted">{done} posted today. The next ones are ready tomorrow.</p></div>}
+      {state === "wait" && nextAt && <div className="card p-4 text-center"><p className="text-xl font-bold">⏳ WAIT. Next post at {time(nextAt)}.</p><p className="muted">This page shows the next listing by itself at that time.</p></div>}
+
+      {state === "go" && listing && (
+        <div className="space-y-3">
+          <div className="card p-3 space-y-2">
+            <p className="font-bold">STEP 1. Delete the old ad</p>
+            <a href={listing.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">🗑 Open the old ad</a>
+            <p className="text-xs muted">Old ad link: {listing.oldUrl || "not saved; find it on your selling page by its photo"}</p>
+          </div>
+
+          <div className="card p-3 space-y-2">
+            <p className="font-bold">STEP 2. Post the new ad</p>
+            <a href={CREATE} target="_blank" rel="noreferrer" className="btn btn-primary w-full">➕ Open Facebook &quot;Create new listing&quot;</a>
+            <dl className="text-sm space-y-1">
+              <div><dt className="font-semibold inline">Title: </dt><dd className="inline" id="fb-title">{listing.title}</dd> <button className="pill" onClick={() => copy("title", listing.title)}>{copied === "title" ? "✓" : "Copy"}</button></div>
+              <div><dt className="font-semibold inline">Price: </dt><dd className="inline" id="fb-price">{listing.price ?? ""}</dd></div>
+              <div><dt className="font-semibold inline">Category: </dt><dd className="inline" id="fb-category">{listing.category}</dd></div>
+              <div><dt className="font-semibold inline">Condition: </dt><dd className="inline" id="fb-condition">{listing.condition}</dd></div>
+            </dl>
+            <div>
+              <p className="font-semibold text-sm">Description: <button className="pill" onClick={() => copy("desc", listing.description)}>{copied === "desc" ? "✓ Copied" : "Copy"}</button></p>
+              <pre id="fb-description" className="text-sm whitespace-pre-wrap card p-2">{listing.description}</pre>
+            </div>
+            <div>
+              <p className="font-semibold text-sm">Photos, in this order ({listing.photos.length}):</p>
+              <div className="grid grid-cols-3 gap-1">
+                {listing.photos.map((u, i) => <a key={u} href={u} download={`photo-${i + 1}.jpg`} target="_blank" rel="noreferrer"><img src={u} alt={`Photo ${i + 1}`} className="aspect-square object-cover rounded" /></a>)}
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-3 space-y-2">
+            <p className="font-bold">STEP 3. After it&apos;s posted</p>
+            <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={posted}>✅ Posted it</button>
+            <p className="text-xs muted">Sets a random wait before the next one.</p>
+          </div>
+        </div>
+      )}
+      <Link href="/app/relist" className="btn btn-secondary w-full">← Relist list</Link>
+    </div>
+  );
+}
