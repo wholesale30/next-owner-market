@@ -40,15 +40,20 @@ async function importOne(row: { id: number; owner_id: string; data: Ad }, catego
   const photos = [...new Set(photosRaw.map(String).filter((u) => { try { const x = new URL(u); return x.protocol === "https:" && OK_HOST.test(x.hostname); } catch { return false; } }))];
   const url = String(ad.listing_url || "").trim() || `fb-import-${row.id}`;
 
-  // already brought in (a rerun): just link it
-  const { data: dup } = await db.from("items").select("id").eq("fb_old_url", url).maybeSingle();
-  if (dup) return { item_id: dup.id as string, note: "already in" };
-
   const facts = [
     ad.title && `Old ad title: ${ad.title}`,
     ad.condition && `Condition (seller said): ${ad.condition}`,
     ad.description && `Seller's facts from the old ad (rewrite in new words, don't copy): ${ad.description}`,
   ].filter(Boolean).join("\n");
+  const keepCond = CONDITION[String(ad.condition || "").toLowerCase()];
+
+  // already brought in (a rerun): link it, and finish the listing if the AI part didn't stick last time
+  const { data: dup } = await db.from("items").select("id, title, item_photos(url, sort_order)").eq("fb_old_url", url).maybeSingle();
+  if (dup) {
+    const ph = ((dup.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order).map((x) => x.url);
+    if (dup.title || !ph.length) return { item_id: dup.id as string, note: "already in" };
+    return writeListing(dup.id as string, ph, facts, price, keepCond, ad, row.owner_id, categories);
+  }
   const { data: item, error } = await db.from("items").insert({
     owner_id: row.owner_id, created_by: row.owner_id, title: "", description: "", status: "draft", tier: "owned",
     condition_notes: facts.slice(0, 4000) || null, fb_old_url: url, fb_location: ad.location || null, price,
@@ -71,19 +76,25 @@ async function importOne(row: { id: number; owner_id: string; data: Ad }, catego
   }
   if (!saved.length) return { item_id: item.id as string, note: "no photos came through (links expired?); saved as a draft" };
 
-  const keepCond = CONDITION[String(ad.condition || "").toLowerCase()];
+  return writeListing(item.id as string, saved, facts, price, keepCond, ad, row.owner_id, categories);
+}
+
+async function writeListing(itemId: string, saved: string[], facts: string, price: number | null, keepCond: string | undefined, ad: Ad, ownerId: string, categories: { id: string; name: string }[]) {
+  const db = admin();
+  const item = { id: itemId };
   try {
-    const a = await draftListing({ photoUrls: saved, hints: facts, categories, ownerId: row.owner_id });
-    await db.from("items").update({
+    const a = await draftListing({ photoUrls: saved, hints: facts, categories, ownerId });
+    const { error: upErr } = await db.from("items").update({
       title: a.title, description: a.description, brand: a.brand || null, model: a.model || null,
       category_id: categories.some((c) => c.id === a.category_id) ? a.category_id : null,
       condition: keepCond || a.condition || "good", condition_notes: a.condition_notes || null,
       specs: a.specs || {}, tags: a.tags || [],
       price: price ?? (a.price_min && a.price_max ? Math.round((Number(a.price_min) + Number(a.price_max)) / 2) : null),
       price_min_suggested: a.price_min || null, price_max_suggested: a.price_max || null,
-      weight_lbs: a.weight_lbs || null, box: ["small", "medium", "large", "xl", "freight"].includes(a.box) ? a.box : "medium",
+      weight_lbs: a.weight_lbs ? Math.min(Number(a.weight_lbs), 9999999) : null, box: ["small", "medium", "large", "xl", "freight"].includes(a.box) ? a.box : "medium",
       ai_generated: true, ai_raw: a, status: "pending_review",
     }).eq("id", item.id);
+    if (upErr) throw new Error(upErr.message);
     return { item_id: item.id as string, note: `${saved.length} photos • ${a.title}` };
   } catch (e) {
     // keep his own title so the item is still usable; he can tap Write listing later
