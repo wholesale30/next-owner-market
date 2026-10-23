@@ -15,7 +15,7 @@ import { createClient } from "@/lib/supabase/client";
 type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number };
-const PER_DAY_CHOICES = [10, 15, 20, 30];
+const PER_DAY_CHOICES = [20, 30, 40, 50];
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
 export default function RelistClient({ items, doneToday, changes, settings }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings }) {
@@ -89,7 +89,7 @@ export default function RelistClient({ items, doneToday, changes, settings }: { 
             <button key={n} type="button" disabled={busy} className={`btn ${s.perDay === n ? "btn-primary" : "btn-secondary"}`} onClick={() => saveSettings({ ...s, perDay: n }, false)}>{n}</button>
           ))}
         </div>
-        <p className="text-xs muted">Start with 10. More than about 20 a day can get Facebook to slow down or flag your account.</p>
+        <p className="text-xs muted">Facebook has no official daily limit. Sellers with an established account report 15 to 30 a day is safe and about 50 is too many. Spread them through the day (about 15 minutes apart), not all at once.</p>
       </div>
 
       {!rows.length && (
