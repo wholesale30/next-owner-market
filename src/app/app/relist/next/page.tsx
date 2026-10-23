@@ -42,6 +42,7 @@ export default async function NextPostPage() {
     const full = facebookCopy(input);
     return {
       id: it.id, title: input.item.title, price: it.price, category: it.categories?.name || "Miscellaneous",
+      location: (it as unknown as { fb_location?: string | null }).fb_location || null,
       condition: FB_CONDITION[it.condition || "good"] || "Used - Good",
       description: full.slice(full.indexOf("\n\n") + 2),
       photos: [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order).map((p) => p.url),

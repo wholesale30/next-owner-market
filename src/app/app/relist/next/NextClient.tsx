@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type Listing = { id: string; title: string; price: number | null; category: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
+type Listing = { id: string; title: string; price: number | null; category: string; location: string | null; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
 type Props = { state: "empty" | "day_done" | "wait" | "go"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
 
 const CREATE = "https://www.facebook.com/marketplace/create/item";
@@ -70,6 +70,7 @@ export default function NextClient({ state, nextAt, done, perDay, waiting, gap, 
               <div><dt className="font-semibold inline">Title: </dt><dd className="inline" id="fb-title">{listing.title}</dd> <button className="pill" onClick={() => copy("title", listing.title)}>{copied === "title" ? "✓" : "Copy"}</button></div>
               <div><dt className="font-semibold inline">Price: </dt><dd className="inline" id="fb-price">{listing.price ?? ""}</dd></div>
               <div><dt className="font-semibold inline">Category: </dt><dd className="inline" id="fb-category">{listing.category}</dd></div>
+              {listing.location && <div><dt className="font-semibold inline">Location: </dt><dd className="inline" id="fb-location">{listing.location}</dd></div>}
               <div><dt className="font-semibold inline">Condition: </dt><dd className="inline" id="fb-condition">{listing.condition}</dd></div>
             </dl>
             <div>

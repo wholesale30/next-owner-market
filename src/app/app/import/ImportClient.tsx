@@ -15,7 +15,7 @@ import { toCanvas, toBlob, fixLight, removeSpecks } from "@/lib/photo-edit";
  *  - the old ad's link is saved so the Relist list can say "delete the old one first".
  */
 
-type FbAd = { title: string; price: number | null; condition: string; description: string; photos: string[]; url: string };
+type FbAd = { title: string; price: number | null; condition: string; description: string; photos: string[]; url: string; location: string };
 
 function readAds(raw: unknown): FbAd[] {
   const arr = Array.isArray(raw) ? raw : (raw as { listings?: unknown[] })?.listings || [];
@@ -29,6 +29,7 @@ function readAds(raw: unknown): FbAd[] {
       description: String(x.description || "").trim(),
       photos: [...new Set(photos)],
       url: String(x.listing_url || x.url || "").trim(),
+      location: String(x.location || "").trim(),
     };
   }).filter((a) => a.title || a.photos.length);
 }
@@ -85,7 +86,7 @@ export default function ImportClient({ userId, already }: { userId: string; alre
         ].filter(Boolean).join("\n");
         const { data: item, error } = await supabase.from("items").insert({
           owner_id: userId, created_by: userId, title: "", description: "", status: "draft", tier: "owned",
-          condition_notes: facts || null, fb_old_url: ad.url || `fb-import-${crypto.randomUUID()}`,
+          condition_notes: facts || null, fb_location: ad.location || null, fb_old_url: ad.url || `fb-import-${crypto.randomUUID()}`,
         }).select("id, sku").single();
         if (error) throw error;
         let saved = 0;
