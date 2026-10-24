@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 8:58 PM from the project history (321 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:05 PM from the project history (323 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2337,3 +2337,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Server routes (API):** `src/app/api/price-check/run/route.ts`
 
 <sub>change id 8f1fb52</sub>
+
+### 20:58 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id ce4535a</sub>
+
+### 21:03 — Relist line-up: tap Mine / List / Fast / Lowest to set the price (shows which is in use, says if a save fails); no automatic or bulk price checks
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id 4e4fdbb</sub>
