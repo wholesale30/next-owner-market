@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:26 PM from the project history (328 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:47 PM from the project history (330 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2382,3 +2382,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
 
 <sub>change id 75794b4</sub>
+
+### 21:26 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 1d81dbc</sub>
+
+### 21:46 — Relist: a price typed in Edit becomes Mine (saved), with a confirmation
+
+- **Seller / staff app:** `src/app/app/relist/EditBox.tsx`, `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
+- **Database (migrations):** `supabase/migrations/051_my_price.sql`
+
+<sub>change id 2a50916</sub>
