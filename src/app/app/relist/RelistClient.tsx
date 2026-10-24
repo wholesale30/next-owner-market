@@ -14,7 +14,7 @@ import type { PriceCheck } from "@/lib/pricecheck";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; order: "old" | "fb" | "high" | "low" };
@@ -221,15 +221,15 @@ export default function RelistClient({ items, doneToday, changes, settings, live
 
       {rows.some((r) => r.hold) && (
         <details className="card p-3" open style={{ borderColor: "var(--danger)" }}>
-          <summary className="font-bold cursor-pointer">🚫 Skipped and duplicates: {rows.filter((r) => r.hold && !r.removing).length} • 📤 Coming off Facebook: {rows.filter((r) => r.removing).length}</summary>
+          <summary className="font-bold cursor-pointer">🚫 Skipped: {rows.filter((r) => r.hold && !r.removing && !r.removedAt).length} • 📤 Coming off Facebook: {rows.filter((r) => r.removing).length} • ✓ Taken off Facebook: {rows.filter((r) => r.removedAt).length}</summary>
           <p className="text-xs muted mt-1">Skipped ads won&apos;t be reposted but are still up on Facebook. 📤 Off FB has Claude in Chrome delete them there. Deleted-from-app items are in ☰ More → 🗑 Deleted.</p>
           <div className="space-y-2 mt-3">
             {rows.filter((r) => r.hold).map((r) => (
               <div key={r.id} className="flex gap-2 items-center">
                 {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
-                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped (still up on Facebook)"}</p></div>
+                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removedAt ? ` • ✓ taken off Facebook ${new Date(r.removedAt).toLocaleString([], { month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" })}` : r.removing ? " • 📤 coming off Facebook" : " • skipped (still up on Facebook)"}</p></div>
                 <div className="flex flex-col gap-1 shrink-0">
-                  {r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <>
+                  {r.removedAt ? null : r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <>
                     <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>
                     <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
                   </>}

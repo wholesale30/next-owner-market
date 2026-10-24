@@ -25,7 +25,7 @@ export default async function RelistPage() {
     postedTo: (i.posted_to as Record<string, string>) || {},
     pick: (i.fb_pick as string | null) || null, hold: !!i.fb_hold,
     description: (i.description as string) || "", location: (i.fb_location as string | null) || null,
-    removing: !!i.fb_remove && !i.fb_removed_at, listedAt: (i.fb_listed_at as string | null) || null, mine: i.my_price != null ? Number(i.my_price) : mine.get(i.id as string) ?? null, pc: (i.price_check as PriceCheck | null) || null,
+    removing: !!i.fb_remove && !i.fb_removed_at, removedAt: (i.fb_removed_at as string | null) || null, listedAt: (i.fb_listed_at as string | null) || null, mine: i.my_price != null ? Number(i.my_price) : mine.get(i.id as string) ?? null, pc: (i.price_check as PriceCheck | null) || null,
     photo: ((i.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null,
   }));
   const live = (posted || []).map((p) => ({ id: p.id as string, title: (p.title as string) || "Untitled", price: p.price as number | null, at: p.fb_relisted_at as string, photo: ((p.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null }));
