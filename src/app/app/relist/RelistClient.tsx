@@ -307,12 +307,15 @@ export default function RelistClient({ items, doneToday, changes, settings, live
             <div key={r.id} className="space-y-2">
               {i === 0 && readyCount > 0 && <p className="font-semibold text-sm" style={{ color: "var(--brand)" }}>⬇ ✅ READY: {todayN} will post today{readyCount > todayN ? `, ${readyCount - todayN} after that` : ""}</p>}
               {i === readyCount && <p className="font-semibold text-sm pt-2 border-t" style={{ borderColor: "var(--line)" }}>⬇ NOT CHECKED YET: these won&apos;t post until you mark them ✅ Ready</p>}
-              <div className="card p-2 space-y-2" style={r.pick ? { borderColor: "var(--brand)" } : {}}>
+              <div className="card p-2 space-y-2" style={r.pick ? { borderColor: "var(--brand)", borderWidth: 2 } : {}}>
+                <p className="text-sm font-bold rounded px-2 py-1" style={r.pick ? { background: "color-mix(in srgb, var(--brand) 15%, var(--surface))", color: "var(--brand)" } : { background: "var(--line)" }}>
+                  {r.pick ? `✅ READY: #${i + 1} to post${i < todayN ? " (today)" : ""}` : "⬜ NOT CHECKED YET: won't post until you tap ✅ Ready?"}
+                </p>
                 <div className="flex gap-2 items-center">
                   {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 object-cover rounded shrink-0" /> : <div className="w-16 h-16 rounded shrink-0" style={{ background: "var(--line)" }} />}
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-sm truncate">#{i + 1} {r.title}</p>
-                    <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""}{r.pick ? " • ✅ ready" : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
+                    <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
                   </div>
                 </div>
                 <div className="space-y-1">
