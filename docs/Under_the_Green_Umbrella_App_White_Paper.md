@@ -17,6 +17,7 @@ Prepared by Claude for Shayne Snavely, October 24, 2026. Drop this into the new 
 ## 1.1 What we know (from Shayne, Oct 24, 2026)
 
 - **Business:** Under the Green Umbrella, Blacksburg, Virginia. Run by Shayne's sister.
+- **Kitchen and permits:** she has kitchen inspections and permits, and sells bottled tea and lemonade (per Shayne). Treat permits as handled.
 - **Sells:** baked goods, teas, lemonades and more.
 - **Where:** the farmer's market, for about 30 years.
 - **Problem:** the farmers market slows down in winter, and she needs to make more money.
@@ -45,12 +46,7 @@ The FAQ says exempt products "can only be sold and delivered within the Commonwe
 - **No shipping out of state.** The app must block non-Virginia addresses for home-kitchen items.
 - **No selling to stores, cafes or anyone for resale.** That means no wholesale and no consignment. Individual customers only.
 - **Some baked goods don't qualify:** anything that needs refrigeration. The FAQ names breads or cakes "filled or topped with" fresh fruit, cream cheese or similar. Cream cheese frosting and custard pies are the classic examples. These need a permit or licensed kitchen. The menu editor should have a "needs refrigeration" flag that hides an item from home-kitchen sales.
-- **Lemonade and brewed iced tea are not covered by the home exemption.** Beverages aren't on the list; only *dried* tea is. What decides the permit is how a drink is sold, not where it's made:
-  - **Poured at the stand to drink there** is food service, under the Virginia Department of Health. It's handled with a health-department temporary food permit at markets, and is probably how she has sold them for years.
-  - **Bottled or packaged to take home, or delivered,** is a manufactured food, under VDACS, and needs a VDACS inspection and permit. VDACS's farmers-market Q&A says a bottled liquid coffee and packaged kombucha both need "an inspection and permit from VDACS."
-  - **Dried loose tea** is fine from a home kitchen.
-
-  Ask VDACS whether a **dry lemonade or tea mix** counts as an allowed "dry mixture." It's worth asking about, but it isn't confirmed. Find out what permit she has now. The app should only list drinks that a permit covers for delivery.
+- **Her drinks are already covered.** Per Shayne (Oct 24), she has kitchen inspections and permits and has sold **bottled tea and lemonade** for years. List her drinks normally. Don't add permit checks or warnings for them.
 - **Local rules still apply.** The town can add zoning or business-license rules for a home business.
 
 **Labels (the app should print them).** Home-kitchen items need on the front:
@@ -90,7 +86,7 @@ They also need the normal label items: product name, net weight, and ingredients
 3. **Menu editor:**
    - Add an item from a photo, and the AI writes the description (reused from Next Owner Market's listing writer).
    - Set price, size, ingredients and allergens.
-   - Flag "needs refrigeration" or "drink, needs permit."
+   - Flag "needs refrigeration" (keeps it pickup or same-day only if needed).
    - Use the "sold out" switch and "seasonal" dates.
 4. **Orders:** new, baking, out for delivery, delivered and refunded, with a one-tap refund.
 5. **Customers:** list, notes, favorites, and "email everyone about the Thanksgiving pie preorder." Every email includes an unsubscribe link and her mailing address, as the law requires (CAN-SPAM).
@@ -139,7 +135,7 @@ They also need the normal label items: product name, net weight, and ingredients
 ## 1.7 Questions for her (ask only the ones that change the build)
 
 1. Her name for the account, plus the phone and email for order alerts.
-2. **Her kitchen:** home kitchen only, or a licensed or commercial kitchen? **What permits does she already have** (especially for lemonade and tea)? This decides what the app can list.
+2. Her permit and label details for the printed labels (business name, address, phone; whatever her permit requires on labels).
 3. The menu: items, sizes, prices and photos. Can we pull from her Facebook page or market photos?
 4. Delivery days, how far she'll drive (which towns or ZIPs), fee, free-delivery minimum, and max orders per day.
 5. Pickup spots: her market stall days and hours, and any other spot.
