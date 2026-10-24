@@ -38,14 +38,14 @@ export default async function RelistPage() {
   const [{ data: convos }, { data: soldRows }] = await Promise.all([
     liveIds.length ? supabase.from("conversations").select("item_id, buyer_name, buyer_contact").in("item_id", liveIds).limit(2000) : Promise.resolve({ data: [] as { item_id: string; buyer_name: string | null; buyer_contact: string }[] }),
     // sales from the Facebook ads this app brought in (the proof numbers)
-    supabase.from("items").select("id, title, fb_relisted_at, fb_listed_at, sold_at, sales(sale_price, buyer_name, sold_at)").not("fb_old_url", "is", null).eq("status", "sold").order("sold_at", { ascending: false }).limit(500),
+    supabase.from("items").select("id, title, price, fb_relisted_at, fb_listed_at, fb_sold_seen_at, sold_at, sales(sale_price, buyer_name, sold_at)").not("fb_old_url", "is", null).eq("status", "sold").order("sold_at", { ascending: false }).limit(500),
   ]);
   const buyers: Record<string, { name: string; contact: string }[]> = {};
   for (const c of convos || []) (buyers[c.item_id as string] ||= []).push({ name: (c.buyer_name as string) || "", contact: (c.buyer_contact as string) || "" });
   const sold = (soldRows || []).map((r) => {
     const s = ((r.sales as { sale_price: number; buyer_name: string | null; sold_at: string }[]) || [])[0];
     const from = (r.fb_relisted_at as string | null) || null;
-    return { id: r.id as string, title: (r.title as string) || "Untitled", price: s ? Number(s.sale_price) : null, buyer: s?.buyer_name || null, soldAt: (s?.sold_at || r.sold_at) as string, reposted: from, days: from ? Math.max(0, Math.round((new Date((s?.sold_at || r.sold_at) as string).getTime() - new Date(from).getTime()) / 86400000)) : null };
+    return { id: r.id as string, fbSold: !!r.fb_sold_seen_at && !s, title: (r.title as string) || "Untitled", price: s ? Number(s.sale_price) : null, buyer: s?.buyer_name || null, soldAt: (s?.sold_at || r.sold_at) as string, reposted: from, days: from ? Math.max(0, Math.round((new Date((s?.sold_at || r.sold_at) as string).getTime() - new Date(from).getTime()) / 86400000)) : null };
   });
   return <RelistClient items={list} doneToday={doneToday || 0} changes={changes} settings={settings} live={live} buyers={buyers} sold={sold} />;
 }
