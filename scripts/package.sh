@@ -7,6 +7,7 @@ cd "$(dirname "$0")/.."
 python3 scripts/journal.py >/dev/null
 python3 scripts/changelog.py >/dev/null
 python3 scripts/build_playbook.py >/dev/null   # App Builder's Playbook: re-reads the real code every time
+python3 scripts/build_ugu_whitepaper.py >/dev/null   # starter white paper for Under the Green Umbrella (Oct 24, 2026)
 # rebuild every Word copy from its source so nothing in the zip is stale
 for md in docs/Next_Owner_Market_*.md; do
   docx="${md%.md}.docx"
@@ -19,6 +20,7 @@ rm -f "$out"/Next_Owner_Market_Files_*.zip
 dir=$(mktemp -d)/Next_Owner_Market_Files_$stamp
 mkdir -p "$dir/Pictures"
 cp docs/Next_Owner_Market_*.docx "$dir/"
+cp docs/Under_the_Green_Umbrella_*.docx "$dir/" 2>/dev/null || true
 cp docs/brand/*.png "$dir/Pictures/" 2>/dev/null || true
 {
   echo "Next Owner Market: every current file"
