@@ -173,7 +173,9 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   async function reposted(r: Row) {
     const at = new Date().toISOString();
     const live = r.status === "pending_review" || r.status === "draft" ? { status: "active", listed_at: at } : {};
-    await supabase.from("items").update({ fb_ad_title: r.title, fb_ad_price: r.price, fb_relisted_at: at, fb_posted_price: r.price, posted_to: { ...r.postedTo, facebook: at }, ...live, ...dropFields(r.price) }).eq("id", r.id);
+    const { error: postErr } = await supabase.from("items").update({ fb_ad_title: r.title, fb_ad_price: r.price, fb_relisted_at: at, fb_posted_price: r.price, posted_to: { ...r.postedTo, facebook: at }, ...dropFields(r.price) }).eq("id", r.id);
+    if (postErr) { alert(`Couldn't record the post: ${postErr.message}`); return; }
+    if (Object.keys(live).length) await supabase.from("items").update(live).eq("id", r.id).then(() => {}, () => {});
     setRows((x) => x.filter((y) => y.id !== r.id));
     setToday((t) => t + 1);
   }

@@ -39,7 +39,10 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
     const live = listing.status === "pending_review" ? { status: "active", listed_at: at.toISOString() } : {};
     // the new ad's link becomes the "old ad" to delete next time it's relisted
     const link = /^https:\/\/(www\.|m\.)?facebook\.com\/marketplace\/item\/\d+/.test(newUrl.trim()) ? { fb_old_url: newUrl.trim() } : {};
-    await supabase.from("items").update({ ...link, fb_ad_title: listing.title, fb_ad_price: listing.price, fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...live, ...drop }).eq("id", listing.id);
+    // record the post first (this must stick); going live in our store is a separate step that may be refused (e.g. vehicles need a year) without blocking anything
+    const { error: postErr } = await supabase.from("items").update({ ...link, fb_ad_title: listing.title, fb_ad_price: listing.price, fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...drop }).eq("id", listing.id);
+    if (postErr) { setBusy(false); alert(`The app couldn't record this post: ${postErr.message}. Don't post anything else yet; tell Claude.`); return; }
+    if (Object.keys(live).length) await supabase.from("items").update(live).eq("id", listing.id).then(() => {}, () => {});
     // random gap so posts don't land like clockwork (e.g. 7, then 13, then 5 minutes)
     const mins = gap[0] + Math.random() * Math.max(0, gap[1] - gap[0]);
     await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
@@ -51,7 +54,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
     if (!removal) return;
     setBusy(true);
     const at = new Date();
-    await supabase.from("items").update({ fb_removed_at: at.toISOString(), fb_hold: true, fb_pick: null }).eq("id", removal.id);
+    const { error: rmErr } = await supabase.from("items").update({ fb_removed_at: at.toISOString(), fb_hold: true, fb_pick: null }).eq("id", removal.id);
+    if (rmErr) { setBusy(false); alert(`The app couldn't record this removal: ${rmErr.message}. Tell Claude.`); return; }
     // deleting a few old ads in a row is normal: a short random 1-3 minutes between removals
     const mins = 1 + Math.random() * 2;
     await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
