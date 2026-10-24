@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 11:17 AM from the project history (349 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 11:22 AM from the project history (351 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2521,3 +2521,15 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
 
 <sub>change id 34170a2</sub>
+
+### 11:17 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 5653e45</sub>
+
+### 11:20 — Relist: 40 a day option (owner)
+
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
+
+<sub>change id 1471fd8</sub>
