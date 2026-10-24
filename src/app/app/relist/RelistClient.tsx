@@ -289,9 +289,12 @@ export default function RelistClient({ items, doneToday, changes, settings, live
             {rows.filter((r) => r.hold).map((r) => (
               <div key={r.id} className="flex gap-2 items-center">
                 {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
-                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped"}</p></div>
+                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped (still up on Facebook)"}</p></div>
                 <div className="flex flex-col gap-1 shrink-0">
-                  {r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>}
+                  {r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <>
+                    <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>
+                    <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
+                  </>}
                   <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
                 </div>
               </div>
