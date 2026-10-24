@@ -16,7 +16,7 @@ import type { PriceCheck } from "@/lib/pricecheck";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; photos: string[]; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; photos: string[]; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; now?: boolean; pc: PriceCheck | null; mine: number | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null; photos: string[] };
 type SoldRow = { id: string; title: string; price: number | null; buyer: string | null; soldAt: string; reposted: string | null; days: number | null };
@@ -57,7 +57,8 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   const left = Math.max(0, s.perDay - today);
   // his picks go first, in the order he tapped them; skipped ones never go
   const rank = (r: Row) => (s.order === "high" ? -(r.price || 0) : s.order === "low" ? (r.price || 0) : s.order === "old" ? (r.listedAt ? new Date(r.listedAt).getTime() : 9e15) : 0);
-  const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : rank(a) - rank(b)));
+  const queue = rows.filter((r) => !r.hold).sort((a, b) => (Number(!!b.now && !!b.pick) - Number(!!a.now && !!a.pick)) || (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : rank(a) - rank(b)));
+  const nowCount = queue.filter((r) => r.now && r.pick).length;
   // only ads he marked ✅ Ready get posted (Oct 23, 2026): "I'm supposed to be checking these and deciding"
   const readyCount = queue.filter((r) => r.pick).length;
   const todayN = Math.min(left, readyCount);
@@ -135,6 +136,15 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     const first = picks.length ? Math.min(...picks) : new Date().getTime();
     await setPickTime(r.id, new Date(first - 1000).toISOString());
     setFlash((f) => ({ ...f, [r.id]: "⏫ Moved to #1" }));
+  }
+  async function postNow(r: Row) {
+    holdScroll();
+    const now = !r.now;
+    const pick = r.pick || new Date().toISOString();
+    setRows((x) => x.map((y) => (y.id === r.id ? { ...y, now, pick, hold: false } : y)));
+    const { error } = await supabase.from("items").update({ fb_now: now, fb_pick: pick, fb_hold: false }).eq("id", r.id);
+    if (error) { alert(`Couldn't change it: ${error.message}`); return; }
+    setUndo(now ? { label: `⚡ "${r.title}" will post now (extra)`, run: () => postNow({ ...r, now: true, pick }) } : null);
   }
   async function toBottom(r: Row) {
     holdScroll();
@@ -301,7 +311,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
         <div className="space-y-2">
           <p className="font-bold text-lg pt-2">📋 The line-up: all {queue.length}, in posting order</p>
           <p className="text-sm"><b>Nothing posts until you mark it ✅ Ready.</b> Look an ad over (price, title, photos), then tap <b>✅ Ready</b>. Claude in Chrome posts only ✅ Ready ads, in the order you marked them, up to {s.perDay} a day, and only after you start it. Tap ✅ again to un-ready it. 🚫 <b>Skip</b> keeps one from ever being reposted.</p>
-          <p className="text-sm font-semibold">✅ {readyCount} ready • {queue.length - readyCount} not checked yet</p>
+          <p className="text-sm font-semibold">{nowCount ? `⚡ ${nowCount} posting now • ` : ""}✅ {readyCount - nowCount} ready • {queue.length - readyCount} not checked yet</p>
           <div className="grid grid-cols-4 gap-1">
             {([["old", "📅 Oldest first"], ["high", "💰 Highest price"], ["low", "Lowest price"], ["fb", "Facebook order"]] as [RelistSettings["order"], string][]).map(([k, l]) => (
               <button key={k} type="button" className={`pill ${s.order === k ? "font-bold" : ""}`} style={s.order === k ? { borderColor: "var(--brand)" } : {}} onClick={() => saveSettings({ ...s, order: k }, false)}>{l}</button>
@@ -314,7 +324,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
               {i === readyCount && <p className="font-semibold text-sm pt-2 border-t" style={{ borderColor: "var(--line)" }}>⬇ NOT CHECKED YET: these won&apos;t post until you mark them ✅ Ready</p>}
               <div className="card p-2 space-y-2" style={r.pick ? { borderColor: "var(--brand)", borderWidth: 2 } : {}}>
                 <p className="text-sm font-bold rounded px-2 py-1" style={r.pick ? { background: "color-mix(in srgb, var(--brand) 15%, var(--surface))", color: "var(--brand)" } : { background: "var(--line)" }}>
-                  {r.pick ? `✅ READY: #${i + 1} to post${i < todayN ? " (today)" : ""}` : "⬜ NOT CHECKED YET: won't post until you tap ✅ Ready?"}
+                  {r.now && r.pick ? `⚡ POST NOW: #${i + 1}, extra (doesn't count toward ${s.perDay}, any hour)` : r.pick ? `✅ READY: #${i + 1} to post${i - nowCount < todayN ? " (today)" : ""}` : "⬜ NOT CHECKED YET: won't post until you tap ✅ Ready?"}
                 </p>
                 <div className="flex gap-2 items-center">
                   {thumb(r.id, r.photos, r.title, "w-16 h-16")}
@@ -341,6 +351,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                     <button type="button" className="pill w-full" disabled={!!checking[r.id]} onClick={() => checkPrice(r.id)}>{checking[r.id] ? "Checking real prices…" : "🔎 Check real price to fill List / Fast / Lowest (about 11¢)"}</button>
                   )}
                 </div>
+                <button type="button" className="pill w-full" style={r.now ? { borderColor: "var(--brand)", fontWeight: 700 } : {}} onClick={() => postNow(r)}>{r.now ? "⚡ Posting now (tap to cancel)" : "⚡ Post now (extra, skips the daily limit)"}</button>
                 <div className="grid grid-cols-4 gap-1">
                   <button type="button" className="pill" onClick={() => toTop(r)}>{r.pick ? "⏫ To #1" : "⏫ Ready + #1"}</button>
                   <button type="button" className="pill" disabled={!r.pick || i === 0} onClick={() => moveBy(r, -1, queue)}>▲ Up one</button>

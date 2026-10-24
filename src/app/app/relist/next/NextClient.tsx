@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import EditBox from "../EditBox";
 
-type Listing = { adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
+type Listing = { now?: boolean; adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
 type Removal = { id: string; title: string; price: number | null; adTitle: string | null; adPrice: number | null; oldUrl: string | null; photo: string | null };
 type Props = { removal: Removal | null; state: "empty" | "day_done" | "wait" | "go" | "remove"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
 
@@ -40,7 +40,7 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
     // the new ad's link becomes the "old ad" to delete next time it's relisted
     const link = /^https:\/\/(www\.|m\.)?facebook\.com\/marketplace\/item\/\d+/.test(newUrl.trim()) ? { fb_old_url: newUrl.trim() } : {};
     // record the post first (this must stick); going live in our store is a separate step that may be refused (e.g. vehicles need a year) without blocking anything
-    const { error: postErr } = await supabase.from("items").update({ ...link, fb_ad_title: listing.title, fb_ad_price: listing.price, fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...drop }).eq("id", listing.id);
+    const { error: postErr } = await supabase.from("items").update({ ...link, fb_ad_title: listing.title, fb_ad_price: listing.price, fb_relisted_at: at.toISOString(), fb_now: false, fb_extra: !!listing.now, fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...drop }).eq("id", listing.id);
     if (postErr) { setBusy(false); alert(`The app couldn't record this post: ${postErr.message}. Don't post anything else yet; tell Claude.`); return; }
     if (Object.keys(live).length) await supabase.from("items").update(live).eq("id", listing.id).then(() => {}, () => {});
     // random gap so posts don't land like clockwork (e.g. 7, then 13, then 5 minutes)

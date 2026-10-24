@@ -24,8 +24,8 @@ export default async function NextPostPage() {
   const order = ((ordRow?.value as { order?: string } | null)?.order) || "old";
   const [{ data: removeRows }, { data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([
     supabase.from("items").select("id, title, price, fb_old_url, fb_ad_title, fb_ad_price, item_photos(url, sort_order)").eq("fb_remove", true).is("fb_removed_at", null).order("updated_at").limit(1),
-    supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).not("fb_pick", "is", null).neq("status", "draft").order("fb_pick", { ascending: true, nullsFirst: false }).order(order === "fb" ? "created_at" : order === "old" ? "fb_listed_at" : "price", { ascending: order !== "high", nullsFirst: false }).order("created_at").limit(1),
-    supabase.from("items").select("id", { count: "exact", head: true }).gte("fb_relisted_at", startOfDay.toISOString()),
+    supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).not("fb_pick", "is", null).neq("status", "draft").order("fb_now", { ascending: false }).order("fb_pick", { ascending: true, nullsFirst: false }).order(order === "fb" ? "created_at" : order === "old" ? "fb_listed_at" : "price", { ascending: order !== "high", nullsFirst: false }).order("created_at").limit(1),
+    supabase.from("items").select("id", { count: "exact", head: true }).gte("fb_relisted_at", startOfDay.toISOString()).eq("fb_extra", false),
     supabase.from("items").select("id", { count: "exact", head: true }).not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).not("fb_pick", "is", null).neq("status", "draft"),
     supabase.from("settings").select("key, value").in("key", ["relist:settings", "relist:next_at", "business"]),
   ]);
@@ -43,6 +43,7 @@ export default async function NextPostPage() {
   let state: "empty" | "day_done" | "wait" | "go" | "remove" = "go";
   if (rm) state = nextAt && new Date(nextAt).getTime() > new Date().getTime() ? "wait" : "remove";
   else if (!it) state = "empty";
+  else if ((it as unknown as { fb_now?: boolean }).fb_now) state = timerAt && new Date(timerAt).getTime() > new Date().getTime() ? "wait" : "go"; // ⚡ Post now: skips the daily number and hours, keeps the random wait
   else if (done >= cfg.perDay) state = "day_done";
   else if (nextAt && new Date(nextAt).getTime() > new Date().getTime()) state = "wait";
 
@@ -55,6 +56,7 @@ export default async function NextPostPage() {
       condition: FB_CONDITION[it.condition || "good"] || "Used - Good",
       description: full.slice(full.indexOf("\n\n") + 2),
       rawDescription: it.description || "",
+      now: !!(it as unknown as { fb_now?: boolean }).fb_now,
       photos: [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order).map((p) => p.url),
       oldUrl: String(it.fb_old_url).startsWith("http") ? it.fb_old_url : null,
       adTitle: (it as unknown as { fb_ad_title?: string | null }).fb_ad_title || null,
@@ -64,5 +66,6 @@ export default async function NextPostPage() {
   })() : null;
 
   const removal = rm && state === "remove" ? { id: rm.id, title: rm.title || "Untitled", price: rm.price, adTitle: rm.fb_ad_title, adPrice: rm.fb_ad_price != null ? Number(rm.fb_ad_price) : null, oldUrl: String(rm.fb_old_url || "").startsWith("http") ? rm.fb_old_url : null, photo: [...(rm.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null } : null;
-  return <NextClient removal={removal} state={state} nextAt={nextAt} done={done} perDay={cfg.perDay} waiting={waiting || 0} gap={[cfg.gapMin, cfg.gapMax]} listing={listing} />;
+  const waitAt = state === "wait" && it && (it as unknown as { fb_now?: boolean }).fb_now ? timerAt : nextAt;
+  return <NextClient removal={removal} state={state} nextAt={waitAt} done={done} perDay={cfg.perDay} waiting={waiting || 0} gap={[cfg.gapMin, cfg.gapMax]} listing={listing} />;
 }
