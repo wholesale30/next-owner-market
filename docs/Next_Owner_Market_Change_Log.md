@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 7:36 PM from the project history (318 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 8:58 PM from the project history (321 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2317,3 +2317,23 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/049_fb_listed_at.sql`
 
 <sub>change id 2d7561f</sub>
+
+### 19:36 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id cc6be87</sub>
+
+### 20:52 — Relist line-up: real-price check (Yours/List/Fast/Lowest, HOLD, why) with Use List/Fast on each ad and Check all; Facebook category name used for reposts; dates loaded
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+- **Database (migrations):** `supabase/migrations/050_fb_category.sql`
+
+<sub>change id 7f52687</sub>
+
+### 20:55 — Price check runner: checks the owner's unchecked items a few a minute on the server
+
+- **Server routes (API):** `src/app/api/price-check/run/route.ts`
+
+<sub>change id 8f1fb52</sub>
