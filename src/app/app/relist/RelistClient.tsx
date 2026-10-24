@@ -17,8 +17,8 @@ import type { PriceCheck } from "@/lib/pricecheck";
 type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
-export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; order: "old" | "fb" | "high" | "low" };
-const PER_DAY_CHOICES = [15, 20, 30, 40];
+export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; startHour: number; endHour: number; order: "old" | "fb" | "high" | "low" };
+const PER_DAY_CHOICES = [15, 20, 30, 35, 40];
 /** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
 export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Find the old ad by its link and the "on Facebook says" title shown on the page; the app's own title, price and photos are the NEW rewritten version on purpose, so they will not match the old ad, and an old ad may show as Sold; that is expected. If the page says REMOVE ONLY, open that ad on Facebook, delete it, post nothing, and tap "I deleted it on Facebook". Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown: for each photo, open its photo page link from the app page in a new tab (it shows only that photo), take a screenshot of that tab, go back to the Facebook tab and upload that screenshot into the photo box; do not ask me to add photos (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
@@ -313,7 +313,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
 
       <div className="card p-3 space-y-2">
         <p className="font-semibold">How many a day?</p>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-5 gap-2">
           {PER_DAY_CHOICES.map((n) => (
             <button key={n} type="button" disabled={busy} className={`btn ${s.perDay === n ? "btn-primary" : "btn-secondary"}`} onClick={() => saveSettings({ ...s, perDay: n }, false)}>{n}</button>
           ))}
@@ -323,6 +323,11 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <label>Up to (min)<input className="input" inputMode="numeric" value={s.gapMax} onChange={(e) => setS({ ...s, gapMax: Number(e.target.value.replace(/\D/g, "")) || 0 })} onBlur={() => saveSettings(s, false)} /></label>
         </div>
         <p className="text-xs muted">Each wait is a random number in between (like 7, then 13, then 5 minutes).</p>
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <label>Start posting at (hour, 0–23)<input className="input" inputMode="numeric" value={s.startHour} onChange={(e) => setS({ ...s, startHour: Math.min(23, Number(e.target.value.replace(/\D/g, "")) || 0) })} onBlur={() => saveSettings(s, false)} /></label>
+          <label>Stop at (hour, 1–24)<input className="input" inputMode="numeric" value={s.endHour} onChange={(e) => setS({ ...s, endHour: Math.min(24, Number(e.target.value.replace(/\D/g, "")) || 0) })} onBlur={() => saveSettings(s, false)} /></label>
+        </div>
+        <p className="text-xs muted">Posts only go up between {s.startHour > 12 ? `${s.startHour - 12} PM` : s.startHour === 12 ? "noon" : `${s.startHour || 12} AM`} and {s.endHour > 12 ? `${s.endHour - 12} PM` : s.endHour === 12 ? "noon" : `${s.endHour} AM`} Eastern, like a work day. Outside those hours the page says WAIT until the next start.</p>
         <p className="text-xs muted">Safe start: <b>15 a day</b>, a random 5 to 15 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
       </div>
 

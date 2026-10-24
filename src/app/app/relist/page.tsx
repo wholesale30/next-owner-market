@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
 import RelistClient, { type RelistSettings } from "./RelistClient";
 import type { PriceCheck } from "@/lib/pricecheck";
+import { etStartOfDay } from "@/lib/et";
 
 export const metadata = { title: "Relist list" };
 
@@ -9,7 +10,7 @@ export default async function RelistPage() {
   const me = (await getProfile())!;
   if (me.role !== "admin") redirect("/app"); // owner only (Oct 23, 2026)
   const supabase = await createClient();
-  const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+  const startOfDay = etStartOfDay();
   const [{ data: orig }, { data: items }, { count: doneToday }, { data: posted }, { data: s }] = await Promise.all([
     supabase.from("fb_import_queue").select("item_id, data").not("item_id", "is", null).limit(2000),
     supabase.from("items").select("id, sku, title, price, status, description, fb_location, fb_old_url, fb_pick, fb_hold, fb_remove, fb_removed_at, fb_listed_at, price_check, my_price, posted_to, item_photos(url, sort_order)").not("fb_old_url", "is", null).is("fb_relisted_at", null).order("fb_pick", { ascending: true, nullsFirst: false }).order("created_at").limit(500),
@@ -30,6 +31,6 @@ export default async function RelistPage() {
   }));
   const live = (posted || []).map((p) => ({ id: p.id as string, title: (p.title as string) || "Untitled", price: p.price as number | null, at: p.fb_relisted_at as string, photo: ((p.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null }));
   const changes = (posted || []).filter((p) => p.fb_posted_price != null && p.price != null && Number(p.price) < Number(p.fb_posted_price)).map((p) => ({ id: p.id as string, sku: p.sku as string, title: (p.title as string) || "Untitled", price: Number(p.price), was: Number(p.fb_posted_price) }));
-  const settings: RelistSettings = { perDay: 15, drop: false, pct: 10, days: 7, floorPct: 60, gapMin: 5, gapMax: 15, relistAfter: 14, order: "old", ...((s?.value as Partial<RelistSettings>) || {}) };
+  const settings: RelistSettings = { perDay: 15, drop: false, pct: 10, days: 7, floorPct: 60, gapMin: 5, gapMax: 15, relistAfter: 14, startHour: 7, endHour: 19, order: "old", ...((s?.value as Partial<RelistSettings>) || {}) };
   return <RelistClient items={list} doneToday={doneToday || 0} changes={changes} settings={settings} live={live} />;
 }

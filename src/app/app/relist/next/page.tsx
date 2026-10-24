@@ -3,6 +3,7 @@ import { createClient, getProfile } from "@/lib/supabase/server";
 import { cleanAiTells, facebookCopy } from "@/lib/listing";
 import { type Item } from "@/lib/types";
 import NextClient from "./NextClient";
+import { etStartOfDay, etNextOpen } from "@/lib/et";
 
 export const metadata = { title: "Next Facebook post" };
 export const dynamic = "force-dynamic";
@@ -18,7 +19,7 @@ export default async function NextPostPage() {
   const me = (await getProfile())!;
   if (me.role !== "admin") redirect("/app"); // owner only (Oct 23, 2026)
   const supabase = await createClient();
-  const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+  const startOfDay = etStartOfDay(); // Eastern midnight, not the server's
   const { data: ordRow } = await supabase.from("settings").select("value").eq("key", "relist:settings").maybeSingle();
   const order = ((ordRow?.value as { order?: string } | null)?.order) || "old";
   const [{ data: removeRows }, { data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([
@@ -29,8 +30,11 @@ export default async function NextPostPage() {
     supabase.from("settings").select("key, value").in("key", ["relist:settings", "relist:next_at", "business"]),
   ]);
   const get = (k: string) => st?.find((s) => s.key === k)?.value as Record<string, unknown> | undefined;
-  const cfg = { perDay: 15, gapMin: 5, gapMax: 15, ...(get("relist:settings") || {}) } as { perDay: number; gapMin: number; gapMax: number };
-  const nextAt = (get("relist:next_at")?.at as string) || null;
+  const cfg = { perDay: 15, gapMin: 5, gapMax: 15, startHour: 7, endHour: 19, ...(get("relist:settings") || {}) } as { perDay: number; gapMin: number; gapMax: number; startHour: number; endHour: number };
+  // posting hours (Eastern): outside them the page just says WAIT until the next start, like a person's work day
+  const open = etNextOpen(cfg.startHour, cfg.endHour);
+  const timerAt = (get("relist:next_at")?.at as string) || null;
+  const nextAt = open && (!timerAt || open.getTime() > new Date(timerAt).getTime()) ? open.toISOString() : timerAt;
   const business = (get("business") as { name: string; location?: string }) || { name: "Next Owner Market" };
   const it = rows?.[0] as (Item & { item_photos: { url: string; sort_order: number }[]; categories: { name: string } | null; fb_old_url: string }) | undefined;
   const done = doneToday || 0;
