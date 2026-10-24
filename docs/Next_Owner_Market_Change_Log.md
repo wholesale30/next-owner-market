@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 10:37 PM from the project history (340 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:30 AM from the project history (342 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2461,3 +2461,20 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/next/NextClient.tsx`
 
 <sub>change id 1eca94f</sub>
+
+### 22:38 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 3eeacd9</sub>
+
+
+## Saturday, October 24, 2026
+
+### 01:28 — Next post page: save the listing's photos to Downloads (named by SKU) for Facebook's photo picker. Playbook T-71.
+
+- **Documents:** `docs/playbook/template.md`
+- **Server routes (API):** `src/app/api/import/photo-dl/route.ts`
+- **Seller / staff app:** `src/app/app/relist/next/NextClient.tsx`
+
+<sub>change id 1418bff</sub>
