@@ -112,6 +112,13 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
             </div>
             <div>
               <p className="font-semibold text-sm">Photos, in this order ({listing.photos.length}):</p>
+              <button type="button" id="fb-save-photos" className="btn btn-secondary w-full my-1" onClick={async () => {
+                for (let i = 0; i < listing.photos.length; i++) {
+                  const a = document.createElement("a"); a.href = `/api/import/photo-dl?item=${listing.id}&i=${i}`; a.download = ""; document.body.appendChild(a); a.click(); a.remove();
+                  await new Promise((r) => setTimeout(r, 700));
+                }
+              }}>⬇ Save these {listing.photos.length} photos to my computer (Downloads)</button>
+              <p className="text-xs muted">They save as {listing.photos.length ? "SKU-1.jpg, SKU-2.jpg…" : ""} in your Downloads folder, so Facebook&apos;s &quot;Add photos&quot; can pick them. If Chrome asks to allow several downloads, tap Allow.</p>
               <div className="grid grid-cols-3 gap-1">
                 {listing.photos.map((u, i) => <a key={u} href={u} download={`photo-${i + 1}.jpg`} target="_blank" rel="noreferrer"><img src={u} alt={`Photo ${i + 1}`} className="aspect-square object-cover rounded" /></a>)}
               </div>
