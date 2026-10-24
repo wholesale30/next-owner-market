@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:10 PM from the project history (325 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:26 PM from the project history (328 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2363,3 +2363,22 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
 
 <sub>change id 7b0c1a4</sub>
+
+### 21:10 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id da1b607</sub>
+
+### 21:22 — Relist price boxes: every tap answers (already using it / no price yet / set / undone). Playbook T-68.
+
+- **Documents:** `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
+
+<sub>change id a4cb5b4</sub>
+
+### 21:24 — Relist: screen stays put when an ad moves (To front, Skip, Off FB, Delete); To front shows in the Undo bar
+
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
+
+<sub>change id 75794b4</sub>
