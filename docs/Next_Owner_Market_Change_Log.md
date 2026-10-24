@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:57 AM from the project history (347 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 11:17 AM from the project history (349 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2509,3 +2509,15 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Documents:** `docs/playbook/template.md`
 
 <sub>change id 4e6364b</sub>
+
+### 01:57 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 68521d6</sub>
+
+### 11:15 — Relist: removed ads show 'taken off Facebook' with the time, not 'skipped (still up on Facebook)'; three counts in the box
+
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id 34170a2</sub>
