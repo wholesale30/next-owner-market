@@ -23,7 +23,7 @@ Prepared by Claude for Shayne Snavely, October 24, 2026. Drop this into the new 
 - **Problem:** the farmers market slows down in winter, and she needs to make more money.
 - **Goal:** move her into a custom-delivery business. Customers order online (an app and website), she bakes and delivers, and the farmers market becomes one channel instead of the whole business.
 
-Everything else (her name on the account, menu, prices, kitchen, permits, delivery area) is unknown. **Don't guess any of it.** Ask (section 1.7) or look it up.
+Everything else (her name on the account, menu, prices, delivery area) is unknown. **Don't guess any of it.** Ask (section 1.7) or look it up.
 
 ## 1.2 Virginia law: what she can sell and deliver (researched Oct 24, 2026)
 
