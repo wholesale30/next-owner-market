@@ -77,7 +77,10 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     // tapping the price that's already in use undoes it: back to what it was before (or your own price)
     if (was === price) {
       const back = prev[r.id] !== undefined && prev[r.id] !== price ? prev[r.id] : r.mine;
-      if (back == null || back === price) return;
+      if (back == null || back === price) {
+        setFlash((f) => ({ ...f, [r.id]: `Already using ${label} ($${price}). ${r.pc ? "Tap List, Fast or Lowest to change it." : "Tap 🔎 Check real price below to get List, Fast and Lowest, or use ✏️ Edit."}` }));
+        return;
+      }
       if (await setPriceRaw(r.id, back)) setFlash((f) => ({ ...f, [r.id]: `↩ Back to $${back}` }));
       return;
     }
@@ -230,7 +233,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                     {([["Mine", r.mine], ["List", r.pc?.list_price ?? null], ["Fast", r.pc?.fast_price ?? null], ["Lowest", r.pc?.floor_price ?? null]] as [string, number | null][]).map(([l, v]) => {
                       const on = !!v && Number(r.price) === v;
                       return (
-                        <button key={l} type="button" disabled={!v} onClick={() => v && applyPrice(r, v, l)} className="card p-1" style={{ minHeight: 48, ...(on ? { borderColor: "var(--brand)", borderWidth: 2 } : {}), ...(!v ? { opacity: 0.45 } : {}) }}>
+                        <button key={l} type="button" onClick={() => (v ? applyPrice(r, v, l) : setFlash((f) => ({ ...f, [r.id]: `No ${l} price yet. Tap 🔎 Check real price below to fill List, Fast and Lowest.` })))} className="card p-1" style={{ minHeight: 48, ...(on ? { borderColor: "var(--brand)", borderWidth: 2 } : {}), ...(!v ? { opacity: 0.45 } : {}) }}>
                           <div className="muted">{on ? "✓ " : ""}{l}</div><div className="font-bold">{v ? `$${v}` : "—"}</div>
                         </button>
                       );
