@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:08 PM from the project history (372 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:15 PM from the project history (374 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2668,3 +2668,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Documents:** `docs/Under_the_Green_Umbrella_App_White_Paper.docx`, `docs/Under_the_Green_Umbrella_App_White_Paper.md`, `docs/whitepaper_ugu/front.md`
 
 <sub>change id 6687c98</sub>
+
+### 13:09 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+15 more)
+
+<sub>change id f73c906</sub>
+
+### 13:14 — Never delete an ad Facebook shows as Sold or Sold and shipped: 'It's marked Sold on Facebook' button and instructions; Sold button keeps the ad; sales history shows sold-on-Facebook items
+
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/SoldBox.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/page.tsx`
+- **Database (migrations):** `supabase/migrations/054_fb_sold_seen.sql`
+
+<sub>change id cc01e87</sub>
