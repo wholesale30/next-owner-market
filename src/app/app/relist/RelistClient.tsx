@@ -91,12 +91,22 @@ export default function RelistClient({ items, doneToday, changes, settings, live
 
   const saved = (id: string) => (e: Editable) => setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title } : y)));
 
+  // when an ad moves in the list, keep the screen where he is (the browser otherwise follows the button he tapped)
+  const holdScroll = () => {
+    const y = window.scrollY;
+    (document.activeElement as HTMLElement | null)?.blur();
+    requestAnimationFrame(() => { window.scrollTo(0, y); requestAnimationFrame(() => window.scrollTo(0, y)); });
+  };
+
   async function togglePick(r: Row) {
+    holdScroll();
     const pick = r.pick ? null : new Date().toISOString();
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, pick, hold: false } : y)));
+    if (pick) setUndo({ label: `⭐ "${r.title}" moved to the front`, run: () => togglePick({ ...r, pick }) });
     await supabase.from("items").update({ fb_pick: pick, fb_hold: false }).eq("id", r.id);
   }
   async function remove(r: Row) {
+    holdScroll();
     if (!confirm(`Delete "${r.title}" from the app? It goes to 🗑 Deleted, where it can be brought back. (This doesn't touch Facebook.)`)) return;
     const { error } = await supabase.rpc("delete_item", { p_item: r.id });
     if (error) { setNote(`Couldn't delete: ${error.message}`); return; }
@@ -112,6 +122,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
 
   async function takeOff(id: string, title: string) {
     if (!confirm(`Take "${title}" off Facebook? Claude in Chrome deletes the ad and doesn't repost it. It stays in the app.`)) return;
+    holdScroll();
     await supabase.from("items").update({ fb_remove: true, fb_hold: true, fb_pick: null }).eq("id", id);
     setRows((x) => x.map((y) => (y.id === id ? { ...y, hold: true, pick: null, removing: true } : y)));
     setLive((x) => x.filter((y) => y.id !== id));
@@ -125,6 +136,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   }
 
   async function toggleHold(r: Row) {
+    holdScroll();
     const hold = !r.hold;
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, hold, pick: hold ? null : y.pick } : y)));
     await supabase.from("items").update({ fb_hold: hold, ...(hold ? { fb_pick: null } : {}) }).eq("id", r.id);
