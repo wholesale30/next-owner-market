@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 10:31 PM from the project history (338 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 10:37 PM from the project history (340 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2448,3 +2448,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/052_fb_ad_title.sql`
 
 <sub>change id 2a46c57</sub>
+
+### 22:32 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 4f18667</sub>
+
+### 22:35 — Removals wait 1-3 minutes between each; posts use his 3-8 minute setting
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/next/NextClient.tsx`
+
+<sub>change id 1eca94f</sub>
