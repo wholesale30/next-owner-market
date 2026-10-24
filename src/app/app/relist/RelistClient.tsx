@@ -112,6 +112,27 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     if (pick) setUndo({ label: `✅ "${r.title}" is ready to post`, run: () => togglePick({ ...r, pick }) });
     await supabase.from("items").update({ fb_pick: pick, fb_hold: false }).eq("id", r.id);
   }
+  // reorder the ✅ Ready group: posting order = fb_pick time, earliest first
+  async function setPickTime(id: string, iso: string) {
+    setRows((x) => x.map((y) => (y.id === id ? { ...y, pick: iso, hold: false } : y)));
+    const { error } = await supabase.from("items").update({ fb_pick: iso, fb_hold: false }).eq("id", id);
+    if (error) alert(`Couldn't move it: ${error.message}`);
+  }
+  async function toTop(r: Row) {
+    holdScroll();
+    const picks = rows.filter((y) => y.pick && !y.hold && y.id !== r.id).map((y) => new Date(y.pick!).getTime());
+    const first = picks.length ? Math.min(...picks) : Date.now();
+    await setPickTime(r.id, new Date(first - 1000).toISOString());
+    setFlash((f) => ({ ...f, [r.id]: "⏫ Moved to #1" }));
+  }
+  async function moveBy(r: Row, dir: -1 | 1, list: Row[]) {
+    holdScroll();
+    const i = list.findIndex((y) => y.id === r.id), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length || !list[j].pick || !r.pick) return;
+    const a = r.pick, b = list[j].pick!;
+    await Promise.all([setPickTime(r.id, b), setPickTime(list[j].id, a)]);
+  }
+
   async function remove(r: Row) {
     holdScroll();
     if (!confirm(`Delete "${r.title}" from the app? It goes to 🗑 Deleted, where it can be brought back. (This doesn't touch Facebook.)`)) return;
@@ -288,6 +309,11 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                   ) : (
                     <button type="button" className="pill w-full" disabled={!!checking[r.id]} onClick={() => checkPrice(r.id)}>{checking[r.id] ? "Checking real prices…" : "🔎 Check real price to fill List / Fast / Lowest (about 11¢)"}</button>
                   )}
+                </div>
+                <div className="grid grid-cols-3 gap-1">
+                  <button type="button" className="pill" onClick={() => toTop(r)}>{r.pick ? "⏫ To #1" : "⏫ Ready + #1"}</button>
+                  <button type="button" className="pill" disabled={!r.pick || i === 0} onClick={() => moveBy(r, -1, queue)}>▲ Up one</button>
+                  <button type="button" className="pill" disabled={!r.pick || !queue[i + 1]?.pick} onClick={() => moveBy(r, 1, queue)}>▼ Down one</button>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
                   <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "✅ Ready ✓" : "✅ Ready?"}</button>
