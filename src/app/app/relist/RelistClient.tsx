@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import EditBox, { type Editable } from "./EditBox";
+import type { PriceCheck } from "@/lib/pricecheck";
 
 /**
  * Relist list (Oct 23, 2026): old Facebook ads brought in by the importer, N a day (he picks how many).
@@ -13,7 +14,7 @@ import EditBox, { type Editable } from "./EditBox";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; listedAt: string | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; listedAt: string | null; pc: PriceCheck | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; order: "old" | "fb" | "high" | "low" };
@@ -46,6 +47,30 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   // his picks go first, in the order he tapped them; skipped ones never go
   const rank = (r: Row) => (s.order === "high" ? -(r.price || 0) : s.order === "low" ? (r.price || 0) : s.order === "old" ? (r.listedAt ? new Date(r.listedAt).getTime() : 9e15) : 0);
   const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : rank(a) - rank(b)));
+
+  const [checking, setChecking] = useState<Record<string, boolean>>({});
+  const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null);
+  async function checkPrice(id: string) {
+    setChecking((c) => ({ ...c, [id]: true }));
+    try {
+      const r = await fetch("/api/price-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ itemId: id }) });
+      const j = await r.json();
+      if (r.ok) setRows((x) => x.map((y) => (y.id === id ? { ...y, pc: j } : y)));
+    } finally { setChecking((c) => ({ ...c, [id]: false })); }
+  }
+  async function checkAll() {
+    const ids = rows.filter((r) => !r.pc && !r.hold).map((r) => r.id);
+    if (!ids.length || !confirm(`Check real prices on ${ids.length} ads? About 20 seconds and 15¢ each (about $${(ids.length * 0.15).toFixed(0)} total). Keep this screen open.`)) return;
+    setBulk({ done: 0, total: ids.length });
+    let k = 0;
+    const worker = async () => { while (k < ids.length) { const id = ids[k++]; await checkPrice(id).catch(() => {}); setBulk((b) => (b ? { ...b, done: b.done + 1 } : b)); } };
+    await Promise.all([worker(), worker(), worker()]);
+    setBulk(null);
+  }
+  async function applyPrice(r: Row, price: number) {
+    await supabase.from("items").update({ price }).eq("id", r.id);
+    setRows((x) => x.map((y) => (y.id === r.id ? { ...y, price } : y)));
+  }
 
   const saved = (id: string) => (e: Editable) => setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title } : y)));
 
@@ -152,6 +177,9 @@ export default function RelistClient({ items, doneToday, changes, settings, live
       {queue.length > 0 && (
         <div className="space-y-2">
           <p className="font-bold text-lg pt-2">📋 The line-up: all {queue.length}, in posting order</p>
+          {rows.some((r) => !r.pc && !r.hold) && (
+            <button type="button" className="btn btn-secondary w-full" disabled={!!bulk} onClick={checkAll}>{bulk ? `Checking prices… ${bulk.done}/${bulk.total}` : `🔎 Check real prices on all ${rows.filter((r) => !r.pc && !r.hold).length} (about 15¢ each)`}</button>
+          )}
           <p className="text-sm muted">Today&apos;s batch is simply the top {s.perDay} of this list. They go top to bottom: your ⭐ picks first, then everything else in the order you choose here. ⭐ <b>To front</b> moves one up; 🚫 <b>Skip</b> keeps it from being reposted.</p>
           <div className="grid grid-cols-4 gap-1">
             {([["old", "📅 Oldest first"], ["high", "💰 Highest price"], ["low", "Lowest price"], ["fb", "Facebook order"]] as [RelistSettings["order"], string][]).map(([k, l]) => (
@@ -171,6 +199,22 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                     <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""}{r.pick ? " • ⭐ moved up" : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
                   </div>
                 </div>
+                {r.pc ? (
+                  <div className="space-y-1">
+                    <div className="grid grid-cols-4 gap-1 text-center text-xs">
+                      {([["Yours", r.price], ["List", r.pc.list_price], ["Fast", r.pc.fast_price], ["Lowest", r.pc.floor_price]] as [string, number | null][]).map(([l, v]) => (
+                        <div key={l} className="card p-1"><div className="muted">{l}</div><div className="font-bold">{v ? `$${v}` : "—"}</div></div>
+                      ))}
+                    </div>
+                    <p className="text-xs">{r.pc.hold && <b style={{ color: "var(--danger)" }}>🛑 HOLD for top dollar (${r.pc.top_price}). </b>}<span className="muted">{r.pc.why}</span></p>
+                    <div className="grid grid-cols-2 gap-1">
+                      <button type="button" className="pill" disabled={r.price === r.pc.list_price} onClick={() => applyPrice(r, r.pc!.list_price)}>Use List ${r.pc.list_price}</button>
+                      <button type="button" className="pill" disabled={r.price === r.pc.fast_price} onClick={() => applyPrice(r, r.pc!.fast_price)}>Use Fast ${r.pc.fast_price}</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button type="button" className="pill w-full" disabled={!!checking[r.id]} onClick={() => checkPrice(r.id)}>{checking[r.id] ? "Checking real prices…" : "🔎 Check real price (List / Fast / Lowest)"}</button>
+                )}
                 <div className="grid grid-cols-4 gap-1">
                   <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "⭐ Undo" : "⭐ To front"}</button>
                   <button type="button" className="pill" onClick={() => toggleHold(r)}>🚫 Skip</button>
