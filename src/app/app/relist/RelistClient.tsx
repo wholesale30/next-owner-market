@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import EditBox, { type Editable } from "./EditBox";
+import SoldBox from "./SoldBox";
 import type { PriceCheck } from "@/lib/pricecheck";
 
 /**
@@ -17,13 +18,14 @@ import type { PriceCheck } from "@/lib/pricecheck";
 type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
+type SoldRow = { id: string; title: string; price: number | null; buyer: string | null; soldAt: string; reposted: string | null; days: number | null };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; startHour: number; endHour: number; order: "old" | "fb" | "high" | "low" };
 const PER_DAY_CHOICES = [15, 20, 30, 35, 40];
 /** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
 export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Find the old ad by its link and the "on Facebook says" title shown on the page; the app's own title, price and photos are the NEW rewritten version on purpose, so they will not match the old ad, and an old ad may show as Sold; that is expected. If the page says REMOVE ONLY, open that ad on Facebook, delete it, post nothing, and tap "I deleted it on Facebook". Otherwise: STEP 1, open the old ad link and delete that listing on Facebook. STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown: for each photo, open its photo page link from the app page in a new tab (it shows only that photo), take a screenshot of that tab, go back to the Facebook tab and upload that screenshot into the photo box; do not ask me to add photos (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
-export default function RelistClient({ items, doneToday, changes, settings, live: liveIn }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings; live: Live[] }) {
+export default function RelistClient({ items, doneToday, changes, settings, live: liveIn, buyers, sold: soldIn }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings; live: Live[]; buyers: Record<string, { name: string; contact: string }[]>; sold: SoldRow[] }) {
   const supabase = useMemo(() => createClient(), []);
   const [rows, setRows] = useState(items);
   const [fix, setFix] = useState(changes);
@@ -33,6 +35,10 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [live, setLive] = useState(liveIn);
+  const [sold, setSold] = useState(soldIn);
+  const soldTotal = sold.reduce((a, x) => a + (x.price || 0), 0);
+  const fromRepost = sold.filter((x) => x.reposted);
+  const avgDays = fromRepost.length ? Math.round(fromRepost.reduce((a, x) => a + (x.days || 0), 0) / fromRepost.length) : null;
   const [now0] = useState(() => new Date().getTime());
   const ageDays = (iso: string) => Math.max(0, Math.floor((now0 - new Date(iso).getTime()) / 86400000));
   const due = live.filter((l) => ageDays(l.at) >= s.relistAfter);
@@ -109,7 +115,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     holdScroll();
     const pick = r.pick ? null : new Date().toISOString();
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, pick, hold: false } : y)));
-    if (pick) setUndo({ label: `✅ "${r.title}" is ready to post`, run: () => togglePick({ ...r, pick }) });
+    setUndo(pick ? { label: `✅ "${r.title}" is ready to post`, run: () => togglePick({ ...r, pick }) } : { label: `↩ "${r.title}" moved back to Not checked yet`, run: () => setPickTime(r.id, r.pick!) });
     await supabase.from("items").update({ fb_pick: pick, fb_hold: false }).eq("id", r.id);
   }
   // reorder the ✅ Ready group: posting order = fb_pick time, earliest first
@@ -124,6 +130,13 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     const first = picks.length ? Math.min(...picks) : Date.now();
     await setPickTime(r.id, new Date(first - 1000).toISOString());
     setFlash((f) => ({ ...f, [r.id]: "⏫ Moved to #1" }));
+  }
+  async function toBottom(r: Row) {
+    holdScroll();
+    const picks = rows.filter((y) => y.pick && !y.hold && y.id !== r.id).map((y) => new Date(y.pick!).getTime());
+    const last = picks.length ? Math.max(...picks) : Date.now();
+    await setPickTime(r.id, new Date(last + 1000).toISOString());
+    setFlash((f) => ({ ...f, [r.id]: "⏬ Moved to the bottom of the Ready list" }));
   }
   async function moveBy(r: Row, dir: -1 | 1, list: Row[]) {
     holdScroll();
@@ -212,6 +225,16 @@ export default function RelistClient({ items, doneToday, changes, settings, live
         <h1 className="text-2xl font-bold">🔁 Relist list</h1>
         <p className="muted text-sm">{queue.length} waiting • {today} reposted today • {live.length} on Facebook now</p>
       </div>
+
+      <details className="card p-3">
+        <summary className="font-bold cursor-pointer">💰 Sales from your Facebook ads: {sold.length} sold • ${soldTotal.toLocaleString()}{avgDays != null ? ` • about ${avgDays} day${avgDays === 1 ? "" : "s"} from repost to sale` : ""}</summary>
+        <div className="space-y-1 mt-2 text-sm">
+          {!sold.length && <p className="muted">Nothing marked sold yet. When something sells, tap 💰 Sold on it under 📅 On Facebook now.</p>}
+          {sold.map((x) => (
+            <p key={x.id}><b>${x.price ?? "?"}</b> {x.title}{x.buyer ? ` • to ${x.buyer}` : ""} <span className="muted">• {new Date(x.soldAt).toLocaleDateString()}{x.days != null ? ` • ${x.days} day${x.days === 1 ? "" : "s"} after repost` : " • before repost"}</span></p>
+          ))}
+        </div>
+      </details>
 
       {rows.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
@@ -310,13 +333,14 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                     <button type="button" className="pill w-full" disabled={!!checking[r.id]} onClick={() => checkPrice(r.id)}>{checking[r.id] ? "Checking real prices…" : "🔎 Check real price to fill List / Fast / Lowest (about 11¢)"}</button>
                   )}
                 </div>
-                <div className="grid grid-cols-3 gap-1">
+                <div className="grid grid-cols-4 gap-1">
                   <button type="button" className="pill" onClick={() => toTop(r)}>{r.pick ? "⏫ To #1" : "⏫ Ready + #1"}</button>
                   <button type="button" className="pill" disabled={!r.pick || i === 0} onClick={() => moveBy(r, -1, queue)}>▲ Up one</button>
                   <button type="button" className="pill" disabled={!r.pick || !queue[i + 1]?.pick} onClick={() => moveBy(r, 1, queue)}>▼ Down one</button>
+                  <button type="button" className="pill" disabled={!r.pick} onClick={() => toBottom(r)}>⏬ To bottom</button>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
-                  <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "✅ Ready ✓" : "✅ Ready?"}</button>
+                  <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "↩ Not ready" : "✅ Ready?"}</button>
                   <button type="button" className="pill" onClick={() => toggleHold(r)}>🚫 Skip</button>
                   <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
                   <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
@@ -374,6 +398,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                   <div className="flex flex-col gap-1 shrink-0">
                     <button type="button" className="pill" onClick={() => relistAgain(l)}>{d >= s.relistAfter ? "🔁 Relist now" : "🔁 Relist"}</button>
                     <button type="button" className="pill" onClick={() => takeOff(l.id, l.title)}>📤 Off Facebook</button>
+                    <SoldBox id={l.id} price={l.price} buyers={buyers[l.id] || []} onDone={(s) => { setLive((x) => x.filter((y) => y.id !== l.id)); setSold((x) => [{ id: l.id, title: l.title, price: s.price, buyer: s.buyer || null, soldAt: new Date().toISOString(), reposted: l.at, days: ageDays(l.at) }, ...x]); setNote(`💰 "${l.title}" sold for $${s.price}${s.buyer ? ` to ${s.buyer}` : ""}. Nice!`); }} />
                   </div>
                 </div>
               );
