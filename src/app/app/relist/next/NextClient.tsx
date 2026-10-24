@@ -52,7 +52,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
     setBusy(true);
     const at = new Date();
     await supabase.from("items").update({ fb_removed_at: at.toISOString(), fb_hold: true, fb_pick: null }).eq("id", removal.id);
-    const mins = gap[0] + Math.random() * Math.max(0, gap[1] - gap[0]);
+    // deleting a few old ads in a row is normal: a short random 1-3 minutes between removals
+    const mins = 1 + Math.random() * 2;
     await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
     setBusy(false);
     router.refresh();
