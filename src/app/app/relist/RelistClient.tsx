@@ -214,6 +214,28 @@ export default function RelistClient({ items, doneToday, changes, settings, live
         </div>
       )}
 
+      {rows.some((r) => r.hold) && (
+        <details className="card p-3" open style={{ borderColor: "var(--danger)" }}>
+          <summary className="font-bold cursor-pointer">🚫 Skipped and duplicates: {rows.filter((r) => r.hold && !r.removing).length} • 📤 Coming off Facebook: {rows.filter((r) => r.removing).length}</summary>
+          <p className="text-xs muted mt-1">Skipped ads won&apos;t be reposted but are still up on Facebook. 📤 Off FB has Claude in Chrome delete them there. Deleted-from-app items are in ☰ More → 🗑 Deleted.</p>
+          <div className="space-y-2 mt-3">
+            {rows.filter((r) => r.hold).map((r) => (
+              <div key={r.id} className="flex gap-2 items-center">
+                {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
+                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped (still up on Facebook)"}</p></div>
+                <div className="flex flex-col gap-1 shrink-0">
+                  {r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <>
+                    <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>
+                    <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
+                  </>}
+                  <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+
       {!rows.length && (
         <div className="card p-4 space-y-2 text-center">
           <p className="font-semibold">Nothing waiting.</p>
@@ -282,26 +304,6 @@ export default function RelistClient({ items, doneToday, changes, settings, live
         </div>
       )}
 
-      {rows.some((r) => r.hold) && (
-        <details className="card p-3">
-          <summary className="font-semibold cursor-pointer">🚫 Skipped / coming off Facebook: {rows.filter((r) => r.hold).length}</summary>
-          <div className="space-y-2 mt-3">
-            {rows.filter((r) => r.hold).map((r) => (
-              <div key={r.id} className="flex gap-2 items-center">
-                {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
-                <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped (still up on Facebook)"}</p></div>
-                <div className="flex flex-col gap-1 shrink-0">
-                  {r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <>
-                    <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>
-                    <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
-                  </>}
-                  <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </details>
-      )}
 
       <div className="card p-3 space-y-2">
         <p className="font-semibold">How many a day?</p>
