@@ -45,7 +45,12 @@ The FAQ says exempt products "can only be sold and delivered within the Commonwe
 - **No shipping out of state.** The app must block non-Virginia addresses for home-kitchen items.
 - **No selling to stores, cafes or anyone for resale.** That means no wholesale and no consignment. Individual customers only.
 - **Some baked goods don't qualify:** anything that needs refrigeration. The FAQ names breads or cakes "filled or topped with" fresh fruit, cream cheese or similar. Cream cheese frosting and custard pies are the classic examples. These need a permit or licensed kitchen. The menu editor should have a "needs refrigeration" flag that hides an item from home-kitchen sales.
-- **Lemonade and brewed iced tea are not covered.** Beverages aren't on the exempt list, and only *dried* tea is. Selling lemonade or brewed tea needs a VDACS permit. Find out what permit she already has for the market (she has sold them for years). The app should only list drinks that her permit covers. **Dried tea blends sold as loose tea are fine without a permit.**
+- **Lemonade and brewed iced tea are not covered by the home exemption.** Beverages aren't on the list; only *dried* tea is. What decides the permit is how a drink is sold, not where it's made:
+  - **Poured at the stand to drink there** is food service, under the Virginia Department of Health. It's handled with a health-department temporary food permit at markets, and is probably how she has sold them for years.
+  - **Bottled or packaged to take home, or delivered,** is a manufactured food, under VDACS, and needs a VDACS inspection and permit. VDACS's farmers-market Q&A says a bottled liquid coffee and packaged kombucha both need "an inspection and permit from VDACS."
+  - **Dried loose tea** is fine from a home kitchen.
+
+  Ask VDACS whether a **dry lemonade or tea mix** counts as an allowed "dry mixture." It's worth asking about, but it isn't confirmed. Find out what permit she has now. The app should only list drinks that a permit covers for delivery.
 - **Local rules still apply.** The town can add zoning or business-license rules for a home business.
 
 **Labels (the app should print them).** Home-kitchen items need on the front:
@@ -143,6 +148,9 @@ They also need the normal label items: product name, net weight, and ingredients
 8. Who handles taxes, and does she collect Virginia sales tax now?
 
 ## 1.8 Sources for Part 1
+
+- VAFMA 2024 Virginia Farmers Market Food Safety Summit Q&A (VDACS/VDH answers on drinks): https://vafma.org/wp-content/uploads/2024/07/2024-Food-Safety-Summit-Q-A_updated-7-24-2024.pdf
+- Market Central: VDACS or VDH?: https://marketcentral.org/vdacs-or-vdh
 
 - Virginia's Home Food Processing Exemptions FAQ (VDACS/VDH, July 2026): https://www.vdh.virginia.gov/content/uploads/sites/126/Virginias-Home-Food-Processing-Exemptions-FAQ-July-2026-1.pdf
 - Virginia HB402 (cottage food online sales and delivery, effective July 1, 2026), summary: https://beancount.io/it/blog/2026/07/20/virginia-hb402-cottage-food-online-sales-shipping-guide
