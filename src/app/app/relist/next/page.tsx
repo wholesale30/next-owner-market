@@ -23,9 +23,9 @@ export default async function NextPostPage() {
   const order = ((ordRow?.value as { order?: string } | null)?.order) || "old";
   const [{ data: removeRows }, { data: rows }, { count: doneToday }, { count: waiting }, { data: st }] = await Promise.all([
     supabase.from("items").select("id, title, price, fb_old_url, item_photos(url, sort_order)").eq("fb_remove", true).is("fb_removed_at", null).order("updated_at").limit(1),
-    supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).neq("status", "draft").order("fb_pick", { ascending: true, nullsFirst: false }).order(order === "fb" ? "created_at" : order === "old" ? "fb_listed_at" : "price", { ascending: order !== "high", nullsFirst: false }).order("created_at").limit(1),
+    supabase.from("items").select("*, item_photos(url, sort_order), categories(name)").not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).not("fb_pick", "is", null).neq("status", "draft").order("fb_pick", { ascending: true, nullsFirst: false }).order(order === "fb" ? "created_at" : order === "old" ? "fb_listed_at" : "price", { ascending: order !== "high", nullsFirst: false }).order("created_at").limit(1),
     supabase.from("items").select("id", { count: "exact", head: true }).gte("fb_relisted_at", startOfDay.toISOString()),
-    supabase.from("items").select("id", { count: "exact", head: true }).not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).neq("status", "draft"),
+    supabase.from("items").select("id", { count: "exact", head: true }).not("fb_old_url", "is", null).is("fb_relisted_at", null).eq("fb_hold", false).not("fb_pick", "is", null).neq("status", "draft"),
     supabase.from("settings").select("key, value").in("key", ["relist:settings", "relist:next_at", "business"]),
   ]);
   const get = (k: string) => st?.find((s) => s.key === k)?.value as Record<string, unknown> | undefined;

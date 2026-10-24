@@ -51,6 +51,9 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   // his picks go first, in the order he tapped them; skipped ones never go
   const rank = (r: Row) => (s.order === "high" ? -(r.price || 0) : s.order === "low" ? (r.price || 0) : s.order === "old" ? (r.listedAt ? new Date(r.listedAt).getTime() : 9e15) : 0);
   const queue = rows.filter((r) => !r.hold).sort((a, b) => (a.pick && b.pick ? a.pick.localeCompare(b.pick) : a.pick ? -1 : b.pick ? 1 : rank(a) - rank(b)));
+  // only ads he marked ✅ Ready get posted (Oct 23, 2026): "I'm supposed to be checking these and deciding"
+  const readyCount = queue.filter((r) => r.pick).length;
+  const todayN = Math.min(left, readyCount);
 
   const [checking, setChecking] = useState<Record<string, boolean>>({});
   const [flash, setFlash] = useState<Record<string, string>>({});
@@ -106,7 +109,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     holdScroll();
     const pick = r.pick ? null : new Date().toISOString();
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, pick, hold: false } : y)));
-    if (pick) setUndo({ label: `⭐ "${r.title}" moved to the front`, run: () => togglePick({ ...r, pick }) });
+    if (pick) setUndo({ label: `✅ "${r.title}" is ready to post`, run: () => togglePick({ ...r, pick }) });
     await supabase.from("items").update({ fb_pick: pick, fb_hold: false }).eq("id", r.id);
   }
   async function remove(r: Row) {
@@ -190,7 +193,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
       {rows.length > 0 && (
         <div className="card p-3 space-y-2" style={{ borderColor: "var(--brand)" }}>
           <p className="font-bold">🤖 Let Claude in Chrome post them for you</p>
-          <p className="text-sm">The app can&apos;t touch Facebook. Claude in Chrome does the clicking in <b>your own Chrome</b>, working down the list below: deletes the old ad, posts the new one, then waits a random {s.gapMin}–{s.gapMax} minutes, up to {s.perDay} a day.</p>
+          <p className="text-sm">The app can&apos;t touch Facebook. Claude in Chrome does the clicking in <b>your own Chrome</b>, working down the list below: deletes the old ad, posts the new one, then waits a random {s.gapMin}–{s.gapMax} minutes, up to {s.perDay} a day. It only posts ads you marked ✅ Ready.</p>
           <ol className="text-sm list-decimal pl-5 space-y-1">
             <li>On your computer, open Chrome, signed in to Facebook and to nextownermarket.com.</li>
             <li>Tap the button below to copy the instructions.</li>
@@ -246,7 +249,8 @@ export default function RelistClient({ items, doneToday, changes, settings, live
       {queue.length > 0 && (
         <div className="space-y-2">
           <p className="font-bold text-lg pt-2">📋 The line-up: all {queue.length}, in posting order</p>
-          <p className="text-sm muted">Today&apos;s batch is simply the top {s.perDay} of this list. They go top to bottom: your ⭐ picks first, then everything else in the order you choose here. ⭐ <b>To front</b> moves one up; 🚫 <b>Skip</b> keeps it from being reposted.</p>
+          <p className="text-sm"><b>Nothing posts until you mark it ✅ Ready.</b> Look an ad over (price, title, photos), then tap <b>✅ Ready</b>. Claude in Chrome posts only ✅ Ready ads, in the order you marked them, up to {s.perDay} a day, and only after you start it. Tap ✅ again to un-ready it. 🚫 <b>Skip</b> keeps one from ever being reposted.</p>
+          <p className="text-sm font-semibold">✅ {readyCount} ready • {queue.length - readyCount} not checked yet</p>
           <div className="grid grid-cols-4 gap-1">
             {([["old", "📅 Oldest first"], ["high", "💰 Highest price"], ["low", "Lowest price"], ["fb", "Facebook order"]] as [RelistSettings["order"], string][]).map(([k, l]) => (
               <button key={k} type="button" className={`pill ${s.order === k ? "font-bold" : ""}`} style={s.order === k ? { borderColor: "var(--brand)" } : {}} onClick={() => saveSettings({ ...s, order: k }, false)}>{l}</button>
@@ -255,14 +259,14 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           {left === 0 && <div className="card p-3 text-center"><p className="font-semibold">🎉 {today} reposted today. That&apos;s the day&apos;s {s.perDay}. The next {Math.min(s.perDay, queue.length)} go tomorrow.</p></div>}
           {queue.map((r, i) => (
             <div key={r.id} className="space-y-2">
-              {i === 0 && left > 0 && <p className="font-semibold text-sm" style={{ color: "var(--brand)" }}>⬇ TODAY: the first {Math.min(left, queue.length)}</p>}
-              {i === left && <p className="font-semibold text-sm pt-2 border-t" style={{ borderColor: "var(--line)" }}>⬇ TOMORROW AND LATER</p>}
+              {i === 0 && readyCount > 0 && <p className="font-semibold text-sm" style={{ color: "var(--brand)" }}>⬇ ✅ READY: {todayN} will post today{readyCount > todayN ? `, ${readyCount - todayN} after that` : ""}</p>}
+              {i === readyCount && <p className="font-semibold text-sm pt-2 border-t" style={{ borderColor: "var(--line)" }}>⬇ NOT CHECKED YET: these won&apos;t post until you mark them ✅ Ready</p>}
               <div className="card p-2 space-y-2" style={r.pick ? { borderColor: "var(--brand)" } : {}}>
                 <div className="flex gap-2 items-center">
                   {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 object-cover rounded shrink-0" /> : <div className="w-16 h-16 rounded shrink-0" style={{ background: "var(--line)" }} />}
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-sm truncate">#{i + 1} {r.title}</p>
-                    <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""}{r.pick ? " • ⭐ moved up" : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
+                    <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""}{r.pick ? " • ✅ ready" : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -284,7 +288,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                   )}
                 </div>
                 <div className="grid grid-cols-4 gap-1">
-                  <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "⭐ Undo" : "⭐ To front"}</button>
+                  <button type="button" className={`pill ${r.pick ? "font-bold" : ""}`} onClick={() => togglePick(r)}>{r.pick ? "✅ Ready ✓" : "✅ Ready?"}</button>
                   <button type="button" className="pill" onClick={() => toggleHold(r)}>🚫 Skip</button>
                   <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
                   <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>

@@ -67,7 +67,7 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
         <p className="muted text-sm">Today: {done} of {perDay} posted • {waiting} waiting in all • random {gap[0]}–{gap[1]} minutes apart</p>
       </div>
 
-      {state === "empty" && <div className="card p-4 text-center space-y-2"><p className="text-xl font-bold">ALL DONE. Nothing left to post.</p><Link href="/app/import" className="btn btn-secondary w-full">📂 Bring in more Facebook ads</Link></div>}
+      {state === "empty" && <div className="card p-4 text-center space-y-2"><p className="text-xl font-bold">ALL DONE. Nothing marked ✅ Ready is left to post.</p><p className="muted text-sm">Mark more ✅ Ready on the Relist list when you&apos;ve checked them.</p><Link href="/app/import" className="btn btn-secondary w-full">📂 Bring in more Facebook ads</Link></div>}
       {state === "day_done" && <div className="card p-4 text-center"><p className="text-xl font-bold">✅ DONE FOR TODAY. STOP.</p><p className="muted">{done} posted today. The next ones are ready tomorrow.</p></div>}
       {state === "wait" && nextAt && <div className="card p-4 text-center"><p className="text-xl font-bold">⏳ WAIT. Next post at {time(nextAt)}.</p><p className="muted">This page shows the next listing by itself at that time.</p></div>}
 
