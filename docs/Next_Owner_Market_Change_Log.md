@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 12:49 PM from the project history (366 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:04 PM from the project history (368 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2631,3 +2631,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/053_fb_now.sql`
 
 <sub>change id f38a552</sub>
+
+### 12:49 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id ddb0511</sub>
+
+### 13:04 — White paper for Under the Green Umbrella's app: her plan (Virginia home-food law researched), how we work, every lesson and mistake; rebuilt in every zip
+
+- **Documents:** `docs/Under_the_Green_Umbrella_App_White_Paper.docx`, `docs/Under_the_Green_Umbrella_App_White_Paper.md`, `docs/whitepaper_ugu/front.md`
+- **Automation scripts:** `scripts/build_ugu_whitepaper.py`, `scripts/package.sh`
+
+<sub>change id e071aba</sub>
