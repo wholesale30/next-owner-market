@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:30 AM from the project history (342 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:37 AM from the project history (344 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2478,3 +2478,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/next/NextClient.tsx`
 
 <sub>change id 1418bff</sub>
+
+### 01:30 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+15 more)
+
+<sub>change id 73e47c3</sub>
+
+### 01:35 — Photos without the owner: full-window photo pages Claude in Chrome screenshots and uploads into Facebook's photo box; instructions say never ask him to add photos
+
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`
+- **Public site pages:** `src/app/fbphoto/[id]/[n]/page.tsx`
+
+<sub>change id 3f3f09e</sub>
