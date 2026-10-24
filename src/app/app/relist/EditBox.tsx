@@ -16,7 +16,7 @@ export default function EditBox({ id, value, onSaved }: { id: string; value: Edi
   async function save() {
     setBusy(true);
     const next: Editable = { title: v.title.trim(), price: v.price ? Math.round(Number(v.price.replace(/[^0-9.]/g, ""))) || null : null, description: v.description.trim(), location: v.location.trim() || null };
-    const { error } = await supabase.from("items").update({ title: next.title, price: next.price, description: next.description, fb_location: next.location }).eq("id", id);
+    const { error } = await supabase.from("items").update({ title: next.title, price: next.price, my_price: next.price, description: next.description, fb_location: next.location }).eq("id", id);
     setBusy(false);
     if (error) { setMsg(error.message); return; }
     setMsg("✓ Saved");

@@ -89,7 +89,11 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     setFlash((f) => ({ ...f, [r.id]: `✓ Price set to $${price} (${label}). Tap it again to undo.` }));
   }
 
-  const saved = (id: string) => (e: Editable) => setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title } : y)));
+  // a price typed in Edit becomes "Mine"
+  const saved = (id: string) => (e: Editable) => {
+    setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title, mine: e.price ?? y.mine } : y)));
+    if (e.price) setFlash((f) => ({ ...f, [id]: `✓ Your price is now $${e.price} (Mine)` }));
+  };
 
   // when an ad moves in the list, keep the screen where he is (the browser otherwise follows the button he tapped)
   const holdScroll = () => {
