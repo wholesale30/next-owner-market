@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 10:09 PM from the project history (336 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 10:31 PM from the project history (338 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2434,3 +2434,17 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`
 
 <sub>change id eba3c27</sub>
+
+### 22:09 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 6fb9194</sub>
+
+### 22:30 — Next post page: show what the old ad on Facebook says (old title and price) to match before deleting; instructions explain the new version won't match. Playbook T-70.
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`, `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`
+- **Database (migrations):** `supabase/migrations/052_fb_ad_title.sql`
+
+<sub>change id 2a46c57</sub>
