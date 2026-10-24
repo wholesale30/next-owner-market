@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:47 PM from the project history (330 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 23, 2026 9:55 PM from the project history (334 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2395,3 +2395,29 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/051_my_price.sql`
 
 <sub>change id 2a50916</sub>
+
+### 21:48 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+14 more)
+
+<sub>change id 0cc56e6</sub>
+
+### 21:50 — Skipped section: Off FB button; says skipped ads are still up on Facebook
+
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
+
+<sub>change id 6cee3c6</sub>
+
+### 21:52 — Relist: Skipped and duplicates box moved near the top, open, with counts
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`
+
+<sub>change id d7e237c</sub>
+
+### 21:54 — Edit price box: whole dollars, select-all on tap, refuse garbled numbers, confirm the saved price. Playbook T-69.
+
+- **Documents:** `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/relist/EditBox.tsx`
+
+<sub>change id 76ba6d4</sub>
