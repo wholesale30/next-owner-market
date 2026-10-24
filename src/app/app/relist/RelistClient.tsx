@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import EditBox, { type Editable } from "./EditBox";
 import SoldBox from "./SoldBox";
+import PhotoViewer from "./PhotoViewer";
 import type { PriceCheck } from "@/lib/pricecheck";
 
 /**
@@ -15,9 +16,9 @@ import type { PriceCheck } from "@/lib/pricecheck";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; photos: string[]; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; pc: PriceCheck | null; mine: number | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
-type Live = { id: string; title: string; price: number | null; at: string; photo: string | null };
+type Live = { id: string; title: string; price: number | null; at: string; photo: string | null; photos: string[] };
 type SoldRow = { id: string; title: string; price: number | null; buyer: string | null; soldAt: string; reposted: string | null; days: number | null };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; startHour: number; endHour: number; order: "old" | "fb" | "high" | "low" };
 const PER_DAY_CHOICES = [15, 20, 30, 35, 40];
@@ -63,6 +64,10 @@ export default function RelistClient({ items, doneToday, changes, settings, live
 
   const [checking, setChecking] = useState<Record<string, boolean>>({});
   const [flash, setFlash] = useState<Record<string, string>>({});
+  const [viewer, setViewer] = useState<{ photos: string[]; title: string } | null>(null);
+  const thumb = (photos: string[], title: string, size: string) => photos.length
+    ? <button type="button" className="shrink-0 relative" onClick={() => setViewer({ photos, title })} aria-label="See photos"><img src={photos[0]} alt="" className={`${size} object-cover rounded`} />{photos.length > 1 && <span className="absolute bottom-0 right-0 text-[10px] text-white px-1 rounded" style={{ background: "rgba(0,0,0,0.6)" }}>{photos.length}</span>}</button>
+    : <div className={`${size} rounded shrink-0`} style={{ background: "var(--line)" }} />;
   const [prev, setPrev] = useState<Record<string, number | null>>({});
   // one-step undo for the last thing he did (bar at the bottom of the screen)
   const [undo, setUndo] = useState<{ label: string; run: () => Promise<void> } | null>(null);
@@ -270,7 +275,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <div className="space-y-2 mt-3">
             {rows.filter((r) => r.hold).map((r) => (
               <div key={r.id} className="flex gap-2 items-center">
-                {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
+                {thumb(r.photos, r.title, "w-12 h-12")}
                 <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removedAt ? ` • ✓ taken off Facebook ${new Date(r.removedAt).toLocaleString([], { month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" })}` : r.removing ? " • 📤 coming off Facebook" : " • skipped (still up on Facebook)"}</p></div>
                 <div className="flex flex-col gap-1 shrink-0">
                   {r.removedAt ? null : r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <>
@@ -312,7 +317,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                   {r.pick ? `✅ READY: #${i + 1} to post${i < todayN ? " (today)" : ""}` : "⬜ NOT CHECKED YET: won't post until you tap ✅ Ready?"}
                 </p>
                 <div className="flex gap-2 items-center">
-                  {r.photo ? <img src={r.photo} alt="" className="w-16 h-16 object-cover rounded shrink-0" /> : <div className="w-16 h-16 rounded shrink-0" style={{ background: "var(--line)" }} />}
+                  {thumb(r.photos, r.title, "w-16 h-16")}
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-sm truncate">#{i + 1} {r.title}</p>
                     <p className="text-xs muted">{r.price ? `$${r.price}` : "No price"}{r.location ? ` • 📍 ${r.location}` : ""} • {r.listedAt ? `on Facebook since ${new Date(r.listedAt).toLocaleDateString()} (${ageDays(r.listedAt)} days)` : "Facebook date not loaded yet"}</p>
@@ -393,7 +398,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
               const d = ageDays(l.at);
               return (
                 <div key={l.id} className="flex gap-2 items-center">
-                  {l.photo ? <img src={l.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
+                  {thumb(l.photos, l.title, "w-12 h-12")}
                   <div className="min-w-0 flex-1 text-sm">
                     <p className="font-semibold truncate">{l.title}</p>
                     <p className="muted">Posted {new Date(l.at).toLocaleDateString()} • <b style={d >= s.relistAfter ? { color: "var(--danger)" } : {}}>{d} day{d === 1 ? "" : "s"} old</b>{l.price ? ` • $${l.price}` : ""}</p>
@@ -426,6 +431,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <p className="text-xs muted">Want one item different? Open it and use “📉 Drop the price automatically” on its page.</p>
         </div>
       </details>
+      {viewer && <PhotoViewer photos={viewer.photos} start={0} title={viewer.title} onClose={() => setViewer(null)} />}
       {undo && (
         <div className="fixed bottom-3 inset-x-3 z-50 card p-3 flex items-center gap-2" style={{ borderColor: "var(--brand)", background: "var(--surface)" }}>
           <span className="text-sm flex-1 truncate">{undo.label}</span>
