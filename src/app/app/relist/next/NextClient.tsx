@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import EditBox from "../EditBox";
 
-type Listing = { id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
-type Removal = { id: string; title: string; price: number | null; oldUrl: string | null; photo: string | null };
+type Listing = { adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
+type Removal = { id: string; title: string; price: number | null; adTitle: string | null; adPrice: number | null; oldUrl: string | null; photo: string | null };
 type Props = { removal: Removal | null; state: "empty" | "day_done" | "wait" | "go" | "remove"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
 
 const CREATE = "https://www.facebook.com/marketplace/create/item";
@@ -39,7 +39,7 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
     const live = listing.status === "pending_review" ? { status: "active", listed_at: at.toISOString() } : {};
     // the new ad's link becomes the "old ad" to delete next time it's relisted
     const link = /^https:\/\/(www\.|m\.)?facebook\.com\/marketplace\/item\/\d+/.test(newUrl.trim()) ? { fb_old_url: newUrl.trim() } : {};
-    await supabase.from("items").update({ ...link, fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...live, ...drop }).eq("id", listing.id);
+    await supabase.from("items").update({ ...link, fb_ad_title: listing.title, fb_ad_price: listing.price, fb_relisted_at: at.toISOString(), fb_posted_price: listing.price, posted_to: { ...listing.postedTo, facebook: at.toISOString() }, ...live, ...drop }).eq("id", listing.id);
     // random gap so posts don't land like clockwork (e.g. 7, then 13, then 5 minutes)
     const mins = gap[0] + Math.random() * Math.max(0, gap[1] - gap[0]);
     await supabase.from("settings").upsert({ key: "relist:next_at", value: { at: new Date(at.getTime() + mins * 60000).toISOString() } });
@@ -79,7 +79,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
             <p className="font-semibold">{removal.title}{removal.price ? ` • $${removal.price}` : ""}</p>
           </div>
           <a href={removal.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">🗑 Open the ad on Facebook</a>
-          <p className="text-xs muted">Ad link: {removal.oldUrl || "not saved; find it on your selling page by its photo and title"}</p>
+          <p className="text-sm"><b>The ad on Facebook says:</b> &quot;{removal.adTitle || removal.title}&quot;{removal.adPrice ? ` • $${removal.adPrice}` : ""}</p>
+          <p className="text-xs muted">Ad link: {removal.oldUrl || "not saved; find it on your selling page by its photo and title"}. Match it by this link and the Facebook title above. The app&apos;s own title may be newer wording; that&apos;s expected. It may also show as Sold; delete it anyway.</p>
           <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={removed}>✅ I deleted it on Facebook</button>
         </div>
       )}
@@ -89,7 +90,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
           <div className="card p-3 space-y-2">
             <p className="font-bold">STEP 1. Delete the old ad</p>
             <a href={listing.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">🗑 Open the old ad</a>
-            <p className="text-xs muted">Old ad link: {listing.oldUrl || "not saved; find it on your selling page by its photo"}</p>
+            <p className="text-sm"><b>The old ad on Facebook says:</b> &quot;{listing.adTitle || "(not saved)"}&quot;{listing.adPrice ? ` • $${listing.adPrice}` : ""}</p>
+            <p className="text-xs muted">Old ad link: {listing.oldUrl || "not saved; find it on your selling page by its photo"}. Match the old ad by this link and that old title. The new ad below has new wording, new photo order and maybe a new price on purpose, so it won&apos;t match the old one.</p>
           </div>
 
           <div className="card p-3 space-y-2">
