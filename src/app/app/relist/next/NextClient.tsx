@@ -98,8 +98,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
           <a href={removal.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">🗑 Open the ad on Facebook</a>
           <p className="text-sm"><b>The ad on Facebook says:</b> &quot;{removal.adTitle || removal.title}&quot;{removal.adPrice ? ` • $${removal.adPrice}` : ""}</p>
           <p className="text-xs muted">Ad link: {removal.oldUrl || "not saved; find it on your selling page by its photo and title"}. Match it by this link and the Facebook title above. The app&apos;s own title may be newer wording; that&apos;s expected.</p>
-          <p className="text-sm font-bold" style={{ color: "var(--danger)" }}>If Facebook shows this ad as Sold or Sold and shipped: do NOT delete it. Tap the button below instead.</p>
-          <button type="button" className="btn btn-secondary w-full" disabled={busy} onClick={() => soldOnFb(removal.id)}>🏷 It&apos;s marked Sold on Facebook (leave it, don&apos;t delete)</button>
+          <p className="text-sm font-bold" style={{ color: "var(--danger)" }}>If Facebook shows this ad as Sold, Sold and shipped, or Out of stock: do NOT delete it. Tap the button below instead.</p>
+          <button type="button" className="btn btn-secondary w-full" disabled={busy} onClick={() => soldOnFb(removal.id)}>🏷 It&apos;s marked Sold or Out of stock on Facebook (leave it, don&apos;t delete)</button>
           <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={busy} onClick={removed}>✅ I deleted it on Facebook</button>
         </div>
       )}
@@ -111,8 +111,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
             <a href={listing.oldUrl || SELLING} target="_blank" rel="noreferrer" className="btn btn-secondary w-full">🗑 Open the old ad</a>
             <p className="text-sm"><b>The old ad on Facebook says:</b> &quot;{listing.adTitle || "(not saved)"}&quot;{listing.adPrice ? ` • $${listing.adPrice}` : ""}</p>
             <p className="text-xs muted">Old ad link: {listing.oldUrl || "not saved; find it on your selling page by its photo"}. Match the old ad by this link and that old title. The new ad below has new wording, new photo order and maybe a new price on purpose, so it won&apos;t match the old one.</p>
-            <p className="text-sm font-bold" style={{ color: "var(--danger)" }}>If Facebook shows the old ad as Sold or Sold and shipped: do NOT delete it and do NOT post a new one. Tap this instead:</p>
-            <button type="button" className="btn btn-secondary w-full" disabled={busy} onClick={() => soldOnFb(listing.id)}>🏷 It&apos;s marked Sold on Facebook (leave it, skip this one)</button>
+            <p className="text-sm font-bold" style={{ color: "var(--danger)" }}>If Facebook shows the old ad as Sold, Sold and shipped, or Out of stock: do NOT delete it and do NOT post a new one. Tap this instead:</p>
+            <button type="button" className="btn btn-secondary w-full" disabled={busy} onClick={() => soldOnFb(listing.id)}>🏷 It&apos;s marked Sold or Out of stock on Facebook (leave it, skip this one)</button>
           </div>
 
           <div className="card p-3 space-y-2">
