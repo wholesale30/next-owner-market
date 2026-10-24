@@ -127,14 +127,14 @@ export default function RelistClient({ items, doneToday, changes, settings, live
   async function toTop(r: Row) {
     holdScroll();
     const picks = rows.filter((y) => y.pick && !y.hold && y.id !== r.id).map((y) => new Date(y.pick!).getTime());
-    const first = picks.length ? Math.min(...picks) : Date.now();
+    const first = picks.length ? Math.min(...picks) : new Date().getTime();
     await setPickTime(r.id, new Date(first - 1000).toISOString());
     setFlash((f) => ({ ...f, [r.id]: "⏫ Moved to #1" }));
   }
   async function toBottom(r: Row) {
     holdScroll();
     const picks = rows.filter((y) => y.pick && !y.hold && y.id !== r.id).map((y) => new Date(y.pick!).getTime());
-    const last = picks.length ? Math.max(...picks) : Date.now();
+    const last = picks.length ? Math.max(...picks) : new Date().getTime();
     await setPickTime(r.id, new Date(last + 1000).toISOString());
     setFlash((f) => ({ ...f, [r.id]: "⏬ Moved to the bottom of the Ready list" }));
   }
