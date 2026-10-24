@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:04 PM from the project history (368 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:08 PM from the project history (372 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2644,3 +2644,27 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Automation scripts:** `scripts/build_ugu_whitepaper.py`, `scripts/package.sh`
 
 <sub>change id e071aba</sub>
+
+### 13:04 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+16 more)
+
+<sub>change id 061002f</sub>
+
+### 13:07 — White paper: drinks permit depends on how they're sold (poured at the stand vs bottled/delivered)
+
+- **Documents:** `docs/Under_the_Green_Umbrella_App_White_Paper.docx`, `docs/Under_the_Green_Umbrella_App_White_Paper.md`, `docs/whitepaper_ugu/front.md`
+
+<sub>change id 7e45252</sub>
+
+### 13:08 — White paper: her kitchen and drink permits are handled (per Shayne); permit caveats removed
+
+- **Documents:** `docs/Under_the_Green_Umbrella_App_White_Paper.docx`, `docs/Under_the_Green_Umbrella_App_White_Paper.md`, `docs/whitepaper_ugu/front.md`
+
+<sub>change id 2e28228</sub>
+
+### 13:08 — White paper: tidy unknowns list
+
+- **Documents:** `docs/Under_the_Green_Umbrella_App_White_Paper.docx`, `docs/Under_the_Green_Umbrella_App_White_Paper.md`, `docs/whitepaper_ugu/front.md`
+
+<sub>change id 6687c98</sub>
