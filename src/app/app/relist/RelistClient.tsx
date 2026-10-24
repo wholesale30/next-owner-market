@@ -42,6 +42,10 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     await supabase.from("items").update({ fb_relisted_at: null, fb_pick: new Date().toISOString(), fb_hold: false }).eq("id", l.id);
     setLive((x) => x.filter((y) => y.id !== l.id));
     setNote(`✓ "${l.title}" is back at the front of the line.`);
+    setUndo({ label: `Relisting "${l.title}"`, run: async () => {
+      await supabase.from("items").update({ fb_relisted_at: l.at, fb_pick: null }).eq("id", l.id);
+      setLive((x) => [...x, l]);
+    } });
   }
   const left = Math.max(0, s.perDay - today);
   // his picks go first, in the order he tapped them; skipped ones never go
@@ -50,6 +54,9 @@ export default function RelistClient({ items, doneToday, changes, settings, live
 
   const [checking, setChecking] = useState<Record<string, boolean>>({});
   const [flash, setFlash] = useState<Record<string, string>>({});
+  const [prev, setPrev] = useState<Record<string, number | null>>({});
+  // one-step undo for the last thing he did (bar at the bottom of the screen)
+  const [undo, setUndo] = useState<{ label: string; run: () => Promise<void> } | null>(null);
   async function checkPrice(id: string) {
     setChecking((c) => ({ ...c, [id]: true }));
     try {
@@ -59,11 +66,24 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     } finally { setChecking((c) => ({ ...c, [id]: false })); }
   }
 
+  async function setPriceRaw(id: string, price: number | null) {
+    const { error } = await supabase.from("items").update({ price }).eq("id", id);
+    if (error) { alert(`Couldn't change the price: ${error.message}`); return false; }
+    setRows((x) => x.map((y) => (y.id === id ? { ...y, price } : y)));
+    return true;
+  }
   async function applyPrice(r: Row, price: number, label: string) {
-    const { error } = await supabase.from("items").update({ price }).eq("id", r.id);
-    if (error) { setNote(`⚠ Couldn't change the price: ${error.message}`); alert(`Couldn't change the price: ${error.message}`); return; }
-    setRows((x) => x.map((y) => (y.id === r.id ? { ...y, price } : y)));
-    setFlash((f) => ({ ...f, [r.id]: `✓ Price set to $${price} (${label})` }));
+    const was = r.price != null ? Number(r.price) : null;
+    // tapping the price that's already in use undoes it: back to what it was before (or your own price)
+    if (was === price) {
+      const back = prev[r.id] !== undefined && prev[r.id] !== price ? prev[r.id] : r.mine;
+      if (back == null || back === price) return;
+      if (await setPriceRaw(r.id, back)) setFlash((f) => ({ ...f, [r.id]: `↩ Back to $${back}` }));
+      return;
+    }
+    if (!(await setPriceRaw(r.id, price))) return;
+    setPrev((p) => ({ ...p, [r.id]: was }));
+    setFlash((f) => ({ ...f, [r.id]: `✓ Price set to $${price} (${label}). Tap it again to undo.` }));
   }
 
   const saved = (id: string) => (e: Editable) => setRows((x) => x.map((y) => (y.id === id ? { ...y, ...e, title: e.title || y.title } : y)));
@@ -78,6 +98,13 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     const { error } = await supabase.rpc("delete_item", { p_item: r.id });
     if (error) { setNote(`Couldn't delete: ${error.message}`); return; }
     setRows((x) => x.filter((y) => y.id !== r.id));
+    setUndo({ label: `Deleted "${r.title}"`, run: async () => {
+      const { data: tr } = await supabase.from("trash").select("batch").eq("table_name", "items").eq("row_id", r.id).is("restored_at", null).order("deleted_at", { ascending: false }).limit(1).maybeSingle();
+      if (!tr) { alert("Couldn't find it to bring back. It's in ☰ More → 🗑 Deleted."); return; }
+      const { error: e2 } = await supabase.rpc("restore_trash", { p_batch: tr.batch });
+      if (e2) { alert(`Couldn't bring it back: ${e2.message}`); return; }
+      setRows((x) => [...x, r]);
+    } });
   }
 
   async function takeOff(id: string, title: string) {
@@ -86,12 +113,19 @@ export default function RelistClient({ items, doneToday, changes, settings, live
     setRows((x) => x.map((y) => (y.id === id ? { ...y, hold: true, pick: null, removing: true } : y)));
     setLive((x) => x.filter((y) => y.id !== id));
     setNote(`✓ "${title}" will be taken off Facebook next, before any new posts.`);
+    setUndo({ label: `Taking "${title}" off Facebook`, run: () => keepOn(id) });
+  }
+  async function keepOn(id: string) {
+    await supabase.from("items").update({ fb_remove: false, fb_hold: false }).eq("id", id).is("fb_removed_at", null);
+    setRows((x) => x.map((y) => (y.id === id ? { ...y, hold: false, removing: false } : y)));
+    setNote("↩ Staying on Facebook.");
   }
 
   async function toggleHold(r: Row) {
     const hold = !r.hold;
     setRows((x) => x.map((y) => (y.id === r.id ? { ...y, hold, pick: hold ? null : y.pick } : y)));
     await supabase.from("items").update({ fb_hold: hold, ...(hold ? { fb_pick: null } : {}) }).eq("id", r.id);
+    if (hold) setUndo({ label: `Skipped "${r.title}"`, run: () => toggleHold({ ...r, hold: true }) });
   }
 
   const dropFields = (price: number | null, v = s) => v.drop && price
@@ -191,7 +225,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs muted">Tap a price to use it. Now: <b>{r.price ? `$${Number(r.price)}` : "none"}</b>{flash[r.id] ? <b style={{ color: "var(--brand)" }}> {flash[r.id]}</b> : null}</p>
+                  <p className="text-xs muted">Tap a price to use it (tap it again to undo). Now: <b>{r.price ? `$${Number(r.price)}` : "none"}</b>{flash[r.id] ? <b style={{ color: "var(--brand)" }}> {flash[r.id]}</b> : null}</p>
                   <div className="grid grid-cols-4 gap-1 text-center text-xs">
                     {([["Mine", r.mine], ["List", r.pc?.list_price ?? null], ["Fast", r.pc?.fast_price ?? null], ["Lowest", r.pc?.floor_price ?? null]] as [string, number | null][]).map(([l, v]) => {
                       const on = !!v && Number(r.price) === v;
@@ -238,7 +272,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                 {r.photo ? <img src={r.photo} alt="" className="w-12 h-12 object-cover rounded shrink-0" /> : null}
                 <div className="min-w-0 flex-1 text-sm"><p className="font-semibold truncate">{r.title}</p><p className="muted">{r.price ? `$${r.price}` : ""}{r.removing ? " • 📤 coming off Facebook" : " • skipped"}</p></div>
                 <div className="flex flex-col gap-1 shrink-0">
-                  {!r.removing && <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>}
+                  {r.removing ? <button type="button" className="pill" onClick={() => keepOn(r.id)}>↩ Keep on Facebook</button> : <button type="button" className="pill" onClick={() => toggleHold(r)}>↩ Undo skip</button>}
                   <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
                 </div>
               </div>
@@ -303,6 +337,13 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <p className="text-xs muted">Want one item different? Open it and use “📉 Drop the price automatically” on its page.</p>
         </div>
       </details>
+      {undo && (
+        <div className="fixed bottom-3 inset-x-3 z-50 card p-3 flex items-center gap-2" style={{ borderColor: "var(--brand)", background: "var(--surface)" }}>
+          <span className="text-sm flex-1 truncate">{undo.label}</span>
+          <button type="button" className="btn btn-primary" onClick={async () => { const u = undo; setUndo(null); await u.run(); }}>↩ Undo</button>
+          <button type="button" className="pill" onClick={() => setUndo(null)} aria-label="Close">×</button>
+        </div>
+      )}
     </div>
   );
 }
