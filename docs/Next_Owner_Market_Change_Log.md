@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:15 PM from the project history (374 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:19 PM from the project history (376 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2681,3 +2681,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/054_fb_sold_seen.sql`
 
 <sub>change id cc01e87</sub>
+
+### 13:16 — User Guide: sold ads are never deleted; rebuilt documents
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+16 more)
+
+<sub>change id 0f8d4d1</sub>
+
+### 13:17 — Out of stock ads are treated like Sold: never deleted, never reposted
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`
+
+<sub>change id 7377051</sub>
