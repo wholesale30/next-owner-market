@@ -112,6 +112,10 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
             </div>
             <div>
               <p className="font-semibold text-sm">Photos, in this order ({listing.photos.length}):</p>
+              <p className="text-xs"><b>For Claude in Chrome:</b> open each photo page below, take a screenshot of it, and upload that screenshot into Facebook&apos;s photo box, in this order:</p>
+              <ol className="text-xs list-decimal pl-5">
+                {listing.photos.map((_, i) => <li key={i}><a id={`fb-photo-page-${i + 1}`} className="underline" href={`/fbphoto/${listing.id}/${i + 1}`} target="_blank" rel="noreferrer">{`nextownermarket.com/fbphoto/${listing.id}/${i + 1}`}</a></li>)}
+              </ol>
               <button type="button" id="fb-save-photos" className="btn btn-secondary w-full my-1" onClick={async () => {
                 for (let i = 0; i < listing.photos.length; i++) {
                   const a = document.createElement("a"); a.href = `/api/import/photo-dl?item=${listing.id}&i=${i}`; a.download = ""; document.body.appendChild(a); a.click(); a.remove();
