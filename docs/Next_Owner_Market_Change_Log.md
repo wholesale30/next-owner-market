@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 24, 2026 1:19 PM from the project history (376 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 25, 2026 1:46 PM from the project history (378 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2694,3 +2694,19 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`
 
 <sub>change id 7377051</sub>
+
+### 13:19 — Rebuilt documents for the zip
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+15 more)
+
+<sub>change id a77e6bb</sub>
+
+
+## Sunday, October 25, 2026
+
+### 13:44 — Relist waits: 3 to 8 minutes (owner's setting), defaults match. Playbook T-73.
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`, `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+
+<sub>change id 9ca615f</sub>
