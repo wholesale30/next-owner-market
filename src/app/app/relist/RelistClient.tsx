@@ -397,7 +397,7 @@ export default function RelistClient({ items, doneToday, changes, settings, live
           <label>Stop at (hour, 1–24)<input className="input" inputMode="numeric" value={s.endHour} onChange={(e) => setS({ ...s, endHour: Math.min(24, Number(e.target.value.replace(/\D/g, "")) || 0) })} onBlur={() => saveSettings(s, false)} /></label>
         </div>
         <p className="text-xs muted">Posts only go up between {s.startHour > 12 ? `${s.startHour - 12} PM` : s.startHour === 12 ? "noon" : `${s.startHour || 12} AM`} and {s.endHour > 12 ? `${s.endHour - 12} PM` : s.endHour === 12 ? "noon" : `${s.endHour} AM`} Eastern, like a work day. Outside those hours the page says WAIT until the next start.</p>
-        <p className="text-xs muted">Safe start: <b>15 a day</b>, a random 5 to 15 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
+        <p className="text-xs muted">Your setting: a random 3 to 8 minutes apart. Facebook publishes no limit, but sellers report 10–15 a day is safe for an account new to posting this way, and 15–30 once it&apos;s been going a while with no warnings. Every relist is a delete plus a post, and both count. Go up only after a week with no warnings.</p>
       </div>
 
       {live.length > 0 && (

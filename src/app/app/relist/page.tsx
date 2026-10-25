@@ -32,7 +32,7 @@ export default async function RelistPage() {
   }));
   const live = (posted || []).map((p) => ({ id: p.id as string, title: (p.title as string) || "Untitled", price: p.price as number | null, at: p.fb_relisted_at as string, photo: ((p.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null, photos: ((p.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order).map((x) => x.url) }));
   const changes = (posted || []).filter((p) => p.fb_posted_price != null && p.price != null && Number(p.price) < Number(p.fb_posted_price)).map((p) => ({ id: p.id as string, sku: p.sku as string, title: (p.title as string) || "Untitled", price: Number(p.price), was: Number(p.fb_posted_price) }));
-  const settings: RelistSettings = { perDay: 15, drop: false, pct: 10, days: 7, floorPct: 60, gapMin: 5, gapMax: 15, relistAfter: 14, startHour: 7, endHour: 19, order: "old", ...((s?.value as Partial<RelistSettings>) || {}) };
+  const settings: RelistSettings = { perDay: 15, drop: false, pct: 10, days: 7, floorPct: 60, gapMin: 3, gapMax: 8, relistAfter: 14, startHour: 7, endHour: 19, order: "old", ...((s?.value as Partial<RelistSettings>) || {}) };
   // who messaged about each item on Facebook-now (for the 💰 Sold buyer pick list)
   const liveIds = live.map((l) => l.id);
   const [{ data: convos }, { data: soldRows }] = await Promise.all([

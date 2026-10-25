@@ -30,7 +30,7 @@ export default async function NextPostPage() {
     supabase.from("settings").select("key, value").in("key", ["relist:settings", "relist:next_at", "business"]),
   ]);
   const get = (k: string) => st?.find((s) => s.key === k)?.value as Record<string, unknown> | undefined;
-  const cfg = { perDay: 15, gapMin: 5, gapMax: 15, startHour: 7, endHour: 19, ...(get("relist:settings") || {}) } as { perDay: number; gapMin: number; gapMax: number; startHour: number; endHour: number };
+  const cfg = { perDay: 15, gapMin: 3, gapMax: 8, startHour: 7, endHour: 19, ...(get("relist:settings") || {}) } as { perDay: number; gapMin: number; gapMax: number; startHour: number; endHour: number };
   // posting hours (Eastern): outside them the page just says WAIT until the next start, like a person's work day
   const open = etNextOpen(cfg.startHour, cfg.endHour);
   const timerAt = (get("relist:next_at")?.at as string) || null;
