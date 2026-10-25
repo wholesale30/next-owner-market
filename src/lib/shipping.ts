@@ -14,7 +14,7 @@ export const BOXES: Record<string, { length: number; width: number; height: numb
 export interface Quote { amount: number; service: string; rateId: string | null; mode: string; days?: number | null; options?: { amount: number; service: string; rateId: string; days: number | null }[] }
 export async function quoteShipping(itemId: string, buyerZip: string | null, pickRateId?: string | null): Promise<Quote | null> {
   const db = admin();
-  const { data: it } = await db.from("items").select("shipping_ok, shipping_mode, shipping_price, weight_lbs, box, owner_id").eq("id", itemId).single();
+  const { data: it } = await db.from("items").select("shipping_ok, shipping_mode, shipping_price, weight_lbs, box, owner_id, ship_l, ship_w, ship_h").eq("id", itemId).single();
   if (!it || !it.shipping_ok || it.box === "freight") return null;
   if (it.shipping_mode === "free") return { amount: 0, service: "Free shipping", rateId: null, mode: "free" };
   const { data: biz } = await db.from("settings").select("value").eq("key", "business").maybeSingle();
@@ -22,7 +22,8 @@ export async function quoteShipping(itemId: string, buyerZip: string | null, pic
   const pct = Number(b.shipping_markup_pct ?? 20), minUp = Number(b.shipping_markup_min ?? 1.5);
   // buyer price = discounted rate + platform margin (max of % and minimum), rounded up to the next 5¢
   const cushion = (n: string | number) => { const r = Number(n); const up = Math.max(r * pct / 100, minUp); return Math.ceil((r + up) * 20) / 20; };
-  const box = BOXES[it.box || "medium"] || BOXES.medium;
+  // real box size from specs when we have it (Oct 25, 2026), else the size preset
+  const box = it.ship_l && it.ship_w && it.ship_h ? { length: Number(it.ship_l), width: Number(it.ship_w), height: Number(it.ship_h), label: "Measured" } : BOXES[it.box || "medium"] || BOXES.medium;
   const weight = Number(it.weight_lbs || 2);
   const to = lookupZip(buyerZip);
   const from = await shipFromFor(it.owner_id);

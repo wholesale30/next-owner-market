@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import EditBox from "../EditBox";
+import EditBox, { type Ship } from "../EditBox";
 
-type Listing = { now?: boolean; adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
+type Listing = { ship: Ship & { charge: number | null }; now?: boolean; adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
 type Removal = { id: string; title: string; price: number | null; adTitle: string | null; adPrice: number | null; oldUrl: string | null; photo: string | null };
 type Props = { removal: Removal | null; state: "empty" | "day_done" | "wait" | "go" | "remove"; nextAt: string | null; done: number; perDay: number; waiting: number; gap: [number, number]; listing: Listing | null };
 
@@ -117,7 +117,7 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
 
           <div className="card p-3 space-y-2">
             <p className="font-bold">STEP 2. Post the new ad</p>
-            <EditBox id={listing.id} value={{ title: listing.title, price: listing.price, description: listing.rawDescription, location: listing.location }} onSaved={() => router.refresh()} />
+            <EditBox id={listing.id} value={{ title: listing.title, price: listing.price, description: listing.rawDescription, location: listing.location, ship: listing.ship }} onSaved={() => router.refresh()} />
             <a href={CREATE} target="_blank" rel="noreferrer" className="btn btn-primary w-full">➕ Open Facebook &quot;Create new listing&quot;</a>
             <dl className="text-sm space-y-1">
               <div><dt className="font-semibold inline">Title: </dt><dd className="inline" id="fb-title">{listing.title}</dd> <button className="pill" onClick={() => copy("title", listing.title)}>{copied === "title" ? "✓" : "Copy"}</button></div>
@@ -125,6 +125,9 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
               <div><dt className="font-semibold inline">Category: </dt><dd className="inline" id="fb-category">{listing.category}</dd></div>
               {listing.location && <div><dt className="font-semibold inline">Location: </dt><dd className="inline" id="fb-location">{listing.location}</dd></div>}
               <div><dt className="font-semibold inline">Condition: </dt><dd className="inline" id="fb-condition">{listing.condition}</dd></div>
+              <div id="fb-shipping"><dt className="font-semibold inline">Delivery: </dt><dd className="inline">{listing.ship.ok && listing.ship.lbs && listing.ship.lbs <= 70
+                ? <>Local pickup AND shipping. Turn on Shipping. Package weight: <b>{listing.ship.lbs} lb</b>{listing.ship.l && listing.ship.w && listing.ship.h ? <>, box <b>{listing.ship.l} × {listing.ship.w} × {listing.ship.h} in</b></> : null}. If Facebook offers a prepaid label, pick the weight tier that covers {listing.ship.lbs} lb. If it only offers your own label, set the buyer&apos;s shipping charge to <b>${listing.ship.charge}</b>.</>
+                : "Local pickup only. Do not turn on shipping."}</dd></div>
             </dl>
             <div>
               <p className="font-semibold text-sm">Description: <button className="pill" onClick={() => copy("desc", listing.description)}>{copied === "desc" ? "✓ Copied" : "Copy"}</button></p>

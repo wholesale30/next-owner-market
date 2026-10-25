@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import EditBox, { type Editable } from "./EditBox";
+import EditBox, { type Editable, type Ship, shipLine } from "./EditBox";
 import SoldBox from "./SoldBox";
 import PhotoViewer from "./PhotoViewer";
 import type { PriceCheck } from "@/lib/pricecheck";
@@ -16,14 +16,14 @@ import type { PriceCheck } from "@/lib/pricecheck";
  * change prices there itself. It keeps today's batch ready, lowers prices on our site on his schedule, and lists
  * the Facebook ads whose price he should change to match.
  */
-type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; photos: string[]; pick: string | null; hold: boolean; description: string; location: string | null; removing?: boolean; removedAt?: string | null; listedAt: string | null; now?: boolean; pc: PriceCheck | null; mine: number | null };
+type Row = { id: string; sku: string; title: string; price: number | null; status: string; oldUrl: string | null; postedTo: Record<string, string>; photo: string | null; photos: string[]; pick: string | null; hold: boolean; description: string; location: string | null; ship: Ship; removing?: boolean; removedAt?: string | null; listedAt: string | null; now?: boolean; pc: PriceCheck | null; mine: number | null };
 type Change = { id: string; sku: string; title: string; price: number; was: number };
 type Live = { id: string; title: string; price: number | null; at: string; photo: string | null; photos: string[] };
 type SoldRow = { id: string; fbSold?: boolean; title: string; price: number | null; buyer: string | null; soldAt: string; reposted: string | null; days: number | null };
 export type RelistSettings = { perDay: number; drop: boolean; pct: number; days: number; floorPct: number; gapMin: number; gapMax: number; relistAfter: number; startHour: number; endHour: number; order: "old" | "fb" | "high" | "low" };
 const PER_DAY_CHOICES = [15, 20, 30, 35, 40];
 /** What he pastes into the Claude bar in Chrome; Claude in Chrome does the Facebook clicking from his own browser. */
-export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Find the old ad by its link and the "on Facebook says" title shown on the page; the app's own title, price and photos are the NEW rewritten version on purpose, so they will not match the old ad. NEVER delete an ad that Facebook shows as Sold, Sold and shipped, or Out of stock: leave it exactly as it is, post nothing for it, and tap "It's marked Sold or Out of stock on Facebook" on the app page, then go on. If the page says REMOVE ONLY, open that ad on Facebook, delete it, post nothing, and tap "I deleted it on Facebook". Otherwise: STEP 1, open the old ad link and delete that listing on Facebook (unless it shows Sold or Out of stock, see above). STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, and add the photos in the order shown: for each photo, open its photo page link from the app page in a new tab (it shows only that photo), take a screenshot of that tab, go back to the Facebook tab and upload that screenshot into the photo box; do not ask me to add photos (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
+export const CHROME_PROMPT = `Open nextownermarket.com/app/relist/next and keep following that page until it says DONE FOR TODAY or ALL DONE. If it says WAIT, wait until the time shown, then reload it. Find the old ad by its link and the "on Facebook says" title shown on the page; the app's own title, price and photos are the NEW rewritten version on purpose, so they will not match the old ad. NEVER delete an ad that Facebook shows as Sold, Sold and shipped, or Out of stock: leave it exactly as it is, post nothing for it, and tap "It's marked Sold or Out of stock on Facebook" on the app page, then go on. If the page says REMOVE ONLY, open that ad on Facebook, delete it, post nothing, and tap "I deleted it on Facebook". Otherwise: STEP 1, open the old ad link and delete that listing on Facebook (unless it shows Sold or Out of stock, see above). STEP 2, open Facebook's Create new listing page, fill in the title, price, category, condition, location and description exactly as the page shows, set delivery exactly as the page's "Delivery" line says (local pickup only, or shipping with that package weight and charge), and add the photos in the order shown: for each photo, open its photo page link from the app page in a new tab (it shows only that photo), take a screenshot of that tab, go back to the Facebook tab and upload that screenshot into the photo box; do not ask me to add photos (for a vehicle or boat, use Facebook's vehicle listing form instead). Publish it. STEP 3, open the new listing, copy its link, go back to the app page, paste the link in the "New ad link" box, and tap "I posted it on Facebook". Change nothing else on Facebook. If Facebook shows a warning, a limit, a security check or anything unexpected, stop and tell me.`;
 const SELLING = "https://www.facebook.com/marketplace/you/selling";
 
 export default function RelistClient({ items, doneToday, changes, settings, live: liveIn, buyers, sold: soldIn }: { items: Row[]; doneToday: number; changes: Change[]; settings: RelistSettings; live: Live[]; buyers: Record<string, { name: string; contact: string }[]>; sold: SoldRow[] }) {
@@ -364,7 +364,8 @@ export default function RelistClient({ items, doneToday, changes, settings, live
                   <button type="button" className="pill" onClick={() => takeOff(r.id, r.title)}>📤 Off FB</button>
                   <button type="button" className="pill" onClick={() => remove(r)}>🗑 Delete</button>
                 </div>
-                <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location }} onSaved={saved(r.id)} />
+                <p className="text-sm">{shipLine(r.ship)}</p>
+                <EditBox id={r.id} value={{ title: r.title, price: r.price, description: r.description, location: r.location, ship: r.ship }} onSaved={saved(r.id)} />
                 <details className="text-sm">
                   <summary className="cursor-pointer muted">Do this one by hand instead</summary>
                   <div className="space-y-2 mt-2">
