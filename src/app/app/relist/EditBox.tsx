@@ -2,8 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { billedLbs, fbRisky, OFFSITE_LINE } from "@/lib/fbship";
-export { billedLbs, fbRisky, OFFSITE_LINE };
+import { fbWeight, fbFits, OFFSITE_LINE } from "@/lib/fbship";
 
 /** ✏️ Edit right on the Relist list / Next post page (owner, Oct 23, 2026): title, price, description, town, shipping. */
 // How it goes out (owner, Oct 26, 2026): he picks per item. none = pickup only; fb = Facebook prepaid label
@@ -19,10 +18,9 @@ export function shipLine(s: Ship) {
   const mode = s.mode || "none";
   const size = s.l && s.w && s.h ? ` · box ${s.l}×${s.w}×${s.h} in` : "";
   const facts = `${s.lbs ?? "?"} lb${size}`;
-  const warn = s.lbs && fbRisky(s) ? ` ⚠ post office bills it as ${billedLbs(s)} lb` : "";
-  if (mode === "fb") return `📦 Facebook shipping · ${facts}${warn}`;
+  if (mode === "fb") return fbFits(s) ? `📦 Facebook shipping · enter ${fbWeight(s)} lb on Facebook (${facts})` : `⚠ Facebook shipping picked, but the box bills as ${fbWeight(s)} lb, over Facebook's 70 lb; it will post as pickup only · ${facts}`;
   if (mode === "offsite") return `✉️ Pickup on Facebook, I ship it myself (buyer pays) · ${facts}`;
-  return `🚚 Pickup only${s.lbs ? ` · ${facts}${s.lbs <= 70 && !fbRisky(s) ? " · ✓ fits Facebook shipping" : ""}` : ""}`;
+  return `🚚 Pickup only${s.lbs ? ` · ${facts}${fbFits(s) ? ` · ✓ can ship through Facebook at ${fbWeight(s)} lb` : ""}` : ""}`;
 }
 // nearest of the site's box sizes, so the website's own checkout quotes it right too
 const boxFor = (l: number, w: number, h: number) => { const d = [l, w, h].sort((a, b) => b - a); return d[0] <= 10 && d[1] <= 8 && d[2] <= 4 ? "small" : d[0] <= 14 && d[1] <= 12 && d[2] <= 8 ? "medium" : d[0] <= 20 && d[1] <= 16 && d[2] <= 12 ? "large" : "xl"; };
@@ -75,9 +73,9 @@ export default function EditBox({ id, value, onSaved }: { id: string; value: Edi
           </div>
         )}
         {v.mode !== "none" && value.ship?.source && <p className="text-xs muted">Weight from: <a className="underline" href={value.ship.source} target="_blank" rel="noreferrer">spec page</a></p>}
-        {v.mode === "fb" && (() => { const t: Ship = { ok: true, lbs: num(v.lbs), l: num(v.l), w: num(v.w), h: num(v.h) }; return t.lbs && fbRisky(t)
-          ? <p className="text-xs font-bold" style={{ color: "var(--danger)" }}>⚠ Facebook only asks the weight ({t.lbs} lb) and charges the buyer for that. The post office bills this box as {billedLbs(t)} lb{(t.lbs || 0) > 70 ? " and it&apos;s over the 70 lb limit" : ""}; Facebook&apos;s terms put the difference on you. Safer: ✉️ I ship it myself.</p>
-          : t.lbs ? <p className="text-xs">✓ Box is small enough that Facebook&apos;s weight-only label should cover it.</p> : null; })()}
+        {v.mode === "fb" && (() => { const t: Ship = { ok: true, lbs: num(v.lbs), l: num(v.l), w: num(v.w), h: num(v.h) }; if (!t.lbs) return null; const fw = fbWeight(t); return fbFits(t)
+          ? <p className="text-xs">✓ Claude will type <b>{fw} lb</b> in Facebook&apos;s weight box.{fw > t.lbs ? <> It weighs {t.lbs} lb, but the post office bills a box this size as {fw} lb, so this covers the real label and the buyer pays for it.</> : null} Check the box size above is right before it posts.</p>
+          : <p className="text-xs font-bold" style={{ color: "var(--danger)" }}>⚠ A box this size bills as {fw} lb, over Facebook&apos;s 70 lb limit. It will post as pickup only. Use ✉️ I ship it myself instead, or shrink the box.</p>; })()}
         {v.mode === "offsite" && <p className="text-xs muted">Posts as pickup only on Facebook, with this line added to the description: &quot;{OFFSITE_LINE}&quot; No 10% Facebook fee; you quote the real cost by ZIP and take payment before shipping.</p>}
       </div>
       <div className="grid grid-cols-2 gap-2">

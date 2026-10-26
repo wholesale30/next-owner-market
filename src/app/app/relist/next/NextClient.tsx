@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import EditBox, { type Ship } from "../EditBox";
-import { fbRisky } from "@/lib/fbship";
+import { fbFits, fbWeight } from "@/lib/fbship";
 
 type Listing = { ship: Ship & { charge: number | null }; now?: boolean; adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
 type Removal = { id: string; title: string; price: number | null; adTitle: string | null; adPrice: number | null; oldUrl: string | null; photo: string | null };
@@ -126,8 +126,8 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
               <div><dt className="font-semibold inline">Category: </dt><dd className="inline" id="fb-category">{listing.category}</dd></div>
               {listing.location && <div><dt className="font-semibold inline">Location: </dt><dd className="inline" id="fb-location">{listing.location}</dd></div>}
               <div><dt className="font-semibold inline">Condition: </dt><dd className="inline" id="fb-condition">{listing.condition}</dd></div>
-              <div id="fb-shipping"><dt className="font-semibold inline">Delivery: </dt><dd className="inline">{listing.ship.mode === "fb" && listing.ship.lbs && !fbRisky(listing.ship)
-                ? <>Local pickup AND shipping. Turn on Shipping with Facebook&apos;s prepaid label. Package weight: <b>{listing.ship.lbs} lb</b>. Leave &quot;Cover the shipping cost&quot; unchecked (buyer pays shipping).</>
+              <div id="fb-shipping"><dt className="font-semibold inline">Delivery: </dt><dd className="inline">{listing.ship.mode === "fb" && fbFits(listing.ship)
+                ? <>Local pickup AND shipping. Turn on Shipping with Facebook&apos;s prepaid label. Package weight: <b>{fbWeight(listing.ship)} lb</b> (type exactly this; it covers the box size). Leave &quot;Cover the shipping cost&quot; unchecked (buyer pays shipping).</>
                 : listing.ship.mode === "offsite" ? "Local pickup only. Do NOT turn on shipping. (The description already says I can ship at the buyer's cost.)"
                 : "Local pickup only. Do NOT turn on shipping."}</dd></div>
             </dl>
