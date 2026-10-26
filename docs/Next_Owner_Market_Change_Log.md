@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 25, 2026 2:29 PM from the project history (380 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 11:31 AM from the project history (382 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2724,3 +2724,20 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/055_ship_dims.sql`
 
 <sub>change id 82fe9d1</sub>
+
+### 14:29 — Docs: shipping in User Guide, playbook T-74/T-75, journal
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+19 more)
+
+<sub>change id d2d4740</sub>
+
+
+## Monday, October 26, 2026
+
+### 11:29 — Relist: pick shipping per ad (Pickup only / Facebook prepaid / I ship it myself), box-size warning, will-ship line for offsite, Copy buttons out of the title text
+
+- **Seller / staff app:** `src/app/app/relist/EditBox.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`, `src/app/app/relist/page.tsx`
+- **Shared code (logic):** `src/lib/fbship.ts`
+- **Database (migrations):** `supabase/migrations/056_fb_ship.sql`
+
+<sub>change id 1235daa</sub>
