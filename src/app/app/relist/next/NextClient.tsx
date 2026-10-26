@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import EditBox, { type Ship } from "../EditBox";
+import { fbRisky } from "@/lib/fbship";
 
 type Listing = { ship: Ship & { charge: number | null }; now?: boolean; adTitle: string | null; adPrice: number | null; id: string; title: string; price: number | null; category: string; location: string | null; rawDescription: string; condition: string; description: string; photos: string[]; oldUrl: string | null; postedTo: Record<string, string>; status: string };
 type Removal = { id: string; title: string; price: number | null; adTitle: string | null; adPrice: number | null; oldUrl: string | null; photo: string | null };
@@ -120,18 +121,23 @@ export default function NextClient({ removal, state, nextAt, done, perDay, waiti
             <EditBox id={listing.id} value={{ title: listing.title, price: listing.price, description: listing.rawDescription, location: listing.location, ship: listing.ship }} onSaved={() => router.refresh()} />
             <a href={CREATE} target="_blank" rel="noreferrer" className="btn btn-primary w-full">➕ Open Facebook &quot;Create new listing&quot;</a>
             <dl className="text-sm space-y-1">
-              <div><dt className="font-semibold inline">Title: </dt><dd className="inline" id="fb-title">{listing.title}</dd> <button className="pill" onClick={() => copy("title", listing.title)}>{copied === "title" ? "✓" : "Copy"}</button></div>
+              <div><dt className="font-semibold inline">Title: </dt><dd className="inline" id="fb-title">{listing.title}</dd></div>
               <div><dt className="font-semibold inline">Price: </dt><dd className="inline" id="fb-price">{listing.price ?? ""}</dd></div>
               <div><dt className="font-semibold inline">Category: </dt><dd className="inline" id="fb-category">{listing.category}</dd></div>
               {listing.location && <div><dt className="font-semibold inline">Location: </dt><dd className="inline" id="fb-location">{listing.location}</dd></div>}
               <div><dt className="font-semibold inline">Condition: </dt><dd className="inline" id="fb-condition">{listing.condition}</dd></div>
-              <div id="fb-shipping"><dt className="font-semibold inline">Delivery: </dt><dd className="inline">{listing.ship.ok && listing.ship.lbs && listing.ship.lbs <= 70
-                ? <>Local pickup AND shipping. Turn on Shipping. Package weight: <b>{listing.ship.lbs} lb</b>{listing.ship.l && listing.ship.w && listing.ship.h ? <>, box <b>{listing.ship.l} × {listing.ship.w} × {listing.ship.h} in</b></> : null}. If Facebook offers a prepaid label, pick the weight tier that covers {listing.ship.lbs} lb. If it only offers your own label, set the buyer&apos;s shipping charge to <b>${listing.ship.charge}</b>.</>
-                : "Local pickup only. Do not turn on shipping."}</dd></div>
+              <div id="fb-shipping"><dt className="font-semibold inline">Delivery: </dt><dd className="inline">{listing.ship.mode === "fb" && listing.ship.lbs && !fbRisky(listing.ship)
+                ? <>Local pickup AND shipping. Turn on Shipping with Facebook&apos;s prepaid label. Package weight: <b>{listing.ship.lbs} lb</b>. Leave &quot;Cover the shipping cost&quot; unchecked (buyer pays shipping).</>
+                : listing.ship.mode === "offsite" ? "Local pickup only. Do NOT turn on shipping. (The description already says I can ship at the buyer's cost.)"
+                : "Local pickup only. Do NOT turn on shipping."}</dd></div>
             </dl>
             <div>
-              <p className="font-semibold text-sm">Description: <button className="pill" onClick={() => copy("desc", listing.description)}>{copied === "desc" ? "✓ Copied" : "Copy"}</button></p>
+              <p className="font-semibold text-sm">Description:</p>
               <pre id="fb-description" className="text-sm whitespace-pre-wrap card p-2">{listing.description}</pre>
+              <div className="grid grid-cols-2 gap-2 mt-1" aria-label="Copy buttons for doing it by hand">
+                <button type="button" className="pill" onClick={() => copy("title", listing.title)}>{copied === "title" ? "✓ Title copied" : "📋 Copy title"}</button>
+                <button type="button" className="pill" onClick={() => copy("desc", listing.description)}>{copied === "desc" ? "✓ Description copied" : "📋 Copy description"}</button>
+              </div>
             </div>
             <div>
               <p className="font-semibold text-sm">Photos, in this order ({listing.photos.length}):</p>

@@ -13,7 +13,7 @@ export default async function RelistPage() {
   const startOfDay = etStartOfDay();
   const [{ data: orig }, { data: items }, { count: doneToday }, { data: posted }, { data: s }] = await Promise.all([
     supabase.from("fb_import_queue").select("item_id, data").not("item_id", "is", null).limit(2000),
-    supabase.from("items").select("id, sku, title, price, status, description, fb_location, fb_old_url, fb_pick, fb_hold, fb_remove, fb_removed_at, fb_listed_at, price_check, my_price, fb_now, posted_to, shipping_ok, weight_lbs, ship_l, ship_w, ship_h, ship_source, item_photos(url, sort_order)").not("fb_old_url", "is", null).is("fb_relisted_at", null).order("fb_pick", { ascending: true, nullsFirst: false }).order("created_at").limit(500),
+    supabase.from("items").select("id, sku, title, price, status, description, fb_location, fb_old_url, fb_pick, fb_hold, fb_remove, fb_removed_at, fb_listed_at, price_check, my_price, fb_now, posted_to, shipping_ok, fb_ship, weight_lbs, ship_l, ship_w, ship_h, ship_source, item_photos(url, sort_order)").not("fb_old_url", "is", null).is("fb_relisted_at", null).order("fb_pick", { ascending: true, nullsFirst: false }).order("created_at").limit(500),
     supabase.from("items").select("id", { count: "exact", head: true }).gte("fb_relisted_at", startOfDay.toISOString()).eq("fb_extra", false),
     supabase.from("items").select("id, sku, title, price, fb_posted_price, fb_relisted_at, item_photos(url, sort_order)").not("fb_relisted_at", "is", null).eq("fb_remove", false).not("status", "in", "(sold,shipped,archived)").order("fb_relisted_at").limit(1000),
     supabase.from("settings").select("value").eq("key", "relist:settings").maybeSingle(),
@@ -26,7 +26,7 @@ export default async function RelistPage() {
     postedTo: (i.posted_to as Record<string, string>) || {},
     pick: (i.fb_pick as string | null) || null, hold: !!i.fb_hold,
     description: (i.description as string) || "", location: (i.fb_location as string | null) || null,
-    ship: { ok: !!i.shipping_ok, lbs: i.weight_lbs != null ? Number(i.weight_lbs) : null, l: i.ship_l != null ? Number(i.ship_l) : null, w: i.ship_w != null ? Number(i.ship_w) : null, h: i.ship_h != null ? Number(i.ship_h) : null, source: (i.ship_source as string | null) || null },
+    ship: { ok: !!i.shipping_ok, mode: ((i.fb_ship as string) || "none") as "none" | "fb" | "offsite", lbs: i.weight_lbs != null ? Number(i.weight_lbs) : null, l: i.ship_l != null ? Number(i.ship_l) : null, w: i.ship_w != null ? Number(i.ship_w) : null, h: i.ship_h != null ? Number(i.ship_h) : null, source: (i.ship_source as string | null) || null },
     removing: !!i.fb_remove && !i.fb_removed_at, removedAt: (i.fb_removed_at as string | null) || null, listedAt: (i.fb_listed_at as string | null) || null, now: !!i.fb_now, mine: i.my_price != null ? Number(i.my_price) : mine.get(i.id as string) ?? null, pc: (i.price_check as PriceCheck | null) || null,
     photos: ((i.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order).map((x) => x.url),
     photo: ((i.item_photos as { url: string; sort_order: number }[]) || []).sort((a, b) => a.sort_order - b.sort_order)[0]?.url || null,

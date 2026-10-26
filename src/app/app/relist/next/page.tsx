@@ -5,6 +5,7 @@ import { type Item } from "@/lib/types";
 import NextClient from "./NextClient";
 import { etStartOfDay, etNextOpen } from "@/lib/et";
 import { nationalShippingEstimate } from "@/lib/shipping";
+import { OFFSITE_LINE } from "@/lib/fbship";
 
 export const metadata = { title: "Next Facebook post" };
 export const dynamic = "force-dynamic";
@@ -52,21 +53,22 @@ export default async function NextPostPage() {
     const input = { item: { ...it, title: cleanAiTells(it.title), description: cleanAiTells(it.description) }, businessName: business.name, location: business.location };
     const full = facebookCopy(input);
     return {
-      id: it.id, title: input.item.title, price: it.price, category: (it as unknown as { fb_category?: string | null }).fb_category || it.categories?.name || "Miscellaneous",
+      id: it.id, title: input.item.title.replace(/\s+Copy$/i, ""), price: it.price, category: (it as unknown as { fb_category?: string | null }).fb_category || it.categories?.name || "Miscellaneous",
       location: (it as unknown as { fb_location?: string | null }).fb_location || null,
       condition: FB_CONDITION[it.condition || "good"] || "Used - Good",
-      description: full.slice(full.indexOf("\n\n") + 2),
+      // ✉️ he ships it himself: the will-ship line goes into the ad (Oct 26, 2026); titles never carry button text
+      description: full.slice(full.indexOf("\n\n") + 2) + ((it as unknown as { fb_ship?: string }).fb_ship === "offsite" ? `\n\n${OFFSITE_LINE}` : ""),
       rawDescription: it.description || "",
       now: !!(it as unknown as { fb_now?: boolean }).fb_now,
       photos: [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order).map((p) => p.url),
       oldUrl: String(it.fb_old_url).startsWith("http") ? it.fb_old_url : null,
       adTitle: (it as unknown as { fb_ad_title?: string | null }).fb_ad_title || null,
       adPrice: (it as unknown as { fb_ad_price?: number | null }).fb_ad_price != null ? Number((it as unknown as { fb_ad_price: number }).fb_ad_price) : null,
-      ship: (() => { const x = it as unknown as { shipping_ok?: boolean; weight_lbs?: number | null; ship_l?: number | null; ship_w?: number | null; ship_h?: number | null; box?: string | null; shipping_price?: number | null };
+      ship: (() => { const x = it as unknown as { fb_ship?: string; shipping_ok?: boolean; weight_lbs?: number | null; ship_l?: number | null; ship_w?: number | null; ship_h?: number | null; box?: string | null; shipping_price?: number | null };
         const lbs = x.weight_lbs != null ? Number(x.weight_lbs) : null;
         // own-label charge: his set price, else the farthest-zone ground estimate (never undercharges), whole dollars
         const charge = x.shipping_ok && lbs ? (Number(x.shipping_price) > 0 ? Number(x.shipping_price) : Math.ceil(nationalShippingEstimate(lbs, x.box, 0, 0))) : null;
-        return { ok: !!x.shipping_ok, lbs, l: x.ship_l != null ? Number(x.ship_l) : null, w: x.ship_w != null ? Number(x.ship_w) : null, h: x.ship_h != null ? Number(x.ship_h) : null, charge }; })(),
+        return { ok: !!x.shipping_ok, mode: (x.fb_ship || "none") as "none" | "fb" | "offsite", lbs, l: x.ship_l != null ? Number(x.ship_l) : null, w: x.ship_w != null ? Number(x.ship_w) : null, h: x.ship_h != null ? Number(x.ship_h) : null, charge }; })(),
       postedTo: ((it as unknown as { posted_to?: Record<string, string> }).posted_to) || {}, status: it.status,
     };
   })() : null;
