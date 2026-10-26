@@ -130,6 +130,18 @@ Built for working a pallet.
 - **🗂 Dump a batch (AI sorts)** — pick up to 40 photos of many different things. The AI groups them into items. Use **split** and **merge** to correct any grouping.
 - **Finish** — creates every draft, cleans every background, writes every listing with AI, and sends them all to Review. Walk away; come back to finished listings.
 
+### 4.3b2 🔬 Advanced What's it worth (/app/deep): owner only (Oct 26, 2026)
+The deep version of What's it worth, for your own lookups (the regular What's it worth stays the same for beginners). Menu: Selling → 🔬 Advanced What's it worth.
+1. Pick photos (gallery first, camera second): the whole item, then the label, model and serial plate, and any damage. Say or type what you know (model, does it power on, what's missing, what you want to find out).
+2. Tap **🔬 Run the deep check**. It runs live web searches (1 to 3 minutes, about 30¢ in AI cost) and builds a report:
+   - **Expected price** in big type, then List, Fast and Top, plus new/original retail, parts value and scrap value, real comps with links, who buys it, parts and other uses.
+   - **🔧 How to test it:** safety warnings, tools you need, and numbered test steps, each with what "good" and "a problem" look like (for vintage electronics: slow power-up with a dim-bulb or variac, fuses, both channels, every input).
+   - **🩺 Known problems and fixes** with rough costs, and whether fixing it is worth it.
+   - Specs, manuals and service manuals, parts sources, a ready-to-paste listing with "Price box: $X", and sources.
+3. **💬 Ask more about it:** type or say any follow-up question ("how do I check the bias?"). It searches again if needed, and the answer is saved in the report.
+4. **📄 Download the Word white paper:** the whole report, with photos and every question and answer, as a .docx you can keep, print or send.
+Every report is saved under "Saved reports" on the same page. Later this can become a paid add-on for other sellers.
+
 ### 4.3c 💲 Price check (/app/prices): owner only
 
 Every item you own, with your price next to real-comps prices (added Oct 23, 2026). Tap **🔎 Check prices** and each item gets a live search of eBay sold and listed prices, Marketplace asks and new retail (about 20 seconds and about 15¢ each; three run at a time). For each item you see **Top** (patient, about a month), **List** (sells in 1–2 weeks with room for offers), **Fast** (blow-out, a few days) and **Lowest** (stop here; hold or sell for parts instead), plus **🛑 HOLD** on things worth keeping for top dollar, a one-line why, and the comps it's based on with links. Tap **Use $List** or **Use $Fast** per item, or **Set all to List / Fast** (HOLD items are skipped). If an item has automatic drops on, its lowest drop is set to the Lowest price. Prices changed on Facebook ads show on the Relist list to change there too. Filters: Priced above List, 🛑 Hold, Not checked.
