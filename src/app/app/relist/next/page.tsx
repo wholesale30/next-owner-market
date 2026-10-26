@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient, getProfile } from "@/lib/supabase/server";
-import { cleanAiTells, facebookCopy } from "@/lib/listing";
+import { cleanAiTells, facebookCopy, keywordsFor } from "@/lib/listing";
 import { type Item } from "@/lib/types";
 import NextClient from "./NextClient";
 import { etStartOfDay, etNextOpen } from "@/lib/et";
@@ -59,6 +59,9 @@ export default async function NextPostPage() {
       // ✉️ he ships it himself: the will-ship line goes into the ad (Oct 26, 2026); titles never carry button text
       description: full.slice(full.indexOf("\n\n") + 2) + ((it as unknown as { fb_ship?: string }).fb_ship === "offsite" ? `\n\n${OFFSITE_LINE}` : ""),
       rawDescription: it.description || "",
+      // search help (owner, Oct 26, 2026): Facebook's "Product tags" box (up to 20, under More details) and the Brand box
+      tags: keywordsFor({ ...it, categories: it.categories }, 20).map((t) => t.slice(0, 40)),
+      brand: it.brand || null,
       now: !!(it as unknown as { fb_now?: boolean }).fb_now,
       photos: [...(it.item_photos || [])].sort((a, b) => a.sort_order - b.sort_order).map((p) => p.url),
       oldUrl: String(it.fb_old_url).startsWith("http") ? it.fb_old_url : null,
