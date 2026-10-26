@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 11:31 AM from the project history (382 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 12:06 PM from the project history (386 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2741,3 +2741,29 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/056_fb_ship.sql`
 
 <sub>change id 1235daa</sub>
+
+### 11:32 — Docs: per-ad shipping choice, how Facebook prices shipping, T-76
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.md`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx` (+19 more)
+
+<sub>change id c7f3188</sub>
+
+### 11:58 — Facebook shipping: type the box-size billed weight into Facebook's weight box; over 70 lb posts as pickup
+
+- **Seller / staff app:** `src/app/app/relist/EditBox.tsx`, `src/app/app/relist/next/NextClient.tsx`
+- **Shared code (logic):** `src/lib/fbship.ts`
+
+<sub>change id ea47117</sub>
+
+### 12:01 — Facebook posts: Product tags (up to 20) and Brand fields for search; Chrome steps fill them
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+- **Seller / staff app:** `src/app/app/relist/RelistClient.tsx`, `src/app/app/relist/next/NextClient.tsx`, `src/app/app/relist/next/page.tsx`
+
+<sub>change id 93bbbaa</sub>
+
+### 12:03 — Docs: search words in User Guide
+
+- **Documents:** `docs/Next_Owner_Market_User_Guide.md`
+
+<sub>change id 13632b8</sub>
