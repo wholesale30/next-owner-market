@@ -64,7 +64,7 @@ export default async function ItemPage({ params, searchParams }: PageProps<"/app
   ];
 
   // straight back to a fresh lookup, no back arrow needed (owner's request, Oct 9 2026)
-  const next = ({ bp: ["/buy-or-pass", "📸 Check the next one"], pile: ["/pile", "📸 Sort another pile"], lookups: ["/lookups", "📂 Back to my lookups"], relist: ["/app/relist", "🔁 Back to the Relist list"] } as Record<string, [string, string]>)[sq.from || ""] || ["/worth", "📸 Check another item"];
+  const next = ({ bp: ["/buy-or-pass", "📸 Check the next one"], pile: ["/pile", "📸 Sort another pile"], lookups: ["/lookups", "📂 Back to my lookups"], relist: ["/app/relist", "🔁 Back to the Relist list"], deep: ["/app/deep", "🔬 Check another item"] } as Record<string, [string, string]>)[sq.from || ""] || ["/worth", "📸 Check another item"];
   const againBtn = <Link href={next[0]} className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>{next[1]}</Link>;
 
   return (

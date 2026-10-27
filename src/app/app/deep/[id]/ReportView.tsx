@@ -79,7 +79,10 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
         <p className="text-sm">List {money(r.list_price)} · Fast {money(r.fast_price)} · Top {money(r.top_price)}{r.hold ? " · 💎 Hold for top dollar" : ""}</p>
         <p className="text-sm">{r.summary}</p>
       </div>
-      <a href={`/api/deep/${id}/docx`} className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📄 Download the Word white paper</a>
+      <div className="grid grid-cols-2 gap-2">
+        <a href={`/api/deep/${id}/docx`} className="btn btn-primary text-lg" style={{ minHeight: 56 }}>📄 Word white paper</a>
+        <Link href="/app/deep#new" className="btn btn-primary text-lg" style={{ minHeight: 56 }}>🔬 Check another</Link>
+      </div>
       <a href="#listing" className="btn btn-secondary w-full">📝 {itemId ? "Listing made: see it" : "Write the listing from this"}</a>
 
       {photos.length > 0 && <div className="grid grid-cols-3 gap-2">{photos.map((u) => <img key={u} src={u} alt="" className="w-full aspect-square object-cover rounded-xl" />)}</div>}
@@ -149,6 +152,7 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
       </div>
 
       {r.sources.length > 0 && <details className="card p-3"><summary className="font-bold cursor-pointer">🔗 Sources</summary><ul className="mt-2 text-sm">{r.sources.map((s, i) => <li key={i}>• <A href={s.url!}>{s.title}</A></li>)}</ul></details>}
+      <Link href="/app/deep#new" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>🔬 Check another item</Link>
       <button type="button" className="btn btn-secondary w-full" onClick={del}>🗑 Delete this report</button>
     </div>
   );

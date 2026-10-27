@@ -17,7 +17,7 @@ export default async function DeepPage() {
     <div className="space-y-4 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold">🔬 Advanced What&apos;s it worth</h1>
       <p className="text-sm muted">The deep version: real prices from live searches, how to test it step by step, known problems and fixes, manuals, parts, and a ready listing. Every report is saved here and downloads as a Word white paper.</p>
-      <NewDeep meId={me.id} />
+      <div id="new" className="scroll-mt-4"><NewDeep meId={me.id} /></div>
       <h2 className="text-lg font-bold">Saved reports ({rows.length})</h2>
       {rows.length === 0 && <p className="muted text-sm">None yet. Your first one shows up here.</p>}
       <ul className="space-y-2">
