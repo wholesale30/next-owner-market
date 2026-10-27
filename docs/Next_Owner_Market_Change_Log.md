@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 8:18 PM from the project history (392 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 9:44 PM from the project history (394 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2809,3 +2809,16 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Database (migrations):** `supabase/migrations/058_deep_item.sql`
 
 <sub>change id 30a6930</sub>
+
+### 20:18 — Docs: deep report listing in User Guide
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+16 more)
+
+<sub>change id 4c2ff0a</sub>
+
+### 21:42 — Advanced What's it worth: 🔬 Check another on the report (top and bottom) and after making the listing; playbook T-77
+
+- **Documents:** `docs/playbook/template.md`
+- **Seller / staff app:** `src/app/app/deep/[id]/ReportView.tsx`, `src/app/app/deep/page.tsx`, `src/app/app/items/[id]/page.tsx`
+
+<sub>change id ee29b68</sub>
