@@ -11,7 +11,7 @@ export default async function DeepReportPage({ params }: PageProps<"/app/deep/[i
   const me = (await getProfile())!;
   if (me.role !== "admin") redirect("/app");
   const supabase = await createClient();
-  const { data: row } = await supabase.from("deep_reports").select("id, notes, photo_urls, report, qa, created_at, cost").eq("id", id).maybeSingle();
+  const { data: row } = await supabase.from("deep_reports").select("id, notes, photo_urls, report, qa, created_at, cost, item_id").eq("id", id).maybeSingle();
   if (!row?.report) notFound();
-  return <ReportView id={row.id} report={row.report as DeepReport} qa={(row.qa as QA[]) || []} notes={row.notes} photos={row.photo_urls || []} createdAt={row.created_at} cost={Number(row.cost || 0)} />;
+  return <ReportView id={row.id} report={row.report as DeepReport} qa={(row.qa as QA[]) || []} notes={row.notes} photos={row.photo_urls || []} createdAt={row.created_at} cost={Number(row.cost || 0)} itemId={row.item_id || null} meId={me.id} />;
 }

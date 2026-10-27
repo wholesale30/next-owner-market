@@ -10,13 +10,46 @@ import type { DeepReport, QA } from "@/lib/deepcheck";
 const money = (n: number | null | undefined) => (n ? `$${Math.round(n).toLocaleString()}` : "—");
 const A = ({ href, children }: { href: string; children: React.ReactNode }) => <a className="underline" href={href} target="_blank" rel="noreferrer">{children}</a>;
 
-export default function ReportView({ id, report: r, qa: qa0, notes, photos, createdAt, cost }: { id: string; report: DeepReport; qa: QA[]; notes: string | null; photos: string[]; createdAt: string; cost: number }) {
+export default function ReportView({ id, report: r, qa: qa0, notes, photos, createdAt, cost, itemId, meId }: { id: string; report: DeepReport & { listing_history?: unknown[] }; qa: QA[]; notes: string | null; photos: string[]; createdAt: string; cost: number; itemId: string | null; meId: string }) {
   const router = useRouter();
   const [qa, setQa] = useState(qa0);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [copied, setCopied] = useState(false);
+  // the listing can be rewritten on his say-so (Oct 26, 2026), with undo
+  const [lst, setLst] = useState({ listing_title: r.listing_title, listing_description: r.listing_description, list_price: r.list_price, listing_keywords: r.listing_keywords });
+  const [canUndo, setCanUndo] = useState(!!(r.listing_history || []).length);
+  const [change, setChange] = useState("");
+  const [lbusy, setLbusy] = useState<string | null>(null);
+  const [lmsg, setLmsg] = useState("");
+
+  async function rewrite(undo = false) {
+    setLbusy(undo ? "Putting it back…" : "Rewriting…"); setLmsg("");
+    const res = await fetch(`/api/deep/${id}/listing`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(undo ? { undo: true } : { instruction: change }) });
+    const j = (await res.json().catch(() => ({}))) as { listing?: typeof lst; canUndo?: boolean; error?: string };
+    setLbusy(null);
+    if (!res.ok || !j.listing) { setLmsg(j.error || "Couldn't change it. Try again."); return; }
+    setLst(j.listing); setCanUndo(!!j.canUndo); if (!undo) setChange("");
+    setLmsg(undo ? "↩ Put back the version before." : "✓ Changed. Check it below.");
+  }
+
+  async function makeListing() {
+    setLbusy("Setting up your listing…"); setLmsg("");
+    const sb = createClient();
+    const { data, error } = await sb.from("items").insert({
+      owner_id: meId, created_by: meId, title: lst.listing_title.slice(0, 80), description: lst.listing_description, tags: (lst.listing_keywords || []).slice(0, 25),
+      brand: r.brand, model: r.model, price: lst.list_price || null, price_min_suggested: r.fast_price || null, price_max_suggested: r.top_price || null,
+      status: "draft", ai_generated: true, local_pickup_ok: true, shipping_ok: false, shipping_mode: "calculated",
+    }).select("id").single();
+    if (error || !data) { setLbusy(null); setLmsg(error?.message || "Couldn't create the listing."); return; }
+    if (photos.length) {
+      const { error: pe } = await sb.from("item_photos").insert(photos.map((u, i) => ({ item_id: data.id, storage_path: u.split("/item-photos/")[1] || u, url: u, sort_order: i, is_primary: i === 0 })));
+      if (pe) setLmsg(`Listing made, but the photos didn't attach: ${pe.message}`);
+    }
+    await sb.from("deep_reports").update({ item_id: data.id }).eq("id", id);
+    router.push(`/app/items/${data.id}?written=1&from=deep#copy`);
+  }
 
   async function ask() {
     if (!q.trim()) return;
@@ -33,7 +66,7 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
     if (error) { setErr(error.message); return; }
     router.push("/app/deep");
   }
-  const listing = `${r.listing_title}\n\nPrice box: ${money(r.list_price)}\n\n${r.listing_description}${r.listing_keywords.length ? `\n\nKeywords: ${r.listing_keywords.join(", ")}` : ""}`;
+  const listing = `${lst.listing_title}\n\nPrice box: ${money(lst.list_price)}\n\n${lst.listing_description}${lst.listing_keywords?.length ? `\n\nKeywords: ${lst.listing_keywords.join(", ")}` : ""}`;
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto">
@@ -47,6 +80,7 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
         <p className="text-sm">{r.summary}</p>
       </div>
       <a href={`/api/deep/${id}/docx`} className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>📄 Download the Word white paper</a>
+      <a href="#listing" className="btn btn-secondary w-full">📝 {itemId ? "Listing made: see it" : "Write the listing from this"}</a>
 
       {photos.length > 0 && <div className="grid grid-cols-3 gap-2">{photos.map((u) => <img key={u} src={u} alt="" className="w-full aspect-square object-cover rounded-xl" />)}</div>}
       {notes && <p className="text-sm muted">Your notes: {notes}</p>}
@@ -83,11 +117,24 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
       {(r.manuals.length > 0 || r.parts_sources.length > 0) && <details className="card p-3"><summary className="font-bold cursor-pointer">📘 Manuals and parts</summary>
         <ul className="mt-2 text-sm space-y-1">{r.manuals.map((m, i) => <li key={i}>• <A href={m.url!}>{m.title}</A></li>)}{r.parts_sources.map((s, i) => <li key={`p${i}`}>• {s.part}: {s.url ? <A href={s.url}>{s.where}</A> : s.where}</li>)}</ul></details>}
 
-      <details className="card p-3"><summary className="font-bold cursor-pointer">📝 Ready-to-paste listing</summary>
-        <pre className="text-sm whitespace-pre-wrap mt-2">{listing}</pre>
+      <div id="listing" className="card p-3 space-y-2 scroll-mt-4">
+        <p className="font-bold">📝 Your listing</p>
+        <pre className="text-sm whitespace-pre-wrap">{listing}</pre>
         <p className="text-sm">{r.ship_or_pickup}</p>
-        <button type="button" className="btn btn-secondary w-full mt-2" onClick={() => navigator.clipboard.writeText(listing).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); })}>{copied ? "✓ Copied" : "📋 Copy the listing"}</button>
-      </details>
+        {itemId
+          ? <Link href={`/app/items/${itemId}`} className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>✅ Listing made: open it</Link>
+          : <button type="button" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }} disabled={!!lbusy} onClick={makeListing}>{lbusy === "Setting up your listing…" ? lbusy : "📝 Make it a listing in my app"}</button>}
+        <button type="button" className="btn btn-secondary w-full" onClick={() => navigator.clipboard.writeText(listing).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); })}>{copied ? "✓ Copied" : "📋 Copy the listing"}</button>
+        <p className="font-semibold text-sm pt-2">✏️ Want it different? Say what to change</p>
+        <textarea className="input" rows={2} placeholder="Shorter. Price it at $150. Say it was serviced and the lamps are new. Take out the part about…" value={change} onChange={(e) => setChange(e.target.value)} />
+        <Mic onText={(t) => setChange((h) => (h ? h.trimEnd() + " " : "") + t)} />
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" className="btn btn-primary" disabled={!!lbusy || !change.trim()} onClick={() => rewrite(false)}>{lbusy === "Rewriting…" ? lbusy : "✏️ Change it"}</button>
+          <button type="button" className="btn btn-secondary" disabled={!!lbusy || !canUndo} onClick={() => rewrite(true)}>↩ Undo change</button>
+        </div>
+        {itemId && <p className="text-xs muted">Changes here don&apos;t touch the listing already made; edit that one on its own page.</p>}
+        {lmsg && <p className="text-sm">{lmsg}</p>}
+      </div>
 
       <div className="card p-3 space-y-2">
         <p className="font-bold">💬 Ask more about it</p>
