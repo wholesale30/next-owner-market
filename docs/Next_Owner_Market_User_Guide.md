@@ -138,8 +138,9 @@ The deep version of What's it worth, for your own lookups (the regular What's it
    - **🔧 How to test it:** safety warnings, tools you need, and numbered test steps, each with what "good" and "a problem" look like (for vintage electronics: slow power-up with a dim-bulb or variac, fuses, both channels, every input).
    - **🩺 Known problems and fixes** with rough costs, and whether fixing it is worth it.
    - Specs, manuals and service manuals, parts sources, a ready-to-paste listing with "Price box: $X", and sources.
-3. **💬 Ask more about it:** type or say any follow-up question ("how do I check the bias?"). It searches again if needed, and the answer is saved in the report.
-4. **📄 Download the Word white paper:** the whole report, with photos and every question and answer, as a .docx you can keep, print or send.
+3. **📝 Your listing** (the button under the Word download jumps to it): **📝 Make it a listing in my app** creates the draft listing with the title, description, price box, keywords and photos and opens it ("🎉 Your listing is written"). Not the way you want it? Type or say it in **✏️ Want it different?** ("shorter", "price it at $150", "say it was serviced") and tap ✏️ Change it; **↩ Undo change** puts the version before back (every version is kept). Make your changes before tapping Make it a listing; after that, edit the listing on its own page.
+4. **💬 Ask more about it:** type or say any follow-up question ("how do I check the bias?"). It searches again if needed, and the answer is saved in the report.
+5. **📄 Download the Word white paper:** the whole report, with photos and every question and answer, as a .docx you can keep, print or send.
 Every report is saved under "Saved reports" on the same page. Later this can become a paid add-on for other sellers.
 
 ### 4.3c 💲 Price check (/app/prices): owner only

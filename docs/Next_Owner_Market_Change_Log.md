@@ -1,6 +1,6 @@
 # Next Owner Market — Change Log
 
-*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 7:52 PM from the project history (390 changes).*
+*Every change to the code, database, and documents, oldest first. Generated October 26, 2026 8:18 PM from the project history (392 changes).*
 
 
 ## Tuesday, September 29, 2026
@@ -2795,3 +2795,17 @@ Linked from home, Tools, What's it worth page, Help, sitemap. Web searches count
 - **Public site pages:** `src/app/tools/page.tsx`
 
 <sub>change id b19ada5</sub>
+
+### 19:52 — Docs: journal
+
+- **Documents:** `docs/Next_Owner_Market_AddOn_Modules_White_Paper.docx`, `docs/Next_Owner_Market_App_Builder_Playbook.docx`, `docs/Next_Owner_Market_Beat_The_Competition.docx`, `docs/Next_Owner_Market_Build_Journal.docx`, `docs/Next_Owner_Market_Change_Log.docx`, `docs/Next_Owner_Market_Change_Log.md`, `docs/Next_Owner_Market_Chat_Harvest.docx`, `docs/Next_Owner_Market_Complete_Guide.docx`, `docs/Next_Owner_Market_Estate_Pack_Legal_Research.docx`, `docs/Next_Owner_Market_Facebook_Page_Kit.docx`, `docs/Next_Owner_Market_Feedback_For_Anthropic.docx`, `docs/Next_Owner_Market_File_Index.docx` (+15 more)
+
+<sub>change id 229b0cf</sub>
+
+### 20:16 — Advanced What's it worth: make it a listing in the app, and change the listing by saying what to change (with undo)
+
+- **Server routes (API):** `src/app/api/deep/[id]/listing/route.ts`
+- **Seller / staff app:** `src/app/app/deep/[id]/ReportView.tsx`, `src/app/app/deep/[id]/page.tsx`
+- **Database (migrations):** `supabase/migrations/058_deep_item.sql`
+
+<sub>change id 30a6930</sub>
