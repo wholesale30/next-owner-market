@@ -137,7 +137,9 @@ The deep version of What's it worth, for your own lookups (the regular What's it
    - **Expected price** in big type, then List, Fast and Top, plus new/original retail, parts value and scrap value, real comps with links, who buys it, parts and other uses.
    - **🔧 How to test it:** safety warnings, tools you need, and numbered test steps, each with what "good" and "a problem" look like (for vintage electronics: slow power-up with a dim-bulb or variac, fuses, both channels, every input).
    - **🩺 Known problems and fixes** with rough costs, and whether fixing it is worth it.
+   - **📦 Weight:** what it weighs, the packed shipping weight, and the box size (from the maker's spec when found); it goes into the listing it makes.
    - Specs, manuals and service manuals, parts sources, a ready-to-paste listing with "Price box: $X", and sources.
+   - If a report ever comes back incomplete, a red box offers **🔄 Run it again** (same photos and notes; it also refreshes a draft listing made from it). Every report also has 🔄 Run the report again at the bottom.
 3. **📝 Your listing** (the button under the Word download jumps to it): **📝 Make it a listing in my app** creates the draft listing with the title, description, price box, keywords and photos and opens it ("🎉 Your listing is written"). Not the way you want it? Type or say it in **✏️ Want it different?** ("shorter", "price it at $150", "say it was serviced") and tap ✏️ Change it; **↩ Undo change** puts the version before back (every version is kept). Make your changes before tapping Make it a listing; after that, edit the listing on its own page.
 4. **💬 Ask more about it:** type or say any follow-up question ("how do I check the bias?"). It searches again if needed, and the answer is saved in the report.
 5. **📄 Download the Word white paper:** the whole report, with photos and every question and answer, as a .docx you can keep, print or send.

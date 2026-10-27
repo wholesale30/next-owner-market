@@ -37,7 +37,7 @@ export async function deepDocx(x: { report: DeepReport; qa: QA[]; notes: string 
   if (x.notes) kids.push(p(`Owner's notes: ${x.notes}`, { italics: true }));
 
   kids.push(h1("1. What it's worth"));
-  kids.push(table([["Price", "Amount"], ["Expected (as described)", money(r.expected_price)], ["List price (price box)", money(r.list_price)], ["Fast sale", money(r.fast_price)], ["Top dollar", money(r.top_price)], ["New / original retail", money(r.retail_new)], ["For parts / not working", money(r.parts_value)], ["Scrap", money(r.scrap_value)]]));
+  kids.push(table([["Price", "Amount"], ["Expected (as described)", money(r.expected_price)], ["List price (price box)", money(r.list_price)], ["Fast sale", money(r.fast_price)], ["Top dollar", money(r.top_price)], ["New / original retail", money(r.retail_new)], ["For parts / not working", money(r.parts_value)], ["Scrap", money(r.scrap_value)], ["Weight", r.item_lbs ? `${r.item_lbs} lb` : "—"], ["Shipping weight and box", r.ship_lbs ? `${r.ship_lbs} lb${r.box_l && r.box_w && r.box_h ? ` in a ${r.box_l} x ${r.box_w} x ${r.box_h} in box` : ""}` : "—"]]));
   kids.push(p(r.value_why));
   if (r.comps.length) {
     kids.push(h2("Comparable prices found"));

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Mic from "@/components/Mic";
 import { createClient } from "@/lib/supabase/client";
 import type { DeepReport, QA } from "@/lib/deepcheck";
+import { itemFields } from "@/lib/deepitem";
 
 const money = (n: number | null | undefined) => (n ? `$${Math.round(n).toLocaleString()}` : "—");
 const A = ({ href, children }: { href: string; children: React.ReactNode }) => <a className="underline" href={href} target="_blank" rel="noreferrer">{children}</a>;
@@ -35,11 +36,11 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
   }
 
   async function makeListing() {
+    if (!lst.listing_description?.trim()) { setLmsg("This report has no listing written. Tap 🔄 Run it again first."); return; }
     setLbusy("Setting up your listing…"); setLmsg("");
     const sb = createClient();
     const { data, error } = await sb.from("items").insert({
-      owner_id: meId, created_by: meId, title: lst.listing_title.slice(0, 80), description: lst.listing_description, tags: (lst.listing_keywords || []).slice(0, 25),
-      brand: r.brand, model: r.model, price: lst.list_price || null, price_min_suggested: r.fast_price || null, price_max_suggested: r.top_price || null,
+      owner_id: meId, created_by: meId, ...itemFields({ ...r, ...lst }),
       status: "draft", ai_generated: true, local_pickup_ok: true, shipping_ok: false, shipping_mode: "calculated",
     }).select("id").single();
     if (error || !data) { setLbusy(null); setLmsg(error?.message || "Couldn't create the listing."); return; }
@@ -60,6 +61,17 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
     if (j.qa) { setQa((x) => [...x, j.qa!]); setQ(""); }
     if (!res.ok) setErr(j.error || "Couldn't answer that. Try again.");
   }
+  const [redoing, setRedoing] = useState(false);
+  async function redo() {
+    if (!window.confirm("Run this report again with the same photos and notes? It replaces this one (about 30-60¢).")) return;
+    setRedoing(true); setErr("");
+    const res = await fetch("/api/deep", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ redo_id: id }) });
+    const j = (await res.json().catch(() => ({}))) as { error?: string };
+    setRedoing(false);
+    if (!res.ok) { setErr(j.error || "Couldn't redo it. Try again."); return; }
+    window.location.reload();
+  }
+  const thin = !r.listing_description || r.test_steps.length < 3;
   async function del() {
     if (!window.confirm("Delete this report for good?")) return;
     const { error } = await createClient().from("deep_reports").delete().eq("id", id);
@@ -74,10 +86,15 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
       <h1 className="text-2xl font-bold">{r.what}</h1>
       <p className="text-xs muted">{new Date(createdAt).toLocaleString("en-US", { timeZone: "America/New_York" })}{r.era ? ` · Made ${r.era}` : ""} · {r.searches} searches · cost about ${cost.toFixed(2)}</p>
 
+      {thin && <div className="card p-3 space-y-2" style={{ border: "2px solid var(--danger)" }}>
+        <p className="text-sm font-bold">This report came back incomplete (missing the test steps or the listing).</p>
+        <button type="button" className="btn btn-primary w-full" disabled={redoing} onClick={redo}>{redoing ? "Running it again… (1 to 3 minutes)" : "🔄 Run it again"}</button>
+      </div>}
       <div className="card p-4 space-y-1">
         <p className="text-3xl font-bold">{money(r.expected_price)}</p>
         <p className="text-sm">List {money(r.list_price)} · Fast {money(r.fast_price)} · Top {money(r.top_price)}{r.hold ? " · 💎 Hold for top dollar" : ""}</p>
         <p className="text-sm">{r.summary}</p>
+        {(r.item_lbs || r.ship_lbs) ? <p className="text-sm">📦 Weighs {r.item_lbs ?? "?"} lb · ships at {r.ship_lbs ?? "?"} lb{r.box_l && r.box_w && r.box_h ? ` in a ${r.box_l}×${r.box_w}×${r.box_h} in box` : ""}{r.weight_source ? <> · <A href={r.weight_source}>spec</A></> : null}</p> : null}
       </div>
       <div className="grid grid-cols-2 gap-2">
         <a href={`/api/deep/${id}/docx`} className="btn btn-primary text-lg" style={{ minHeight: 56 }}>📄 Word white paper</a>
@@ -157,6 +174,7 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
 
       {r.sources.length > 0 && <details className="card p-3"><summary className="font-bold cursor-pointer">🔗 Sources</summary><ul className="mt-2 text-sm">{r.sources.map((s, i) => <li key={i}>• <A href={s.url!}>{s.title}</A></li>)}</ul></details>}
       <Link href="/app/deep#new" className="btn btn-primary w-full text-lg" style={{ minHeight: 56 }}>🔬 Check another item</Link>
+      {!thin && <button type="button" className="btn btn-secondary w-full" disabled={redoing} onClick={redo}>{redoing ? "Running it again…" : "🔄 Run the report again"}</button>}
       <button type="button" className="btn btn-secondary w-full" onClick={del}>🗑 Delete this report</button>
     </div>
   );
