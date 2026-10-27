@@ -83,7 +83,11 @@ export default function ReportView({ id, report: r, qa: qa0, notes, photos, crea
         <a href={`/api/deep/${id}/docx`} className="btn btn-primary text-lg" style={{ minHeight: 56 }}>📄 Word white paper</a>
         <Link href="/app/deep#new" className="btn btn-primary text-lg" style={{ minHeight: 56 }}>🔬 Check another</Link>
       </div>
-      <a href="#listing" className="btn btn-secondary w-full">📝 {itemId ? "Listing made: see it" : "Write the listing from this"}</a>
+      {itemId
+        ? <Link href={`/app/items/${itemId}`} className="btn btn-secondary w-full text-lg" style={{ minHeight: 56 }}>✅ Listing made: open it</Link>
+        : <button type="button" className="btn btn-secondary w-full text-lg" style={{ minHeight: 56 }} disabled={!!lbusy} onClick={makeListing}>{lbusy === "Setting up your listing…" ? lbusy : "📝 Make it a listing now"}</button>}
+      {!itemId && <a href="#listing" className="text-sm underline block text-center">Want it worded differently first? Change it here</a>}
+      {lmsg && !lbusy && <p className="text-sm text-center" style={{ color: "var(--danger)" }}>{lmsg}</p>}
 
       {photos.length > 0 && <div className="grid grid-cols-3 gap-2">{photos.map((u) => <img key={u} src={u} alt="" className="w-full aspect-square object-cover rounded-xl" />)}</div>}
       {notes && <p className="text-sm muted">Your notes: {notes}</p>}
